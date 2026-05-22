@@ -3,8 +3,9 @@
 Grok 的 **Projects**（项目）就是带自定义指令的 **Agent**。本指南说明如何：
 
 1. 用 `grok/agents` 查找 Agent（获取 `id` 或 `url`）
-2. 用 `grok/agent-chat` 在该 Agent 下提问
-3. 用 `grok/search` 在历史对话中按关键词检索（可选）
+2. 用 `grok/agent-memory-*` 管理 Agent 的 Personal files（知识文件）
+3. 用 `grok/agent-chat` 在该 Agent 下提问
+4. 用 `grok/search` 在历史对话中按关键词检索（可选）
 
 ## 前置条件
 
@@ -21,6 +22,9 @@ bun-browser open https://grok.com/ --tab current
 | 命令 | 作用 |
 |------|------|
 | `bun-browser site grok/agents` | 列出所有 Project Agent |
+| `bun-browser site grok/agent-memory-list <agent>` | 列出 Agent Personal files |
+| `bun-browser site grok/agent-memory-add <agent> --fileName ...` | 上传文件到 Personal files |
+| `bun-browser site grok/agent-memory-remove <agent> --fileId ...` | 从 Personal files 移除文件 |
 | `bun-browser site grok/agent-chat <agent> "<prompt>"` | 在指定 Agent 中提问（推荐） |
 | `bun-browser site grok/chat "<prompt>"` | 向默认 Grok 聊天提问 |
 | `bun-browser site grok/search "<keyword>"` | 在 Grok 对话历史中按关键词搜索 |
@@ -29,9 +33,12 @@ bun-browser open https://grok.com/ --tab current
 ## 推荐工作流程
 
 ```
-grok/agents       找到 Agent（name、id、url）
+grok/agents              找到 Agent（name、id、url）
       ↓
-grok/agent-chat   传入 agent id 或 project URL + prompt
+grok/agent-memory-list   查看 / 确认 Personal files
+grok/agent-memory-add    上传知识文件（可选）
+      ↓
+grok/agent-chat          传入 agent id 或 project URL + prompt
 ```
 
 `grok/agent-chat` 会自动：
@@ -155,6 +162,98 @@ bun-browser site grok/agent-chat 2262a42d-da6b-478d-843f-69f811626817 "my dream 
 ```
 
 `answer` 即该 Agent 在 Project 上下文中的回复；`conversationId` 可用于在浏览器中继续同一会话。
+
+## Agent Personal files（agent-memory）
+
+Grok Project 的 **Personal files** 是持久 attached 到 Agent 的知识文件。Adapter 通过 grok.com 内部 REST API 管理（需已登录浏览器 session）：
+
+- 列出：`GET /rest/assets?workspaceId={id}`
+- 上传：`POST /rest/app-chat/upload-file` → `POST /rest/assets?workspaceId={id}` → `POST /rest/workspaces/{id}/assets`
+- 移除：`DELETE /rest/assets/{assetId}?workspaceId={id}`
+
+`fileId` 即 list 返回的 `assetId`。
+
+### 工作流程
+
+```bash
+# 1. 获取 agent id
+bun-browser site grok/agents
+
+# 2. 查看已有 Personal files
+bun-browser site grok/agent-memory-list 2262a42d-da6b-478d-843f-69f811626817
+
+# 3. 上传文本文件
+bun-browser site grok/agent-memory-add 2262a42d-da6b-478d-843f-69f811626817 \
+  --fileName memory.md --content "$(cat memory.md)"
+
+# 4. 上传 PDF（binary）
+bun-browser site grok/agent-memory-add 2262a42d-da6b-478d-843f-69f811626817 \
+  --fileName doc.pdf \
+  --fileBase64 "$(base64 -i doc.pdf)" \
+  --mimeType application/pdf
+
+# 5. 移除文件（用 list 返回的 fileId，或直接用文件名 positional）
+bun-browser site grok/agent-memory-remove 2262a42d-da6b-478d-843f-69f811626817 \
+  --fileId <assetId>
+# 或按文件名（positional，因 CLI 不转发未知 --flag）：
+bun-browser site grok/agent-memory-remove 2262a42d-da6b-478d-843f-69f811626817 memory.md
+```
+
+### agent-memory-list
+
+```bash
+bun-browser site grok/agent-memory-list <agent>
+```
+
+返回示例：
+
+```json
+{
+  "agentId": "2262a42d-da6b-478d-843f-69f811626817",
+  "agentName": "prompt enhancer",
+  "count": 2,
+  "files": [
+    {
+      "fileId": "abc123",
+      "fileName": "memory.md",
+      "sizeBytes": 1234,
+      "mimeType": "text/markdown",
+      "uploadTime": "2026-05-22T10:00:00.000Z",
+      "url": "https://grok.com/project/2262a42d-..."
+    }
+  ]
+}
+```
+
+### agent-memory-add 参数
+
+| 参数 | 必填 | 说明 |
+|------|------|------|
+| `agent` | 是 | Agent UUID 或 project URL |
+| `fileName` | 是 | 目标文件名 |
+| `--content` | 二选一 | 文本文件内容 |
+| `--fileBase64` | 二选一 | Base64 编码的二进制内容 |
+| `--mimeType` | 否 | MIME 类型（默认按扩展名推断） |
+
+单文件上限约 48 MB。
+
+### agent-memory-remove 参数
+
+| 参数 | 必填 | 说明 |
+|------|------|------|
+| `agent` | 是 | Agent UUID 或 project URL |
+| `--fileId` | 二选一 | 来自 list 的 fileId |
+| `--fileName` | 二选一 | 按文件名匹配（唯一时可用） |
+
+### 常见错误
+
+| 错误 | 处理 |
+|------|------|
+| `Not logged in` | 在 Chrome 中登录 grok.com |
+| `Agent not found` | 用 `grok/agents` 确认 id |
+| `Missing file payload` | add 时必须提供 `--content` 或 `--fileBase64` 之一 |
+| `File not found` | 用 `grok/agent-memory-list` 确认 fileId |
+| `HTTP 403` / anti-bot | 在浏览器打开 grok.com 完成验证 |
 
 ## 搜索对话历史 (grok/search)
 
@@ -336,6 +435,7 @@ bun-browser site grok/agents --json --jq '.agents[].name'
 
 ## 下一步
 
+- 管理 Agent 知识文件：`bun-browser site grok/agent-memory-list <agent>`
 - 搜索历史对话：`bun-browser site grok/search "关键词"`
 - 查看模型能力：`bun-browser site grok/modes`
 - 在默认 Grok 聊天（非 Project）中提问：`bun-browser site grok/chat "Hello"`
