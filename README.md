@@ -1,8 +1,8 @@
 # bb-sites
 
-Community site adapters for [bb-browser](https://github.com/epiral/bb-browser) — turning websites into CLI commands.
+Community site adapters for [bun-browser](https://github.com/epiral/bun-browser) — turning websites into CLI commands.
 
-Each site adapter is a JS function that runs inside your browser via `bb-browser eval`. The browser is already logged in — no API keys, no cookie extraction, no anti-bot bypass.
+Each site adapter is a JS function that runs inside your browser via `bun-browser eval`. The browser is already logged in — no API keys, no cookie extraction, no anti-bot bypass.
 
 [English](README.md) · [中文](README.zh-CN.md)
 
@@ -11,10 +11,10 @@ Each site adapter is a JS function that runs inside your browser via `bb-browser
 ## Quick Start
 
 ```bash
-bb-browser site update                     # install/update site adapters
-bb-browser site list                       # list available commands
-bb-browser site reddit/me                  # run a command
-bb-browser site reddit/thread <url>        # run with args
+bun-browser site update                     # install/update site adapters
+bun-browser site list                       # list available commands
+bun-browser site reddit/me                  # run a command
+bun-browser site reddit/thread <url>        # run with args
 ```
 
 ## Available Adapters
@@ -123,37 +123,37 @@ bb-browser site reddit/thread <url>        # run with args
 
 ```bash
 # Search the web
-bb-browser site google/search "bb-browser"
-bb-browser site duckduckgo/search "Claude Code"
+bun-browser site google/search "bun-browser"
+bun-browser site duckduckgo/search "Claude Code"
 
 # Social media
-bb-browser site twitter/search "claude code"
-bb-browser site twitter/tweets plantegg
-bb-browser site reddit/thread https://reddit.com/r/programming/comments/...
-bb-browser site weibo/hot
+bun-browser site twitter/search "claude code"
+bun-browser site twitter/tweets plantegg
+bun-browser site reddit/thread https://reddit.com/r/programming/comments/...
+bun-browser site weibo/hot
 
 # Tech research
-bb-browser site github/repo epiral/bb-browser
-bb-browser site hackernews/top 10
-bb-browser site stackoverflow/search "python async await"
-bb-browser site arxiv/search "large language model"
-bb-browser site npm/search "react state management"
+bun-browser site github/repo epiral/bun-browser
+bun-browser site hackernews/top 10
+bun-browser site stackoverflow/search "python async await"
+bun-browser site arxiv/search "large language model"
+bun-browser site npm/search "react state management"
 
 # Entertainment
-bb-browser site youtube/transcript dQw4w9WgXcQ
-bb-browser site bilibili/search 编程
-bb-browser site douban/top250
+bun-browser site youtube/transcript dQw4w9WgXcQ
+bun-browser site bilibili/search 编程
+bun-browser site douban/top250
 
 # Finance
-bb-browser site yahoo-finance/quote AAPL
-bb-browser site eastmoney/stock 贵州茅台
+bun-browser site yahoo-finance/quote AAPL
+bun-browser site eastmoney/stock 贵州茅台
 
 # Jobs
-bb-browser site boss/search "AI agent"
-bb-browser site linkedin/search "AI agent"
+bun-browser site boss/search "AI agent"
+bun-browser site linkedin/search "AI agent"
 
 # Translate
-bb-browser site youdao/translate hello
+bun-browser site youdao/translate hello
 ```
 
 ## Xiaohongshu Notes
@@ -169,17 +169,17 @@ Open a logged-in `https://www.xiaohongshu.com` tab before running these commands
 Typical validation flow:
 
 ```bash
-bb-browser site xiaohongshu/me
-bb-browser site xiaohongshu/feed
-bb-browser site xiaohongshu/search "穿搭"
-bb-browser site xiaohongshu/note 6932814d000000001e034e67
-bb-browser site xiaohongshu/comments 6932814d000000001e034e67
-bb-browser site xiaohongshu/user_posts 67c99deb00000000070013e9
+bun-browser site xiaohongshu/me
+bun-browser site xiaohongshu/feed
+bun-browser site xiaohongshu/search "穿搭"
+bun-browser site xiaohongshu/note 6932814d000000001e034e67
+bun-browser site xiaohongshu/comments 6932814d000000001e034e67
+bun-browser site xiaohongshu/user_posts 67c99deb00000000070013e9
 ```
 
 ## Writing a Site Adapter
 
-Run `bb-browser guide` for the full development workflow, or read [SKILL.md](SKILL.md).
+Run `bun-browser guide` for the full development workflow, or read [SKILL.md](SKILL.md).
 
 ```javascript
 /* @meta
@@ -191,7 +191,7 @@ Run `bb-browser guide` for the full development workflow, or read [SKILL.md](SKI
     "query": {"required": true, "description": "Search query"}
   },
   "readOnly": true,
-  "example": "bb-browser site platform/command value1"
+  "example": "bun-browser site platform/command value1"
 }
 */
 
@@ -213,25 +213,25 @@ cd bb-sites && git checkout -b feat-mysite
 git push -u origin feat-mysite
 gh pr create
 
-# Option B: with bb-browser (no gh needed)
-bb-browser site github/fork epiral/bb-sites
+# Option B: with bun-browser (no gh needed)
+bun-browser site github/fork epiral/bb-sites
 git clone https://github.com/YOUR_USER/bb-sites && cd bb-sites
 git checkout -b feat-mysite
 # add adapter files
 git push -u origin feat-mysite
-bb-browser site github/pr-create epiral/bb-sites --title "feat(mysite): add adapters" --head "YOUR_USER:feat-mysite"
+bun-browser site github/pr-create epiral/bb-sites --title "feat(mysite): add adapters" --head "YOUR_USER:feat-mysite"
 ```
 
 ## Private Adapters
 
-Put private adapters in `~/.bb-browser/sites/`. They override community adapters with the same name.
+Put private adapters in `~/.bun-browser/sites/`. They override community adapters with the same name.
 
 ```
-~/.bb-browser/
+~/.bun-browser/
 ├── sites/          # Your private adapters (priority)
 │   └── internal/
 │       └── deploy.js
-└── bb-sites/       # This repo (bb-browser site update)
+└── bb-sites/       # This repo (bun-browser site update)
     ├── reddit/
     ├── twitter/
     ├── github/
