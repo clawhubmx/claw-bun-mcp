@@ -7,7 +7,7 @@
     "eid": {"required": true, "description": "Episode ID (URL 中的 ID)"}
   },
   "readOnly": true,
-  "example": "bb-browser site xiaoyuzhoufm/episode 69ba2e32f8b8079bfaef73e5"
+  "example": "bun-browser site xiaoyuzhoufm/episode 69ba2e32f8b8079bfaef73e5"
 }
 */
 

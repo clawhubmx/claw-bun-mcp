@@ -10,7 +10,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site weibo/user_posts 1654184992"
+  "example": "bun-browser site weibo/user_posts 1654184992"
 }
 */
 

@@ -7,7 +7,7 @@
     "query": {"required": true, "description": "Phone name to search (e.g. iPhone 16, Galaxy S25)"}
   },
   "readOnly": true,
-  "example": "bb-browser site gsmarena/search \"iPhone 16\""
+  "example": "bun-browser site gsmarena/search \"iPhone 16\""
 }
 */
 

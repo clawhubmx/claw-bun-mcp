@@ -5,10 +5,10 @@
 ## 核心流程
 
 ```
-1. 逆向 API  →  用 bb-browser network --with-body 抓包
+1. 逆向 API  →  用 bun-browser network --with-body 抓包
 2. 选择方案  →  根据 API 复杂度选 fetch / eval+headers / pinia store
 3. 写 adapter →  一个 JS 文件，放到对应平台目录
-4. 测试      →  bb-browser site <name> [args]
+4. 测试      →  bun-browser site <name> [args]
 5. 提交      →  PR 到 bb-sites 仓库
 ```
 
@@ -17,8 +17,8 @@
 ### 1.1 启用网络监控
 
 ```bash
-bb-browser network requests          # 启用监控（首次调用自动 enable）
-bb-browser network clear             # 清空历史记录
+bun-browser network requests          # 启用监控（首次调用自动 enable）
+bun-browser network clear             # 清空历史记录
 ```
 
 ### 1.2 触发目标操作
@@ -26,16 +26,16 @@ bb-browser network clear             # 清空历史记录
 在浏览器里操作网站：导航到目标页面、滚动加载、点击按钮等。
 
 ```bash
-bb-browser open "https://www.example.com/some-page" --tab current
-bb-browser wait 3000
-bb-browser scroll down 1000          # 触发懒加载
+bun-browser open "https://www.example.com/some-page" --tab current
+bun-browser wait 3000
+bun-browser scroll down 1000          # 触发懒加载
 ```
 
 ### 1.3 抓取 API 请求
 
 ```bash
 # 查看所有 API 请求（过滤域名）
-bb-browser network requests --filter "api.example.com" --with-body --json
+bun-browser network requests --filter "api.example.com" --with-body --json
 ```
 
 关注这些字段：
@@ -60,7 +60,7 @@ bb-browser network requests --filter "api.example.com" --with-body --json
 ### 1.5 发现页面框架
 
 ```bash
-bb-browser eval "(()=>{
+bun-browser eval "(()=>{
   const vue3 = !!document.querySelector('#app')?.__vue_app__;
   const vue2 = !!document.querySelector('#app')?.__vue__;
   const react = !!window.__REACT_DEVTOOLS_GLOBAL_HOOK__ || !!document.querySelector('[data-reactroot]');
@@ -75,7 +75,7 @@ bb-browser eval "(()=>{
 如果有 pinia/vuex，可以进一步探索 store：
 
 ```bash
-bb-browser eval "(()=>{
+bun-browser eval "(()=>{
   const pinia = document.querySelector('#app').__vue_app__.config.globalProperties.\$pinia;
   const stores = [];
   pinia._s.forEach((store, id) => {
@@ -103,7 +103,7 @@ async function(args) {
 }
 ```
 
-**判断标准**: 用 `bb-browser eval "fetch('/api/xxx', {credentials:'include'}).then(r=>r.json())"` 能直接拿到数据。
+**判断标准**: 用 `bun-browser eval "fetch('/api/xxx', {credentials:'include'}).then(r=>r.json())"` 能直接拿到数据。
 
 ### Tier 2: `eval` + 手动 header
 
@@ -173,7 +173,7 @@ fetch() 直接调能拿到数据？
            → 是 → Tier 2
            → 否 → 网站是 Vue + Pinia/Vuex？
                     → 是 → Tier 3 (store action)
-                    → 否 → 用 bb-browser 的 UI 操作(click/scroll) 触发
+                    → 否 → 用 bun-browser 的 UI 操作(click/scroll) 触发
                             + network --with-body 读结果（手动流程，不做 adapter）
 ```
 
@@ -193,7 +193,7 @@ fetch() 直接调能拿到数据？
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site platform/command value1"
+  "example": "bun-browser site platform/command value1"
 }
 */
 
@@ -216,13 +216,13 @@ async function(args) {
 
 ```bash
 # 更新本地 adapter
-cp -r . ~/.bb-browser/bb-sites/
+cp -r . ~/.bun-browser/bb-sites/
 
 # 测试
-bb-browser site platform/command arg1 arg2
+bun-browser site platform/command arg1 arg2
 
 # 或者直接 eval 测试 JS 函数
-bb-browser eval "(async()=>{ /* 粘贴 adapter 代码 */ })()"
+bun-browser eval "(async()=>{ /* 粘贴 adapter 代码 */ })()"
 ```
 
 ## Step 5: 提交
@@ -240,7 +240,7 @@ git push
 
 逆向过程：
 ```bash
-bb-browser fetch "https://www.reddit.com/api/me.json" --json
+bun-browser fetch "https://www.reddit.com/api/me.json" --json
 # 直接返回数据 → Tier 1 fetch() 直调
 ```
 
@@ -248,7 +248,7 @@ bb-browser fetch "https://www.reddit.com/api/me.json" --json
 
 逆向过程：
 ```bash
-bb-browser network requests --filter "graphql" --with-body --json
+bun-browser network requests --filter "graphql" --with-body --json
 # 发现需要 Bearer + ct0 header → Tier 2
 # ct0 从 document.cookie 读取
 # Bearer token 是公开固定值
@@ -259,7 +259,7 @@ bb-browser network requests --filter "graphql" --with-body --json
 逆向过程：
 ```bash
 # 1. 抓包发现 X-s 签名 header
-bb-browser network requests --filter "edith" --with-body --json
+bun-browser network requests --filter "edith" --with-body --json
 
 # 2. 直接 fetch → 406（签名缺失）
 # 3. 复制 headers 手动签名 → 部分接口被风控

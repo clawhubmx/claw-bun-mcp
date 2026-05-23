@@ -10,7 +10,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site reddit/hot ClaudeAI"
+  "example": "bun-browser site reddit/hot ClaudeAI"
 }
 */
 

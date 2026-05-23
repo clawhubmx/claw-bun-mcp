@@ -8,7 +8,7 @@
     "count": {"required": false, "description": "Number of results (default 10)"}
   },
   "readOnly": true,
-  "example": "bb-browser site google/search \"bb-browser\""
+  "example": "bun-browser site google/search \"bun-browser\""
 }
 */
 

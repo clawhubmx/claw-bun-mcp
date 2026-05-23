@@ -9,7 +9,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site youtube/channel '@programmingwithmosh'"
+  "example": "bun-browser site youtube/channel '@programmingwithmosh'"
 }
 */
 

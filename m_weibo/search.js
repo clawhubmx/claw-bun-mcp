@@ -9,7 +9,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site m_weibo/search apple"
+  "example": "bun-browser site m_weibo/search apple"
 }
 */
 

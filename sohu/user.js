@@ -8,12 +8,12 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site sohu/user MzEwNzhiYTEtYTZjNy00ZjMxLTk4YTUtMmQzYzNlODc0NjA4"
+  "example": "bun-browser site sohu/user MzEwNzhiYTEtYTZjNy00ZjMxLTk4YTUtMmQzYzNlODc0NjA4"
 }
 */
 
 async function(args) {
-  // 兼容完整 URL 或纯 xpt：bb-browser site sohu/user <url_or_xpt>
+  // 兼容完整 URL 或纯 xpt：bun-browser site sohu/user <url_or_xpt>
   const raw = args.xpt || '';
   const xptFromUrl = raw.match(/[?&]xpt=([^&]+)/)?.[1];
   args.xpt = xptFromUrl ? decodeURIComponent(xptFromUrl) : raw;

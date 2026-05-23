@@ -7,7 +7,7 @@
     "securityId": {"required": true, "description": "Job securityId (from boss/search results)"}
   },
   "readOnly": true,
-  "example": "bb-browser site boss/detail <securityId>"
+  "example": "bun-browser site boss/detail <securityId>"
 }
 */
 

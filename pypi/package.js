@@ -7,13 +7,13 @@
     "name": "包名"
   },
   "readOnly": true,
-  "example": "bb-browser site pypi/package \"requests\""
+  "example": "bun-browser site pypi/package \"requests\""
 }
 */
 
 async function(args) {
   const name = args.name || args._text;
-  if (!name) return {error: 'Missing package name. Usage: bb-browser site pypi/package "PACKAGE_NAME"'};
+  if (!name) return {error: 'Missing package name. Usage: bun-browser site pypi/package "PACKAGE_NAME"'};
   const url = `https://pypi.org/pypi/${encodeURIComponent(name)}/json`;
   const resp = await fetch(url);
   if (!resp.ok) return {error: 'HTTP ' + resp.status};

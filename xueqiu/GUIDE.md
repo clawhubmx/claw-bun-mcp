@@ -30,8 +30,6 @@ bun-browser site list | grep xueqiu   # 应看到 6 个命令
 
 > 所有 adapter 在 `xueqiu.com` 域下执行，通过 `fetch(..., {credentials: 'include'})` 复用浏览器 session。若返回 `HTTP 401/403` 或 hint 提示未登录，请先在 Chrome 中登录雪球后重试。
 
-> 若你使用旧版 CLI 名称，将下文中的 `bun-browser` 替换为 `bb-browser` 即可，命令参数相同。
-
 ---
 
 ## 命令一览

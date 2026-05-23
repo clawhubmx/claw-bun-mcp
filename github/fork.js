@@ -8,7 +8,7 @@
   },
   "capabilities": ["network"],
   "readOnly": false,
-  "example": "bb-browser site github/fork epiral/bb-sites"
+  "example": "bun-browser site github/fork epiral/bb-sites"
 }
 */
 

@@ -8,7 +8,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site linuxdo/latest 20"
+  "example": "bun-browser site linuxdo/latest 20"
 }
 */
 

@@ -10,7 +10,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site twitter/notifications --type mentions"
+  "example": "bun-browser site twitter/notifications --type mentions"
 }
 */
 

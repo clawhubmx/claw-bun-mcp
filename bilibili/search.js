@@ -11,7 +11,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site bilibili/search 编程"
+  "example": "bun-browser site bilibili/search 编程"
 }
 */
 

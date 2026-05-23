@@ -7,7 +7,7 @@
     "limit": {"required": false, "description": "Number of posts (default 20)"}
   },
   "readOnly": true,
-  "example": "bb-browser site jike/feed"
+  "example": "bun-browser site jike/feed"
 }
 */
 

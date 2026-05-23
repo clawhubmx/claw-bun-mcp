@@ -8,7 +8,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site douban/top250"
+  "example": "bun-browser site douban/top250"
 }
 */
 

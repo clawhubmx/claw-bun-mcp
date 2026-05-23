@@ -8,7 +8,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site xiaohongshu/user_posts 5a927d8411be10720ae9e1e4"
+  "example": "bun-browser site xiaohongshu/user_posts 5a927d8411be10720ae9e1e4"
 }
 */
 
@@ -224,7 +224,7 @@ async function(args) {
   })());
 
   const userStore = helper.getStore("user");
-  if (userStore && !userStore.loggedIn) return { error: "Not logged in", hint: "Run: bb-browser open https://www.xiaohongshu.com/explore — then log in manually" };
+  if (userStore && !userStore.loggedIn) return { error: "Not logged in", hint: "Run: bun-browser open https://www.xiaohongshu.com/explore — then log in manually" };
 
   const userId = String(args.user_id).trim();
   if (!userId) return { error: "Missing argument: user_id" };

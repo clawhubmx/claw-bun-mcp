@@ -4,11 +4,11 @@
   "description": "获取 GitHub 仓库信息",
   "domain": "github.com",
   "args": {
-    "repo": {"required": true, "description": "owner/repo format (e.g. epiral/bb-browser)"}
+    "repo": {"required": true, "description": "owner/repo format (e.g. epiral/bun-browser)"}
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site github/repo epiral/bb-browser"
+  "example": "bun-browser site github/repo epiral/bun-browser"
 }
 */
 

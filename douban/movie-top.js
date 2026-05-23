@@ -9,7 +9,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site douban/movie-top 科幻 10"
+  "example": "bun-browser site douban/movie-top 科幻 10"
 }
 */
 

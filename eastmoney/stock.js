@@ -7,7 +7,7 @@
     "query": {"required": true, "description": "股票名称或代码，如 贵州茅台 或 600519"}
   },
   "readOnly": true,
-  "example": "bb-browser site eastmoney/stock 贵州茅台"
+  "example": "bun-browser site eastmoney/stock 贵州茅台"
 }
 */
 

@@ -9,7 +9,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site weibo/favorites all md"
+  "example": "bun-browser site weibo/favorites all md"
 }
 */
 

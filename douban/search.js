@@ -8,7 +8,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site douban/search 三体"
+  "example": "bun-browser site douban/search 三体"
 }
 */
 

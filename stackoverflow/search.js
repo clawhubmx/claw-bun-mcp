@@ -8,7 +8,7 @@
     "count": {"required": false, "description": "Number of results (default 10, max 50)"}
   },
   "readOnly": true,
-  "example": "bb-browser site stackoverflow/search \"python async await\""
+  "example": "bun-browser site stackoverflow/search \"python async await\""
 }
 */
 

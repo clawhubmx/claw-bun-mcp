@@ -9,7 +9,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site m_weibo/user_posts 1654184992"
+  "example": "bun-browser site m_weibo/user_posts 1654184992"
 }
 */
 

@@ -9,7 +9,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site smzdm/search \"耳机\""
+  "example": "bun-browser site smzdm/search \"耳机\""
 }
 */
 
@@ -44,7 +44,7 @@ async function(args) {
 
   // Check for anti-bot page
   if (html.indexOf('probe.js') !== -1 && html.indexOf('feed-row-wide') === -1) {
-    return {error: 'Anti-bot protection triggered', hint: 'Open www.smzdm.com in bb-browser first to pass verification'};
+    return {error: 'Anti-bot protection triggered', hint: 'Open www.smzdm.com in bun-browser first to pass verification'};
   }
 
   var parser = new DOMParser();

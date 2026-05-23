@@ -8,7 +8,7 @@
     "count": {"required": false, "description": "每页数量，默认 20"}
   },
   "readOnly": true,
-  "example": "bb-browser site xueqiu/feed"
+  "example": "bun-browser site xueqiu/feed"
 }
 */
 

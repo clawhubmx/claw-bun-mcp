@@ -9,12 +9,12 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site sohu/user_posts MzEwNzhiYTEtYTZjNy00ZjMxLTk4YTUtMmQzYzNlODc0NjA4"
+  "example": "bun-browser site sohu/user_posts MzEwNzhiYTEtYTZjNy00ZjMxLTk4YTUtMmQzYzNlODc0NjA4"
 }
 */
 
 async function(args) {
-  // 兼容完整 URL 或纯 xpt：bb-browser site sohu/user_posts <url_or_xpt>
+  // 兼容完整 URL 或纯 xpt：bun-browser site sohu/user_posts <url_or_xpt>
   const raw = args.xpt || '';
   const xptFromUrl = raw.match(/[?&]xpt=([^&]+)/)?.[1];
   args.xpt = xptFromUrl ? decodeURIComponent(xptFromUrl) : raw;
@@ -25,7 +25,7 @@ async function(args) {
   await new Promise(r => setTimeout(r, 1500));
   const currentXpt = new URLSearchParams(location.search).get('xpt');
   // 使用当前页面的实际 xpt（collect.js 已通过 bbOpen 确保页面正确）
-  // 单独命令行调用时，请先执行 bb-browser open <url> 再执行此命令
+  // 单独命令行调用时，请先执行 bun-browser open <url> 再执行此命令
   const effectiveXpt = currentXpt || args.xpt;
 
   // 解析时间文本 → "YYYY-MM-DD"

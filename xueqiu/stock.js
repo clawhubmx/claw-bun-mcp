@@ -7,7 +7,7 @@
     "symbol": {"required": true, "description": "股票代码，如 SH600519、SZ000858、AAPL、00700"}
   },
   "readOnly": true,
-  "example": "bb-browser site xueqiu/stock SH600519"
+  "example": "bun-browser site xueqiu/stock SH600519"
 }
 */
 

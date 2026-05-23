@@ -11,7 +11,7 @@
     }
   },
   "readOnly": true,
-  "example": "bb-browser site imdb/search --query inception"
+  "example": "bun-browser site imdb/search --query inception"
 }
 */
 

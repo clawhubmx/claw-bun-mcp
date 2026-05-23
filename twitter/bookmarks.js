@@ -8,7 +8,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site twitter/bookmarks --count 10"
+  "example": "bun-browser site twitter/bookmarks --count 10"
 }
 */
 

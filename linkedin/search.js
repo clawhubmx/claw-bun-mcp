@@ -9,7 +9,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site linkedin/search \"AI agent\""
+  "example": "bun-browser site linkedin/search \"AI agent\""
 }
 */
 

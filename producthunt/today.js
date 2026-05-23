@@ -8,7 +8,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site producthunt/today"
+  "example": "bun-browser site producthunt/today"
 }
 */
 
@@ -288,6 +288,6 @@ async function(args) {
 
   return {
     error: 'Could not fetch Product Hunt data',
-    hint: 'Open https://www.producthunt.com in bb-browser first, then retry. The adapter needs browser context with cookies.'
+    hint: 'Open https://www.producthunt.com in bun-browser first, then retry. The adapter needs browser context with cookies.'
   };
 }

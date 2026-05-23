@@ -7,7 +7,7 @@
     "query": {"required": true, "description": "Search query"}
   },
   "readOnly": true,
-  "example": "bb-browser site duckduckgo/search \"bb-browser CLI\""
+  "example": "bun-browser site duckduckgo/search \"bun-browser CLI\""
 }
 */
 

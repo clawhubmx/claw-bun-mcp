@@ -10,7 +10,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site twitter/search \"claude code\""
+  "example": "bun-browser site twitter/search \"claude code\""
 }
 */
 

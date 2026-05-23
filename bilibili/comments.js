@@ -11,7 +11,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site bilibili/comments BV1LGwHzrE4A"
+  "example": "bun-browser site bilibili/comments BV1LGwHzrE4A"
 }
 */
 

@@ -8,7 +8,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site reddit/context https://www.reddit.com/r/LocalLLaMA/comments/1rso48p/comment/oa8domi/"
+  "example": "bun-browser site reddit/context https://www.reddit.com/r/LocalLLaMA/comments/1rso48p/comment/oa8domi/"
 }
 */
 

@@ -78,7 +78,7 @@ fetch('https://xxx-dsn.algolia.net/1/indexes/Article_production/query', {
 });
 ```
 
-**判断方法**：`bb-browser network requests --filter "api" --with-body` 抓包。
+**判断方法**：`bun-browser network requests --filter "api" --with-body` 抓包。
 
 ### 3. 解析服务端渲染的 HTML（保底）
 
@@ -124,7 +124,7 @@ if (html.includes('请完成人机验证') || doc.querySelector('.cf-turnstile')
   return {
     error: 'Anti-bot verification required',
     hint: 'Open the site in browser and complete verification',
-    action: 'bb-browser open https://example.com'
+    action: 'bun-browser open https://example.com'
   };
 }
 
@@ -183,10 +183,10 @@ return { id: '2604.15282', title: '...', abstract: '...全文2000字',
 
 ```bash
 # 看它做了什么
-bb-browser network requests --filter "api" --with-body
+bun-browser network requests --filter "api" --with-body
 
 # 看它是什么框架
-bb-browser eval "(()=>{
+bun-browser eval "(()=>{
   const vue3 = !!document.querySelector('#app')?.__vue_app__;
   const react = !!window.__REACT_DEVTOOLS_GLOBAL_HOOK__;
   const nextjs = !!window.__NEXT_DATA__;
@@ -194,7 +194,7 @@ bb-browser eval "(()=>{
 })()"
 
 # 看它有什么 store
-bb-browser eval "(()=>{
+bun-browser eval "(()=>{
   const pinia = document.querySelector('#app')?.__vue_app__?.config?.globalProperties?.$pinia;
   if (!pinia) return 'no pinia';
   const stores = [];
@@ -209,20 +209,20 @@ bb-browser eval "(()=>{
 
 ```bash
 # 1. 在 tab 里试 fetch（相对路径）
-bb-browser eval "(async()=>{
+bun-browser eval "(async()=>{
   const r = await fetch('/api/search?q=test', {credentials:'include'});
   return {ok: r.ok, status: r.status};
 })()"
 
 # 2. 能拿到 → 看返回格式
-bb-browser eval "(async()=>{
+bun-browser eval "(async()=>{
   const r = await fetch('/api/search?q=test', {credentials:'include'});
   const d = await r.json();
   return {keys: Object.keys(d), sample: JSON.stringify(d).substring(0, 500)};
 })()"
 
 # 3. 写 adapter → 测试
-bb-browser site platform/command args
+bun-browser site platform/command args
 ```
 
 ## 错误的三层结构
@@ -233,7 +233,7 @@ bb-browser site platform/command args
 {
   "error": "HTTP 401",
   "hint": "需要先登录，请在浏览器中打开 example.com",
-  "action": "bb-browser open https://example.com"
+  "action": "bun-browser open https://example.com"
 }
 ```
 

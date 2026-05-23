@@ -10,7 +10,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site douban/movie-hot movie 豆瓣高分"
+  "example": "bun-browser site douban/movie-hot movie 豆瓣高分"
 }
 */
 

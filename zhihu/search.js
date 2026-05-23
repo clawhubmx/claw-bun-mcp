@@ -9,7 +9,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site zhihu/search AI"
+  "example": "bun-browser site zhihu/search AI"
 }
 */
 

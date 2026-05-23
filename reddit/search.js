@@ -13,7 +13,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site reddit/search \"claude code\" --sort top --time week"
+  "example": "bun-browser site reddit/search \"claude code\" --sort top --time week"
 }
 */
 

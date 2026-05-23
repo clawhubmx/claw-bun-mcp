@@ -7,7 +7,7 @@
     "id": {"required": true, "description": "Topic ID"}
   },
   "readOnly": true,
-  "example": "bb-browser site v2ex/topic 1024"
+  "example": "bun-browser site v2ex/topic 1024"
 }
 */
 

@@ -8,7 +8,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site zhihu/hot 10"
+  "example": "bun-browser site zhihu/hot 10"
 }
 */
 

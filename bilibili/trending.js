@@ -8,7 +8,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site bilibili/trending"
+  "example": "bun-browser site bilibili/trending"
 }
 */
 

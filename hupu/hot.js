@@ -5,7 +5,7 @@
   "domain": "bbs.hupu.com",
   "args": {},
   "readOnly": true,
-  "example": "bb-browser site hupu/hot"
+  "example": "bun-browser site hupu/hot"
 }
 */
 

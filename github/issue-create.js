@@ -10,7 +10,7 @@
   },
   "capabilities": ["network"],
   "readOnly": false,
-  "example": "bb-browser site github/issue-create epiral/bb-sites --title \"[reddit/me] returns empty\" --body \"Description here\""
+  "example": "bun-browser site github/issue-create epiral/bb-sites --title \"[reddit/me] returns empty\" --body \"Description here\""
 }
 */
 

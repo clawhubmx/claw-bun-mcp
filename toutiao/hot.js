@@ -7,7 +7,7 @@
     "count": {"required": false, "description": "返回条数 (默认 20, 最多 50)"}
   },
   "readOnly": true,
-  "example": "bb-browser site toutiao/hot"
+  "example": "bun-browser site toutiao/hot"
 }
 */
 
@@ -44,7 +44,7 @@ async function(args) {
 
   async function fallbackFromHomepage(limit) {
     const homeResp = await fetch('https://www.toutiao.com/', {credentials: 'include'});
-    if (!homeResp.ok) return {error: 'HTTP ' + homeResp.status, hint: 'Open www.toutiao.com in bb-browser first'};
+    if (!homeResp.ok) return {error: 'HTTP ' + homeResp.status, hint: 'Open www.toutiao.com in bun-browser first'};
 
     const html = await homeResp.text();
     const parser = new DOMParser();
@@ -99,7 +99,7 @@ async function(args) {
     }
 
     if (items.length === 0) {
-      return {error: 'Could not extract hot topics', hint: 'Open www.toutiao.com in bb-browser first and make sure you are logged in'};
+      return {error: 'Could not extract hot topics', hint: 'Open www.toutiao.com in bun-browser first and make sure you are logged in'};
     }
 
     return {count: items.length, source: 'homepage_dom', items};

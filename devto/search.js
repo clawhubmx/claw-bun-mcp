@@ -8,7 +8,7 @@
     "count": { "type": "number", "default": 10, "description": "Number of results (max 100)" }
   },
   "readOnly": true,
-  "example": "bb-browser site devto/search \"rust programming\""
+  "example": "bun-browser site devto/search \"rust programming\""
 }
 */
 

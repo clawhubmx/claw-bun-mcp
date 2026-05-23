@@ -7,7 +7,7 @@
     "count": {"required": false, "description": "Number of posts (default: 20, max: 50)"}
   },
   "readOnly": true,
-  "example": "bb-browser site hackernews/top 10"
+  "example": "bun-browser site hackernews/top 10"
 }
 */
 

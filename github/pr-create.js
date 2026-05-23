@@ -12,7 +12,7 @@
   },
   "capabilities": ["network"],
   "readOnly": false,
-  "example": "bb-browser site github/pr-create epiral/bb-sites --title \"feat(weibo): add hot adapter\" --head myuser:feat-weibo --body \"Adds weibo/hot.js\""
+  "example": "bun-browser site github/pr-create epiral/bb-sites --title \"feat(weibo): add hot adapter\" --head myuser:feat-weibo --body \"Adds weibo/hot.js\""
 }
 */
 

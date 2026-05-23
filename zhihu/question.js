@@ -9,7 +9,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site zhihu/question 34816524"
+  "example": "bun-browser site zhihu/question 34816524"
 }
 */
 

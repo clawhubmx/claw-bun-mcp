@@ -8,7 +8,7 @@
     "type": {"required": false, "description": "榜单类型：10=人气榜(默认) 12=关注榜"}
   },
   "readOnly": true,
-  "example": "bb-browser site xueqiu/hot-stock 10"
+  "example": "bun-browser site xueqiu/hot-stock 10"
 }
 */
 

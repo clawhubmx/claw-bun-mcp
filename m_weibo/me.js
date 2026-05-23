@@ -6,7 +6,7 @@
   "args": {},
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site m_weibo/me"
+  "example": "bun-browser site m_weibo/me"
 }
 */
 

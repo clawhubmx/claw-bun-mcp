@@ -8,7 +8,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site twitter/for_you"
+  "example": "bun-browser site twitter/for_you"
 }
 */
 

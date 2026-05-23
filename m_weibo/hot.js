@@ -8,7 +8,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site m_weibo/hot 20"
+  "example": "bun-browser site m_weibo/hot 20"
 }
 */
 

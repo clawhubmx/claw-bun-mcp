@@ -8,7 +8,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site twitter/thread 2032478407146311850"
+  "example": "bun-browser site twitter/thread 2032478407146311850"
 }
 */
 

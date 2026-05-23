@@ -8,7 +8,7 @@
     "count": {"required": false, "description": "返回数量，默认 10"}
   },
   "readOnly": true,
-  "example": "bb-browser site xueqiu/search 茅台"
+  "example": "bun-browser site xueqiu/search 茅台"
 }
 */
 

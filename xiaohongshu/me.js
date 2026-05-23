@@ -209,7 +209,7 @@ async function(args) {
   if (!userStore) {
     return { error: "User store not found", hint: "Ensure xiaohongshu.com is fully loaded" };
   }
-  if (!userStore.loggedIn) return { error: "Not logged in", hint: "Run: bb-browser open https://www.xiaohongshu.com/explore — then log in manually" };
+  if (!userStore.loggedIn) return { error: "Not logged in", hint: "Run: bun-browser open https://www.xiaohongshu.com/explore — then log in manually" };
 
   const directUser = helper.normalizeUser(userStore.userInfo) || helper.normalizeUser(userStore.userPageData?.basicInfo);
   if (directUser) return directUser;

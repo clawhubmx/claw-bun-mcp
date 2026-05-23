@@ -20,8 +20,6 @@ bun-browser site info eastmoney/news
 - `stock.js` — `eastmoney/stock`
 - `news.js` — `eastmoney/news`
 
-> 若你使用旧版 CLI 名称，将下文中的 `bun-browser` 替换为 `bb-browser` 即可，命令参数相同。
-
 ---
 
 ## 命令一览

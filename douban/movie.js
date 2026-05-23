@@ -8,7 +8,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site douban/movie 1292052"
+  "example": "bun-browser site douban/movie 1292052"
 }
 */
 

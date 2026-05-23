@@ -9,7 +9,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site youtube/search 'TypeScript tutorial'"
+  "example": "bun-browser site youtube/search 'TypeScript tutorial'"
 }
 */
 

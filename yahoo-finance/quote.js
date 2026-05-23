@@ -7,7 +7,7 @@
     "symbol": {"required": true, "description": "Stock ticker symbol, e.g. AAPL, MSFT, TSLA"}
   },
   "readOnly": true,
-  "example": "bb-browser site yahoo-finance/quote AAPL"
+  "example": "bun-browser site yahoo-finance/quote AAPL"
 }
 */
 

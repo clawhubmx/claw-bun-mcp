@@ -16,7 +16,7 @@ Each adapter is a single `.js` file in `<platform>/command.js`.
     "query": {"required": true, "description": "Search query"}
   },
   "readOnly": true,
-  "example": "bb-browser site platform/command \"test\""
+  "example": "bun-browser site platform/command \"test\""
 }
 */
 async function(args) {
@@ -136,11 +136,11 @@ Keywords `401`, `403`, `unauthorized`, `login`, `sign in` in error/hint trigger 
 
 ```bash
 # Save to local dir
-mkdir -p ~/.bb-browser/sites/myplatform
-cp myplatform/command.js ~/.bb-browser/sites/myplatform/
+mkdir -p ~/.bun-browser/sites/myplatform
+cp myplatform/command.js ~/.bun-browser/sites/myplatform/
 
 # Test
-bb-browser site myplatform/command "test" --json
+bun-browser site myplatform/command "test" --json
 ```
 
 ## Submitting

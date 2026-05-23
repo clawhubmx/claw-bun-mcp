@@ -9,7 +9,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site youtube/feed subscriptions"
+  "example": "bun-browser site youtube/feed subscriptions"
 }
 */
 

@@ -7,7 +7,7 @@
     "query": { "type": "string", "required": true, "description": "搜索关键词" }
   },
   "readOnly": true,
-  "example": "bb-browser site genius/search \"bohemian rhapsody\""
+  "example": "bun-browser site genius/search \"bohemian rhapsody\""
 }
 */
 

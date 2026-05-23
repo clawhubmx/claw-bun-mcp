@@ -7,7 +7,7 @@
     "count": {"required": false, "description": "返回数量，默认 20，最大 50"}
   },
   "readOnly": true,
-  "example": "bb-browser site xueqiu/hot 10"
+  "example": "bun-browser site xueqiu/hot 10"
 }
 */
 

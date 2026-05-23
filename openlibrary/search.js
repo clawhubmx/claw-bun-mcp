@@ -8,7 +8,7 @@
     "count": {"type": "number", "required": false, "default": 10, "description": "返回数量"}
   },
   "readOnly": true,
-  "example": "bb-browser site openlibrary/search \"machine learning\""
+  "example": "bun-browser site openlibrary/search \"machine learning\""
 }
 */
 

@@ -8,7 +8,7 @@
     "page": {"required": false, "description": "Page number (default 1)"}
   },
   "readOnly": true,
-  "example": "bb-browser site sogou/weixin \"AI agent\""
+  "example": "bun-browser site sogou/weixin \"AI agent\""
 }
 */
 

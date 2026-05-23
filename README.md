@@ -6,7 +6,7 @@ Each site adapter is a JS function that runs inside your browser via `bun-browse
 
 [English](README.md) · [中文](README.zh-CN.md)
 
-> **102 adapters** across **36 platforms** — and growing.
+> **103 adapters** across **37 platforms** — and growing.
 
 ## Quick Start
 
@@ -110,6 +110,12 @@ bun-browser site reddit/thread <url>        # run with args
 | Youdao | `youdao/translate` | 有道翻译 — translation & dictionary |
 | Ctrip | `ctrip/search` | 携程 — destination & attraction search |
 
+### 📧 Email
+
+| Platform | Command | Description |
+|----------|---------|-------------|
+| Disposalmail | `disposalmail/create` | Create disposable temp email (fresh random or custom alias) |
+
 ### 🗨️ Social Apps
 
 | Platform | Commands | Description |
@@ -151,6 +157,10 @@ bun-browser site eastmoney/stock 贵州茅台
 # Jobs
 bun-browser site boss/search "AI agent"
 bun-browser site linkedin/search "AI agent"
+
+# Email
+bun-browser site disposalmail/create
+bun-browser site disposalmail/create myalias
 
 # Translate
 bun-browser site youdao/translate hello

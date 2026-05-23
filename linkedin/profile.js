@@ -7,7 +7,7 @@
     "username": {"required": true, "description": "LinkedIn username (from URL linkedin.com/in/<username>)"}
   },
   "readOnly": true,
-  "example": "bb-browser site linkedin/profile williamhgates"
+  "example": "bun-browser site linkedin/profile williamhgates"
 }
 */
 

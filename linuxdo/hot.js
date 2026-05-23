@@ -9,7 +9,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site linuxdo/hot 20 --period daily"
+  "example": "bun-browser site linuxdo/hot 20 --period daily"
 }
 */
 

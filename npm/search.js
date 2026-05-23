@@ -8,7 +8,7 @@
     "count": {"type": "number", "description": "Number of results (default 20, max 250)", "default": 20}
   },
   "readOnly": true,
-  "example": "bb-browser site npm/search \"react state management\""
+  "example": "bun-browser site npm/search \"react state management\""
 }
 */
 

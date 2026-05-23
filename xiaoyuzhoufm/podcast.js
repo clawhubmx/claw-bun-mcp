@@ -7,7 +7,7 @@
     "pid": {"required": true, "description": "Podcast ID (URL 中的 ID)"}
   },
   "readOnly": true,
-  "example": "bb-browser site xiaoyuzhoufm/podcast 626b46ea9cbbf0451cf5a962"
+  "example": "bun-browser site xiaoyuzhoufm/podcast 626b46ea9cbbf0451cf5a962"
 }
 */
 

@@ -8,7 +8,7 @@
     "page": {"required": false, "description": "Page number (default 1)"}
   },
   "readOnly": true,
-  "example": "bb-browser site cnblogs/search \"Python\""
+  "example": "bun-browser site cnblogs/search \"Python\""
 }
 */
 

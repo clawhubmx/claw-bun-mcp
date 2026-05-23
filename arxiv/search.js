@@ -8,7 +8,7 @@
     "count": {"type": "number", "default": 10, "description": "Number of results (max 50)"}
   },
   "readOnly": true,
-  "example": "bb-browser site arxiv/search \"large language model\""
+  "example": "bun-browser site arxiv/search \"large language model\""
 }
 */
 

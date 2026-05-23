@@ -7,7 +7,7 @@
     "count": {"required": false, "description": "返回新闻条数，默认 20，最大 50"}
   },
   "readOnly": true,
-  "example": "bb-browser site eastmoney/news"
+  "example": "bun-browser site eastmoney/news"
 }
 */
 

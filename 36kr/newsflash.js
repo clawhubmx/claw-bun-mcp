@@ -8,7 +8,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site 36kr/newsflash"
+  "example": "bun-browser site 36kr/newsflash"
 }
 */
 

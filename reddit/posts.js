@@ -8,7 +8,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site reddit/posts MorroHsu"
+  "example": "bun-browser site reddit/posts MorroHsu"
 }
 */
 

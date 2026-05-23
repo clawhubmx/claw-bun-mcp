@@ -8,7 +8,7 @@
     "count": {"required": false, "description": "返回结果数量 (默认 10, 最多 20)"}
   },
   "readOnly": true,
-  "example": "bb-browser site toutiao/search AI"
+  "example": "bun-browser site toutiao/search AI"
 }
 */
 
@@ -18,7 +18,7 @@ async function(args) {
 
   const url = 'https://so.toutiao.com/search?keyword=' + encodeURIComponent(args.query) + '&pd=information&dvpf=pc';
   const resp = await fetch(url, {credentials: 'include'});
-  if (!resp.ok) return {error: 'HTTP ' + resp.status, hint: 'Open so.toutiao.com in bb-browser first'};
+  if (!resp.ok) return {error: 'HTTP ' + resp.status, hint: 'Open so.toutiao.com in bun-browser first'};
 
   const html = await resp.text();
   const parser = new DOMParser();
@@ -133,7 +133,7 @@ async function(args) {
   if (results.length === 0) {
     return {
       error: 'No results found',
-      hint: 'Toutiao may require login or has anti-scraping protection. Try: 1) Open so.toutiao.com in bb-browser first, 2) Log in to toutiao, 3) Use toutiao/hot instead',
+      hint: 'Toutiao may require login or has anti-scraping protection. Try: 1) Open so.toutiao.com in bun-browser first, 2) Log in to toutiao, 3) Use toutiao/hot instead',
       query: args.query
     };
   }

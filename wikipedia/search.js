@@ -8,7 +8,7 @@
     "count": "返回结果数量 (默认 10)"
   },
   "readOnly": true,
-  "example": "bb-browser site wikipedia/search \"artificial intelligence\""
+  "example": "bun-browser site wikipedia/search \"artificial intelligence\""
 }
 */
 

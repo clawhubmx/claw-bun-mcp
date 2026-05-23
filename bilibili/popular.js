@@ -9,7 +9,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site bilibili/popular 10"
+  "example": "bun-browser site bilibili/popular 10"
 }
 */
 

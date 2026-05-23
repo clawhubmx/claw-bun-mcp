@@ -5,7 +5,7 @@
   "domain": "www.v2ex.com",
   "args": {},
   "readOnly": true,
-  "example": "bb-browser site v2ex/hot"
+  "example": "bun-browser site v2ex/hot"
 }
 */
 

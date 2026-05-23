@@ -9,7 +9,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site github/issues epiral/bb-browser"
+  "example": "bun-browser site github/issues epiral/bun-browser"
 }
 */
 

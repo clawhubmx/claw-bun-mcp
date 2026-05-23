@@ -8,7 +8,7 @@
     "count": {"required": false, "description": "Number of results (default 10)"}
   },
   "readOnly": true,
-  "example": "bb-browser site bing/search \"Claude Code\""
+  "example": "bun-browser site bing/search \"Claude Code\""
 }
 */
 

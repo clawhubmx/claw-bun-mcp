@@ -8,7 +8,7 @@
     "count": {"required": false, "description": "Max results to return (default 10)"}
   },
   "readOnly": true,
-  "example": "bb-browser site reuters/search \"artificial intelligence\""
+  "example": "bun-browser site reuters/search \"artificial intelligence\""
 }
 */
 

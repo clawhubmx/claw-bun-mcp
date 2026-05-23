@@ -8,7 +8,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site bilibili/opus 1135066969108643848"
+  "example": "bun-browser site bilibili/opus 1135066969108643848"
 }
 */
 

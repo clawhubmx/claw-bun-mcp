@@ -8,7 +8,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site youtube/video d56mG7DezGs"
+  "example": "bun-browser site youtube/video d56mG7DezGs"
 }
 */
 

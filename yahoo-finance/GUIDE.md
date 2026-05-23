@@ -25,8 +25,6 @@ bun-browser site info yahoo-finance/quote
 
 > adapter 在 `finance.yahoo.com` 域下执行。若当前没有对应标签页，bun-browser 会自动打开 Yahoo Finance。**不需要登录 Yahoo 账号。**
 
-> 若你使用旧版 CLI 名称，将下文中的 `bun-browser` 替换为 `bb-browser` 即可，命令参数相同。
-
 ---
 
 ## 命令一览

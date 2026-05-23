@@ -1,31 +1,31 @@
 # bbb — 搜狐号数据采集
 
-基于 [bb-browser](https://github.com/epiral/bb-browser) 的搜狐号数据采集工具。
+基于 [bun-browser](https://github.com/epiral/bun-browser) 的搜狐号数据采集工具。
 
 ---
 
-## bb-browser open
+## bun-browser open
 
 导航到指定页面。
 
 ```bash
-bb-browser open <url>
+bun-browser open <url>
 ```
 
 **示例**
 
 ```bash
-bb-browser open "https://mp.sohu.com/profile?xpt=MzEwNzhiYTEtYTZjNy00ZjMxLTk4YTUtMmQzYzNlODc0NjA4"
+bun-browser open "https://mp.sohu.com/profile?xpt=MzEwNzhiYTEtYTZjNy00ZjMxLTk4YTUtMmQzYzNlODc0NjA4"
 ```
 
 ---
 
-## bb-browser site sohu/user
+## bun-browser site sohu/user
 
 获取搜狐号用户资料（从页面 SSR 数据提取，无需额外请求）。
 
 ```bash
-bb-browser site sohu/user <xpt_or_url>
+bun-browser site sohu/user <xpt_or_url>
 ```
 
 **参数**
@@ -38,10 +38,10 @@ bb-browser site sohu/user <xpt_or_url>
 
 ```bash
 # 纯 xpt
-bb-browser site sohu/user ZTA4NmZiMWYtMTY1Mi00YzdlLWI0N2EtYzUzYmFmYzIwY2I5
+bun-browser site sohu/user ZTA4NmZiMWYtMTY1Mi00YzdlLWI0N2EtYzUzYmFmYzIwY2I5
 
 # 完整 URL（PowerShell 用单引号避免 & 被解释）
-bb-browser site sohu/user 'https://mp.sohu.com/profile?xpt=ZTA4...&spm=...'
+bun-browser site sohu/user 'https://mp.sohu.com/profile?xpt=ZTA4...&spm=...'
 ```
 
 **返回字段**
@@ -61,15 +61,15 @@ bb-browser site sohu/user 'https://mp.sohu.com/profile?xpt=ZTA4...&spm=...'
 
 ---
 
-## bb-browser site sohu/user_posts
+## bun-browser site sohu/user_posts
 
 获取搜狐号近期文章列表，自动滚动加载直到满足停止条件。
 
-**前置条件**：需先用 `bb-browser open` 打开目标页面。
+**前置条件**：需先用 `bun-browser open` 打开目标页面。
 
 ```bash
-bb-browser open "https://mp.sohu.com/profile?xpt=<xpt>"
-bb-browser site sohu/user_posts <xpt_or_url> [days]
+bun-browser open "https://mp.sohu.com/profile?xpt=<xpt>"
+bun-browser site sohu/user_posts <xpt_or_url> [days]
 ```
 
 **参数**
@@ -88,11 +88,11 @@ bb-browser site sohu/user_posts <xpt_or_url> [days]
 
 ```bash
 # 先打开页面，再采集近 90 天文章
-bb-browser open "https://mp.sohu.com/profile?xpt=MzEwNzhiYTEtYTZjNy00ZjMxLTk4YTUtMmQzYzNlODc0NjA4"
-bb-browser site sohu/user_posts MzEwNzhiYTEtYTZjNy00ZjMxLTk4YTUtMmQzYzNlODc0NjA4
+bun-browser open "https://mp.sohu.com/profile?xpt=MzEwNzhiYTEtYTZjNy00ZjMxLTk4YTUtMmQzYzNlODc0NjA4"
+bun-browser site sohu/user_posts MzEwNzhiYTEtYTZjNy00ZjMxLTk4YTUtMmQzYzNlODc0NjA4
 
 # 只取近 30 天
-bb-browser site sohu/user_posts MzEwNzhiYTEtYTZjNy00ZjMxLTk4YTUtMmQzYzNlODc0NjA4 30
+bun-browser site sohu/user_posts MzEwNzhiYTEtYTZjNy00ZjMxLTk4YTUtMmQzYzNlODc0NjA4 30
 ```
 
 **返回字段**

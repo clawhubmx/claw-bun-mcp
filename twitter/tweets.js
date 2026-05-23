@@ -10,7 +10,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site twitter/tweets plantegg"
+  "example": "bun-browser site twitter/tweets plantegg"
 }
 */
 

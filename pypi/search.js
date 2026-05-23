@@ -8,13 +8,13 @@
     "page": "页码（默认 1）"
   },
   "readOnly": true,
-  "example": "bb-browser site pypi/search \"machine learning\""
+  "example": "bun-browser site pypi/search \"machine learning\""
 }
 */
 
 async function(args) {
   const query = args.query || args._text;
-  if (!query) return {error: 'Missing query. Usage: bb-browser site pypi/search "QUERY"'};
+  if (!query) return {error: 'Missing query. Usage: bun-browser site pypi/search "QUERY"'};
   const page = args.page || 1;
   const url = `https://pypi.org/search/?q=${encodeURIComponent(query)}&page=${page}`;
   const resp = await fetch(url);

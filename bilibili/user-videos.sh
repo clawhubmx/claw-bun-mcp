@@ -49,12 +49,12 @@ case "$ORDER" in
 esac
 
 # 1. 导航到用户空间
-bb-browser open "https://space.bilibili.com/${MID}/video" --tab current > /dev/null 2>&1
+bun-browser open "https://space.bilibili.com/${MID}/video" --tab current > /dev/null 2>&1
 sleep 3
 
 # 2. 点击排序按钮
-bb-browser eval "document.querySelectorAll('*').forEach(e=>{if(e.children.length===0&&e.textContent.trim()==='${ORDER_LABEL}')e.click()})" > /dev/null 2>&1
+bun-browser eval "document.querySelectorAll('*').forEach(e=>{if(e.children.length===0&&e.textContent.trim()==='${ORDER_LABEL}')e.click()})" > /dev/null 2>&1
 sleep 2
 
 # 3. 从 snapshot 提取视频列表
-bb-browser snapshot --compact --depth 5 2>&1 | python3 "${SCRIPT_DIR}/_parse_user_videos.py" "$MID" "$ORDER" "$COUNT"
+bun-browser snapshot --compact --depth 5 2>&1 | python3 "${SCRIPT_DIR}/_parse_user_videos.py" "$MID" "$ORDER" "$COUNT"

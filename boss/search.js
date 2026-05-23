@@ -11,7 +11,7 @@
     "degree": {"required": false, "description": "Degree filter (e.g. 209=高中, 208=大专, 206=本科, 203=硕士, 201=博士)"}
   },
   "readOnly": true,
-  "example": "bb-browser site boss/search \"AI agent\""
+  "example": "bun-browser site boss/search \"AI agent\""
 }
 */
 

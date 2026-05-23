@@ -8,7 +8,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site bilibili/video BV1LGwHzrE4A"
+  "example": "bun-browser site bilibili/video BV1LGwHzrE4A"
 }
 */
 

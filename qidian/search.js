@@ -9,7 +9,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site qidian/search \"仙侠\""
+  "example": "bun-browser site qidian/search \"仙侠\""
 }
 */
 

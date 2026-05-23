@@ -7,7 +7,7 @@
     "query": {"required": true, "description": "搜索关键词，如城市名或景点名"}
   },
   "readOnly": true,
-  "example": "bb-browser site ctrip/search \"三亚\""
+  "example": "bun-browser site ctrip/search \"三亚\""
 }
 */
 
@@ -175,6 +175,6 @@ async function(args) {
   return {
     query: query,
     error: 'No results found. Ctrip may require an active browser session on www.ctrip.com.',
-    hint: 'Open www.ctrip.com in bb-browser first, then retry.'
+    hint: 'Open www.ctrip.com in bun-browser first, then retry.'
   };
 }

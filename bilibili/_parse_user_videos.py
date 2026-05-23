@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Parse bb-browser snapshot output to extract video list."""
+"""Parse bun-browser snapshot output to extract video list."""
 import sys, re, json
 
 def main():

@@ -7,7 +7,7 @@
     "category": {"required": false, "description": "分类：1=自选(默认) 2=持仓 3=关注"}
   },
   "readOnly": true,
-  "example": "bb-browser site xueqiu/watchlist"
+  "example": "bun-browser site xueqiu/watchlist"
 }
 */
 

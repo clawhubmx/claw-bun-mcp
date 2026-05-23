@@ -8,7 +8,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site weibo/post QvqcCrCyL"
+  "example": "bun-browser site weibo/post QvqcCrCyL"
 }
 */
 

@@ -7,7 +7,7 @@
     "title": "页面标题 (用下划线替换空格)"
   },
   "readOnly": true,
-  "example": "bb-browser site wikipedia/summary \"Python_(programming_language)\""
+  "example": "bun-browser site wikipedia/summary \"Python_(programming_language)\""
 }
 */
 

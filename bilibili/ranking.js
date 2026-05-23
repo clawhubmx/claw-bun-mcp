@@ -9,7 +9,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site bilibili/ranking --category 36"
+  "example": "bun-browser site bilibili/ranking --category 36"
 }
 */
 

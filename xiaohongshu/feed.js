@@ -221,7 +221,7 @@ async function(args) {
 
   const pinia = helper.getPinia();
   const userStore = helper.getStore("user");
-  if (!userStore?.loggedIn) return { error: "Not logged in", hint: "Run: bb-browser open https://www.xiaohongshu.com/explore — then log in manually" };
+  if (!userStore?.loggedIn) return { error: "Not logged in", hint: "Run: bun-browser open https://www.xiaohongshu.com/explore — then log in manually" };
   if (!pinia?._s) {
     return { error: "Page not ready", hint: "Ensure xiaohongshu.com is fully loaded" };
   }

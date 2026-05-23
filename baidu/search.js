@@ -8,7 +8,7 @@
     "count": {"required": false, "description": "Number of results (default 10)"}
   },
   "readOnly": true,
-  "example": "bb-browser site baidu/search \"Claude Code\""
+  "example": "bun-browser site baidu/search \"Claude Code\""
 }
 */
 

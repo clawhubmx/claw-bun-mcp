@@ -8,7 +8,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site youdao/translate hello"
+  "example": "bun-browser site youdao/translate hello"
 }
 */
 

@@ -8,7 +8,7 @@
     "count": {"required": false, "description": "Max results to return (default 20)"}
   },
   "readOnly": true,
-  "example": "bb-browser site bbc/news \"climate change\""
+  "example": "bun-browser site bbc/news \"climate change\""
 }
 */
 

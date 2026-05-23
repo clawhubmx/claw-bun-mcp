@@ -6,7 +6,7 @@
   "args": {},
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site zhihu/me"
+  "example": "bun-browser site zhihu/me"
 }
 */
 

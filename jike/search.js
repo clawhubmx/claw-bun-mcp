@@ -8,7 +8,7 @@
     "limit": {"required": false, "description": "Number of results (default 20)"}
   },
   "readOnly": true,
-  "example": "bb-browser site jike/search \"AI agent\""
+  "example": "bun-browser site jike/search \"AI agent\""
 }
 */
 

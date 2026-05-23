@@ -8,7 +8,7 @@
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bb-browser site twitter/user yan5xu"
+  "example": "bun-browser site twitter/user yan5xu"
 }
 */
 
