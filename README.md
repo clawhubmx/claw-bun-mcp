@@ -6,7 +6,7 @@ Each site adapter is a JS function that runs inside your browser via `bun-browse
 
 [English](README.md) · [中文](README.zh-CN.md)
 
-> **103 adapters** across **37 platforms** — and growing.
+> **104 adapters** across **37 platforms** — and growing.
 
 ## Quick Start
 
@@ -114,7 +114,7 @@ bun-browser site reddit/thread <url>        # run with args
 
 | Platform | Command | Description |
 |----------|---------|-------------|
-| Disposalmail | `disposalmail/create` | Create disposable temp email (fresh random or custom alias) |
+| Disposalmail | `disposalmail/create`, `disposalmail/inbox` | Create temp email; check inbox / read latest message |
 
 ### 🗨️ Social Apps
 
@@ -161,6 +161,8 @@ bun-browser site linkedin/search "AI agent"
 # Email
 bun-browser site disposalmail/create
 bun-browser site disposalmail/create myalias
+bun-browser site disposalmail/inbox
+bun-browser site disposalmail/inbox 0
 
 # Translate
 bun-browser site youdao/translate hello
