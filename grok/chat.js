@@ -7,7 +7,9 @@
     "query": {"required": true, "description": "Prompt to send to Grok"},
     "model": {"required": false, "description": "Grok mode id: fast, auto, expert, heavy, beta, or full id from grok/modes (e.g. grok-420-computer-use-sa). heavy and beta are separate modes. Default fast."},
     "disableSearch": {"required": false, "description": "Disable Grok web search (default false)"},
-    "newChat": {"required": false, "description": "Start a new chat thread (default true)"}
+    "newChat": {"required": false, "description": "Start a new chat thread (default true)"},
+    "waitOnly": {"required": false, "description": "Skip new chat / submit; only poll for the in-flight assistant reply (default false)"},
+    "maxWaitMs": {"required": false, "description": "Max wait for Grok reply in ms (default 900000 = 15 min; matches bun-browser COMMAND_TIMEOUT and BUN_BROWSER_TIMEOUT)"}
   },
   "capabilities": ["network"],
   "readOnly": true,
@@ -36,7 +38,11 @@ async function(args) {
   }
 
                 var h = (function installGrokChatHelpers() {
-  var HELPERS_VERSION = 9;
+  var HELPERS_VERSION = 11;
+
+  // 15 min — aligned with bun-browser COMMAND_TIMEOUT and taxonomy-processor BUN_BROWSER_TIMEOUT
+  var GROK_CHAT_WAIT_MS = 15 * 60 * 1000;
+  var GROK_CHAT_POLL_MS = 500;
   if (globalThis.__grokChatHelpers && globalThis.__grokChatHelpers.version === HELPERS_VERSION) {
     return globalThis.__grokChatHelpers;
   }
@@ -569,9 +575,10 @@ async function(args) {
 
   async function waitForAssistantAnswer(beforeCount, beforeText, opts) {
     opts = opts || {};
-    var maxRounds = opts.maxRounds || 56;
+    var pollMs = opts.pollMs || GROK_CHAT_POLL_MS;
+    var waitMs = opts.maxWaitMs || GROK_CHAT_WAIT_MS;
+    var maxRounds = opts.maxRounds || Math.ceil(waitMs / pollMs);
     var stableNeeded = opts.stableNeeded || 2;
-    var pollMs = opts.pollMs || 500;
 
     var answer = '';
     var stableRounds = 0;
@@ -613,6 +620,8 @@ async function(args) {
 
   globalThis.__grokChatHelpers = {
     version: HELPERS_VERSION,
+    GROK_CHAT_WAIT_MS: GROK_CHAT_WAIT_MS,
+    GROK_CHAT_POLL_MS: GROK_CHAT_POLL_MS,
     sleep: sleep,
     getAssistantMessages: getAssistantMessages,
     getAssistantText: getAssistantText,
@@ -640,6 +649,39 @@ async function(args) {
   }
 
   var modeId = h.resolveGrokMode(args.model || 'fast');
+  var waitOnly = args.waitOnly === true;
+  var waitOpts = args.maxWaitMs != null ? { maxWaitMs: Number(args.maxWaitMs) } : {};
+
+  if (waitOnly) {
+    var existingMessages = h.getAssistantMessages();
+    var pollBeforeCount = Math.max(0, existingMessages.length - 1);
+    var pollBeforeText = pollBeforeCount < existingMessages.length
+      ? h.getAssistantText(existingMessages[pollBeforeCount]) || ''
+      : '';
+    var waitedAnswer = await h.waitForAssistantAnswer(pollBeforeCount, pollBeforeText, waitOpts);
+    if (!waitedAnswer) {
+      return {
+        error: 'Empty response',
+        hint: 'Grok 仍在生成或未返回内容，可稍后重试 waitOnly',
+        action: 'retry with waitOnly: true'
+      };
+    }
+    var waitOut = {
+      query: args.query,
+      model: modeId,
+      modeLabel: h.readGrokModeLabel(),
+      answer: waitedAnswer,
+      conversationId: getConversationId(),
+      waitOnly: true
+    };
+    var waitAnswerJson = h.parseAnswerJson(waitedAnswer);
+    if (waitAnswerJson) {
+      waitOut.answerJson = waitAnswerJson;
+      waitOut.answerFormat = 'json';
+    }
+    return waitOut;
+  }
+
   const startNewChat = args.newChat !== false;
 
   if (startNewChat) {
@@ -698,7 +740,7 @@ async function(args) {
     };
   }
 
-  var answer = await h.waitForAssistantAnswer(beforeCount, beforeText);
+  var answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
 
   if (!answer) {
     return {

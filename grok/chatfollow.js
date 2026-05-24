@@ -66,7 +66,11 @@ async function(args) {
   }
 
                 var h = (function installGrokChatHelpers() {
-  var HELPERS_VERSION = 9;
+  var HELPERS_VERSION = 11;
+
+  // 15 min — aligned with bun-browser COMMAND_TIMEOUT and taxonomy-processor BUN_BROWSER_TIMEOUT
+  var GROK_CHAT_WAIT_MS = 15 * 60 * 1000;
+  var GROK_CHAT_POLL_MS = 500;
   if (globalThis.__grokChatHelpers && globalThis.__grokChatHelpers.version === HELPERS_VERSION) {
     return globalThis.__grokChatHelpers;
   }
@@ -599,9 +603,10 @@ async function(args) {
 
   async function waitForAssistantAnswer(beforeCount, beforeText, opts) {
     opts = opts || {};
-    var maxRounds = opts.maxRounds || 56;
+    var pollMs = opts.pollMs || GROK_CHAT_POLL_MS;
+    var waitMs = opts.maxWaitMs || GROK_CHAT_WAIT_MS;
+    var maxRounds = opts.maxRounds || Math.ceil(waitMs / pollMs);
     var stableNeeded = opts.stableNeeded || 2;
-    var pollMs = opts.pollMs || 500;
 
     var answer = '';
     var stableRounds = 0;
@@ -643,6 +648,8 @@ async function(args) {
 
   globalThis.__grokChatHelpers = {
     version: HELPERS_VERSION,
+    GROK_CHAT_WAIT_MS: GROK_CHAT_WAIT_MS,
+    GROK_CHAT_POLL_MS: GROK_CHAT_POLL_MS,
     sleep: sleep,
     getAssistantMessages: getAssistantMessages,
     getAssistantText: getAssistantText,
@@ -736,7 +743,9 @@ async function(args) {
   }
 
 
-  var answer = await h.waitForAssistantAnswer(beforeCount, beforeText);
+  var waitOpts = args.maxWaitMs != null ? { maxWaitMs: Number(args.maxWaitMs) } : {};
+
+  var answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
 
   if (!answer) {
     return {
