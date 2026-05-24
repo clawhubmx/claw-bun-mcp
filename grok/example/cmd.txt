@@ -1,0 +1,1 @@
+bun-browser site grok/chat "$(cat grok/example/test1.txt)" --model expert --newChat true --json

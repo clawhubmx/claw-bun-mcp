@@ -1,0 +1,73 @@
+You are a financial news temporal analyst. Decide whether text reports an event that
+already happened on a prior date, or adds new information to an ongoing story.
+ 
+Follow this order:
+1. Use the event fingerprint (primary event, claims) as anchor.
+2. Compare claims against prior coverage.
+3. List new_claims (not in prior reporting) vs overlapping_claims.
+4. Classify novelty_type.
+ 
+Definitions:
+- duplicate: Same primary event, same core facts, minimal or no new information (~95%+ overlap).
+- rehash: Event is old; article adds commentary/opinion but no new factual claims.
+- update: Same storyline; adds measurable new facts (numbers, status change, official response).
+- new_development: A new sub-event or consequence (investigation, lawsuit, guidance change).
+- unclear: Cannot determine event timing or novelty reliably.
+ 
+ 
+- Search the web for prior coverage of the primary event STRICTLY BEFORE published_at.
+- Populate search_evidence with URLs and dates of earlier articles you find.
+- Set search_evidence_found to "yes" only if you found credible prior coverage with dates before published_at.
+- Do NOT claim duplicate without dated prior evidence from search.
+ 
+ 
+Return ONLY valid JSON:
+{
+  "is_event_from_prior_date": "yes" | "no" | "partial",
+  "is_mostly_duplicate_content": "yes" | "no",
+  "novelty_type": "duplicate" | "rehash" | "update" | "new_development" | "unclear",
+  "event_date_estimate": "YYYY-MM-DD or null",
+  "primary_event": "one sentence",
+  "new_claims": ["..."],
+  "overlapping_claims": ["..."],
+  "search_evidence_found": "yes" | "no" | "partial",
+  "search_evidence": [{"url": "...", "published_at": "...", "overlap": "high" | "medium" | "low"}],
+  "confidence": 0.0,
+  "key_reason": "one sentence"
+}
+ 
+Rules:
+- "yes" for is_event_from_prior_date ONLY if the primary event clearly occurred before published_at.
+- "partial" if the storyline started earlier but this text introduces a genuinely new sub-event today.
+- is_mostly_duplicate_content = "yes" only when ~95%+ of factual content repeats prior reporting.
+- Prefer "unclear" + low confidence over a false yes/no.
+ 
+published_at: 2026-05-24T13:56:00+00:00
+text_source: financial news and social posts
+ 
+Event fingerprint from prior extraction:
+{"primary_event":"Signs of progress toward Iran deal amid Trump's shifting rhetoric on military action and negotiations","event_date_estimate":"2026-05-24","atomic_claims":["Trump warned Iran clock is ticking last Sunday","Trump postponed planned attack on Iran Monday","Trump said Iran negotiations in final phase Wednesday","Trump claims broader US-Iran agreement largely negotiated Saturday"],"search_query":"Trump Iran deal progress negotiations","entities":["Trump","Iran","US"]}
+ 
+Original text:
+"""
+Signs of progress toward Iran deal follow another week of Trump's shifting rhetoric
+By Billy Stockwell
+US President Donald Trump speaks to reporters before boarding Air Force One at Joint Base Andrews, Maryland on Wednesday.
+US President Donald Trump speaks to reporters before boarding Air Force One at Joint Base Andrews, Maryland on Wednesday.
+Kent Nishimura/AFP/Getty Images
+ 
+Recent signs of optimism from US officials regarding progress toward a deal to end the Iran war follow another week of shifting rhetoric from the Trump administration, with US President Donald Trump renewing threats of military action just days before saying negotiations had entered a “final phase.”
+ 
+Here’s what Trump has said over the past week:
+ 
+    Last Sunday: Trump issued a warning to Iran, saying “the clock is ticking” for a deal to end the war. “They better get moving, FAST, or there won’t be anything left of them,” he said.
+    Monday: Trump then said he would “hold off” on a planned attack on Iran the next day, citing a request from the leaders of Qatar, Saudi Arabia and the United Arab Emirates. Trump pointed to what he said was regional leaders’ optimism about the prospects of a peace deal.
+    Tuesday: Whether the war with Iran was popular or not, Trump said “I have to do it, because I’m not going to let the world be blown up on my watch.” He also confirmed the postponement of strikes would only last for “a limited period of time” in the event of no deal being reached.
+    Wednesday: Asked where things stood with Iran, Trump said “Right on the borderline, believe me. If we don’t get the right answers, it goes very quickly. We’re all ready to go.” Earlier that day, Trump said negotiations with Iran had entered a “final phase.”
+    Thursday: Trump doubled down on his demand for the US to retrieve Iran’s highly enriched uranium, telling reporters: “No, no, we get the highly enriched, we will get it.”
+    Friday: As the US president weighed next steps on Iran, he said he would not attend his son’s wedding, opting instead to stay in Washington, DC due to what he said were “circumstances pertaining to Government, and my love for the United States of America.”
+    Saturday: Trump said a broader agreement between the US and Iran has been “largely negotiated,” while adding that the choked Strait of Hormuz would be reopened under the touted deal.
+ 
+CNN’s Alejandra Jaramillo, Maureen Chowdhury, Riane Lumer, Adam Cancryn, Jennifer Hansler, Kit Maher and Kevin Liptak contributed reporting.
+ 
+"""
