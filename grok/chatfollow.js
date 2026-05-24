@@ -7,7 +7,10 @@
     "conversation": {"required": true, "description": "Conversation UUID or https://grok.com/c/{uuid} URL from agent-chat or search"},
     "query": {"required": true, "description": "Follow-up prompt to send in the existing thread"},
     "model": {"required": false, "description": "Grok mode id: fast, auto, expert, heavy, beta, or full id from grok/modes (e.g. grok-420-computer-use-sa). heavy and beta are separate modes. Default fast."},
-    "disableSearch": {"required": false, "description": "Disable Grok web search (default false)"}
+    "disableSearch": {"required": false, "description": "Disable Grok web search (default false)"},
+    "waitOnly": {"required": false, "description": "Skip navigation/submit; only poll for the in-flight assistant reply (default false)"},
+    "maxWaitMs": {"required": false, "description": "Override max wait in ms (default by mode: fast/auto/beta 15m, expert 25m, heavy 40m)"},
+    "graceWaitMs": {"required": false, "description": "Optional extra wait in ms added on top of maxWaitMs"}
   },
   "capabilities": ["network"],
   "readOnly": true,
@@ -66,12 +69,19 @@ async function(args) {
   }
 
                 var h = (function installGrokChatHelpers() {
-  var HELPERS_VERSION = 13;
+  var HELPERS_VERSION = 14;
 
-  // 15 min — aligned with bun-browser COMMAND_TIMEOUT and taxonomy-processor BUN_BROWSER_TIMEOUT
+  // Default wait when mode is unrecognized (fast/auto)
   var GROK_CHAT_WAIT_MS = 15 * 60 * 1000;
-  var GROK_CHAT_GRACE_WAIT_MS = 5 * 60 * 1000;
   var GROK_CHAT_POLL_MS = 500;
+  // Per-mode default max wait (ms): expert 25m, heavy 40m, beta/beta-related 15m, fast/auto 15m
+  var MODE_WAIT_MS = {
+    fast: 15 * 60 * 1000,
+    auto: 15 * 60 * 1000,
+    expert: 25 * 60 * 1000,
+    heavy: 40 * 60 * 1000,
+    beta: 15 * 60 * 1000
+  };
   if (globalThis.__grokChatHelpers && globalThis.__grokChatHelpers.version === HELPERS_VERSION) {
     return globalThis.__grokChatHelpers;
   }
@@ -373,6 +383,35 @@ async function(args) {
     return text;
   }
 
+  function isBetaRelatedMode(modeId) {
+    var m = String(modeId || '').trim().toLowerCase();
+    if (m === 'beta') return true;
+    if (m.indexOf('beta') !== -1) return true;
+    if (m.indexOf('grok-420') !== -1) return true;
+    if (/grok[\s_-]?4\.3/.test(m)) return true;
+    return false;
+  }
+
+  function resolveGrokModeWaitMs(modeId) {
+    var resolved = resolveGrokMode(modeId);
+    if (MODE_WAIT_MS[resolved] != null) return MODE_WAIT_MS[resolved];
+    if (isBetaRelatedMode(resolved)) return MODE_WAIT_MS.beta;
+    return MODE_WAIT_MS.fast;
+  }
+
+  function buildWaitOpts(rawArgs, modeId) {
+    var opts = {};
+    var hasMax = rawArgs.maxWaitMs != null && rawArgs.maxWaitMs !== '';
+    opts.maxWaitMs = Math.max(
+      1000,
+      hasMax ? Number(rawArgs.maxWaitMs) : resolveGrokModeWaitMs(modeId)
+    );
+    if (rawArgs.graceWaitMs != null && rawArgs.graceWaitMs !== '') {
+      opts.graceWaitMs = Math.max(0, Number(rawArgs.graceWaitMs));
+    }
+    return opts;
+  }
+
   async function fetchModesCatalog() {
     if (globalThis.__grokModesCatalog) return globalThis.__grokModesCatalog;
     try {
@@ -671,11 +710,12 @@ async function(args) {
   async function waitForAssistantAnswer(beforeCount, beforeText, opts) {
     opts = opts || {};
     var pollMs = opts.pollMs || GROK_CHAT_POLL_MS;
-    var baseWaitMs = Math.max(1000, Number(opts.maxWaitMs) || GROK_CHAT_WAIT_MS);
-    var graceWaitMs = Math.max(0, Number(opts.graceWaitMs) || GROK_CHAT_GRACE_WAIT_MS);
+    var totalWaitMs = Math.max(1000, Number(opts.maxWaitMs) || GROK_CHAT_WAIT_MS);
+    if (opts.graceWaitMs != null && opts.graceWaitMs !== '') {
+      totalWaitMs += Math.max(0, Number(opts.graceWaitMs));
+    }
     var stableNeeded = opts.stableNeeded || 2;
-    var maxDeadline = Date.now() + baseWaitMs + graceWaitMs;
-    var deadline = Date.now() + baseWaitMs;
+    var deadline = Date.now() + totalWaitMs;
 
     var answer = '';
     var stableRounds = 0;
@@ -689,10 +729,7 @@ async function(args) {
       var latest = messages[messages.length - 1];
       var generating = isGrokGenerating();
       var pending = isGrokReplyPending(beforeCount, beforeText);
-      if (generating || pending) {
-        sawInFlight = true;
-        deadline = Math.min(deadline + pollMs * 4, maxDeadline);
-      }
+      if (generating || pending) sawInFlight = true;
       var rawText = latest ? getAssistantText(latest) : '';
       answer = rawText ? cleanAssistantText(rawText) : '';
       var ready = looksLikeFinalAnswer(answer);
@@ -727,7 +764,7 @@ async function(args) {
   globalThis.__grokChatHelpers = {
     version: HELPERS_VERSION,
     GROK_CHAT_WAIT_MS: GROK_CHAT_WAIT_MS,
-    GROK_CHAT_GRACE_WAIT_MS: GROK_CHAT_GRACE_WAIT_MS,
+    MODE_WAIT_MS: MODE_WAIT_MS,
     GROK_CHAT_POLL_MS: GROK_CHAT_POLL_MS,
     sleep: sleep,
     getAssistantMessages: getAssistantMessages,
@@ -739,6 +776,8 @@ async function(args) {
     isGrokReplyPending: isGrokReplyPending,
     wasLastWaitPending: wasLastWaitPending,
     resolveGrokMode: resolveGrokMode,
+    resolveGrokModeWaitMs: resolveGrokModeWaitMs,
+    buildWaitOpts: buildWaitOpts,
     readStoredGrokMode: readStoredGrokMode,
     readGrokModeLabel: readGrokModeLabel,
     setGrokMode: setGrokMode,
@@ -823,7 +862,7 @@ async function(args) {
   }
 
 
-  var waitOpts = args.maxWaitMs != null ? { maxWaitMs: Number(args.maxWaitMs) } : {};
+  var waitOpts = h.buildWaitOpts(args, modeId);
 
   var answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
 
