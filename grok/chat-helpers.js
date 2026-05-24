@@ -3,7 +3,7 @@
  * Inlined by grok/chat.js, grok/chatfollow.js, and grok/agent-chat.js — keep in sync.
  */
 function installGrokChatHelpers() {
-  var HELPERS_VERSION = 11;
+  var HELPERS_VERSION = 12;
 
   // 15 min — aligned with bun-browser COMMAND_TIMEOUT and taxonomy-processor BUN_BROWSER_TIMEOUT
   var GROK_CHAT_WAIT_MS = 15 * 60 * 1000;
@@ -46,12 +46,11 @@ function installGrokChatHelpers() {
     return false;
   }
 
-  function extractJsonBlock(text) {
+  function extractBalancedObject(text, startChar, endChar) {
     if (!text) return '';
-    var t = String(text).trim();
-    var start = t.indexOf('{');
+    var start = text.indexOf(startChar);
     if (start < 0) return '';
-    var slice = t.slice(start);
+    var slice = text.slice(start);
     try {
       JSON.parse(slice);
       return slice;
@@ -68,8 +67,8 @@ function installGrokChatHelpers() {
         continue;
       }
       if (ch === '"') inString = true;
-      else if (ch === '{') depth++;
-      else if (ch === '}') {
+      else if (ch === startChar) depth++;
+      else if (ch === endChar) {
         depth--;
         if (depth === 0) {
           var candidate = slice.slice(0, i + 1);
@@ -81,6 +80,21 @@ function installGrokChatHelpers() {
       }
     }
     return '';
+  }
+
+  function extractJsonBlock(text) {
+    if (!text) return '';
+    var t = String(text).trim();
+
+    // Markdown fenced blocks: ```json ... ``` or ``` ... ```
+    var fenceRe = /```(?:json)?\s*\n?([\s\S]*?)\n?```/gi;
+    var fenceMatch;
+    while ((fenceMatch = fenceRe.exec(t)) !== null) {
+      var fromFence = extractBalancedObject(fenceMatch[1].trim(), '{', '}');
+      if (fromFence) return fromFence;
+    }
+
+    return extractBalancedObject(t, '{', '}');
   }
 
   function parseAnswerJson(text) {
@@ -117,7 +131,7 @@ function installGrokChatHelpers() {
     if (json) {
       try {
         JSON.parse(json);
-        return json.length >= 40;
+        return true;
       } catch (e) {}
     }
     if (/Searched web/i.test(t) && /\d+ results/i.test(t)) return false;
@@ -146,22 +160,32 @@ function installGrokChatHelpers() {
   function getAssistantText(el) {
     if (!el) return '';
 
+    var candidates = [];
+    var seen = {};
+    function pushCandidate(raw) {
+      var cleaned = cleanAssistantText(raw || '');
+      if (!cleaned || seen[cleaned]) return;
+      seen[cleaned] = true;
+      candidates.push(cleaned);
+    }
+
+    // Code blocks often hold JSON when prose is only a short intro line.
+    var codeNodes = el.querySelectorAll('pre code, pre');
+    for (var c = 0; c < codeNodes.length; c++) {
+      pushCandidate(codeNodes[c].innerText || codeNodes[c].textContent || '');
+    }
+
     var proseSelectors = [
       '[data-testid="message-content"]',
       '[data-testid="response-content"]',
       '[class*="prose"]',
       '[class*="markdown"]'
     ];
-    var proseContainer = null;
     for (var s = 0; s < proseSelectors.length; s++) {
-      proseContainer = el.querySelector(proseSelectors[s]);
-      if (proseContainer) break;
-    }
-
-    if (proseContainer) {
-      var proseText = cleanAssistantText(proseContainer.innerText || '');
-      if (proseText && looksLikeFinalAnswer(proseText)) return proseText;
-      return '';
+      var proseNodes = el.querySelectorAll(proseSelectors[s]);
+      for (var p = 0; p < proseNodes.length; p++) {
+        pushCandidate(proseNodes[p].innerText || proseNodes[p].textContent || '');
+      }
     }
 
     var clone = el.cloneNode(true);
@@ -178,9 +202,22 @@ function installGrokChatHelpers() {
       var nodes = clone.querySelectorAll(removeSelectors[r]);
       for (var n = 0; n < nodes.length; n++) nodes[n].remove();
     }
+    pushCandidate(clone.innerText || el.innerText || '');
 
-    var fallback = cleanAssistantText(clone.innerText || el.innerText || '');
-    return looksLikeFinalAnswer(fallback) ? fallback : '';
+    for (var i = 0; i < candidates.length; i++) {
+      var json = extractJsonBlock(candidates[i]);
+      if (json) {
+        try {
+          JSON.parse(json);
+          return json;
+        } catch (e) {}
+      }
+    }
+
+    for (var j = 0; j < candidates.length; j++) {
+      if (looksLikeFinalAnswer(candidates[j])) return candidates[j];
+    }
+    return '';
   }
 
   function isGrokGenerating() {
@@ -204,7 +241,7 @@ function installGrokChatHelpers() {
     }
 
     var latestText = latest.innerText || '';
-    if (/Agents thinking/i.test(latestText) && !extractJsonBlock(latestText)) {
+    if (/Agents thinking/i.test(latestText) && !getAssistantText(latest)) {
       return true;
     }
 
