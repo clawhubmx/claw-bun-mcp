@@ -76,10 +76,11 @@ async function(args) {
   }
 
                 var h = (function installGrokChatHelpers() {
-  var HELPERS_VERSION = 12;
+  var HELPERS_VERSION = 13;
 
   // 15 min — aligned with bun-browser COMMAND_TIMEOUT and taxonomy-processor BUN_BROWSER_TIMEOUT
   var GROK_CHAT_WAIT_MS = 15 * 60 * 1000;
+  var GROK_CHAT_GRACE_WAIT_MS = 5 * 60 * 1000;
   var GROK_CHAT_POLL_MS = 500;
   if (globalThis.__grokChatHelpers && globalThis.__grokChatHelpers.version === HELPERS_VERSION) {
     return globalThis.__grokChatHelpers;
@@ -648,23 +649,61 @@ async function(args) {
     return reloadResult;
   }
 
+  var lastWaitPending = false;
+
+  function wasLastWaitPending() {
+    return lastWaitPending;
+  }
+
+  function isGrokReplyPending(beforeCount, beforeText) {
+    if (isGrokGenerating()) return true;
+    var messages = getAssistantMessages();
+    if (messages.length <= beforeCount) return true;
+    var latest = messages[messages.length - 1];
+    if (!latest) return false;
+    var latestRaw = (latest.innerText || latest.textContent || '').trim();
+    if (!latestRaw) return true;
+    if (isProgressText(latestRaw)) return true;
+    if (/Agents thinking/i.test(latestRaw) && !extractJsonBlock(latestRaw)) return true;
+    if (latest.querySelector(
+      '[aria-busy="true"], [data-testid="loading"], .animate-pulse, .animate-spin, [class*="streaming"], [class*="typing"]'
+    )) {
+      return true;
+    }
+    if (/\{/.test(latestRaw) && !extractJsonBlock(latestRaw)) return true;
+    if (/^```(?:json)?/im.test(latestRaw) && !extractJsonBlock(latestRaw)) return true;
+    var text = getAssistantText(latest);
+    if (text && text !== beforeText && looksLikeFinalAnswer(text)) return false;
+    if (text && !looksLikeFinalAnswer(text)) return true;
+    return false;
+  }
+
   async function waitForAssistantAnswer(beforeCount, beforeText, opts) {
     opts = opts || {};
     var pollMs = opts.pollMs || GROK_CHAT_POLL_MS;
-    var waitMs = opts.maxWaitMs || GROK_CHAT_WAIT_MS;
-    var maxRounds = opts.maxRounds || Math.ceil(waitMs / pollMs);
+    var baseWaitMs = Math.max(1000, Number(opts.maxWaitMs) || GROK_CHAT_WAIT_MS);
+    var graceWaitMs = Math.max(0, Number(opts.graceWaitMs) || GROK_CHAT_GRACE_WAIT_MS);
     var stableNeeded = opts.stableNeeded || 2;
+    var maxDeadline = Date.now() + baseWaitMs + graceWaitMs;
+    var deadline = Date.now() + baseWaitMs;
 
     var answer = '';
     var stableRounds = 0;
     var lastText = '';
+    var sawInFlight = false;
+    lastWaitPending = false;
 
-    for (var i = 0; i < maxRounds; i++) {
+    while (Date.now() < deadline) {
       await sleep(pollMs);
       var messages = getAssistantMessages();
       var latest = messages[messages.length - 1];
-      var rawText = latest ? getAssistantText(latest) : '';
       var generating = isGrokGenerating();
+      var pending = isGrokReplyPending(beforeCount, beforeText);
+      if (generating || pending) {
+        sawInFlight = true;
+        deadline = Math.min(deadline + pollMs * 4, maxDeadline);
+      }
+      var rawText = latest ? getAssistantText(latest) : '';
       answer = rawText ? cleanAssistantText(rawText) : '';
       var ready = looksLikeFinalAnswer(answer);
 
@@ -672,7 +711,7 @@ async function(args) {
       var hasUpdatedMessage = messages.length === beforeCount && ready && answer !== beforeText;
 
       if (hasNewMessage || hasUpdatedMessage) {
-        if (!generating) {
+        if (!generating && !pending) {
           if (answer === lastText) stableRounds++;
           else stableRounds = 0;
           lastText = answer;
@@ -682,13 +721,15 @@ async function(args) {
           lastText = '';
         }
 
-        if (i >= maxRounds - 10 && ready && !generating) break;
+        if (Date.now() >= deadline - pollMs * 10 && ready && !generating && !pending) break;
       }
     }
 
-    if (!looksLikeFinalAnswer(answer) || isGrokGenerating()) {
+    if (!looksLikeFinalAnswer(answer) || isGrokGenerating() || isGrokReplyPending(beforeCount, beforeText)) {
+      lastWaitPending = sawInFlight || isGrokReplyPending(beforeCount, beforeText) || isGrokGenerating();
       return '';
     }
+    lastWaitPending = false;
     var json = extractJsonBlock(answer);
     return json || answer;
   }
@@ -696,6 +737,7 @@ async function(args) {
   globalThis.__grokChatHelpers = {
     version: HELPERS_VERSION,
     GROK_CHAT_WAIT_MS: GROK_CHAT_WAIT_MS,
+    GROK_CHAT_GRACE_WAIT_MS: GROK_CHAT_GRACE_WAIT_MS,
     GROK_CHAT_POLL_MS: GROK_CHAT_POLL_MS,
     sleep: sleep,
     getAssistantMessages: getAssistantMessages,
@@ -704,6 +746,8 @@ async function(args) {
     isProgressText: isProgressText,
     looksLikeFinalAnswer: looksLikeFinalAnswer,
     isGrokGenerating: isGrokGenerating,
+    isGrokReplyPending: isGrokReplyPending,
+    wasLastWaitPending: wasLastWaitPending,
     resolveGrokMode: resolveGrokMode,
     readStoredGrokMode: readStoredGrokMode,
     readGrokModeLabel: readGrokModeLabel,
@@ -845,9 +889,16 @@ async function(args) {
   var answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
 
   if (!answer) {
+    if (h.wasLastWaitPending()) {
+      return {
+        error: 'Still generating',
+        hint: 'Agent 仍在生成，请用 waitOnly 继续等待当前回复',
+        action: 'retry with waitOnly: true'
+      };
+    }
     return {
       error: 'Empty response',
-      hint: 'Agent 未返回内容，可能仍在生成（搜索/工具调用中）或页面结构已变化',
+      hint: 'Agent 未返回内容，可能页面结构已变化',
       action: 'bun-browser open ' + agentUrl
     };
   }
