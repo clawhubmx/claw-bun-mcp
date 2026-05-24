@@ -6,7 +6,7 @@
   "args": {
     "agent": {"required": true, "description": "Agent id or project URL from grok/agents (e.g. 2262a42d-... or https://grok.com/project/2262a42d-...)"},
     "query": {"required": true, "description": "Prompt to send to the agent"},
-    "model": {"required": false, "description": "Model mode: fast, auto, or expert (default fast)"},
+    "model": {"required": false, "description": "Grok mode id: fast, auto, expert, heavy, beta, or full id from grok/modes (e.g. grok-420-computer-use-sa). heavy and beta are separate modes. Default fast."},
     "disableSearch": {"required": false, "description": "Disable Grok web search (default false)"},
     "newChat": {"required": false, "description": "Start a new chat in the project (default false)"}
   },
@@ -75,6 +75,20 @@ async function(args) {
     };
   }
 
+                var h = (function installGrokChatHelpers() {
+  var HELPERS_VERSION = 9;
+  if (globalThis.__grokChatHelpers && globalThis.__grokChatHelpers.version === HELPERS_VERSION) {
+    return globalThis.__grokChatHelpers;
+  }
+
+  var MODE_LABELS = {
+    fast: 'Fast',
+    auto: 'Auto',
+    expert: 'Expert',
+    heavy: 'Heavy',
+    beta: 'Beta'
+  };
+
   function sleep(ms) {
     return new Promise(function(resolve) { setTimeout(resolve, ms); });
   }
@@ -83,19 +97,187 @@ async function(args) {
     return Array.prototype.slice.call(document.querySelectorAll('[data-testid="assistant-message"]'));
   }
 
+  function isProgressLine(line) {
+    var t = String(line || '').trim();
+    if (!t) return false;
+    if (/^Preview:/i.test(t)) return true;
+    if (/^Searched web\b/i.test(t)) return true;
+    if (/^Searched 𝕏\b/i.test(t)) return true;
+    if (/^Evaluating .+ • \d+s/i.test(t)) return true;
+    if (/^\d+ results$/i.test(t)) return true;
+    if (/^\d+ posts$/i.test(t)) return true;
+    if (/^(Searching|Reading|Browsing|Fetching|Running tool)\b/i.test(t)) return true;
+    if (/^Thought for \d+s$/i.test(t)) return true;
+    if (/^Agents thinking$/i.test(t)) return true;
+    if (/^Agent \d+$/i.test(t)) return true;
+    if (/^(Structuring|Compiling|Drafting|Formulating|Evaluating|Preparing|Organizing)\b/i.test(t)) return true;
+    if (/^.+\s+(thinking|response|JSON response)$/i.test(t) && t.length < 80) return true;
+    return false;
+  }
+
+  function extractJsonBlock(text) {
+    if (!text) return '';
+    var t = String(text).trim();
+    var start = t.indexOf('{');
+    if (start < 0) return '';
+    var slice = t.slice(start);
+    try {
+      JSON.parse(slice);
+      return slice;
+    } catch (e) {}
+    var depth = 0;
+    var inString = false;
+    var escape = false;
+    for (var i = 0; i < slice.length; i++) {
+      var ch = slice[i];
+      if (inString) {
+        if (escape) escape = false;
+        else if (ch === '\\') escape = true;
+        else if (ch === '"') inString = false;
+        continue;
+      }
+      if (ch === '"') inString = true;
+      else if (ch === '{') depth++;
+      else if (ch === '}') {
+        depth--;
+        if (depth === 0) {
+          var candidate = slice.slice(0, i + 1);
+          try {
+            JSON.parse(candidate);
+            return candidate;
+          } catch (e2) {}
+        }
+      }
+    }
+    return '';
+  }
+
+  function parseAnswerJson(text) {
+    var json = extractJsonBlock(text);
+    if (!json) return null;
+    try {
+      return JSON.parse(json);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function isProgressText(text) {
+    if (!text) return false;
+    var t = String(text).trim();
+    if (!t) return false;
+    if (/^Preview:/i.test(t)) return true;
+    if (/Searched web/i.test(t) && /Evaluating .+ • \d+s/i.test(t)) return true;
+    if (/Searched web/i.test(t) && /\d+ results/i.test(t) && !/[.!?]/.test(t)) return true;
+    if (/Searched 𝕏/i.test(t) && /\d+ posts/i.test(t) && !/[.!?]/.test(t)) return true;
+    if (/^Searched web/i.test(t) && t.length < 500) return true;
+    if (/Agents thinking/i.test(t) && extractJsonBlock(t) === '') return true;
+    if (/^(Structuring|Compiling|Drafting|Formulating|Preparing|Organizing)\b/i.test(t) && t.length < 120) return true;
+    var lines = t.split('\n').map(function(line) { return line.trim(); }).filter(Boolean);
+    if (!lines.length) return false;
+    return lines.every(isProgressLine);
+  }
+
+  function looksLikeFinalAnswer(text) {
+    if (!text) return false;
+    var t = String(text).trim();
+    if (!t || isProgressText(t)) return false;
+    var json = extractJsonBlock(t);
+    if (json) {
+      try {
+        JSON.parse(json);
+        return json.length >= 40;
+      } catch (e) {}
+    }
+    if (/Searched web/i.test(t) && /\d+ results/i.test(t)) return false;
+    if (/^Searched web/i.test(t)) return false;
+    if (t.length < 12) return false;
+    if (/[.!?]/.test(t) && /[A-Za-z]{3,}/.test(t)) return true;
+    if (t.length >= 20 && !/Searched 𝕏|Searched web|\d+ results|\d+ posts/i.test(t)) return true;
+    return false;
+  }
+
+  function cleanAssistantText(text) {
+    if (!text) return '';
+    var cleaned = String(text).replace(/^Thought for \d+s\n+/i, '').trim();
+    cleaned = cleaned.replace(/^Preview:\s*['']?[^\n]*(?:\n|$)/i, '').trim();
+    var lines = cleaned.split('\n');
+    var kept = [];
+    for (var i = 0; i < lines.length; i++) {
+      if (!isProgressLine(lines[i])) kept.push(lines[i]);
+    }
+    cleaned = kept.join('\n').trim();
+    var json = extractJsonBlock(cleaned);
+    if (json) return json;
+    return cleaned;
+  }
+
   function getAssistantText(el) {
     if (!el) return '';
-    return el.innerText.replace(/^Thought for \d+s\n+/i, '').trim();
+
+    var proseSelectors = [
+      '[data-testid="message-content"]',
+      '[data-testid="response-content"]',
+      '[class*="prose"]',
+      '[class*="markdown"]'
+    ];
+    var proseContainer = null;
+    for (var s = 0; s < proseSelectors.length; s++) {
+      proseContainer = el.querySelector(proseSelectors[s]);
+      if (proseContainer) break;
+    }
+
+    if (proseContainer) {
+      var proseText = cleanAssistantText(proseContainer.innerText || '');
+      if (proseText && looksLikeFinalAnswer(proseText)) return proseText;
+      return '';
+    }
+
+    var clone = el.cloneNode(true);
+    var removeSelectors = [
+      'button',
+      'svg',
+      '[aria-hidden="true"]',
+      '[class*="search"]',
+      '[class*="tool"]',
+      '[class*="preview"]',
+      '[class*="progress"]'
+    ];
+    for (var r = 0; r < removeSelectors.length; r++) {
+      var nodes = clone.querySelectorAll(removeSelectors[r]);
+      for (var n = 0; n < nodes.length; n++) nodes[n].remove();
+    }
+
+    var fallback = cleanAssistantText(clone.innerText || el.innerText || '');
+    return looksLikeFinalAnswer(fallback) ? fallback : '';
   }
 
-  function getConversationId() {
-    var match = location.pathname.match(/\/c\/([^/?]+)/);
-    return match ? match[1] : null;
-  }
+  function isGrokGenerating() {
+    var buttons = Array.prototype.slice.call(document.querySelectorAll('button'));
+    for (var i = 0; i < buttons.length; i++) {
+      var label = (buttons[i].getAttribute('aria-label') || '').toLowerCase();
+      if (label === 'stop' || label.indexOf('stop generating') !== -1) {
+        if (!buttons[i].disabled) return true;
+      }
+    }
 
-  function getAgentNameFromTitle() {
-    var title = (document.title || '').replace(/\s*-\s*Grok\s*$/i, '').trim();
-    return title || null;
+    var messages = getAssistantMessages();
+    var latest = messages[messages.length - 1];
+    if (!latest) return false;
+
+    if (latest.querySelector('[aria-busy="true"], [data-testid="loading"], .animate-pulse, .animate-spin')) {
+      return true;
+    }
+    if (latest.querySelector('[class*="streaming"], [class*="typing"], [data-testid="streaming"]')) {
+      return true;
+    }
+
+    var latestText = latest.innerText || '';
+    if (/Agents thinking/i.test(latestText) && !extractJsonBlock(latestText)) {
+      return true;
+    }
+
+    return false;
   }
 
   function setChatInput(value) {
@@ -129,6 +311,380 @@ async function(args) {
     }
     return false;
   }
+
+  function dismissCookieBanner() {
+    var buttons = Array.prototype.slice.call(document.querySelectorAll('button'));
+    var labels = ['allow all', 'reject all', 'accept all', 'confirm my choices', 'close preference center'];
+    for (var i = 0; i < labels.length; i++) {
+      var match = buttons.find(function(b) {
+        var text = ((b.innerText || b.textContent || '') + ' ' + (b.getAttribute('aria-label') || '')).toLowerCase();
+        return text.indexOf(labels[i]) !== -1;
+      });
+      if (match) {
+        match.click();
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function resolveGrokMode(raw) {
+    var text = String(raw || 'fast').trim().toLowerCase();
+    var aliases = {
+      'grok-3': 'fast',
+      'grok-4': 'expert',
+      'grok-4-heavy': 'heavy',
+      'team-of-experts': 'heavy'
+    };
+    if (aliases[text]) return aliases[text];
+    if (MODE_LABELS[text]) return text;
+    return text;
+  }
+
+  async function fetchModesCatalog() {
+    if (globalThis.__grokModesCatalog) return globalThis.__grokModesCatalog;
+    try {
+      var resp = await fetch('/rest/modes', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: '{}'
+      });
+      if (!resp.ok) return null;
+      var data = await resp.json();
+      var map = {};
+      var modes = data.modes || [];
+      for (var i = 0; i < modes.length; i++) {
+        map[modes[i].id] = modes[i];
+      }
+      globalThis.__grokModesCatalog = map;
+      return map;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function getModeTitle(modeId, catalog) {
+    if (catalog && catalog[modeId] && catalog[modeId].title) {
+      return catalog[modeId].title;
+    }
+    return MODE_LABELS[modeId] || modeId;
+  }
+
+  function isModeAvailable(modeId, catalog) {
+    if (!catalog) return true;
+    if (!catalog[modeId]) {
+      // API omits unavailable modes (e.g. beta); don't treat missing as available.
+      return !MODE_LABELS[modeId];
+    }
+    var availability = catalog[modeId].availability;
+    if (!availability) return true;
+    if (availability.requiresUpgrade) return false;
+    if (availability.available === false) return false;
+    return true;
+  }
+
+  function getModelMenuRoot() {
+    return document.querySelector('[role="menu"], [data-radix-menu-content]');
+  }
+
+  function isModeTriggerElement(el) {
+    var trigger = getModelSelectButton();
+    return !!(trigger && (el === trigger || trigger.contains(el)));
+  }
+
+  function modeLabelsMatch(requestedMode, currentLabel, catalog) {
+    if (!currentLabel) return false;
+    var expectedTitle = getModeTitle(requestedMode, catalog);
+    var current = String(currentLabel).trim().toLowerCase();
+    var expected = String(expectedTitle).trim().toLowerCase();
+    if (current === expected) return true;
+    if (requestedMode === 'beta' && /grok 4\.3/i.test(currentLabel)) return false;
+    if (requestedMode === 'grok-420-computer-use-sa' && current === 'beta') return false;
+    if (requestedMode === 'heavy' && current === 'beta') return false;
+    if (requestedMode === 'beta' && current === 'heavy') return false;
+    return false;
+  }
+
+  function getModelSelectButton() {
+    return document.getElementById('model-select-trigger') || Array.prototype.slice.call(document.querySelectorAll('button')).find(function(b) {
+      var label = (b.getAttribute('aria-label') || '').toLowerCase();
+      return label === 'model select';
+    }) || null;
+  }
+
+  function readStoredGrokMode() {
+    try {
+      var raw = localStorage.getItem('modes-selected-id');
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function writeStoredGrokMode(modeId) {
+    try {
+      localStorage.setItem('modes-selected-id', JSON.stringify(modeId));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async function openModelMenu() {
+    dismissCookieBanner();
+    var btn = getModelSelectButton();
+    if (!btn) return false;
+
+    btn.focus();
+    btn.click();
+    await sleep(1200);
+    if (btn.getAttribute('data-state') === 'open' || btn.getAttribute('aria-expanded') === 'true') {
+      return true;
+    }
+
+    var rect = btn.getBoundingClientRect();
+    var x = rect.left + rect.width / 2;
+    var y = rect.top + rect.height / 2;
+    ['mousedown', 'mouseup', 'click'].forEach(function(type) {
+      btn.dispatchEvent(new MouseEvent(type, { bubbles: true, cancelable: true, clientX: x, clientY: y }));
+    });
+    await sleep(1200);
+    return btn.getAttribute('data-state') === 'open' ||
+      btn.getAttribute('aria-expanded') === 'true' ||
+      !!document.querySelector('[role="menu"], [data-radix-menu-content]');
+  }
+
+  function readGrokModeLabel() {
+    var btn = getModelSelectButton();
+    if (!btn) return null;
+    var text = (btn.innerText || btn.textContent || '').trim();
+    if (!text) return null;
+    return text.split('\n')[0].trim();
+  }
+
+  function modeLabelMatches(requestedMode, currentLabel, catalog) {
+    return modeLabelsMatch(requestedMode, currentLabel, catalog);
+  }
+
+  function findModeOptionElement(modeId, catalog) {
+    var menu = getModelMenuRoot();
+    var root = menu || document;
+    var modeTitle = getModeTitle(modeId, catalog);
+    var wantedTitle = String(modeTitle).trim().toLowerCase();
+    var wantedId = String(modeId).trim().toLowerCase();
+
+    var attrSelectors = [
+      '[data-mode-id="' + modeId + '"]',
+      '[data-value="' + modeId + '"]',
+      '[data-mode="' + modeId + '"]'
+    ];
+    for (var a = 0; a < attrSelectors.length; a++) {
+      var byAttr = root.querySelector(attrSelectors[a]);
+      if (byAttr && !isModeTriggerElement(byAttr)) return byAttr;
+    }
+
+    var selectors = 'button, [role="menuitem"], [role="option"], [role="menuitemradio"], div[role="button"], [data-radix-collection-item]';
+    var options = Array.prototype.slice.call(root.querySelectorAll(selectors));
+    for (var i = 0; i < options.length; i++) {
+      var el = options[i];
+      if (isModeTriggerElement(el)) continue;
+      var text = (el.innerText || el.textContent || '').trim();
+      if (!text) continue;
+      var firstLine = text.split('\n')[0].trim().toLowerCase();
+      if (firstLine === wantedTitle) return el;
+      if (firstLine === wantedId) return el;
+    }
+
+    var scope = menu || document.body;
+    var leaves = Array.prototype.slice.call(scope.querySelectorAll('span, div, p, li'));
+    for (var j = 0; j < leaves.length; j++) {
+      var node = leaves[j];
+      if (node.children.length > 0) continue;
+      var nodeText = (node.textContent || '').trim();
+      if (nodeText.toLowerCase() !== wantedTitle) continue;
+      var clickable = node.closest('button,[role="menuitem"],[role="option"],[role="menuitemradio"],div[role="button"],[data-radix-collection-item],label');
+      if (clickable && !isModeTriggerElement(clickable)) return clickable;
+    }
+    return null;
+  }
+
+  async function setGrokMode(modeId) {
+    var requested = resolveGrokMode(modeId);
+    var reloadKey = '__grokModePendingReload';
+    var catalog = await fetchModesCatalog();
+    dismissCookieBanner();
+
+    if (catalog && !isModeAvailable(requested, catalog)) {
+      return {
+        ok: false,
+        needsRetry: false,
+        mode: requested,
+        error: 'Mode not available for this account: ' + requested,
+        hint: 'Run bun-browser site grok/modes to see available modes (heavy and beta are separate modes)'
+      };
+    }
+
+    var pendingReload = null;
+    try { pendingReload = sessionStorage.getItem(reloadKey); } catch (e) {}
+    if (pendingReload === requested) {
+      try { sessionStorage.removeItem(reloadKey); } catch (e) {}
+      var reloadedLabel = readGrokModeLabel();
+      var storedAfterReload = readStoredGrokMode();
+      if (storedAfterReload === requested || modeLabelsMatch(requested, reloadedLabel, catalog)) {
+        return {
+          ok: true,
+          changed: true,
+          mode: requested,
+          label: reloadedLabel,
+          modeTitle: getModeTitle(requested, catalog),
+          appliedVia: 'reload'
+        };
+      }
+    }
+
+    var storedMode = readStoredGrokMode();
+    var currentLabel = readGrokModeLabel();
+    if (storedMode === requested && modeLabelsMatch(requested, currentLabel, catalog)) {
+      return {
+        ok: true,
+        changed: false,
+        mode: requested,
+        label: currentLabel,
+        modeTitle: getModeTitle(requested, catalog)
+      };
+    }
+    if (modeLabelsMatch(requested, currentLabel, catalog)) {
+      writeStoredGrokMode(requested);
+      return {
+        ok: true,
+        changed: false,
+        mode: requested,
+        label: currentLabel,
+        modeTitle: getModeTitle(requested, catalog)
+      };
+    }
+
+    if (await openModelMenu()) {
+      var option = findModeOptionElement(requested, catalog);
+      if (option) {
+        option.click();
+        await sleep(500);
+        writeStoredGrokMode(requested);
+        var appliedLabel = readGrokModeLabel();
+        if (modeLabelsMatch(requested, appliedLabel, catalog)) {
+          return {
+            ok: true,
+            changed: true,
+            mode: requested,
+            label: appliedLabel,
+            modeTitle: getModeTitle(requested, catalog),
+            appliedVia: 'ui'
+          };
+        }
+      }
+      document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      await sleep(200);
+    }
+
+    writeStoredGrokMode(requested);
+    var reloadResult = {
+      ok: false,
+      needsRetry: true,
+      changed: true,
+      mode: requested,
+      modeTitle: getModeTitle(requested, catalog),
+      error: 'Mode change requires page reload',
+      hint: 'Re-run the same command to continue after Grok switches to ' + requested + ' (' + getModeTitle(requested, catalog) + ')'
+    };
+    try {
+      if (sessionStorage.getItem(reloadKey) !== requested) {
+        sessionStorage.setItem(reloadKey, requested);
+        setTimeout(function() { location.reload(); }, 50);
+      }
+    } catch (e) {}
+    return reloadResult;
+  }
+
+  async function waitForAssistantAnswer(beforeCount, beforeText, opts) {
+    opts = opts || {};
+    var maxRounds = opts.maxRounds || 56;
+    var stableNeeded = opts.stableNeeded || 2;
+    var pollMs = opts.pollMs || 500;
+
+    var answer = '';
+    var stableRounds = 0;
+    var lastText = '';
+
+    for (var i = 0; i < maxRounds; i++) {
+      await sleep(pollMs);
+      var messages = getAssistantMessages();
+      var latest = messages[messages.length - 1];
+      var rawText = latest ? getAssistantText(latest) : '';
+      var generating = isGrokGenerating();
+      answer = rawText ? cleanAssistantText(rawText) : '';
+      var ready = looksLikeFinalAnswer(answer);
+
+      var hasNewMessage = messages.length > beforeCount && ready;
+      var hasUpdatedMessage = messages.length === beforeCount && ready && answer !== beforeText;
+
+      if (hasNewMessage || hasUpdatedMessage) {
+        if (!generating) {
+          if (answer === lastText) stableRounds++;
+          else stableRounds = 0;
+          lastText = answer;
+          if (stableRounds >= stableNeeded) break;
+        } else {
+          stableRounds = 0;
+          lastText = '';
+        }
+
+        if (i >= maxRounds - 10 && ready && !generating) break;
+      }
+    }
+
+    if (!looksLikeFinalAnswer(answer) || isGrokGenerating()) {
+      return '';
+    }
+    var json = extractJsonBlock(answer);
+    return json || answer;
+  }
+
+  globalThis.__grokChatHelpers = {
+    version: HELPERS_VERSION,
+    sleep: sleep,
+    getAssistantMessages: getAssistantMessages,
+    getAssistantText: getAssistantText,
+    cleanAssistantText: cleanAssistantText,
+    isProgressText: isProgressText,
+    looksLikeFinalAnswer: looksLikeFinalAnswer,
+    isGrokGenerating: isGrokGenerating,
+    resolveGrokMode: resolveGrokMode,
+    readStoredGrokMode: readStoredGrokMode,
+    readGrokModeLabel: readGrokModeLabel,
+    setGrokMode: setGrokMode,
+    setChatInput: setChatInput,
+    clickSubmit: clickSubmit,
+    waitForAssistantAnswer: waitForAssistantAnswer,
+    extractJsonBlock: extractJsonBlock,
+    parseAnswerJson: parseAnswerJson
+  };
+
+  return globalThis.__grokChatHelpers;
+})();
+
+
+  function getConversationId() {
+    var match = location.pathname.match(/\/c\/([^/?]+)/);
+    return match ? match[1] : null;
+  }
+
+  function getAgentNameFromTitle() {
+    var title = (document.title || '').replace(/\s*-\s*Grok\s*$/i, '').trim();
+    return title || null;
+  }
+
 
   var agentUrl = 'https://grok.com/project/' + agentId;
   var projectPath = '/project/' + agentId;
@@ -172,7 +728,7 @@ async function(args) {
 
   if (location.pathname !== projectPath) {
     location.href = agentUrl;
-    await sleep(3500);
+    await h.sleep(3500);
   }
 
   var chatReady = false;
@@ -181,7 +737,7 @@ async function(args) {
       chatReady = true;
       break;
     }
-    await sleep(500);
+    await h.sleep(500);
   }
 
   if (!chatReady) {
@@ -192,37 +748,47 @@ async function(args) {
     };
   }
 
-  var modeMap = {
-    fast: 'fast',
-    auto: 'auto',
-    expert: 'expert',
-    'grok-3': 'fast',
-    'grok-4': 'expert'
-  };
-  var modeId = modeMap[(args.model || 'fast').toLowerCase()] || 'fast';
+  var modeId = h.resolveGrokMode(args.model || 'fast');
   var startNewChat = parseBool(args.newChat, false);
 
   if (startNewChat) {
     var newChat = document.querySelector('[data-testid="new-chat"]');
     if (newChat) {
       newChat.click();
-      await sleep(1200);
+      await h.sleep(1200);
     }
   }
 
-  var beforeCount = getAssistantMessages().length;
-  var beforeText = getAssistantMessages().map(getAssistantText).join('\n');
+  var modeResult = await h.setGrokMode(modeId);
+  if (modeResult.needsRetry) {
+    return {
+      error: 'Mode change requires page reload',
+      hint: modeResult.hint || ('Re-run the same command after Grok switches to ' + modeId),
+      requestedMode: modeId,
+      action: 'retry same command'
+    };
+  }
+  if (!modeResult.ok) {
+    return {
+      error: 'Mode selection failed',
+      hint: modeResult.error || ('Could not select Grok mode "' + modeId + '"'),
+      requestedMode: modeId,
+      action: 'bun-browser site grok/modes'
+    };
+  }
+  var beforeCount = h.getAssistantMessages().length;
+  var beforeText = h.getAssistantMessages().map(h.getAssistantText).join('\n');
 
-  if (!setChatInput(args.query)) {
+  if (!h.setChatInput(args.query)) {
     return {
       error: 'Chat input not found',
       hint: 'Agent 页面未加载完成，请刷新后重试',
       action: 'bun-browser open ' + agentUrl
     };
   }
-  await sleep(400);
+  await h.sleep(400);
 
-  if (!clickSubmit()) {
+  if (!h.clickSubmit()) {
     return {
       error: 'Submit button not found',
       hint: '无法在 Agent 页面找到发送按钮，请刷新页面后重试',
@@ -230,35 +796,13 @@ async function(args) {
     };
   }
 
-  var answer = '';
-  var stableRounds = 0;
-  var lastText = '';
 
-  for (var i = 0; i < 50; i++) {
-    await sleep(500);
-    var messages = getAssistantMessages();
-    var latest = messages[messages.length - 1];
-    answer = getAssistantText(latest);
-
-    if (messages.length > beforeCount && answer.length > 0) {
-      if (answer === lastText) stableRounds++;
-      else stableRounds = 0;
-      lastText = answer;
-
-      if (stableRounds >= 2 && answer.length > 10) break;
-      if (i > 40 && answer.length > 10) break;
-    } else if (messages.length === beforeCount && answer && answer !== beforeText && answer.length > 10) {
-      if (answer === lastText) stableRounds++;
-      else stableRounds = 0;
-      lastText = answer;
-      if (stableRounds >= 2) break;
-    }
-  }
+  var answer = await h.waitForAssistantAnswer(beforeCount, beforeText);
 
   if (!answer) {
     return {
       error: 'Empty response',
-      hint: 'Agent 未返回内容，可能仍在生成或页面结构已变化',
+      hint: 'Agent 未返回内容，可能仍在生成（搜索/工具调用中）或页面结构已变化',
       action: 'bun-browser open ' + agentUrl
     };
   }
@@ -271,9 +815,16 @@ async function(args) {
     url: agentUrl,
     query: args.query,
     model: modeId,
+    modeTitle: modeResult.modeTitle || null,
+    modeLabel: modeResult.label || h.readGrokModeLabel(),
     answer: answer,
     conversationId: getConversationId()
   };
   if (parseBool(args.disableSearch, false)) out.disableSearch = true;
+  var answerJson = h.parseAnswerJson(answer);
+  if (answerJson) {
+    out.answerJson = answerJson;
+    out.answerFormat = 'json';
+  }
   return out;
 }

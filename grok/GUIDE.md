@@ -30,7 +30,199 @@ bun-browser open https://grok.com/ --tab current
 | `bun-browser site grok/chatfollow <conversation> "<prompt>"` | 在已有对话中继续提问（多轮迭代） |
 | `bun-browser site grok/chat "<prompt>"` | 向默认 Grok 聊天提问 |
 | `bun-browser site grok/search "<keyword>"` | 在 Grok 对话历史中按关键词搜索 |
-| `bun-browser site grok/modes` | 查看可用模型模式（fast / auto / expert 等） |
+| `bun-browser site grok/modes` | 查看当前账号可用的模型模式及 id |
+
+## 模型模式 (grok/modes)
+
+Grok 聊天支持多种 **mode**（模型模式），通过 `--model` 传给 `grok/chat`、`grok/chatfollow`、`grok/agent-chat`。模式 id 与 Grok 网页端模型选择器一致。
+
+### 查看可用模式
+
+```bash
+bun-browser site grok/modes
+```
+
+返回示例（具体可用项因账号/订阅而异）：
+
+```json
+{
+  "defaultModeId": "auto",
+  "available": ["fast", "auto", "expert", "heavy", "grok-420-computer-use-sa"],
+  "modes": [
+    {"id": "fast", "title": "Fast", "description": "Quick responses", "available": true},
+    {"id": "auto", "title": "Auto", "description": "Chooses Fast or Expert", "available": true},
+    {"id": "expert", "title": "Expert", "description": "Thinks hard", "available": true},
+    {"id": "heavy", "title": "Heavy", "description": "Team of Experts", "available": true},
+    {"id": "beta", "title": "Beta", "description": null, "available": false, "listed": false},
+    {"id": "grok-420-computer-use-sa", "title": "Grok 4.3 (beta)", "description": "Uses Skills and Connectors", "available": true}
+  ]
+}
+```
+
+以 `available` 数组为准；未列出的模式（如部分账号的 `beta`）会显示 `"available": false`。
+
+### 全部模式说明
+
+| id | UI 标题 | 说明 | 典型用途 |
+|----|---------|------|----------|
+| `fast` | Fast | 快速响应 | 默认模式，简单问答、低延迟 |
+| `auto` | Auto | 在 Fast 与 Expert 之间自动选择 | 让 Grok 自行权衡速度与深度 |
+| `expert` | Expert | 深度思考（Thinks hard） | 复杂推理、长文分析 |
+| `heavy` | Heavy | Team of Experts | 多专家协作，耗时更长，适合研究型任务 |
+| `beta` | Beta | 独立 Beta 模式 | **与 Heavy、Grok 4.3 (beta) 均不同**；多数账号不可用 |
+| `grok-420-computer-use-sa` | Grok 4.3 (beta) | Uses Skills and Connectors | 支持 Skills / Connectors 的 Grok 4.3 预览版 |
+
+**重要：`heavy`、`beta`、`grok-420-computer-use-sa` 是三个不同的模式，不可互换。**
+
+- `heavy` → UI 显示 **Heavy**（Team of Experts）
+- `beta` → UI 显示 **Beta**（若 API 未返回则视为不可用）
+- `grok-420-computer-use-sa` → UI 显示 **Grok 4.3 (beta)**（不是 `beta` id）
+
+除上表外，`grok/modes` 还可能列出账号专属的其他 mode id；使用时传完整 id 即可。
+
+### `--model` 别名
+
+以下字符串会映射为标准 id（见 adapter 内 `resolveGrokMode`）：
+
+| 传入值 | 解析为 |
+|--------|--------|
+| `grok-3` | `fast` |
+| `grok-4` | `expert` |
+| `grok-4-heavy` | `heavy` |
+| `team-of-experts` | `heavy` |
+
+未在别名表中的值按原样使用（如 `grok-420-computer-use-sa`）。
+
+### 使用示例
+
+```bash
+# 默认 fast
+bun-browser site grok/chat "Hello"
+
+# Team of Experts
+bun-browser site grok/chat "Summarize the Iran deal report" --model heavy
+
+# Grok 4.3 (beta) — 注意用完整 id，不是 --model beta
+bun-browser site grok/chat "Use my connector" --model grok-420-computer-use-sa
+
+# Agent 内同样支持
+bun-browser site grok/agent-chat <agent-id> "deep analysis" --model expert
+bun-browser site grok/chatfollow <conversation-id> "continue" --model heavy
+```
+
+### 模式切换与返回字段
+
+切换模式时 adapter 会：
+
+1. 调用 Grok `/rest/modes` 校验该 id 是否对当前账号可用
+2. 尝试在网页模型菜单中点击对应项；必要时写入 `localStorage` 并刷新页面
+
+**首次切换到新模式时**，可能返回：
+
+```json
+{
+  "error": "Mode change requires page reload",
+  "hint": "Re-run the same command to continue after Grok switches to heavy (Heavy)",
+  "requestedMode": "heavy",
+  "action": "retry same command"
+}
+```
+
+**同一命令再执行一次**即可在已选模式下继续提问。
+
+若模式不可用（例如 `--model beta` 但账号无 Beta）：
+
+```json
+{
+  "error": "Mode selection failed",
+  "hint": "Mode not available for this account: beta"
+}
+```
+
+成功时 JSON 包含：
+
+| 字段 | 说明 |
+|------|------|
+| `model` | 请求的 mode id |
+| `modeTitle` | API/UI 标题（如 `Heavy`、`Grok 4.3 (beta)`） |
+| `modeLabel` | 当前页面模型选择器显示的文字 |
+| `answer` / `answerJson` / `answerFormat` | 见 [JSON 格式回复](#json-格式回复-answerjson) |
+
+### 模式相关注意
+
+- **Heavy / 深度研究** 可能超过 bun-browser 默认 ~30s 超时；浏览器里仍可能看到完整回复，但 CLI 可能报 `Empty response`
+- 切换模式前确保 grok.com 已加载完成；cookie 横幅会阻挡模型按钮，adapter 会自动尝试关闭
+- 账号默认模式见 `grok/modes` 的 `defaultModeId`（常见为 `auto`）；adapter 默认 `--model fast`
+
+## JSON 格式回复 (answerJson)
+
+`grok/chat`、`grok/chatfollow`、`grok/agent-chat` 均支持 Grok 返回 **JSON 对象**（而非纯文本段落）。adapter 从页面提取 JSON 文本，并在可解析时附加结构化字段。
+
+### 返回字段
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `answer` | string | 始终为字符串；JSON 回复时为提取后的 JSON 文本 |
+| `answerJson` | object | 仅当 Grok 返回的 JSON 可被 `JSON.parse` 解析时出现 |
+| `answerFormat` | string | 解析成功时为 `"json"`；否则省略（普通文本回复） |
+| `model` / `modeTitle` / `modeLabel` | — | 同 [模型模式](#模型模式-grokmodes) |
+| `conversationId` | string | 对话 id，可传给 `grok/chatfollow` |
+
+普通文本回复示例：
+
+```json
+{
+  "query": "What is the capital of France?",
+  "model": "fast",
+  "modeTitle": "Fast",
+  "modeLabel": "Fast",
+  "answer": "The capital of France is Paris.",
+  "conversationId": "65baa953-42e2-410f-9951-fe6bbff3dd67"
+}
+```
+
+JSON 对象回复示例（`answerJson` 与 `answer` 内容一致，前者已解析为 object）：
+
+```json
+{
+  "query": "Explain the Calvin cycle as JSON...",
+  "model": "fast",
+  "modeTitle": "Fast",
+  "modeLabel": "Fast",
+  "answerFormat": "json",
+  "answer": "{\n  \"topic\": \"Calvin Cycle\",\n  \"summary\": \"...\",\n  \"phases\": [...]\n}",
+  "answerJson": {
+    "topic": "Calvin Cycle",
+    "summary": "...",
+    "phases": [{ "phase": "Carboxylation", "enzymes": ["RuBisCO"] }]
+  },
+  "conversationId": "ea4ddfb4-fed7-42e2-b6ab-6e76f3ec49b6"
+}
+```
+
+### Prompt 建议（长科学 / 结构化输出）
+
+在 prompt 中明确要求 JSON，并限制 Grok 不要输出 markdown 代码块或额外说明：
+
+```bash
+bun-browser site grok/chat 'You are a biochemistry expert. Explain ...
+
+Respond with ONLY valid JSON. Plain text in string values — no LaTeX, no backslashes, no markdown fences.
+Schema: { "topic": "...", "summary": "...", ... }' --model fast --json
+```
+
+读取解析后的对象：
+
+```bash
+bun-browser site grok/chat "$QUERY" --model fast --json --jq '.data.answerJson'
+```
+
+### JSON 回复相关注意
+
+- **推荐 `--model fast`**：长 JSON 在 ~30s bun-browser 超时内较可靠；`expert` / `heavy` 易超时
+- **LaTeX 会破坏解析**：Grok 若在 JSON 字符串里写 `\sqrt`、`\rangle` 等，`answerJson` 不会出现，但 `answer` 仍可能含原始文本
+- **Expert 思考进度**：adapter 会忽略 `Agents thinking`、`Structuring...` 等中间状态，等待最终 JSON 块
+- **无效 JSON**：仅有 `answer` 字符串，无 `answerFormat` / `answerJson`；可用脚本自行尝试修复或重试 prompt
 
 ## 推荐工作流程
 
@@ -129,14 +321,14 @@ bun-browser site grok/agent-chat "https://grok.com/project/2262a42d-da6b-478d-84
 |------|------|------|
 | `agent` | 是 | Agent UUID 或 `https://grok.com/project/{id}`（来自 `grok/agents`） |
 | `query` | 是 | 你的问题或 prompt |
-| `--model` | 否 | 覆盖模型：`fast` / `auto` / `expert`（默认 `fast`） |
+| `--model` | 否 | 模型模式 id，见上文 [模型模式](#模型模式-grokmodes)；默认 `fast` |
 | `--disableSearch` | 否 | 设为 `true` 关闭网页搜索 |
 | `--newChat` | 否 | 是否在 Project 内开新对话（默认 `false`） |
 
 Agent 若配置了 `preferredModel`，可在 Step 1 结果里查看；需要时可手动指定：
 
 ```bash
-bun-browser site grok/agent-chat 2262a42d-da6b-478d-843f-69f811626817 "my dream is becoming a doctor" --model auto
+bun-browser site grok/agent-chat 2262a42d-da6b-478d-843f-69f811626817 "my dream is becoming a doctor" --model heavy
 ```
 
 ## 完整示例：prompt enhancer
@@ -160,6 +352,8 @@ bun-browser site grok/agent-chat 2262a42d-da6b-478d-843f-69f811626817 "my dream 
   "url": "https://grok.com/project/2262a42d-da6b-478d-843f-69f811626817",
   "query": "my dream is becoming a doctor",
   "model": "fast",
+  "modeTitle": "Fast",
+  "modeLabel": "Fast",
   "answer": "...",
   "conversationId": "5c375edc-a6aa-40f5-bc7c-4f2c866c6b36"
 }
@@ -194,7 +388,7 @@ bun-browser site grok/chatfollow "https://grok.com/c/5c375edc-a6aa-40f5-bc7c-4f2
 |------|------|------|
 | `conversation` | 是 | 对话 UUID 或 `https://grok.com/c/{id}`（来自 `grok/agent-chat` 或 `grok/search`） |
 | `query` | 是 | follow-up prompt |
-| `--model` | 否 | 覆盖模型：`fast` / `auto` / `expert`（默认 `fast`） |
+| `--model` | 否 | 模型模式 id，见上文 [模型模式](#模型模式-grokmodes)；默认 `fast` |
 | `--disableSearch` | 否 | 设为 `true` 关闭网页搜索 |
 
 ### 返回示例
@@ -205,6 +399,8 @@ bun-browser site grok/chatfollow "https://grok.com/c/5c375edc-a6aa-40f5-bc7c-4f2
   "url": "https://grok.com/c/5c375edc-a6aa-40f5-bc7c-4f2c866c6b36",
   "query": "make it more specific about medical school requirements",
   "model": "fast",
+  "modeTitle": "Fast",
+  "modeLabel": "Fast",
   "answer": "...",
   "turn": 2
 }
@@ -443,6 +639,22 @@ bun-browser site grok/chat "my dream is becoming a doctor" --newChat false
 
 ## 常见问题
 
+### `Mode change requires page reload`
+
+切换 `heavy`、`grok-420-computer-use-sa` 等模式时，Grok 可能需要刷新页面。**原样再执行一次同一命令**即可。详见 [模式切换与返回字段](#模式切换与返回字段)。
+
+### `Mode not available for this account`
+
+请求的 mode id 对当前账号不可用（例如 `beta`）。运行 `bun-browser site grok/modes` 查看 `available` 列表。
+
+### `Empty response`（Heavy / 深度模式 / JSON）
+
+Heavy、Expert 或长 JSON 任务可能超过 CLI 等待时间。可在浏览器中查看 grok.com 是否已有完整回复，或改用 `--model fast`、缩短 prompt。JSON 场景见 [JSON 格式回复](#json-格式回复-answerjson)。
+
+### `answerJson` 缺失但 `answer` 含 JSON 文本
+
+Grok 输出的 JSON 可能含非法转义（常见于 LaTeX）。重试时在 prompt 中要求 plain text only、no backslashes。
+
 ### `Not logged in`
 
 ```json
@@ -525,6 +737,7 @@ bun-browser site grok/agents --json --jq '.agents[].name'
 - 继续已有对话：`bun-browser site grok/chatfollow <conversationId> "<prompt>"`
 - 管理 Agent 知识文件：`bun-browser site grok/agent-memory-list <agent>`
 - 搜索历史对话：`bun-browser site grok/search "关键词"`
-- 查看模型能力：`bun-browser site grok/modes`
+- 查看与切换模型模式：`bun-browser site grok/modes`（详见 [模型模式](#模型模式-grokmodes)）
+- 结构化 JSON 回复：见 [JSON 格式回复](#json-格式回复-answerjson)
 - 在默认 Grok 聊天（非 Project）中提问：`bun-browser site grok/chat "Hello"`
 - 更新 adapter：`bun-browser site update`
