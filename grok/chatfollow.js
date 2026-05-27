@@ -791,11 +791,63 @@ async function(args) {
   return globalThis.__grokChatHelpers;})();
 
 
+  function parseBool(val, defaultVal) {
+    if (val === undefined || val === null || val === '') return defaultVal;
+    if (val === true || val === false) return val;
+    var s = String(val).toLowerCase();
+    if (s === 'true' || s === '1') return true;
+    if (s === 'false' || s === '0') return false;
+    return defaultVal;
+  }
+
   function getConversationIdFromPath() {
     var match = location.pathname.match(/\/c\/([^/?]+)/);
     return match ? match[1] : null;
   }
 
+  var modeId = h.resolveGrokMode(args.model || 'fast');
+  var waitOpts = h.buildWaitOpts(args, modeId);
+  var waitOnly = parseBool(args.waitOnly, false);
+
+  if (waitOnly) {
+    var existingMessages = h.getAssistantMessages();
+    var pollBeforeCount = Math.max(0, existingMessages.length - 1);
+    var pollBeforeText = pollBeforeCount < existingMessages.length
+      ? h.getAssistantText(existingMessages[pollBeforeCount]) || ''
+      : '';
+    var waitedAnswer = await h.waitForAssistantAnswer(pollBeforeCount, pollBeforeText, waitOpts);
+    if (!waitedAnswer) {
+      if (h.wasLastWaitPending()) {
+        return {
+          error: 'Still generating',
+          hint: 'GAI 仍在生成，请用 waitOnly 继续等待当前回复',
+          action: 'retry with waitOnly: true'
+        };
+      }
+      return {
+        error: 'Empty response',
+        hint: 'GAI 未返回内容，可能页面结构已变化',
+        action: 'bun-browser open https://grok.com/c/' + conversationId
+      };
+    }
+    var resolvedWaitId = getConversationIdFromPath() || conversationId;
+    var waitOut = {
+      conversationId: resolvedWaitId,
+      url: 'https://grok.com/c/' + resolvedWaitId,
+      query: args.query,
+      model: modeId,
+      modeLabel: h.readGrokModeLabel(),
+      answer: waitedAnswer,
+      waitOnly: true,
+      turn: h.getAssistantMessages().length
+    };
+    var waitAnswerJson = h.parseAnswerJson(waitedAnswer);
+    if (waitAnswerJson) {
+      waitOut.answerJson = waitAnswerJson;
+      waitOut.answerFormat = 'json';
+    }
+    return waitOut;
+  }
 
   var convPath = '/c/' + conversationId;
   var convUrl = 'https://grok.com' + convPath;
@@ -821,8 +873,6 @@ async function(args) {
       action: 'bun-browser open ' + convUrl
     };
   }
-
-  var modeId = h.resolveGrokMode(args.model || 'fast');
 
   var modeResult = await h.setGrokMode(modeId);
   if (modeResult.needsRetry) {
@@ -861,8 +911,6 @@ async function(args) {
     };
   }
 
-
-  var waitOpts = h.buildWaitOpts(args, modeId);
 
   var answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
 
