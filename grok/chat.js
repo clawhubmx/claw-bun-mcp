@@ -39,7 +39,7 @@ async function(args) {
   }
 
                 var h = (function installGrokChatHelpers() {
-  var HELPERS_VERSION = 14;
+  var HELPERS_VERSION = 15;
 
   // Default wait when mode is unrecognized (fast/auto)
   var GROK_CHAT_WAIT_MS = 15 * 60 * 1000;
@@ -311,17 +311,144 @@ async function(args) {
     return true;
   }
 
-  function clickSubmit() {
+  function getSubmitButton() {
     var buttons = Array.prototype.slice.call(document.querySelectorAll('button'));
-    var submit = buttons.find(function(b) {
+    return buttons.find(function(b) {
       var label = (b.getAttribute('aria-label') || '').toLowerCase();
       return label === 'submit';
-    });
-    if (submit) {
-      submit.click();
+    }) || null;
+  }
+
+  function isSubmitDisabled(btn) {
+    if (!btn) return false;
+    if (btn.disabled) return true;
+    if (btn.getAttribute('aria-disabled') === 'true') return true;
+    return false;
+  }
+
+  function getVisiblePageText(maxLen) {
+    maxLen = maxLen || 12000;
+    var text = (document.body && (document.body.innerText || document.body.textContent)) || '';
+    return text.length > maxLen ? text.slice(0, maxLen) : text;
+  }
+
+  function extractRateLimitDetail(text) {
+    var m = String(text || '').match(/(\d+)\s*minutes?\s+before\s+limit\s+is\s+gone/i);
+    if (m) return { minutesUntilReset: Number(m[1]) };
+    return null;
+  }
+
+  function detectCloudflareBlock() {
+    if (document.querySelector(
+      '.cf-turnstile, #challenge-running, #cf-challenge-running, #cf-wrapper, ' +
+      'iframe[src*="challenges.cloudflare"], iframe[src*="turnstile"], ' +
+      'form[action*="cdn-cgi/challenge"]'
+    )) {
+      return true;
+    }
+    var title = (document.title || '').toLowerCase();
+    if (/just a moment|attention required|cloudflare|please wait|verify you are human/i.test(title)) {
+      return true;
+    }
+    var text = getVisiblePageText(4000);
+    if (!document.querySelector('[data-testid="chat-input"]') &&
+      /verify you are human|checking if the site connection is secure|enable javascript and cookies|cf-browser-verification|performing security verification|ddos protection by cloudflare/i.test(text)) {
       return true;
     }
     return false;
+  }
+
+  function detectRateLimitText(text) {
+    if (/minutes?\s+before\s+limit\s+is\s+gone/i.test(text)) return true;
+    if (/you can continue chatting once it resets/i.test(text)) return true;
+    if (/message\s+limit\s+reached/i.test(text)) return true;
+    if (/rate\s+limit/i.test(text) && /reset|wait|try again|minutes?/i.test(text)) return true;
+    if (/too many (messages|requests)/i.test(text)) return true;
+    return false;
+  }
+
+  function detectGrokPageAbnormal(opts) {
+    opts = opts || {};
+    var skipSubmitCheck = opts.skipSubmitCheck === true;
+
+    if (detectCloudflareBlock()) {
+      return {
+        error: 'Cloudflare verification required',
+        kind: 'cloudflare',
+        hint: 'Cloudflare bot/challenge page detected. Open grok.com in the browser and complete verification manually.',
+        action: 'bun-browser open https://grok.com/'
+      };
+    }
+
+    var pageText = getVisiblePageText();
+    var rateDetail = null;
+
+    if (detectRateLimitText(pageText)) {
+      rateDetail = extractRateLimitDetail(pageText);
+      var rateHint = rateDetail && rateDetail.minutesUntilReset
+        ? 'Rate limit active: about ' + rateDetail.minutesUntilReset + ' minutes until reset. You can continue chatting once it resets.'
+        : 'Rate limit or quota message detected on page. Wait for reset before retrying.';
+      var rateOut = {
+        error: 'Chat rate limit reached',
+        kind: 'rate_limit',
+        hint: rateHint,
+        action: 'wait for limit reset, then retry'
+      };
+      if (rateDetail) rateOut.minutesUntilReset = rateDetail.minutesUntilReset;
+      return rateOut;
+    }
+
+    if (!document.querySelector('[data-testid="assistant-message"]')) {
+      if (/service (is )?(temporarily )?unavailable|under maintenance|unable to load chat/i.test(pageText)) {
+        return {
+          error: 'Chat service unavailable',
+          kind: 'service_unavailable',
+          hint: 'Grok chat appears unavailable or down. Check grok.com status or retry later.',
+          action: 'retry later or bun-browser open https://grok.com/'
+        };
+      }
+    }
+
+    if (!skipSubmitCheck) {
+      var submit = getSubmitButton();
+      if (submit && isSubmitDisabled(submit)) {
+        var inputArea = document.querySelector('[data-testid="chat-input"]');
+        var contextText = inputArea
+          ? ((inputArea.closest('[data-testid="chat-composer"], form, section') || inputArea.parentElement || document.body).innerText || '')
+          : pageText;
+        if (detectRateLimitText(contextText)) {
+          rateDetail = extractRateLimitDetail(contextText);
+          var submitHint = rateDetail && rateDetail.minutesUntilReset
+            ? 'Submit disabled: ' + rateDetail.minutesUntilReset + ' minutes before limit resets.'
+            : 'Submit is disabled due to rate/quota limit.';
+          var submitOut = {
+            error: 'Chat submission blocked',
+            kind: 'submit_disabled',
+            reason: 'rate_limit',
+            hint: submitHint,
+            action: 'wait for limit reset, then retry'
+          };
+          if (rateDetail) submitOut.minutesUntilReset = rateDetail.minutesUntilReset;
+          return submitOut;
+        }
+        return {
+          error: 'Chat submission blocked',
+          kind: 'submit_disabled',
+          hint: 'Submit button is disabled — common causes: rate limits, account restrictions, or Grok still processing a prior request.',
+          action: 'bun-browser open https://grok.com/ to inspect the page'
+        };
+      }
+    }
+
+    return null;
+  }
+
+  function clickSubmit() {
+    var submit = getSubmitButton();
+    if (!submit) return false;
+    if (isSubmitDisabled(submit)) return false;
+    submit.click();
+    return true;
   }
 
   function dismissCookieBanner() {
@@ -649,9 +776,14 @@ async function(args) {
   }
 
   var lastWaitPending = false;
+  var lastWaitAbnormal = null;
 
   function wasLastWaitPending() {
     return lastWaitPending;
+  }
+
+  function getLastWaitAbnormal() {
+    return lastWaitAbnormal;
   }
 
   function isGrokReplyPending(beforeCount, beforeText) {
@@ -692,9 +824,16 @@ async function(args) {
     var lastText = '';
     var sawInFlight = false;
     lastWaitPending = false;
+    lastWaitAbnormal = null;
 
     while (Date.now() < deadline) {
       await sleep(pollMs);
+      var abnormal = detectGrokPageAbnormal({ skipSubmitCheck: true });
+      if (abnormal) {
+        lastWaitAbnormal = abnormal;
+        lastWaitPending = false;
+        return '';
+      }
       var messages = getAssistantMessages();
       var latest = messages[messages.length - 1];
       var generating = isGrokGenerating();
@@ -745,6 +884,9 @@ async function(args) {
     isGrokGenerating: isGrokGenerating,
     isGrokReplyPending: isGrokReplyPending,
     wasLastWaitPending: wasLastWaitPending,
+    getLastWaitAbnormal: getLastWaitAbnormal,
+    detectGrokPageAbnormal: detectGrokPageAbnormal,
+    getSubmitButton: getSubmitButton,
     resolveGrokMode: resolveGrokMode,
     resolveGrokModeWaitMs: resolveGrokModeWaitMs,
     buildWaitOpts: buildWaitOpts,
@@ -778,6 +920,9 @@ async function(args) {
   var waitOpts = h.buildWaitOpts(args, modeId);
   var waitOnly = parseBool(args.waitOnly, false);
 
+  var accessBlock = h.detectGrokPageAbnormal();
+  if (accessBlock) return accessBlock;
+
   if (waitOnly) {
     var existingMessages = h.getAssistantMessages();
     var pollBeforeCount = Math.max(0, existingMessages.length - 1);
@@ -786,6 +931,8 @@ async function(args) {
       : '';
     var waitedAnswer = await h.waitForAssistantAnswer(pollBeforeCount, pollBeforeText, waitOpts);
     if (!waitedAnswer) {
+      var waitAbnormal = h.getLastWaitAbnormal();
+      if (waitAbnormal) return waitAbnormal;
       if (h.wasLastWaitPending()) {
         return {
           error: 'Still generating',
@@ -865,7 +1012,12 @@ async function(args) {
   }
   await h.sleep(400);
 
+  accessBlock = h.detectGrokPageAbnormal();
+  if (accessBlock) return accessBlock;
+
   if (!h.clickSubmit()) {
+    accessBlock = h.detectGrokPageAbnormal();
+    if (accessBlock) return accessBlock;
     return {
       error: 'Submit button not found',
       hint: '无法在 Grok 页面找到发送按钮，请刷新页面后重试',
@@ -876,6 +1028,8 @@ async function(args) {
   var answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
 
   if (!answer) {
+    var answerAbnormal = h.getLastWaitAbnormal();
+    if (answerAbnormal) return answerAbnormal;
     if (h.wasLastWaitPending()) {
       return {
         error: 'Still generating',

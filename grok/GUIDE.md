@@ -31,6 +31,7 @@ bun-browser open https://grok.com/ --tab current
 | `bun-browser site grok/chat "<prompt>"` | 向默认 Grok 聊天提问 |
 | `bun-browser site grok/search "<keyword>"` | 在 Grok 对话历史中按关键词搜索 |
 | `bun-browser site grok/modes` | 查看当前账号可用的模型模式及 id |
+| `bun-browser site grok/health` | 检查登录、Cloudflare、速率限制、提交按钮与 API 可达性（不发送消息） |
 
 ## 模型模式 (grok/modes)
 
@@ -520,6 +521,11 @@ bun-browser site grok/agent-memory-list <agent>
 | `Missing file payload` | add 时必须提供 `--content` 或 `--fileBase64` 之一 |
 | `File not found` | 用 `grok/agent-memory-list` 确认 fileId |
 | `HTTP 403` / anti-bot | 在浏览器打开 grok.com 完成验证 |
+| `Cloudflare verification required` | Cloudflare 挑战页；在浏览器完成人机验证 |
+| `Chat rate limit reached` | 账号聊天配额/速率限制；等待页面提示的 reset 时间后重试 |
+| `Chat submission blocked` | 发送按钮被禁用（常见于限速或账号限制） |
+| `Rate limit reached` (HTTP 429) | API 速率限制；等待后重试 |
+| `Service unavailable` (HTTP 502/503) | Grok 服务暂时不可用；稍后重试 |
 
 ## 搜索对话历史 (grok/search)
 
@@ -713,6 +719,25 @@ Agent 页面尚未加载完，稍后重试即可（`grok/agent-chat` 会自动�
 bun-browser open "https://grok.com/project/<id>" --tab current
 bun-browser site grok/agent-chat "<id>" "your prompt"
 ```
+
+### 访问异常检测 (`grok/health` 与聊天命令)
+
+`grok/chat`、`grok/chatfollow`、`grok/agent-chat` 会在提交前、等待回复期间自动检测以下阻塞状态，并返回结构化错误（含 `kind` 字段便于 Agent 分支处理）：
+
+| `kind` | 典型场景 | 建议操作 |
+|--------|----------|----------|
+| `cloudflare` | Turnstile / “Just a moment” 挑战页 | `bun-browser open https://grok.com/` 手动完成验证 |
+| `rate_limit` | 页面显示 “X minutes before limit is gone… you can continue chatting once it resets” | 等待 `minutesUntilReset`（若返回）后重试 |
+| `submit_disabled` | 发送按钮存在但 `disabled` | 打开 grok.com 查看原因（限速、账号限制等） |
+| `service_unavailable` | Grok 服务不可用 / 维护 | 稍后重试 |
+
+发送消息前可先运行健康检查：
+
+```bash
+bun-browser site grok/health
+```
+
+成功时返回 `ok: true` 及 `chatInput`、`submitEnabled`、`modesReachable`；失败时返回与聊天命令相同的 `error` / `kind` / `action`。
 
 ### 找不到 Agent 名称
 

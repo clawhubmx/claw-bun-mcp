@@ -46,6 +46,12 @@ async function(args) {
             if (resp.status === 403 || errText.indexOf('anti-bot') !== -1) {
               return { error: 'Anti-bot verification required', hint: 'Grok 拒绝了请求，请在浏览器中打开 grok.com 完成验证并登录', action: 'bun-browser open https://grok.com/' };
             }
+            if (resp.status === 429) {
+              return { error: 'Rate limit reached', kind: 'rate_limit', hint: 'Grok API rate limit (HTTP 429). Wait before retrying.', action: 'wait and retry' };
+            }
+            if (resp.status === 502 || resp.status === 503) {
+              return { error: 'Service unavailable', kind: 'service_unavailable', hint: 'Grok API temporarily unavailable (HTTP ' + resp.status + ').', action: 'retry later' };
+            }
             return { error: 'HTTP ' + resp.status, hint: 'Grok API 请求失败，请确认已登录 grok.com', action: 'bun-browser open https://grok.com/' };
           }
           function normalizeAssetEntry(raw, agentId) {
