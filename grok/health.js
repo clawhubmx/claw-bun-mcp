@@ -60,9 +60,16 @@ async function(args) {
       if (/minutes?\s+before\s+limit\s+is\s+gone/i.test(text)) return true;
       if (/you can continue chatting once it resets/i.test(text)) return true;
       if (/message\s+limit\s+reached/i.test(text)) return true;
+      if (/supergrok\s+heavy\s+limit\s+reached/i.test(text)) return true;
+      if (/supergrok/i.test(text) && /your\s+limit\s+will\s+reset\s+soon/i.test(text)) return true;
       if (/rate\s+limit/i.test(text) && /reset|wait|try again|minutes?/i.test(text)) return true;
       if (/too many (messages|requests)/i.test(text)) return true;
       return false;
+    }
+
+    function isSuperGrokHeavyLimit(text) {
+      return /supergrok\s+heavy\s+limit\s+reached/i.test(text) ||
+        (/supergrok/i.test(text) && /your\s+limit\s+will\s+reset\s+soon/i.test(text));
     }
 
     if (detectCloudflareBlock()) {
@@ -78,13 +85,16 @@ async function(args) {
     var pageText = getVisiblePageText();
     if (detectRateLimitText(pageText)) {
       var m = pageText.match(/(\d+)\s*minutes?\s+before\s+limit\s+is\s+gone/i);
+      var superGrokHeavy = isSuperGrokHeavyLimit(pageText);
       var rateOut = {
         ok: false,
-        error: 'Chat rate limit reached',
+        error: superGrokHeavy ? 'SuperGrok Heavy limit reached' : 'Chat rate limit reached',
         kind: 'rate_limit',
-        hint: m
-          ? 'Rate limit active: about ' + Number(m[1]) + ' minutes until reset.'
-          : 'Rate limit or quota message detected on page.',
+        hint: superGrokHeavy
+          ? 'SuperGrok Heavy quota reached. Your limit will reset soon.'
+          : (m
+            ? 'Rate limit active: about ' + Number(m[1]) + ' minutes until reset.'
+            : 'Rate limit or quota message detected on page.'),
         action: 'wait for limit reset, then retry'
       };
       if (m) rateOut.minutesUntilReset = Number(m[1]);

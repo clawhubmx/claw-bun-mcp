@@ -326,9 +326,16 @@ function installGrokChatHelpers() {
     if (/minutes?\s+before\s+limit\s+is\s+gone/i.test(text)) return true;
     if (/you can continue chatting once it resets/i.test(text)) return true;
     if (/message\s+limit\s+reached/i.test(text)) return true;
+    if (/supergrok\s+heavy\s+limit\s+reached/i.test(text)) return true;
+    if (/supergrok/i.test(text) && /your\s+limit\s+will\s+reset\s+soon/i.test(text)) return true;
     if (/rate\s+limit/i.test(text) && /reset|wait|try again|minutes?/i.test(text)) return true;
     if (/too many (messages|requests)/i.test(text)) return true;
     return false;
+  }
+
+  function isSuperGrokHeavyLimit(text) {
+    return /supergrok\s+heavy\s+limit\s+reached/i.test(text) ||
+      (/supergrok/i.test(text) && /your\s+limit\s+will\s+reset\s+soon/i.test(text));
   }
 
   function detectGrokPageAbnormal(opts) {
@@ -349,11 +356,14 @@ function installGrokChatHelpers() {
 
     if (detectRateLimitText(pageText)) {
       rateDetail = extractRateLimitDetail(pageText);
-      var rateHint = rateDetail && rateDetail.minutesUntilReset
-        ? 'Rate limit active: about ' + rateDetail.minutesUntilReset + ' minutes until reset. You can continue chatting once it resets.'
-        : 'Rate limit or quota message detected on page. Wait for reset before retrying.';
+      var superGrokHeavy = isSuperGrokHeavyLimit(pageText);
+      var rateHint = superGrokHeavy
+        ? 'SuperGrok Heavy quota reached. Your limit will reset soon.'
+        : (rateDetail && rateDetail.minutesUntilReset
+          ? 'Rate limit active: about ' + rateDetail.minutesUntilReset + ' minutes until reset. You can continue chatting once it resets.'
+          : 'Rate limit or quota message detected on page. Wait for reset before retrying.');
       var rateOut = {
-        error: 'Chat rate limit reached',
+        error: superGrokHeavy ? 'SuperGrok Heavy limit reached' : 'Chat rate limit reached',
         kind: 'rate_limit',
         hint: rateHint,
         action: 'wait for limit reset, then retry'
@@ -382,9 +392,12 @@ function installGrokChatHelpers() {
           : pageText;
         if (detectRateLimitText(contextText)) {
           rateDetail = extractRateLimitDetail(contextText);
-          var submitHint = rateDetail && rateDetail.minutesUntilReset
-            ? 'Submit disabled: ' + rateDetail.minutesUntilReset + ' minutes before limit resets.'
-            : 'Submit is disabled due to rate/quota limit.';
+          var superGrokHeavy = isSuperGrokHeavyLimit(contextText);
+          var submitHint = superGrokHeavy
+            ? 'Submit disabled: SuperGrok Heavy limit reached. Your limit will reset soon.'
+            : (rateDetail && rateDetail.minutesUntilReset
+              ? 'Submit disabled: ' + rateDetail.minutesUntilReset + ' minutes before limit resets.'
+              : 'Submit is disabled due to rate/quota limit.');
           var submitOut = {
             error: 'Chat submission blocked',
             kind: 'submit_disabled',
