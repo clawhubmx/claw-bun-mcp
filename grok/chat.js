@@ -39,7 +39,7 @@ async function(args) {
   }
 
                 var h = (function installGrokChatHelpers() {
-  var HELPERS_VERSION = 15;
+  var HELPERS_VERSION = 16;
 
   // Default wait when mode is unrecognized (fast/auto)
   var GROK_CHAT_WAIT_MS = 15 * 60 * 1000;
@@ -81,7 +81,7 @@ async function(args) {
     if (/^Evaluating .+ • \d+s/i.test(t)) return true;
     if (/^\d+ results$/i.test(t)) return true;
     if (/^\d+ posts$/i.test(t)) return true;
-    if (/^(Searching|Reading|Browsing|Fetching|Running tool)\b/i.test(t)) return true;
+    if (/^(Searching|Reading|Browsing|Fetching|Running tool|Open page)\b/i.test(t)) return true;
     if (/^Thought for \d+s$/i.test(t)) return true;
     if (/^Agents thinking$/i.test(t)) return true;
     if (/^Agent \d+$/i.test(t)) return true;
@@ -151,11 +151,16 @@ async function(args) {
     }
   }
 
+  function hasParsedJsonAnswer(text) {
+    return parseAnswerJson(text) != null;
+  }
+
   function isProgressText(text) {
     if (!text) return false;
     var t = String(text).trim();
     if (!t) return false;
     if (/^Preview:/i.test(t)) return true;
+    if (/^Open page\b/i.test(t)) return true;
     if (/Searched web/i.test(t) && /Evaluating .+ • \d+s/i.test(t)) return true;
     if (/Searched web/i.test(t) && /\d+ results/i.test(t) && !/[.!?]/.test(t)) return true;
     if (/Searched 𝕏/i.test(t) && /\d+ posts/i.test(t) && !/[.!?]/.test(t)) return true;
@@ -171,6 +176,7 @@ async function(args) {
     if (!text) return false;
     var t = String(text).trim();
     if (!t || isProgressText(t)) return false;
+    if (/^open page\b/i.test(t)) return false;
     var json = extractJsonBlock(t);
     if (json) {
       try {
@@ -265,6 +271,13 @@ async function(args) {
   }
 
   function isGrokGenerating() {
+    var messages = getAssistantMessages();
+    var latest = messages[messages.length - 1];
+    if (latest) {
+      var extracted = getAssistantText(latest);
+      if (extracted && hasParsedJsonAnswer(extracted)) return false;
+    }
+
     var buttons = Array.prototype.slice.call(document.querySelectorAll('button'));
     for (var i = 0; i < buttons.length; i++) {
       var label = (buttons[i].getAttribute('aria-label') || '').toLowerCase();
@@ -273,8 +286,6 @@ async function(args) {
       }
     }
 
-    var messages = getAssistantMessages();
-    var latest = messages[messages.length - 1];
     if (!latest) return false;
 
     if (latest.querySelector('[aria-busy="true"], [data-testid="loading"], .animate-pulse, .animate-spin')) {
@@ -787,24 +798,29 @@ async function(args) {
   }
 
   function isGrokReplyPending(beforeCount, beforeText) {
-    if (isGrokGenerating()) return true;
     var messages = getAssistantMessages();
     if (messages.length <= beforeCount) return true;
     var latest = messages[messages.length - 1];
     if (!latest) return false;
+
+    var text = getAssistantText(latest);
+    if (text && text !== beforeText) {
+      if (hasParsedJsonAnswer(text)) return false;
+      if (looksLikeFinalAnswer(text)) return false;
+    }
+
+    if (isGrokGenerating()) return true;
     var latestRaw = (latest.innerText || latest.textContent || '').trim();
     if (!latestRaw) return true;
-    if (isProgressText(latestRaw)) return true;
+    if (isProgressText(latestRaw) && !hasParsedJsonAnswer(text)) return true;
     if (/Agents thinking/i.test(latestRaw) && !extractJsonBlock(latestRaw)) return true;
     if (latest.querySelector(
       '[aria-busy="true"], [data-testid="loading"], .animate-pulse, .animate-spin, [class*="streaming"], [class*="typing"]'
     )) {
-      return true;
+      if (!hasParsedJsonAnswer(text)) return true;
     }
     if (/\{/.test(latestRaw) && !extractJsonBlock(latestRaw)) return true;
     if (/^```(?:json)?/im.test(latestRaw) && !extractJsonBlock(latestRaw)) return true;
-    var text = getAssistantText(latest);
-    if (text && text !== beforeText && looksLikeFinalAnswer(text)) return false;
     if (text && !looksLikeFinalAnswer(text)) return true;
     return false;
   }
@@ -847,7 +863,12 @@ async function(args) {
       var hasUpdatedMessage = messages.length === beforeCount && ready && answer !== beforeText;
 
       if (hasNewMessage || hasUpdatedMessage) {
-        if (!generating && !pending) {
+        if (hasParsedJsonAnswer(answer)) {
+          if (answer === lastText) stableRounds++;
+          else stableRounds = 0;
+          lastText = answer;
+          if (stableRounds >= 1) break;
+        } else if (!generating && !pending) {
           if (answer === lastText) stableRounds++;
           else stableRounds = 0;
           lastText = answer;
@@ -861,6 +882,11 @@ async function(args) {
       }
     }
 
+    if (hasParsedJsonAnswer(answer)) {
+      lastWaitPending = false;
+      var parsedJson = extractJsonBlock(answer);
+      return parsedJson || answer;
+    }
     if (!looksLikeFinalAnswer(answer) || isGrokGenerating() || isGrokReplyPending(beforeCount, beforeText)) {
       lastWaitPending = sawInFlight || isGrokReplyPending(beforeCount, beforeText) || isGrokGenerating();
       return '';
@@ -897,7 +923,8 @@ async function(args) {
     clickSubmit: clickSubmit,
     waitForAssistantAnswer: waitForAssistantAnswer,
     extractJsonBlock: extractJsonBlock,
-    parseAnswerJson: parseAnswerJson
+    parseAnswerJson: parseAnswerJson,
+    hasParsedJsonAnswer: hasParsedJsonAnswer
   };
 
   return globalThis.__grokChatHelpers;})();

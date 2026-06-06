@@ -24,7 +24,7 @@ bun-browser open https://medium.com/ --tab current
 
 ```bash
 bun-browser site update
-bun-browser site list | grep medium   # 应看到 3 个命令
+bun-browser site list | grep medium   # 应看到 4 个命令
 ```
 
 > 所有 adapter 在 `medium.com` 或 `*.medium.com` 域下执行，通过 `fetch(..., {credentials: 'include'})` 复用浏览器 session。若返回 `HTTP 401/403` 或 hint 提示未登录，请先在 Chrome 中登录 Medium 后重试。
@@ -33,6 +33,7 @@ bun-browser site list | grep medium   # 应看到 3 个命令
 
 | 命令 | 作用 | 典型场景 |
 |------|------|----------|
+| `medium/login` | 邮箱登录（Sign in with email + 验证码） | 未登录时自动走邮箱验证码流程 |
 | `medium/search` | 站内搜索 | 按关键词找文章 |
 | `medium/get-article` | 读取文章正文与元数据 | 抓取全文、摘要、作者、发布时间 |
 | `medium/publish-article` | 打开编辑器并写入标题/正文 | 半自动起草新文章（需手动发布） |
@@ -40,6 +41,7 @@ bun-browser site list | grep medium   # 应看到 3 个命令
 查看单个命令的完整参数（Agent 函数签名）：
 
 ```bash
+bun-browser site info medium/login
 bun-browser site info medium/search
 bun-browser site info medium/get-article
 bun-browser site info medium/publish-article
@@ -85,6 +87,47 @@ bun-browser site medium/publish-article \
 ```
 
 > **两阶段执行：** 若当前 tab 不在 `/new-story`，adapter 会先 `location.assign` 跳转并返回 `Redirecting to editor`。等编辑器加载完成后，**再次运行同一命令** 才会写入内容。
+
+---
+
+## medium/login — 邮箱登录（Sign in with email）
+
+默认使用 **Sign in with email**，发送验证码后等待你在第二步传入 `--code`（或用 positional 传入 6 位数字）。
+
+```bash
+# 1. 发送验证码（已注册邮箱）
+bun-browser site medium/login you@example.com
+
+# 返回 status=awaiting_code 后，查收邮件，然后：
+# 2. 提交 6 位验证码
+bun-browser site medium/login 123456
+```
+
+**注册新账号**（邮箱未注册时）：
+
+```bash
+bun-browser site medium/login you@example.com register "Your Name"
+bun-browser site medium/login 123456
+```
+
+| 参数 (positional) | 说明 |
+|------|------|
+| `email` | 邮箱（第一步必填） |
+| `operation` | `login`（默认）或 `register` |
+| `fullName` | 注册时的显示名 |
+| `code` | 6 位邮件验证码（第二步） |
+
+**返回状态**
+
+| status | 含义 |
+|--------|------|
+| `logged_in` | 已登录（或本来已登录） |
+| `awaiting_code` | 验证码已发送，等待 `--code` / 第二步 |
+| `awaiting_login` | 验证码已提交，session 仍在跳转中 |
+
+> **注意：** bun-browser CLI 会吞掉未知 `--flag`，请用 **positional 参数**（见上方示例），不要用 `--email` / `--operation` 等形式。
+
+> **已登录 session：** 若 Chrome 已登录 Medium，传邮箱会返回 `Already logged in`；需先在浏览器 Sign out 后再跑登录流程。
 
 ---
 
@@ -327,6 +370,7 @@ Three CLI commands for Medium via bun-browser (logged-in Chrome, no API key):
 
 | Command | Purpose |
 |---------|---------|
+| `medium/login <email>` | Sign in with email; step 2: `medium/login <6-digit-code>` |
 | `medium/search <query>` | Search Medium (max 30 results) |
 | `medium/get-article <url>` | Fetch title, author, date, and full article body |
 | `medium/publish-article --title ... --content ...` | Open editor and insert title/body (**partial** — tags/publish not automated) |
