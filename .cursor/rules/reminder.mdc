@@ -1,0 +1,20 @@
+---
+description: Project reminders for bun-browser and local setup
+alwaysApply: true
+---
+
+# Reminders
+
+## bun-browser CLI
+
+`bun-browser` is a shell alias:
+
+```bash
+alias bun-browser='bun /Users/hesdx/Documents/toolings/bun-browser/dist/cli.js'
+```
+
+When running commands in non-interactive shells (or if the alias is unavailable), use the full path:
+
+```bash
+bun /Users/hesdx/Documents/toolings/bun-browser/dist/cli.js <command>
+```
