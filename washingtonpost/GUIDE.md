@@ -1,6 +1,6 @@
 # Washington Post 使用指南
 
-通过 [bun-browser](https://github.com/epiral/bun-browser) 的 site adapter，在 Chrome 里读取 **Washington Post 文章全文与元数据**。优先从页面内嵌的 `__NEXT_DATA__`（`globalContent.content_elements`）提取正文；无需 WaPo API Key。
+通过 [bun-browser](https://github.com/epiral/bun-browser) 的 site adapter，在 Chrome 里读取 **Washington Post 文章全文与元数据**。优先调用站点自身的 Arc `prism-content-api`（完整 `content_elements`），绕过 paywall teaser；无需 WaPo API Key。
 
 [English summary](#english-summary) · 中文正文
 
@@ -139,13 +139,16 @@ adapter 按以下优先级合并元数据与正文（正文取**最长且非 pay
 
 | 优先级 | 来源 | `source` 值 | 说明 |
 |--------|------|---------------|------|
-| 1 | 当前 tab 已打开同一篇文章 | `openPage` / `openPageHtml` | 读取 `window.__NEXT_DATA__`，最多轮询约 2.5 秒；同时尝试 live DOM 段落 |
-| 2 | `fetch` 后 HTML 中的 `__NEXT_DATA__` | `nextData` | 从 `globalContent.content_elements` 解析 Arc 正文块，**主要 paywall 绕过路径** |
-| 3 | `application/ld+json` | `jsonLd` | `NewsArticle` / `Article` 的 `articleBody`（WaPo 通常不含全文） |
-| 4 | Open Graph / `<h1>` / `<time>` | — | 仅补元数据 |
-| 5 | DOM `.article-body p` 或 `[data-qa=article-body] p` | `dom` | 已渲染段落；会过滤广告、订阅引导等 boilerplate |
+| 1 | Arc `prism-content-api`（同源 fetch） | `prismContentApi` | `GET /arc/prism/api/prism-content-api?query={"canonical_url":...}`，返回完整 `content_elements`，**主要 paywall 绕过路径** |
+| 2 | 当前 tab 已打开同一篇文章 | `openPage` / `openPageHtml` | 读取 `window.__NEXT_DATA__`；若仅为 teaser，再调 prism API |
+| 3 | `fetch` 后 HTML 中的 `__NEXT_DATA__` | `nextData` | 从 `globalContent.content_elements` 解析；teaser 时同样会再调 prism API |
+| 4 | `application/ld+json` | `jsonLd` | `NewsArticle` / `Article` 的 `articleBody`（WaPo 通常不含全文） |
+| 5 | Open Graph / `<h1>` / `<time>` | — | 仅补元数据 |
+| 6 | DOM `.article-body p` 或 `[data-qa=article-body] p` | `dom` | 已渲染段落；会过滤广告、订阅引导等 boilerplate |
 
-**Paywall 检测：** 若 `content_elements` 含 `subscribe-cta` 且可读块 ≤ 2，标记 `isTeaserContent: true`。正文含 “Subscribe to read”、“Already a subscriber?” 等短预览时返回错误而非成功结果。
+**Paywall 策略：** SSR 的 `__NEXT_DATA__` 对未订阅用户通常只含 1 段 + `subscribe-cta`（`isTeaserContent: true`）。adapter 会用 `canonical_url` 调 WaPo 前端同一套 `prism-content-api` 拉取完整正文。`paywallBypassed: true` 且 `source: "prismContentApi"` 表示已成功绕过。
+
+**Paywall 检测（后备）：** 若 prism API 失败且正文含 “Subscribe to read”、“Already a subscriber?” 等短预览，返回错误而非成功结果。
 
 **正文清洗：** adapter 会剥离 HTML 标签、广告段落、订阅引导语等，避免污染 `articleBody`。
 
@@ -246,7 +249,7 @@ One read-only CLI command for The Washington Post via bun-browser (no API key):
 
 **Prerequisites:** `bun-browser start`, optionally open `https://www.washingtonpost.com/` and log in with a subscription, run `bun-browser site update`.
 
-**Paywall:** Full text is extracted from embedded `__NEXT_DATA__` (`globalContent.content_elements`), not the paywall DOM preview. If that fails, open the article in Chrome first, then retry. `paywallBypassed: true` when body came from full `content_elements`. Watch `isTeaserContent: true` — that usually means only a teaser was returned.
+**Paywall:** Full text is fetched from WaPo's own Arc `prism-content-api` (`/arc/prism/api/prism-content-api?query={"canonical_url":...}`), not the teaser in `__NEXT_DATA__` or the subscribe modal. `paywallBypassed: true` when `source` is `prismContentApi`. If prism fails, open the article in Chrome and retry.
 
 **Typical flow:** `bun-browser open <article-url>` → wait for load → `washingtonpost/get-article <same-url>`.
 

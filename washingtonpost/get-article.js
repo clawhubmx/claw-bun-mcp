@@ -1,7 +1,7 @@
 /* @meta
 {
   "name": "washingtonpost/get-article",
-  "description": "Read Washington Post article title, date, and body. Prefers embedded __NEXT_DATA__ (globalContent.content_elements); falls back to live DOM paragraphs on an open article tab.",
+  "description": "Read Washington Post article title, date, and body. Prefers Arc prism-content-api (full content_elements); falls back to __NEXT_DATA__ and live DOM paragraphs on an open article tab.",
   "domain": "www.washingtonpost.com",
   "args": {
     "url": { "required": true, "description": "Washington Post article URL (www.washingtonpost.com)" }
@@ -191,8 +191,9 @@ async function (args) {
     return "";
   }
 
-  function applyArticleMetadata(globalContent, state, source) {
+  function applyArticleMetadata(globalContent, state, source, options) {
     if (!globalContent) return;
+    options = options || {};
 
     if (!state.title && globalContent.headlines) {
       state.title = String(globalContent.headlines.basic || globalContent.headlines.meta_title || "");
@@ -219,14 +220,68 @@ async function (args) {
     }
     if (globalContent.subtype) state.subtype = String(globalContent.subtype);
 
-    state.isTeaserContent = isTeaserContent(globalContent);
-    state.hasSubscribeCta = hasSubscribeCta(globalContent.content_elements || []);
+    if (globalContent.summaries) {
+      if (!state.summary && globalContent.summaries.summary) {
+        state.summary = String(globalContent.summaries.summary);
+      }
+      if ((!state.keyPoints || !state.keyPoints.length) && globalContent.summaries.key_points) {
+        state.keyPoints = globalContent.summaries.key_points.slice();
+      }
+    }
+
+    if (!options.skipPaywallFlags) {
+      state.isTeaserContent = isTeaserContent(globalContent);
+      state.hasSubscribeCta = hasSubscribeCta(globalContent.content_elements || []);
+    }
 
     var body = extractBodyFromContentElements(globalContent.content_elements);
     if (body && body.length > (state.articleBody || "").length) {
       state.articleBody = body;
       state.source = source;
+      if (options.fullContent) {
+        state.isTeaserContent = false;
+        state.hasSubscribeCta = hasSubscribeCta(globalContent.content_elements || []);
+      }
     }
+  }
+
+  function getCanonicalPath(globalContent, rawUrl) {
+    if (globalContent && globalContent.canonical_url) {
+      return String(globalContent.canonical_url);
+    }
+    try {
+      return new URL(rawUrl).pathname;
+    } catch (e) {
+      return rawUrl;
+    }
+  }
+
+  async function fetchPrismContentApi(canonicalPath) {
+    if (!canonicalPath) return null;
+    var query = encodeURIComponent(JSON.stringify({ canonical_url: canonicalPath }));
+    var apiUrl = "/arc/prism/api/prism-content-api?_website=washpost&query=" + query;
+    var resp = await fetch(apiUrl, { credentials: "include", redirect: "follow" });
+    if (!resp.ok) return { error: "HTTP " + resp.status };
+    try {
+      return await resp.json();
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function shouldFetchPrismContent(state) {
+    if (!state.articleBody) return true;
+    if (state.isTeaserContent) return true;
+    if (state.hasSubscribeCta && state.articleBody.length < 900) return true;
+    return false;
+  }
+
+  async function maybeFetchFullContentFromPrism(state, canonicalPath) {
+    if (!shouldFetchPrismContent(state)) return;
+    var data = await fetchPrismContentApi(canonicalPath);
+    if (!data || data.error) return;
+    state._contentElements = data.content_elements || [];
+    applyArticleMetadata(data, state, "prismContentApi", { fullContent: true, skipPaywallFlags: false });
   }
 
   function parseNextDataFromDocument(doc) {
@@ -356,11 +411,14 @@ async function (args) {
     section: "",
     subtype: "",
     canonicalUrl: "",
+    summary: "",
+    keyPoints: [],
     articleBody: "",
     source: "",
     finalUrl: raw,
     isTeaserContent: false,
     hasSubscribeCta: false,
+    _contentElements: [],
   };
 
   var onArticlePage = articleUrlsMatch(location.href, raw);
@@ -375,6 +433,15 @@ async function (args) {
     if (openResult && openResult.domBody && openResult.domBody.length > (state.articleBody || "").length) {
       maybeSetBody(state, openResult.domBody, "dom");
     }
+    await maybeFetchFullContentFromPrism(
+      state,
+      getCanonicalPath(
+        openResult && openResult.hit && openResult.hit.nextData
+          ? getGlobalContent(getPageProps(openResult.hit.nextData))
+          : null,
+        raw,
+      ),
+    );
   }
 
   if (!state.articleBody || state.isTeaserContent) {
@@ -464,6 +531,8 @@ async function (args) {
       var fetchedDomBody = extractDomBody(doc);
       if (fetchedDomBody) maybeSetBody(state, fetchedDomBody, "dom");
     }
+
+    await maybeFetchFullContentFromPrism(state, getCanonicalPath(globalContent, raw));
   }
 
   if (!state.articleBody) {
@@ -494,10 +563,9 @@ async function (args) {
     };
   }
 
-  var paywallBypassed = state.source !== "dom" && state.source !== "jsonLd" && !state.isTeaserContent;
-  if (state.source === "nextData" || state.source === "openPage" || state.source === "openPageHtml") {
-    paywallBypassed = !state.isTeaserContent;
-  }
+  var paywallBypassed =
+    state.source === "prismContentApi" ||
+    (state.source !== "dom" && state.source !== "jsonLd" && !state.isTeaserContent);
 
   return {
     url: state.finalUrl,
@@ -508,6 +576,8 @@ async function (args) {
     dateModified: state.dateModified || null,
     displayDate: state.displayDate || null,
     description: state.description || null,
+    summary: state.summary || null,
+    keyPoints: state.keyPoints && state.keyPoints.length ? state.keyPoints : null,
     section: state.section || null,
     subtype: state.subtype || null,
     articleBody: state.articleBody,
