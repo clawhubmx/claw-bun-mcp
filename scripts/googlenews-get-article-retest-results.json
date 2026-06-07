@@ -1,0 +1,532 @@
+{
+  "testedAt": "2026-06-07T06:21:22.208Z",
+  "total": 33,
+  "pass": 9,
+  "weak": 3,
+  "fail": 19,
+  "error": 1,
+  "skip": 1,
+  "results": [
+    {
+      "slug": "autosport",
+      "domain": "www.autosport.com",
+      "publisherDomain": "autosport.com",
+      "publisher": "Autosport",
+      "rssSample": "Autosport",
+      "rssLink": "https://news.google.com/rss/articles/CBMimwFBVV95cUxNOWpCSEZtX1R0UG1pa3dJVllNU0Y0eXcweXhWNG1vQmxVVWJJX2IyWXJlT3lrbVdmQ2wxX1ZSUk9Pcm5FZy0xXzNRTzd3cWowWk5TYVhITzNTbVFIWHdvQUVkZE5RUFRTVlZnV3JqVFpncnZCTm5PVzN1YkV6dWNQUkxIcjJkSlcyeXhpbTRHOXAwTHBIZWE3SnZKMA?oc=5",
+      "resolvedUrl": "https://www.autosport.com/f1/news/how-antonellis-magic-lap-stole-pole-from-verstappen/10827733/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 535,
+        "title": "How Antonelli&#039;s &quot;magic lap&quot; stole pole from Verstappen in Monaco",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "bleachernation",
+      "domain": "www.bleachernation.com",
+      "publisherDomain": "bleachernation.com",
+      "publisher": "Bleacher Nation",
+      "rssSample": "Bleacher Nation",
+      "rssLink": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOQ1ZCVTNyU0JLMzFPSy1SSlV4SVZNM25SNDNsNlhLMFlSWU9oQlVlNVBINkdVSzI4R2R2dDVETnBlc28xMERzRVRIV0hlaUF0cURNWVU2V2JWY0ZvT0xDNk1WU3pWQ2ZXQnJjZzlmdFM1aFFJVmgyd05MaHBvOElzWGV1eUc3U25QejF0ODhjcldRdHd0WFJKY0dR?oc=5",
+      "resolvedUrl": "https://www.bleachernation.com/cubs/2026/06/06/enhanced-box-score-cubs-3-giants-2-june-6-2026/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "fail",
+        "reason": "Could not extract article body",
+        "hint": "Page may be paywalled or use an unsupported layout. Open the article in Chrome, then retry."
+      }
+    },
+    {
+      "slug": "bloomberg",
+      "domain": "www.bloomberg.com",
+      "publisherDomain": "bloomberg.com",
+      "publisher": "Bloomberg",
+      "rssSample": "Bloomberg",
+      "rssLink": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOMDIwYndRTHVjY0tTcVVxNnV5R2F0dXJlV3A2MXI1Z2JwN1lmclI3NWJiRmM1UTE1bHVBbzhqd1pNZW9tbXFpZkdyeUNFZkJUdU5NMlZwVTVfYnRjU0RhVzZjQTZsWVloTnVlajZWQi0tMVFaWU5sQ29Ua1BUR3k3REYxdDU0NmJwYzlhZV9ZeUhKLVpFTTRsOXlSbW04MUpMTklkdWwyQWtSVncyUm40bnhLMUh0Zw?oc=5",
+      "resolvedUrl": "https://www.bloomberg.com/news/articles/2026-06-06/china-escalates-patrols-near-taiwan-over-japan-philippines-talks",
+      "resolveError": null,
+      "getArticle": {
+        "status": "fail",
+        "reason": "HTTP 403",
+        "hint": "Article may be unavailable. Open www.bloomberg.com in Chrome first, then retry."
+      }
+    },
+    {
+      "slug": "boingboing",
+      "domain": "www.boingboing.net",
+      "publisherDomain": "boingboing.net",
+      "publisher": "Boing Boing",
+      "rssSample": "Boing Boing",
+      "rssLink": "https://news.google.com/rss/articles/CBMipAFBVV95cUxPN3M5WVc2RGpxR3djdGVLRUVyVjdtX3NSMjZ2eFpSUFl3Wk9TWkUyWjNkZWY0YkRqTHBnNFpXNk5mSXl4YWJtRFJWZk0wLUVoNkVfVzhreUc3S2dRVGxQYi1Gbm9JcUZpZ3hRa2g5SXFtMjRLTzdEbUU2ZTZzOURCT0g4aVVWbEdSTkFqUWVYakNHTWVUM25EQ2JsSnB4TUdFWWxmWtIBqgFBVV95cUxNeGFXYUZiVXNUbzhRTmNVbGZkMjBNSWlMc1I0S3pRd3pndVNjLWw1Rlp2OFM0cERrUjZjVzRHRFNrN25LeDBmMERZNFhaQVFzOHc2LXBUYkhJX2k2STJHWWNwZWhmT21WU1BUU3RoRWtBVFlaRVdnZVBjbWxrTFpvWFJ2cW1qVVcyeDY3VVF1WVdRSFdud2daLUxfRTBtVk15MnVVUHJFNjVuQQ?oc=5",
+      "resolvedUrl": "https://boingboing.net/2026/06/05/why-autism-symptoms-can-ease-during-a-fever-and-how-to-mimic-it.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 1230,
+        "title": "Why autism symptoms can ease during a fever — and how to mimic it",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "consequence",
+      "domain": "www.consequence.net",
+      "publisherDomain": "consequence.net",
+      "publisher": "Consequence of Sound",
+      "rssSample": "Consequence of Sound",
+      "rssLink": "https://news.google.com/rss/articles/CBMijAFBVV95cUxNbUdBLUdnTVBGZWxvNXdMeVZLeUxib0hteXEybGpVNGt1NmxUdEFyOXlmZ1RFM0tBX2NyWWxlemFxQnV1N0d6SF9vNWxudzVLUmkzZ1BhQ3hmNlZEaWRuWUlyaEMwZjFIZEZqTjR2NThGeXZqX05QM2QzcUtJY000MW1mdERibGxUMEFLVg?oc=5",
+      "resolvedUrl": "https://consequence.net/2026/06/olivia-rodrigo-robert-smith-new-song-primavera-song/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "fail",
+        "reason": "Could not extract article body",
+        "hint": "Page may be paywalled or use an unsupported layout. Open the article in Chrome, then retry."
+      }
+    },
+    {
+      "slug": "courthousenews",
+      "domain": "www.courthousenews.com",
+      "publisherDomain": "courthousenews.com",
+      "publisher": "Courthouse News",
+      "rssSample": "Courthouse News",
+      "rssLink": "https://news.google.com/rss/articles/CBMipwFBVV95cUxPTXRFaFJzS0JxM1UwQ1lDbWs5QklvaVhhb2FqbmpxOGxJbzFaTTYwZ2paT2N0Q1lING5RcDBDaS1vVTlWdE42NTdzZWFmUWVZMlRhVTdnRDhENEFKQXU4LVRxT1V2eGhkYnlYa3FscEFuN09YWlJ5aFZOT1R1N2NBcDFicGJQOGNXUVVxZzBXNG8xUFZELU43TlJrbl9nTzJWVHNNSU9Haw?oc=5",
+      "resolvedUrl": "https://courthousenews.com/judge-blocks-trumps-sweeping-freeze-on-immigration-benefits-for-39-countries/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "fail",
+        "reason": "Could not extract article body",
+        "hint": "Page may be paywalled or use an unsupported layout. Open the article in Chrome, then retry."
+      }
+    },
+    {
+      "slug": "cpr",
+      "domain": "www.cpr.org",
+      "publisherDomain": "cpr.org",
+      "publisher": "Colorado Public Radio",
+      "rssSample": "Colorado Public Radio",
+      "rssLink": "https://news.google.com/rss/articles/CBMikAFBVV95cUxQVXNtVFgxQXQwc3Job3dBbzJjb2tMY1FmamY1WmFvUDZnWDBncFFidEFZRTQxeHFtZkMwLVNrQ0xraGtNZWxjaE81c2gwUGg1YVZ4WmtjWnFmUGZ0MmFjNVVCeEx5VndEREFVd0kteER1SXlpenUweXhUWnBQY3hNdGRfQXZhV2JYTC1FZHNxM1g?oc=5",
+      "resolvedUrl": "https://www.cpr.org/2026/06/05/colorado-river-federal-intervention-over-water-scarcity/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 6482,
+        "title": "Colorado and Nevada negotiators throw cold water on parts of federal plan to manage Colorado River",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "deadline",
+      "domain": "www.deadline.com",
+      "publisherDomain": "deadline.com",
+      "publisher": "Deadline",
+      "rssSample": "Deadline",
+      "rssLink": "https://news.google.com/rss/articles/CBMifEFVX3lxTFBvM2lfUjFGSHVPS05MdzdmekdIWDUzS0F4NUphWE4yUUM2akZNUUtBTkdVZzQ0b1haQnBOdkxGQzFOSnlDZnhacUlVdDFxdFdhWXJsMm1JRlVacDFsc0NiUFBuLTU0MjJCMEFGUWpON0FobXpVa2xjMG14Uk0?oc=5",
+      "resolvedUrl": "https://deadline.com/2026/06/box-office-backrooms-a24-record-1236942792/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "weak",
+        "reason": "short_body",
+        "bodyLength": 346,
+        "title": "&#8216;Backrooms&#8217; Becoming A24&#8217;s Highest Grossing Movie Ever Worldwide, Besting Timothée Chalamet&#8217;s $191M+ &#8216;Marty Supreme&#8217; &#8211; Box Office",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "eventhubs",
+      "domain": "www.eventhubs.com",
+      "publisherDomain": "eventhubs.com",
+      "publisher": "EventHubs",
+      "rssSample": "EventHubs",
+      "rssLink": "https://news.google.com/rss/articles/CBMiggFBVV95cUxQaHNRQlNxeFQyeVR1a2NBNnZjYUJUU3JZOThtN2Fua1NVOUlKOUk2WGFYbFdRbmpobEQxR2Ezd1JYaHZkWWdiWFI5RTRyYTVmTEE0Zk1tVXBYdUJhMWgzNks4Y2JfUjZ3M21zbERoTlh0b0FJdHdqcG9CVHBia24yNmFn?oc=5",
+      "resolvedUrl": "https://www.eventhubs.com/news/2026/jun/05/bosch-resurrect-street-fighter-6/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "error",
+        "reason": "timeout",
+        "preview": ""
+      }
+    },
+    {
+      "slug": "gematsu",
+      "domain": "www.gematsu.com",
+      "publisherDomain": "gematsu.com",
+      "publisher": "Gematsu",
+      "rssSample": "Gematsu",
+      "rssLink": "https://news.google.com/rss/articles/CBMilgFBVV95cUxOcjQwTE1rZzJGLUFZRHVzZGVDNFRHZjVacjVrUWUzNzVpVkR4NFNzbjJxN3VEaWFLTjZIZjRaUTdOemZDQlZIblZudzAyUUQ0aWdhSGtxSHNvclc5T3ltU1pwRzJHajk5UEo5UjJfaDJLV2Qyc3d1S1dHNGZJRlczMk9sVjg4TnEzTXpkTW9UaVVqMEtZZFE?oc=5",
+      "resolvedUrl": "https://www.gematsu.com/2026/06/the-blood-of-dawnwalker-trailer-teases-future-of-the-series",
+      "resolveError": null,
+      "getArticle": {
+        "status": "fail",
+        "reason": "Could not extract article body",
+        "hint": "Page may be paywalled or use an unsupported layout. Open the article in Chrome, then retry."
+      }
+    },
+    {
+      "slug": "hayspost",
+      "domain": "www.hayspost.com",
+      "publisherDomain": "hayspost.com",
+      "publisher": "Hays Post",
+      "rssSample": "Hays Post",
+      "rssLink": "https://news.google.com/rss/articles/CBMicEFVX3lxTE8zVm9WSktsbDRKUHlZYUpxSlFvUUZadldfMHZ2Rk5hdXU0cG9OQ29pemtkVUcxZHRiaXNsRmhEOEhTVnRSbjRUc3dzZHF6V04wNzZWT0VpWDRiRTdvY1RIb2pjdnIzcUVjQ3lfSzY2Y2o?oc=5",
+      "resolvedUrl": "https://hayspost.com/posts/d2ffe70d-e743-46ba-ae86-13313f4edea7",
+      "resolveError": null,
+      "getArticle": {
+        "status": "fail",
+        "reason": "HTTP 403",
+        "hint": "Article may be unavailable. Open www.hayspost.com in Chrome first, then retry."
+      }
+    },
+    {
+      "slug": "hollywoodreporter",
+      "domain": "www.hollywoodreporter.com",
+      "publisherDomain": "hollywoodreporter.com",
+      "publisher": "The Hollywood Reporter",
+      "rssSample": "The Hollywood Reporter",
+      "rssLink": "https://news.google.com/rss/articles/CBMisgFBVV95cUxOcW9nMFd2UXdFZ3AxZkxDdzFidm1CQXJ6S1ZNMDg3dm5iZU1tZEJlZFVqcHBqLU14RG5nQ05TUjVmbndqS2dyaEM1d19YM2d5NS1ZSXlMQTluWnJxN1FFaDNrVF9RTTdEdFQzdk55STZReG9qdnJmWmRjV2p2T29ldjYzZ3ZJcGEySUluN0pKUHk3UmltR2FIWGtVRUtONzUydGQxUVFkdTlvZFRxR3M5Mzl3?oc=5",
+      "resolvedUrl": "https://www.hollywoodreporter.com/news/politics-news/nithya-raman-spencer-pratt-winner-primary-mayor-1236615361/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "fail",
+        "reason": "no_body",
+        "bodyLength": 127,
+        "title": "Nithya Raman Nearly Tied With Spencer Pratt as Mayor Vote Count Becomes &#8216;Hills&#8217;-level Drama"
+      }
+    },
+    {
+      "slug": "investors",
+      "domain": "www.investors.com",
+      "publisherDomain": "investors.com",
+      "publisher": "Investor's Business Daily",
+      "rssSample": "Investor's Business Daily",
+      "rssLink": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOeVJwd292MU1RQmlaa1dvYWdpeVJVSS1ZOVA4WVpDdmVFSFhVRjBLNUZfTTUyOVJEcjdQT2FzOWJfb0NmTjQyLWF4YzBjUl9xQTZwNkJnUU15a04taWhfcm5sS21vd0wzWl9odmJKcjI3YTBEZzI4MjFVV3NlRVQyLWpmVW0xV0diMTVkUA?oc=5",
+      "resolvedUrl": "https://www.investors.com/news/technology/nvidia-stock-china-ai-chip-sales-scrutiny/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "weak",
+        "reason": "short_body",
+        "bodyLength": 373,
+        "title": "Nvidia Stock Falls On Concerns Of Backdoor AI Chip Sales To China",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "kotaku",
+      "domain": "www.kotaku.com",
+      "publisherDomain": "kotaku.com",
+      "publisher": "Kotaku",
+      "rssSample": "Kotaku",
+      "rssLink": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxNeVAtWUU3YTJoM1REenQtWEg3UHZzdVlIaURSQndOeEc2UXJiYTdHU01jWU1MUHdDcnNkRy1nLW55SFppUUhlbUNETXNudGdTVS01YjQxSzRqYnFibS1mWTRoSTk1S1ZkRWdMa1hiajFmWW9xTnZaT0VTaFptYjM2aEF0NzdTVmcta1AyRnRyY2ZWOHpGbjJDMU1KUWtWVjBxcFVEdTdHN2hEVHQ3MjhqbW55bXU0cUNXRTZxVHBidnJBRkdLSm9HNGgwVGMxZ09zOEQ5Wmpn?oc=5",
+      "resolvedUrl": "https://kotaku.com/hideo-kojima-says-hes-not-interested-in-ai-maybe-ai-could-create-art-but-while-i-live-i-dont-think-ill-see-it-2000703473",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2347,
+        "title": "Hideo Kojima Says He&#8217;s Not Interested In AI: &#8216;Maybe AI Could Create Art, But While I Live, I Don’t Think I’ll See It&#8217;",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "ktla",
+      "domain": "www.ktla.com",
+      "publisherDomain": "ktla.com",
+      "publisher": "KTLA",
+      "rssSample": "KTLA",
+      "rssLink": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQM0g1NG00eXZkLS11MmlGNzZ2M0tSLUoyRnFoTHRFTm9mb0lIUFFjUVhHTEtncUVXYUx6NXVWZm5rcU5weVItOERwMVZKVXlQZFZBdng3WnVQWFhydjNJOHE2U0U1SmVLOWxDeldvd0hFNFR0ZnVwdHBtd2tPeUZHM25CZnhiakdOaWI4OTFCTDdOSEJBYjhvOGRIQWVCd29ENlVKRF9TVDNnZUtTQTlWTVFtYnpsTEMzYlgwZTRn0gHDAUFVX3lxTE1BLVdQM3pzLUVXTllPUlQ4dGtJdHA5N3VMd2cyQ0NYQlRRTF8wNWlBN2NUX0ozM2JXOU1YTE1iRlFDc3hIRm9McWUyNjlsdF9CTnNaMkZ0SjNkbnl1MEZONEpLaFY0VUZtVExZNDQ1OWJoU3ZWWlNmRDlGdEk1bldGdkRmM0g4bi1KQWJnaWktcGlqX2FvMjZudGJaNkluNl9ESzAwSFR4ZnVEZ0hfbUdzMXF5UDc5UUFTVHF2d09pLTU4WQ?oc=5",
+      "resolvedUrl": "https://ktla.com/news/nationworld/dog-with-over-a-million-social-media-followers-reportedly-stolen-sold-for-27-and-eaten/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2458,
+        "title": "Dog with over a million social media followers reportedly stolen, sold for $27 and eaten",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "kvia",
+      "domain": "www.kvia.com",
+      "publisherDomain": "kvia.com",
+      "publisher": "KVIA",
+      "rssSample": "KVIA",
+      "rssLink": "https://news.google.com/rss/articles/CBMigwJBVV95cUxQNVYyeGtlOE92Uk5nTGJxenAwU0hjcE1kOGV6ZWNiekp3aEF4QTNrVFo3V052Tkk4UHNmMFNWcEFwU3l6N2FSc2NNQ2xIb2FNeGV6cDZLbTdROW1xOFhPdElvZVVRQW9ZVV9NWUlDYlpFaVFYcmMtVTlVeTB6TElEZy1QSDVpXzFZNlluUFRpUnhIX3gyclZFZW44SWI2S01MVHFsSWJaTGhkN0pneVhJVzZJM1MzNklVd0FuS3FVS01KeklnODVUTFNGS1pYR2tPWUsxWU93aExKWmNMREp0T3BpWC1GM3pyVnZFWXZmQXhlZ09jUGZQWFZzQTYzckN1Y0JR?oc=5",
+      "resolvedUrl": "https://kvia.com/health/2026/06/05/parkinsons-disease-is-consistently-linked-to-pesticide-exposure-farmworkers-and-nearby-communities-are-at-risk-in-texas-rio-grande-valley/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "fail",
+        "reason": "Could not extract article body",
+        "hint": "Page may be paywalled or use an unsupported layout. Open the article in Chrome, then retry."
+      }
+    },
+    {
+      "slug": "medicalxpress",
+      "domain": "www.medicalxpress.com",
+      "publisherDomain": "medicalxpress.com",
+      "publisher": "Medical Xpress",
+      "rssSample": "Medical Xpress",
+      "rssLink": "https://news.google.com/rss/articles/CBMihgFBVV95cUxQMkY2dXhpZmczeDA1NDVLQ3NjME4yZ3M2elFHSmxMRmxUbGc4SDBTSFdpX1lXMkMya2t6dWJWVGwzUC1XQkJ1U1NtRFV6MUlBV3VmNzdiTGxfU3F2cDd0ZS1TcERFS0lvWFR1TS1kMU9id0xKOXpPOEhXZUN4aGx6T3Q0SU9rZw?oc=5",
+      "resolvedUrl": "https://medicalxpress.com/news/2026-06-fasting-waistlines-exposing-dieters.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 6013,
+        "title": "Fasting after 60 changes more than waistlines, exposing a trade-off many dieters never see coming",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "mlbtraderumors",
+      "domain": "www.mlbtraderumors.com",
+      "publisherDomain": "mlbtraderumors.com",
+      "publisher": "MLB Trade Rumors",
+      "rssSample": "MLB Trade Rumors",
+      "rssLink": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxOTFFOeXAweWx2UjltNlN3cHdENFd1QmlZSDdzYlZzTVhLNDlEazhpQ2JlY1h4RnpROG41MWhaazMtZUpWV1lQWXN2MFNlZC0wNUwycGtDN005QzZ1YnJCVEhSOV8wdzQ1c1RvZERiUlN3X1VlVlNBU3Ixb0hZRDBsMVlGTFhELWxlVUFkXy1nbTI3VHdBYjBfZU9fbEp0T1owcGMxZjE5UHhGLWs?oc=5",
+      "resolvedUrl": "https://www.mlbtraderumors.com/2026/06/yankees-place-austin-wells-on-10-day-il-with-cervical-headaches.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "fail",
+        "reason": "Could not extract article body",
+        "hint": "Page may be paywalled or use an unsupported layout. Open the article in Chrome, then retry."
+      }
+    },
+    {
+      "slug": "nbcsports",
+      "domain": "www.nbcsports.com",
+      "publisherDomain": "nbcsports.com",
+      "publisher": "NBC Sports",
+      "rssSample": "NBC Sports",
+      "rssLink": "https://news.google.com/rss/articles/CBMizgFBVV95cUxPTVdHd0p0N2xDREREVHVYUDFOZER1T1NYN2xUZzNkeFdJSlZlSjllOXNCamo1dm5BVmRRQkFmRVBMQVh3X3pvQlpxaXg0QTdRSHJiVnJaMEQ1azhQU2tkNHAzMUxwQzFSck5mSWlhaGN5Y0RLOHBCSFduWTBFOGlpUjJIMHc5R0lyY0FlNHZ1OHc4Y1plY05ROW1jdmthZU9lZldwd1p5YllFRDRueXZCQ0xMLWVlYWNuMkdLU3lxZXNDd0J6OXlUb0lUUXJuUQ?oc=5",
+      "resolvedUrl": "https://www.nbcsports.com/nba/news/wembanyama-learning-lesson-kobe-lebron-other-greats-did-before-adversity-comes-before-finals-glory",
+      "resolveError": null,
+      "getArticle": {
+        "status": "fail",
+        "reason": "Could not extract article body",
+        "hint": "Page may be paywalled or use an unsupported layout. Open the article in Chrome, then retry."
+      }
+    },
+    {
+      "slug": "nbcwashington",
+      "domain": "www.nbcwashington.com",
+      "publisherDomain": "nbcwashington.com",
+      "publisher": "NBC4 Washington",
+      "rssSample": "NBC4 Washington",
+      "rssLink": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxPZkVRNUl1eGNRX0JEeFFCZXI0UENUM0R2WlphREhrdk9lNExsWVJfQWdEZUY4WVZrYmQwbWdPOWFNR1ZpRUx3U2VEeEZjdHpsendtQkFmNDRtWVlfLVBJb1ZwUHV2aEF2S1dYMW42Y3ItYVp3T3hLNTdxOGlMRktpMjY0NDU3Z0JXY2pTakIwWWtIeXFaYi0xUzRBZXhBYnl2SmZ6djl1Q3BObkplZG81ay1ZQ3VCY2tVQ0JiUTVLWm1sX1BtQ2x2ZzBpUjBHLUJMSVHSAdoBQVVfeXFMTXR2dlJrQUVNNFhzeGgyMHVjVUtWMWhJUURtQ1c5Q1RKQjNVZnVEbmRQYmhCYkRsV1VIczlrYWJKSG9ZemZVbUVJSTFuUEd2emxPZ013U09YUFhHSmNISGFtNk1nZTFYUDlkZ1l5OWpPS2xsNWJlZi1BZmdXX090OXVERk55RkF3RHBzRTA5WTJ2XzJKUzFsc3Q0T3RDaDdJRzBrbU9jMFAwWGp6NmxMS1dLVGFJbW5MYnhZNks1dnd6YjBCNEVHUGhEREpHTVVFckRTQmJCMm9vbXc?oc=5",
+      "resolvedUrl": "https://www.nbcwashington.com/news/local/trump-says-he-wants-his-new-acting-director-of-national-intelligence-to-cut-the-office/4113464/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "fail",
+        "reason": "HTTP 403",
+        "hint": "Article may be unavailable. Open www.nbcwashington.com in Chrome first, then retry."
+      }
+    },
+    {
+      "slug": "ncronline",
+      "domain": "www.ncronline.org",
+      "publisherDomain": "ncronline.org",
+      "publisher": "National Catholic Reporter",
+      "rssSample": null,
+      "rssLink": null,
+      "resolvedUrl": null,
+      "resolveError": null,
+      "getArticle": {
+        "status": "skip",
+        "reason": "no_rss_sample"
+      }
+    },
+    {
+      "slug": "newser",
+      "domain": "www.newser.com",
+      "publisherDomain": "newser.com",
+      "publisher": "Newser",
+      "rssSample": "Newser",
+      "rssLink": "https://news.google.com/rss/articles/CBMifkFVX3lxTE5vVFJkT2xqT2h2bWU1ZnlKRmtGVTFWUHU3TXVvX0p1U0dlX2V2LU1sZzczcFpya3ZTZ19vZllFX0Q0V3RIR3BuWjdqYmJsV21tZmY1OF9RaENVU1RIZjlvMlpuZFpMdFZUdEl4Y0dORVJpbzRPRm5GS1Vld2Nrdw?oc=5",
+      "resolvedUrl": "https://www.newser.com/story/390529/kyle-buschs-widow-breaks-silence.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "fail",
+        "reason": "HTTP 403",
+        "hint": "Article may be unavailable. Open www.newser.com in Chrome first, then retry."
+      }
+    },
+    {
+      "slug": "nintendoeverything",
+      "domain": "www.nintendoeverything.com",
+      "publisherDomain": "nintendoeverything.com",
+      "publisher": "Nintendo Everything",
+      "rssSample": "Nintendo Everything",
+      "rssLink": "https://news.google.com/rss/articles/CBMihwFBVV95cUxNQlRSeXRoa0xQNnhNemJoeFA0OW5PVm1ad3d1eTkxbThSY0E0YkJXcmlsZU8ydWNLSE9lUF9VV2xnTDdEZlJmSzdzekFmTGxMVWxvNnFZX0FlWW93SzNBdkNncUZLMDZHODREYTlnQnMzaU5lNzBVZENPbjNSazJoOXJWT2QwcHM?oc=5",
+      "resolvedUrl": "https://nintendoeverything.com/arizona-sunshine-announced-for-nintendo-switch-2/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "fail",
+        "reason": "Could not extract article body",
+        "hint": "Page may be paywalled or use an unsupported layout. Open the article in Chrome, then retry."
+      }
+    },
+    {
+      "slug": "phys",
+      "domain": "www.phys.org",
+      "publisherDomain": "phys.org",
+      "publisher": "Phys.org",
+      "rssSample": "Phys.org",
+      "rssLink": "https://news.google.com/rss/articles/CBMieEFVX3lxTE43RDAtbktadzVSaFV1NEVKLTBLNkdCOE02aHVFVFpjNUt6ODlFR1JpdUg5UFJBb2o3UkdtbFVzNzN0cmNUWjJ3YUVJVGRBNC1KRk0zejZ2TmhiVi00MExXMF9FSVhEUFQtd0lPSmVNLUJfU0g3SkFTeg?oc=5",
+      "resolvedUrl": "https://phys.org/news/2026-06-remote-toll-mental-health-american.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 4180,
+        "title": "Remote work is taking its toll on the mental health of American workers, researchers find",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "rollingstone",
+      "domain": "www.rollingstone.com",
+      "publisherDomain": "rollingstone.com",
+      "publisher": "Rolling Stone",
+      "rssSample": "Rolling Stone",
+      "rssLink": "https://news.google.com/rss/articles/CBMiogFBVV95cUxPLUxXYTFuaDZ6VThsdk1COUtfalJOM1FFTlhtc1pQTWV2VEZGREF3UlY3dUZiQjMtOU90YlNUcEVtREhBMm91ZS1qWkgwbU1HdEJheXFYdV85SVpKZDRraVg5M1pIelZuc1E4V3I4Z2JmUDNzUlF4TWlmWW84T29wQnNKdWdFY2FRRFhVTUFEUWNCTjBQSFh0UjNFTlk1M2dhU0E?oc=5",
+      "resolvedUrl": "https://www.rollingstone.com/music/music-news/earth-wind-fire-real-story-reasons-new-doc-1235573226/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "fail",
+        "reason": "no_body",
+        "bodyLength": 130,
+        "title": "&#8216;It&#8217;s a Sex Call!&#8217;: Earth, Wind and Fire Singer Shares the Real Story Behind a Wedding Classic"
+      }
+    },
+    {
+      "slug": "sports-yahoo-com",
+      "domain": "sports.yahoo.com",
+      "publisherDomain": "sports.yahoo.com",
+      "publisher": "Yahoo Sports",
+      "rssSample": "Yahoo Sports",
+      "rssLink": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNeUl6OHhSbjg2RzJveldhY0FxZDVoSF82NWlBYlBoLTVfVGJnYldTNzNUZVFFUGszUDVHSkhVeW1oSnpXazRleXh4WnE4NzRTbkRZVng0NTZjLXFoNWUwY0hDWXhYbG1FSTJCd09mQVdEVWpqZzV5eGpYUDg5SEZxbGVoSWhpeGd1WTJLUXVn?oc=5",
+      "resolvedUrl": "https://sports.yahoo.com/articles/knicks-issue-warning-ahead-president-001649751.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "fail",
+        "reason": "Could not extract article body",
+        "hint": "Page may be paywalled or use an unsupported layout. Open the article in Chrome, then retry."
+      }
+    },
+    {
+      "slug": "statnews",
+      "domain": "www.statnews.com",
+      "publisherDomain": "statnews.com",
+      "publisher": "statnews.com",
+      "rssSample": "statnews.com",
+      "rssLink": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQZl9JTUJIOF9UWEVzNlE0V2kxd2tNcWdLUnB0SDhkWlRPVjBiTjZLZmE1eGotWENpTFZ6TUxaazViUHVLMFluRGRnQXk1YmhVaVFxUVpBNGhLYmtfckhWa2gtYUhZMGpBWGk1Yzh3T0c4Qlp6YlhVTHhkSS1YbEpEdkdSRVFSUkNjaTl2NWRNUXdnNlBjTm1xZ3hISUhqSUk?oc=5",
+      "resolvedUrl": "https://www.statnews.com/2026/06/06/illy-retatrutide-triple-g-weight-loss-obesity-safety-data-ada/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "fail",
+        "reason": "no_body",
+        "bodyLength": 87,
+        "title": "Lilly shares safety, tolerability data on its next-gen obesity drug"
+      }
+    },
+    {
+      "slug": "theringer",
+      "domain": "www.theringer.com",
+      "publisherDomain": "theringer.com",
+      "publisher": "The Ringer",
+      "rssSample": "The Ringer",
+      "rssLink": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQaElqOVpfZWNQVjFWZnFTdnBZcUwtZHFzSnJWVGtGeGNFZnhRRndyV1FvcnpQTE00WHlwMm9qcnpiNjQ3eTk4RUMwSnBXTm9ESTQ2Wi1jNzBwSklYQkhBXzdlUDdBNVlsWnhzSjdMVmJRbUxtdTRUUjBPZHcxYkhMeG5BRVJuWXlLT2RfbkkzbEs3Y1B0X2hlR19rUE5BSHk2?oc=5",
+      "resolvedUrl": "https://www.theringer.com/2026/06/06/nba/new-york-knicks-nba-finals-2026-game-2-jalen-brunson-spurs",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 9251,
+        "title": null,
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "theurbanist",
+      "domain": "www.theurbanist.org",
+      "publisherDomain": "theurbanist.org",
+      "publisher": "The Urbanist",
+      "rssSample": "The Urbanist",
+      "rssLink": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPZUhqY1ZMenNDUE1Td0R2OExHVWQwb09NNnRhbG5YTXZQVjgtLTNrOXI3QmxFcmZvUFBtZkZKVjQwejlYZmhZTS1EQ3hlSE5rY3BLUkxWN09nMHg5ODNSaG5BZG1rRFRiRFJVTkd3TUpWOC1FRk5JdndvZjctMlp0Wjln?oc=5",
+      "resolvedUrl": "https://www.theurbanist.org/sound-transit-most-used-light-rail-system-in-us/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "fail",
+        "reason": "Could not extract article body",
+        "hint": "Page may be paywalled or use an unsupported layout. Open the article in Chrome, then retry."
+      }
+    },
+    {
+      "slug": "timesofisrael",
+      "domain": "www.timesofisrael.com",
+      "publisherDomain": "timesofisrael.com",
+      "publisher": "The Times of Israel",
+      "rssSample": "The Times of Israel",
+      "rssLink": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOek5zeTF4akRTTnRBVDE0b2ducGxXY2dSellKM2lUZTRRU2NmQ1RkbWgzZlEwY0JwRXRfa2ZVNmw2UXEzcGZ3dzJhaXhwanNMZmw4MnA0UGExWU5lOXVRc3RnTTFGZzFUVGljVGhyTGtlVWxMOWZyNTVqUnFMS01mWWpNeVQ5Sm9pVWF0cUdvbC1TSFVzYTNTUTBaMVZXSlctb0kwYmVpYi1feEowU18zZWpwdk5Sd9IBuwFBVV95cUxQc08wRklxQ2xMbEdXdndsZ0lHamJOd3ZuY1ZFM25Kai1idGpxRjEtUEJqVXhaTHVOc216MEdkcURDMW41ZkFSc0llQ2dkMGwyVTltY0wwRW01djNubFU1eDBubmd2NU91WU44STBnQThwZEdteVViRmlDSE9aYVhLYmdfRkpNUUdYZmFCUTFQalJtUnhBX3FGY01PVFZnMlEtT1h3VVBNV2pQZ0J6OVFpUUNLbXRiQU02cWdv?oc=5",
+      "resolvedUrl": "https://www.timesofisrael.com/two-idf-soldiers-killed-in-separate-incidents-in-south-lebanon-as-fighting-continues/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 7300,
+        "title": "Two IDF soldiers killed in southern Lebanon as fighting against Hezbollah continues",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "ussoccer",
+      "domain": "www.ussoccer.com",
+      "publisherDomain": "ussoccer.com",
+      "publisher": "US Soccer",
+      "rssSample": "US Soccer",
+      "rssLink": "https://news.google.com/rss/articles/CBMimwFBVV95cUxQTXVYclBoMjhMeGxQXy1SYTJKQ00tNEhfWENmLXEzRzBTeURObDZ3eXBTQ2F3b0szeWlCeDhRMXZHREFPRlZvUDhBRjU1UDNyVXlQZ0Fnblo3ckM1YlFNRUExQm9wckZRVmRNUDZiakRCazBXZ1JLUVRkNkZuaHhXQVZ3bnZOT2VKYmpWUWdxSWlJTS02MVZWd0lmUQ?oc=5",
+      "resolvedUrl": "https://ussoccer.com/stories/2026/06/usmnt/starting-xi-lineup-notes-vs-germany-chicago-illinois",
+      "resolveError": null,
+      "getArticle": {
+        "status": "fail",
+        "reason": "Could not extract article body",
+        "hint": "Page may be paywalled or use an unsupported layout. Open the article in Chrome, then retry."
+      }
+    },
+    {
+      "slug": "variety",
+      "domain": "www.variety.com",
+      "publisherDomain": "variety.com",
+      "publisher": "Variety",
+      "rssSample": "Variety",
+      "rssLink": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNcHowNDhka190Q0NObkJBNVZldGJMUlZ1UkVXUnI4ZUctRjlBRlNKd1FJblpZRWFKWG1oanlzWWwzRnZEdDZKRlhycGp5Q3BrNGVvUVBiNmJoaDVnNVB0bjAzc1lnaHZFSHpBTEhYWkNwY3JOUkYtUUJIdVVBZ0I1WG9TUHhEX3hCdG5COUlRcXU5bU5LVHk1Tm9CMDVTM0tBOTRibWhVRFZCSVE5QkE?oc=5",
+      "resolvedUrl": "https://variety.com/2026/film/box-office/box-office-scary-movie-masters-of-the-universe-backrooms-1236768580/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "weak",
+        "reason": "short_body",
+        "bodyLength": 333,
+        "title": "Box Office: 'Scary Movie 6' Starts Strong With $24.7 Million on Friday",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "yahoo",
+      "domain": "www.yahoo.com",
+      "publisherDomain": "yahoo.com",
+      "publisher": "Yahoo",
+      "rssSample": "Yahoo",
+      "rssLink": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxOamlCdU9CemQzbEsyNG41VG5zMUdCYTBGMXNuOUhmRk9SNnduWTVYcVBOTGVQV0Z6SDVSUHBfMFYxNnBwdEd6YXJTM3MySExYdmk2cnY3NzZpazBrelZkVUw0ZTJyZ05zczlJekF2NV9iSHJtdjM4b05PbGVXQng4Rjk2dnRuSFZ3akZmdWR2SnYzc18xcDF3aFZOZk1TTFJwNnoxb2tPbktDelh2YnBNLWVBVDBvS2Y0WjN3QWsxLVlHR2lwVnVXTUVHQy1PNzNoZ3BzeXFMSQ?oc=5",
+      "resolvedUrl": "https://www.yahoo.com/news/politics/articles/trump-delighted-when-reporter-asks-about-probe-into-cocaine-found-at-white-house-134900617.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "fail",
+        "reason": "TypeError: Failed to fetch\\n    at <anonymous>:410:22\\n    at <anonymous>:477:3",
+        "hint": null
+      }
+    }
+  ]
+}

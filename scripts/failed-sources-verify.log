@@ -1,0 +1,190 @@
+[1/20] bleachernation ... fail
+[2/20] bloomberg ... fail
+[3/20] consequence ... fail
+[4/20] courthousenews ... pass (5554)
+[5/20] eventhubs ... fail
+[6/20] gematsu ... fail
+[7/20] hayspost ... banned (HTTP 403 — HTTP 403 — publisher blocks programmatic fetch)
+[8/20] hollywoodreporter ... fail (127)
+[9/20] kvia ... fail
+[10/20] mlbtraderumors ... pass (1999)
+[11/20] nbcsports ... pass (6997)
+[12/20] nbcwashington ... banned (HTTP 403 — HTTP 403 — Akamai blocks programmatic fetch)
+[13/20] newser ... banned (HTTP 403 — HTTP 403 — publisher blocks programmatic fetch)
+[14/20] nintendoeverything ... fail
+[15/20] rollingstone ... fail (130)
+[16/20] sports-yahoo-com ... fail
+[17/20] statnews ... pass (1282)
+[18/20] theurbanist ... pass (5671)
+[19/20] ussoccer ... fail
+[20/20] yahoo ... fail
+
+ {
+  "verifiedAt": "2026-06-07T06:32:21.602Z",
+  "pass": 5,
+  "weak": 0,
+  "banned": 3,
+  "fail": 12,
+  "results": [
+    {
+      "slug": "bleachernation",
+      "url": "https://www.bleachernation.com/cubs/2026/06/06/enhanced-box-score-cubs-3-giants-2-june-6-2026/",
+      "status": "fail",
+      "bodyLength": 0,
+      "banned": false,
+      "reason": "[error] site bleachernation/get-article: Could not extract article body\n  Hint: Page may be paywalled or use an unsuppor"
+    },
+    {
+      "slug": "bloomberg",
+      "url": "https://www.bloomberg.com/news/articles/2026-06-06/china-escalates-patrols-near-taiwan-over-japan-philippines-talks",
+      "status": "fail",
+      "bodyLength": 0,
+      "banned": false,
+      "reason": "错误：Daemon HTTP 400: {\"success\":false,\"error\":\"SyntaxError: Unexpected identifier 'paragraph'\"}"
+    },
+    {
+      "slug": "consequence",
+      "url": "https://consequence.net/2026/06/olivia-rodrigo-robert-smith-new-song-primavera-song/",
+      "status": "fail",
+      "bodyLength": 0,
+      "banned": false,
+      "reason": "[error] site consequence/get-article: Could not extract article body\n  Hint: Page may be paywalled or use an unsupported"
+    },
+    {
+      "slug": "courthousenews",
+      "url": "https://courthousenews.com/judge-blocks-trumps-sweeping-freeze-on-immigration-benefits-for-39-countries/",
+      "status": "pass",
+      "bodyLength": 5554,
+      "banned": false,
+      "reason": ""
+    },
+    {
+      "slug": "eventhubs",
+      "url": "https://www.eventhubs.com/news/2026/jun/05/bosch-resurrect-street-fighter-6/",
+      "status": "fail",
+      "bodyLength": 0,
+      "banned": false,
+      "reason": "错误：Daemon HTTP 400: {\"success\":false,\"error\":\"Runtime.evaluate: Cannot find default execution context\"}"
+    },
+    {
+      "slug": "gematsu",
+      "url": "https://www.gematsu.com/2026/06/the-blood-of-dawnwalker-trailer-teases-future-of-the-series",
+      "status": "fail",
+      "bodyLength": 0,
+      "banned": false,
+      "reason": "[error] site gematsu/get-article: Could not extract article body\n  Hint: Page may be paywalled or use an unsupported lay"
+    },
+    {
+      "slug": "hayspost",
+      "url": "https://hayspost.com/posts/d2ffe70d-e743-46ba-ae86-13313f4edea7",
+      "status": "banned",
+      "bodyLength": 0,
+      "banned": true,
+      "reason": "HTTP 403 — HTTP 403 — publisher blocks programmatic fetch"
+    },
+    {
+      "slug": "hollywoodreporter",
+      "url": "https://www.hollywoodreporter.com/news/politics-news/nithya-raman-spencer-pratt-winner-primary-mayor-1236615361/",
+      "status": "fail",
+      "bodyLength": 127,
+      "banned": false,
+      "reason": ""
+    },
+    {
+      "slug": "kvia",
+      "url": "https://kvia.com/health/2026/06/05/parkinsons-disease-is-consistently-linked-to-pesticide-exposure-farmworkers-and-nearby-communities-are-at-risk-in-texas-rio-grande-valley/",
+      "status": "fail",
+      "bodyLength": 0,
+      "banned": false,
+      "reason": "[error] site kvia/get-article: Could not extract article body\n  Hint: Page may be paywalled or use an unsupported layout"
+    },
+    {
+      "slug": "mlbtraderumors",
+      "url": "https://www.mlbtraderumors.com/2026/06/yankees-place-austin-wells-on-10-day-il-with-cervical-headaches.html",
+      "status": "pass",
+      "bodyLength": 1999,
+      "banned": false,
+      "reason": ""
+    },
+    {
+      "slug": "nbcsports",
+      "url": "https://www.nbcsports.com/nba/news/wembanyama-learning-lesson-kobe-lebron-other-greats-did-before-adversity-comes-before-finals-glory",
+      "status": "pass",
+      "bodyLength": 6997,
+      "banned": false,
+      "reason": ""
+    },
+    {
+      "slug": "nbcwashington",
+      "url": "https://www.nbcwashington.com/news/local/trump-says-he-wants-his-new-acting-director-of-national-intelligence-to-cut-the-office/4113464/",
+      "status": "banned",
+      "bodyLength": 0,
+      "banned": true,
+      "reason": "HTTP 403 — HTTP 403 — Akamai blocks programmatic fetch"
+    },
+    {
+      "slug": "newser",
+      "url": "https://www.newser.com/story/390529/kyle-buschs-widow-breaks-silence.html",
+      "status": "banned",
+      "bodyLength": 0,
+      "banned": true,
+      "reason": "HTTP 403 — HTTP 403 — publisher blocks programmatic fetch"
+    },
+    {
+      "slug": "nintendoeverything",
+      "url": "https://nintendoeverything.com/arizona-sunshine-announced-for-nintendo-switch-2/",
+      "status": "fail",
+      "bodyLength": 0,
+      "banned": false,
+      "reason": "[error] site nintendoeverything/get-article: Could not extract article body\n  Hint: Page may be paywalled or use an unsu"
+    },
+    {
+      "slug": "rollingstone",
+      "url": "https://www.rollingstone.com/music/music-news/earth-wind-fire-real-story-reasons-new-doc-1235573226/",
+      "status": "fail",
+      "bodyLength": 130,
+      "banned": false,
+      "reason": ""
+    },
+    {
+      "slug": "sports-yahoo-com",
+      "url": "https://sports.yahoo.com/articles/knicks-issue-warning-ahead-president-001649751.html",
+      "status": "fail",
+      "bodyLength": 0,
+      "banned": false,
+      "reason": "错误：Daemon HTTP 400: {\"success\":false,\"error\":\"SyntaxError: Unexpected identifier 'article'\"}"
+    },
+    {
+      "slug": "statnews",
+      "url": "https://www.statnews.com/2026/06/06/illy-retatrutide-triple-g-weight-loss-obesity-safety-data-ada/",
+      "status": "pass",
+      "bodyLength": 1282,
+      "banned": false,
+      "reason": ""
+    },
+    {
+      "slug": "theurbanist",
+      "url": "https://www.theurbanist.org/sound-transit-most-used-light-rail-system-in-us/",
+      "status": "pass",
+      "bodyLength": 5671,
+      "banned": false,
+      "reason": ""
+    },
+    {
+      "slug": "ussoccer",
+      "url": "https://ussoccer.com/stories/2026/06/usmnt/starting-xi-lineup-notes-vs-germany-chicago-illinois",
+      "status": "fail",
+      "bodyLength": 0,
+      "banned": false,
+      "reason": "[error] site ussoccer/get-article: Could not extract article body\n  Hint: Page may be paywalled or use an unsupported la"
+    },
+    {
+      "slug": "yahoo",
+      "url": "https://www.yahoo.com/news/politics/articles/trump-delighted-when-reporter-asks-about-probe-into-cocaine-found-at-white-house-134900617.html",
+      "status": "fail",
+      "bodyLength": 0,
+      "banned": false,
+      "reason": "错误：Daemon HTTP 400: {\"success\":false,\"error\":\"SyntaxError: Unexpected identifier 'article'\"}"
+    }
+  ]
+}

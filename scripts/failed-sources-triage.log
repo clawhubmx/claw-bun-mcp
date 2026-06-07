@@ -1,0 +1,31 @@
+Triaging 20 failed sources (pool=8)...
+[1/20] bleachernation: unknown / get-article=fail
+[2/20] bloomberg: unknown / get-article=pass
+[3/20] consequence: unknown / get-article=fail
+[4/20] courthousenews: unknown / get-article=fail
+[5/20] eventhubs: unknown / get-article=fail
+[6/20] gematsu: unknown / get-article=fail
+[7/20] hayspost: unknown / get-article=banned
+[8/20] hollywoodreporter: unknown / get-article=pass
+[9/20] kvia: unknown / get-article=fail
+[10/20] mlbtraderumors: unknown / get-article=fail
+[11/20] nbcsports: unknown / get-article=fail
+[12/20] nbcwashington: unknown / get-article=fail
+[13/20] newser: unknown / get-article=banned
+[14/20] nintendoeverything: unknown / get-article=fail
+[15/20] rollingstone: unknown / get-article=fail
+[16/20] sports-yahoo-com: unknown / get-article=fail
+[17/20] statnews: unknown / get-article=fail
+[18/20] theurbanist: unknown / get-article=fail
+[19/20] ussoccer: paywall / get-article=fail
+[20/20] yahoo: unknown / get-article=pass
+
+=== TRIAGE SUMMARY ===
+{
+  "banned": 2,
+  "paywall": 1,
+  "fixed": 3,
+  "weak": 0,
+  "stillFail": 15
+}
+Report: /Users/hesdx/Documents/clawhost/claw-bun-mcp/scripts/failed-sources-triage.json

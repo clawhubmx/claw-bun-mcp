@@ -1,0 +1,495 @@
+{
+  "triagedAt": "2026-06-07T06:27:53.025Z",
+  "pool": 8,
+  "total": 20,
+  "banned": 2,
+  "paywall": 1,
+  "fixed": 3,
+  "weak": 0,
+  "stillFail": 15,
+  "results": [
+    {
+      "slug": "bleachernation",
+      "url": "https://www.bleachernation.com/cubs/2026/06/06/enhanced-box-score-cubs-3-giants-2-june-6-2026/",
+      "domain": "www.bleachernation.com",
+      "classification": {
+        "kind": "unknown",
+        "reason": null
+      },
+      "page": {
+        "title": "Nithya Raman Is Closing in on Spencer Pratt in Mayoral Primary",
+        "h1": "Nithya Raman Nearly Tied With Spencer Pratt as Mayor Vote Count Becomes ‘Hills’-level Drama",
+        "ldBodyLen": 127,
+        "paragraphCount": 9,
+        "sampleParagraphs": [
+          "The ex-MTV star was all ready to call it after Tuesday's primary. But a new drop of ballots puts Raman just 7,500 votes ",
+          "The Spencer Show might get canceled.Los Angeles City Council member Nithya Raman is closing the gap on her mayoral rival",
+          "Incumbent mayor Bass has already been projected as advancing from the primary with 35 percent of the vote.The candidates",
+          "But Raman — whose husband is veteran 30 Rock writer and producer Vali Chandrasekaran — has quietly subverted her showy t",
+          "Sign up for THR news straight to your inbox every day",
+          "Subscribe for full access to The Hollywood Reporter"
+        ]
+      },
+      "getArticle": {
+        "status": "fail",
+        "bodyLength": 0,
+        "error": "[error] site bleachernation/get-article: Could not extract article body",
+        "source": null
+      }
+    },
+    {
+      "slug": "bloomberg",
+      "url": "https://www.bloomberg.com/news/articles/2026-06-06/china-escalates-patrols-near-taiwan-over-japan-philippines-talks",
+      "domain": "www.bloomberg.com",
+      "classification": {
+        "kind": "unknown",
+        "reason": null
+      },
+      "page": {
+        "title": "Parkinson’s Disease Is Consistently Linked to Pesticide Exposure. Farmworkers — and Nearby Communities — Are at Risk in Texas’ Rio Grande Valley.  - KVIA",
+        "h1": "",
+        "ldBodyLen": 0,
+        "paragraphCount": 0,
+        "sampleParagraphs": []
+      },
+      "getArticle": {
+        "status": "pass",
+        "bodyLength": 506,
+        "error": null,
+        "source": "openPage"
+      }
+    },
+    {
+      "slug": "consequence",
+      "url": "https://consequence.net/2026/06/olivia-rodrigo-robert-smith-new-song-primavera-song/",
+      "domain": "consequence.net",
+      "classification": {
+        "kind": "unknown",
+        "reason": null
+      },
+      "page": {
+        "title": "",
+        "h1": "",
+        "ldBodyLen": 0,
+        "paragraphCount": 0,
+        "sampleParagraphs": []
+      },
+      "getArticle": {
+        "status": "fail",
+        "bodyLength": 0,
+        "error": "[error] site consequence/get-article: Could not extract article body",
+        "source": null
+      }
+    },
+    {
+      "slug": "courthousenews",
+      "url": "https://courthousenews.com/judge-blocks-trumps-sweeping-freeze-on-immigration-benefits-for-39-countries/",
+      "domain": "courthousenews.com",
+      "classification": {
+        "kind": "unknown",
+        "reason": null
+      },
+      "page": {
+        "title": "",
+        "h1": "",
+        "ldBodyLen": 0,
+        "paragraphCount": 0,
+        "sampleParagraphs": []
+      },
+      "getArticle": {
+        "status": "fail",
+        "bodyLength": 0,
+        "error": "[error] site courthousenews/get-article: Could not extract article body",
+        "source": null
+      }
+    },
+    {
+      "slug": "eventhubs",
+      "url": "https://www.eventhubs.com/news/2026/jun/05/bosch-resurrect-street-fighter-6/",
+      "domain": "www.eventhubs.com",
+      "classification": {
+        "kind": "unknown",
+        "reason": null
+      },
+      "page": {
+        "title": "",
+        "h1": "",
+        "ldBodyLen": 0,
+        "paragraphCount": 0,
+        "sampleParagraphs": []
+      },
+      "getArticle": {
+        "status": "fail",
+        "bodyLength": 0,
+        "error": "Runtime.evaluate: Cannot find default execution context",
+        "source": null
+      }
+    },
+    {
+      "slug": "gematsu",
+      "url": "https://www.gematsu.com/2026/06/the-blood-of-dawnwalker-trailer-teases-future-of-the-series",
+      "domain": "www.gematsu.com",
+      "classification": {
+        "kind": "unknown",
+        "reason": null
+      },
+      "page": {
+        "title": "",
+        "h1": "",
+        "ldBodyLen": 0,
+        "paragraphCount": 0,
+        "sampleParagraphs": []
+      },
+      "getArticle": {
+        "status": "fail",
+        "bodyLength": 0,
+        "error": "[error] site gematsu/get-article: Could not extract article body",
+        "source": null
+      }
+    },
+    {
+      "slug": "hayspost",
+      "url": "https://hayspost.com/posts/d2ffe70d-e743-46ba-ae86-13313f4edea7",
+      "domain": "hayspost.com",
+      "classification": {
+        "kind": "unknown",
+        "reason": null
+      },
+      "page": {
+        "title": "Arizona Sunshine announced for Nintendo Switch 2",
+        "h1": "Arizona Sunshine announced for Nintendo Switch 2",
+        "ldBodyLen": 0,
+        "paragraphCount": 0,
+        "sampleParagraphs": []
+      },
+      "getArticle": {
+        "status": "banned",
+        "bodyLength": 0,
+        "error": "[error] site hayspost/get-article: HTTP 403",
+        "source": null
+      }
+    },
+    {
+      "slug": "hollywoodreporter",
+      "url": "https://www.hollywoodreporter.com/news/politics-news/nithya-raman-spencer-pratt-winner-primary-mayor-1236615361/",
+      "domain": "www.hollywoodreporter.com",
+      "classification": {
+        "kind": "unknown",
+        "reason": null
+      },
+      "page": {
+        "title": "Earth, Wind and Fire Share the Real Story Behind 'Reasons' in New Doc",
+        "h1": "",
+        "ldBodyLen": 0,
+        "paragraphCount": 0,
+        "sampleParagraphs": []
+      },
+      "getArticle": {
+        "status": "pass",
+        "bodyLength": 4581,
+        "error": null,
+        "source": "openPage"
+      }
+    },
+    {
+      "slug": "kvia",
+      "url": "https://kvia.com/health/2026/06/05/parkinsons-disease-is-consistently-linked-to-pesticide-exposure-farmworkers-and-nearby-communities-are-at-risk-in-texas-rio-grande-valley/",
+      "domain": "kvia.com",
+      "classification": {
+        "kind": "unknown",
+        "reason": null
+      },
+      "page": {
+        "title": "Knicks issue warning ahead of President Trump’s attendance to NBA Finals - Yahoo Sports",
+        "h1": "Knicks issue warning ahead of President Trump’s attendance to NBA Finals",
+        "ldBodyLen": 0,
+        "paragraphCount": 0,
+        "sampleParagraphs": []
+      },
+      "getArticle": {
+        "status": "fail",
+        "bodyLength": 0,
+        "error": "[error] site kvia/get-article: Could not extract article body",
+        "source": null
+      }
+    },
+    {
+      "slug": "mlbtraderumors",
+      "url": "https://www.mlbtraderumors.com/2026/06/yankees-place-austin-wells-on-10-day-il-with-cervical-headaches.html",
+      "domain": "www.mlbtraderumors.com",
+      "classification": {
+        "kind": "unknown",
+        "reason": null
+      },
+      "page": {
+        "title": "",
+        "h1": "",
+        "ldBodyLen": 0,
+        "paragraphCount": 0,
+        "sampleParagraphs": []
+      },
+      "getArticle": {
+        "status": "fail",
+        "bodyLength": 0,
+        "error": "[error] site mlbtraderumors/get-article: Could not extract article body",
+        "source": null
+      }
+    },
+    {
+      "slug": "nbcsports",
+      "url": "https://www.nbcsports.com/nba/news/wembanyama-learning-lesson-kobe-lebron-other-greats-did-before-adversity-comes-before-finals-glory",
+      "domain": "www.nbcsports.com",
+      "classification": {
+        "kind": "unknown",
+        "reason": null
+      },
+      "page": {
+        "title": "",
+        "h1": "",
+        "ldBodyLen": 0,
+        "paragraphCount": 0,
+        "sampleParagraphs": []
+      },
+      "getArticle": {
+        "status": "fail",
+        "bodyLength": 0,
+        "error": "[error] site nbcsports/get-article: Could not extract article body",
+        "source": null
+      }
+    },
+    {
+      "slug": "nbcwashington",
+      "url": "https://www.nbcwashington.com/news/local/trump-says-he-wants-his-new-acting-director-of-national-intelligence-to-cut-the-office/4113464/",
+      "domain": "www.nbcwashington.com",
+      "classification": {
+        "kind": "unknown",
+        "reason": null
+      },
+      "page": {
+        "title": "",
+        "h1": "",
+        "ldBodyLen": 0,
+        "paragraphCount": 0,
+        "sampleParagraphs": []
+      },
+      "getArticle": {
+        "status": "fail",
+        "bodyLength": 0,
+        "error": null,
+        "source": null
+      }
+    },
+    {
+      "slug": "newser",
+      "url": "https://www.newser.com/story/390529/kyle-buschs-widow-breaks-silence.html",
+      "domain": "www.newser.com",
+      "classification": {
+        "kind": "unknown",
+        "reason": null
+      },
+      "page": {
+        "title": "",
+        "h1": "",
+        "ldBodyLen": 0,
+        "paragraphCount": 0,
+        "sampleParagraphs": []
+      },
+      "getArticle": {
+        "status": "banned",
+        "bodyLength": 0,
+        "error": "[error] site newser/get-article: HTTP 403",
+        "source": null
+      }
+    },
+    {
+      "slug": "nintendoeverything",
+      "url": "https://nintendoeverything.com/arizona-sunshine-announced-for-nintendo-switch-2/",
+      "domain": "nintendoeverything.com",
+      "classification": {
+        "kind": "unknown",
+        "reason": null
+      },
+      "page": {
+        "title": "",
+        "h1": "",
+        "ldBodyLen": 0,
+        "paragraphCount": 0,
+        "sampleParagraphs": []
+      },
+      "getArticle": {
+        "status": "fail",
+        "bodyLength": 0,
+        "error": "[error] site nintendoeverything/get-article: Could not extract article body",
+        "source": null
+      }
+    },
+    {
+      "slug": "rollingstone",
+      "url": "https://www.rollingstone.com/music/music-news/earth-wind-fire-real-story-reasons-new-doc-1235573226/",
+      "domain": "www.rollingstone.com",
+      "classification": {
+        "kind": "unknown",
+        "reason": null
+      },
+      "page": {
+        "title": "Nintendo Everything",
+        "h1": "<img src=\"https://nintendoeverything.com/wp-content/themes/ne_new/img/ne-logo-resize-2.png\" width=\"174\" height=\"47\" alt=\"Nintendo Everything logo\">Nintendo Everything",
+        "ldBodyLen": 0,
+        "paragraphCount": 0,
+        "sampleParagraphs": []
+      },
+      "getArticle": {
+        "status": "fail",
+        "bodyLength": 130,
+        "error": null,
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "sports-yahoo-com",
+      "url": "https://sports.yahoo.com/articles/knicks-issue-warning-ahead-president-001649751.html",
+      "domain": "sports.yahoo.com",
+      "classification": {
+        "kind": "unknown",
+        "reason": null
+      },
+      "page": {
+        "title": "Rolling Stone – Music, Film, TV and Political News Coverage",
+        "h1": ".RS-logo-filigree-cls-1{fill:#e60019}.RS-logo-filigree-cls-2{fill:#fff}.RS-logo-filigree-cls-3{fill:#929497}.RS-logo-filigree-cls-4{fill:#e60019}.RS-logo-filigree-cls-5{fill:#231f20}\t\tRollingstone Logo\n\t\n\t\t\t\t\t\t\t\t\n\t\n\t\t.rs-logo-grey-shadow-st0{fill:#bcbec0}.rs-logo-grey-shadow-st1{fill:#d71920}\t\tRollingstone Logo",
+        "ldBodyLen": 0,
+        "paragraphCount": 24,
+        "sampleParagraphs": [
+          "Philip Bailey details the adulterous one-night stand that inspired \"Reasons\" in an exclusive clip from Questlove's new d",
+          "Lasers shoot out of private parts, Benedict Cumberbatch's dancing earns Madonna's respect, the artist \"might be\" touring",
+          "The classic-rock titans, who are currently on a farewell tour, have had many lead singers over the years. This is each o",
+          "Swift co-wrote and produced “I Knew It, I Knew You” with her longtime confidant Jack Antonoff",
+          "As the scandal-ridden Republican locks arms with the president, his opponent wants to remind voters who is actually on t",
+          "\"2 Late,\" \"Wrong Number,\" and \"Mint Car\" among the rarities at Robert Smith and company's first concert since Nov. 2024",
+          "At the second and final 'Songs that Shaped Us' concert, Springsteen covered Elvis Presley, Bob Dylan, Eddie Floyd, and S",
+          "“The crew that made Toy Story 5 did not know about this secret until last week,” Thomas Jordan said Friday of \"I Knew It"
+        ]
+      },
+      "getArticle": {
+        "status": "fail",
+        "bodyLength": 0,
+        "error": "[error] site sports-yahoo-com/get-article: Could not extract article body",
+        "source": null
+      }
+    },
+    {
+      "slug": "statnews",
+      "url": "https://www.statnews.com/2026/06/06/illy-retatrutide-triple-g-weight-loss-obesity-safety-data-ada/",
+      "domain": "www.statnews.com",
+      "classification": {
+        "kind": "unknown",
+        "reason": null
+      },
+      "page": {
+        "title": "Yahoo Sports: News, Scores, Video, Fantasy Games, Schedules & More - Yahoo Sports",
+        "h1": "",
+        "ldBodyLen": 0,
+        "paragraphCount": 0,
+        "sampleParagraphs": []
+      },
+      "getArticle": {
+        "status": "fail",
+        "bodyLength": 87,
+        "error": null,
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "theurbanist",
+      "url": "https://www.theurbanist.org/sound-transit-most-used-light-rail-system-in-us/",
+      "domain": "www.theurbanist.org",
+      "classification": {
+        "kind": "unknown",
+        "reason": null
+      },
+      "page": {
+        "title": "STAT | A decade of reporting from the frontiers of health and medicine",
+        "h1": "STAT — A decade of reporting from the frontiers of health and medicine",
+        "ldBodyLen": 0,
+        "paragraphCount": 121,
+        "sampleParagraphs": [
+          "Test your knowledge with our now weekday mini crossword",
+          "The Deadliest Drug: America's alcohol epidemic hiding in plain sight",
+          "Stopping Ebola, 'an unforgiving enemy,' will require a massive, immediate, and meticulous response, writes former CDC Di",
+          "By Anil Oza, Chelsea Cirruzzo, and Lizzy Lawrence",
+          "STAT offers a variety of in-person and virtual events throughout the year.",
+          "Unpack trends redefining biotech and life sciences with senior executives, live from BIO.",
+          "We create tools to help you understand and track complex areas of development.",
+          "Here are the dozens of weight loss drugs in development to catch a booming market."
+        ]
+      },
+      "getArticle": {
+        "status": "fail",
+        "bodyLength": 0,
+        "error": "[error] site theurbanist/get-article: Could not extract article body",
+        "source": null
+      }
+    },
+    {
+      "slug": "ussoccer",
+      "url": "https://ussoccer.com/stories/2026/06/usmnt/starting-xi-lineup-notes-vs-germany-chicago-illinois",
+      "domain": "ussoccer.com",
+      "classification": {
+        "kind": "paywall",
+        "reason": "become a member"
+      },
+      "page": {
+        "title": "The Urbanist",
+        "h1": "",
+        "ldBodyLen": 0,
+        "paragraphCount": 22,
+        "sampleParagraphs": [
+          "With the boost from the expanded 2 Line, Seattle's Link rail system is humming along at 160,000 daily riders, according ",
+          "Robert Cruickshank explains the ballot initiative he has filed to reform Sound Transit's board governance, arguing the o",
+          "A push to allow housing in the Stadium District looked like it had been thwarted by a legal appeal and a shift on the Se",
+          "Installing fare gates at a focused number of light rail stations would pay for itself within two to five years and boost",
+          "Even though the 4 Line was delayed from 2044 to 2050, Issaquah leaders including Mayor Mark Mullet hosted a community ce",
+          "While hesitant to alter plans or go back to voters for funding, Sound Transit board members approved a \"Request for Info",
+          "Join The Urbanist for our June 10 housing forum and get your ticket for our Summer Endorsed Candidate Party on July 19. ",
+          "Join The Urbanist and other partners for a King County Candidate Forum on June 10th. The Assessor and District 2 races a"
+        ]
+      },
+      "getArticle": {
+        "status": "fail",
+        "bodyLength": 0,
+        "error": "[error] site ussoccer/get-article: Could not extract article body",
+        "source": null
+      }
+    },
+    {
+      "slug": "yahoo",
+      "url": "https://www.yahoo.com/news/politics/articles/trump-delighted-when-reporter-asks-about-probe-into-cocaine-found-at-white-house-134900617.html",
+      "domain": "www.yahoo.com",
+      "classification": {
+        "kind": "unknown",
+        "reason": null
+      },
+      "page": {
+        "title": "U.S. Soccer Official Website | USWNT & USMNT",
+        "h1": "",
+        "ldBodyLen": 0,
+        "paragraphCount": 74,
+        "sampleParagraphs": [
+          "Sign up to watch exclusive Insiders content",
+          "Behind the Scenes of the U20 USMNT World Cup",
+          "U20 USMNT World Cup: Brothers On and Off the Field",
+          "The U.S. Beach Women's National Soccer Team: Everything for the Crest",
+          "The U.S. Beach Women's National Soccer Team: Finish The Play",
+          "The U.S. Beach Women's National Soccer Team: Behind The Scenes",
+          "Upgrade to Premium Insiders to get closer to the Crest",
+          "Insiders Exclusive: Watch the USMNT's First Day of Training"
+        ]
+      },
+      "getArticle": {
+        "status": "pass",
+        "bodyLength": 3565,
+        "error": null,
+        "source": "openPage"
+      }
+    }
+  ]
+}

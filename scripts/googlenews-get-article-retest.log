@@ -1,0 +1,66 @@
+Retrying 33 adapters from prior run
+Testing 33 newly generated get-article adapters...
+Collected RSS samples for 182 domains
+[1/33] autosport ... PASS (full_body, 535 chars)
+[2/33] bleachernation ... FAIL (Could not extract article body)
+[3/33] bloomberg ... FAIL (HTTP 403)
+[4/33] boingboing ... PASS (full_body, 1230 chars)
+[5/33] consequence ... FAIL (Could not extract article body)
+[6/33] courthousenews ... FAIL (Could not extract article body)
+[7/33] cpr ... PASS (full_body, 6482 chars)
+[8/33] deadline ... WEAK (short_body, 346 chars)
+[9/33] eventhubs ... ERROR (timeout)
+[10/33] gematsu ... FAIL (Could not extract article body)
+[11/33] hayspost ... FAIL (HTTP 403)
+[12/33] hollywoodreporter ... FAIL (no_body, 127 chars)
+[13/33] investors ... WEAK (short_body, 373 chars)
+[14/33] kotaku ... PASS (full_body, 2347 chars)
+[15/33] ktla ... PASS (full_body, 2458 chars)
+[16/33] kvia ... FAIL (Could not extract article body)
+[17/33] medicalxpress ... PASS (full_body, 6013 chars)
+[18/33] mlbtraderumors ... FAIL (Could not extract article body)
+[19/33] nbcsports ... FAIL (Could not extract article body)
+[20/33] nbcwashington ... FAIL (HTTP 403)
+[21/33] ncronline ... SKIP (no RSS sample)
+[22/33] newser ... FAIL (HTTP 403)
+[23/33] nintendoeverything ... FAIL (Could not extract article body)
+[24/33] phys ... PASS (full_body, 4180 chars)
+[25/33] rollingstone ... FAIL (no_body, 130 chars)
+[26/33] sports-yahoo-com ... FAIL (Could not extract article body)
+[27/33] statnews ... FAIL (no_body, 87 chars)
+[28/33] theringer ... PASS (full_body, 9251 chars)
+[29/33] theurbanist ... FAIL (Could not extract article body)
+[30/33] timesofisrael ... PASS (full_body, 7300 chars)
+[31/33] ussoccer ... FAIL (Could not extract article body)
+[32/33] variety ... WEAK (short_body, 333 chars)
+[33/33] yahoo ... FAIL (TypeError: Failed to fetch\n    at <anonymous>:410:22\n    at <anonymous>:477:3)
+
+=== SUMMARY ===
+PASS:  9
+WEAK:  3 (200-499 chars)
+FAIL:  19
+ERROR: 1
+SKIP:  1
+Report: scripts/googlenews-get-article-retest-results.json
+
+Failed / errored:
+  - bleachernation: Could not extract article body — Page may be paywalled or use an unsupported layout. Open the article in Chrome, then retry.
+  - bloomberg: HTTP 403 — Article may be unavailable. Open www.bloomberg.com in Chrome first, then retry.
+  - consequence: Could not extract article body — Page may be paywalled or use an unsupported layout. Open the article in Chrome, then retry.
+  - courthousenews: Could not extract article body — Page may be paywalled or use an unsupported layout. Open the article in Chrome, then retry.
+  - eventhubs: timeout
+  - gematsu: Could not extract article body — Page may be paywalled or use an unsupported layout. Open the article in Chrome, then retry.
+  - hayspost: HTTP 403 — Article may be unavailable. Open www.hayspost.com in Chrome first, then retry.
+  - hollywoodreporter: no_body
+  - kvia: Could not extract article body — Page may be paywalled or use an unsupported layout. Open the article in Chrome, then retry.
+  - mlbtraderumors: Could not extract article body — Page may be paywalled or use an unsupported layout. Open the article in Chrome, then retry.
+  - nbcsports: Could not extract article body — Page may be paywalled or use an unsupported layout. Open the article in Chrome, then retry.
+  - nbcwashington: HTTP 403 — Article may be unavailable. Open www.nbcwashington.com in Chrome first, then retry.
+  - newser: HTTP 403 — Article may be unavailable. Open www.newser.com in Chrome first, then retry.
+  - nintendoeverything: Could not extract article body — Page may be paywalled or use an unsupported layout. Open the article in Chrome, then retry.
+  - rollingstone: no_body
+  - sports-yahoo-com: Could not extract article body — Page may be paywalled or use an unsupported layout. Open the article in Chrome, then retry.
+  - statnews: no_body
+  - theurbanist: Could not extract article body — Page may be paywalled or use an unsupported layout. Open the article in Chrome, then retry.
+  - ussoccer: Could not extract article body — Page may be paywalled or use an unsupported layout. Open the article in Chrome, then retry.
+  - yahoo: TypeError: Failed to fetch\n    at <anonymous>:410:22\n    at <anonymous>:477:3

@@ -1,0 +1,2705 @@
+{
+  "testedAt": "2026-06-07T06:15:51.047Z",
+  "total": 162,
+  "pass": 129,
+  "weak": 4,
+  "fail": 2,
+  "skip": 4,
+  "results": [
+    {
+      "slug": "247sports",
+      "domain": "www.247sports.com",
+      "publisherDomain": "247sports.com",
+      "publisher": "247Sports",
+      "rssSample": "247Sports",
+      "rssLink": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxPbC1lbEViUld0UEZ2V3VTQWxmMWhvdGN5U0tCdlVfOEliMEJSOG1jc25uaUtSSl9nTDRaeWMwTEVhMzQtNWM2R1FmdFZVQ005QjVocGE1bEVLNDZHdFE2ejA0WkhLN0hPTU5vV01GVlRWS1pERFpJMUNSN2Q1VDR2Q2hUZVN6QzhkWThlYVlueVR0SWsycGFyYjl2RUZRUDdxSW1hUkRHQmNNaEZkbmxJcHdIcklMc3NWdDVwaHhya00ySHNhd0g5Y2NEdGU4MFE3ZGdv?oc=5",
+      "resolvedUrl": "https://247sports.com/college/north-carolina/article/diamond-heels-hold-on-with-4-0-win-against-usc-force-game-three-in-supers-287534976/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 4248,
+        "title": "Diamond Heels Hold on With 40 Win Against USC Force Game Three in Supers",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "404media",
+      "domain": "www.404media.co",
+      "publisherDomain": "404media.co",
+      "publisher": "404 Media",
+      "rssSample": "404 Media",
+      "rssLink": "https://news.google.com/rss/articles/CBMimAFBVV95cUxPMHlyc2lNSHNhcVpIM05iaklGdHlpdjFIMU9YN2NubkhFejlZaUxTcDJ4d0NoazBSVHRSTF8xcHpsZWU2YklRZ2lGVzFhODlhVDBxMmpFX0ZSM21LYXE3RVhfOUVFSk5kamptVEROZkFYSmZuTjhRb0JYVnhTREZ6S0Y3YUo1Um1RN0dwZXdGaFA3SllOdnlKbA?oc=5",
+      "resolvedUrl": "https://www.404media.co/scientists-discover-hidden-symmetry-on-earth-that-nobody-can-explain/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 8348,
+        "title": "Scientists Discover Hidden Symmetry on Earth That Nobody Can Explain",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "9to5google",
+      "domain": "www.9to5google.com",
+      "publisherDomain": "9to5google.com",
+      "publisher": "9to5Google",
+      "rssSample": "9to5Google",
+      "rssLink": "https://news.google.com/rss/articles/CBMifEFVX3lxTFBYQmNTanJEeVFXcnVUblc3ZWdKdDEwWVk4bjBqc1VtelJJSG01dnZQdDJUQWhpVm1FNGZLdWFuZmZTWnhsRjQxYXJELUh6QkdubEc4aGZzMV9vYWVkYkQ1Rl9PemxjOFEtU0dscjNYVlpqMUI4NTM4STllV2I?oc=5",
+      "resolvedUrl": "https://9to5google.com/2026/06/05/steam-machine-summer-launch-confirmed/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2217,
+        "title": "Steam Machine summer launch confirmed in hopeful update, but still no price",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "9to5mac",
+      "domain": "www.9to5mac.com",
+      "publisherDomain": "9to5mac.com",
+      "publisher": "9to5Mac",
+      "rssSample": "9to5Mac",
+      "rssLink": "https://news.google.com/rss/articles/CBMifkFVX3lxTE1LRlV0clc5X0dwSnBuNnhFTnk3SVByd3hyWUsyLTVqSnBNWEJyMWdSUXNxT3JGbFhpLVBKTzdDdTZOVktMRGg2ZjJfMUZGcTNzOGVvSU9YTU4yQnpzRFV3RmJEc1dybk13UWJKT3J0Q29vQWJyMFdMZjZYbzRUZw?oc=5",
+      "resolvedUrl": "https://9to5mac.com/2026/06/06/ios-27-seven-new-features-are-coming-soon/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 6482,
+        "title": "iOS 27: Seven new iPhone features are coming soon",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "abcnews",
+      "domain": "www.abcnews.com",
+      "publisherDomain": "abcnews.com",
+      "publisher": "ABC News - Breaking News, Latest News and Videos",
+      "rssSample": "ABC News - Breaking News, Latest News and Videos",
+      "rssLink": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxNaW9XcFRfSUtoUGVWc3hRZzVzZUc4YlAzT2ZkYzNFVjJVUnpuVW1KYjZ1a0pqdXVKdk9lQ3pDUWVlNXBHTGJGVTU5MlpGNGU3eDJGcDZXRDc2NnBWczdORi1vYTJFd0FIWHhBTWJndjJDeHVkRXZMZllSaXdvYmpfTXl6QzFaanFIYVRxSjZWd3RsU3RRTXVJdlNVQ3d2QkVPSHp3dG9ETmZGWW_SAbABQVVfeXFMTkQxNVpnZUxxYXh5UnJmdXMydjBNQVNnT002UmRRRkdObmx5eld1UnlXcFlzQklvYml4VlZ6MHJUZW1OMVVOMzRxVG42NmhBZ0xTTkNZUV9GTExXUzNJSG9VT0xfWFE2Ylhqa1ZCLVVfSnF6eFh5S1ZreGc3NkxUaWFBdXlMeEtsekxkUnA0WXR0a1NjNU5wQW5PeGhXaHltSDhjaDF3RnNJcS1XZ3o0Tko?oc=5",
+      "resolvedUrl": "https://abcnews.com/GMA/Food/texas-pitmasters-express-concern-amid-beef-shortages-rising/story?id=133612016",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 3957,
+        "title": "Texas pitmasters express concern amid beef shortages, rising prices",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "abovethelaw",
+      "domain": "www.abovethelaw.com",
+      "publisherDomain": "abovethelaw.com",
+      "publisher": "Above the Law",
+      "rssSample": "Above the Law",
+      "rssLink": "https://news.google.com/rss/articles/CBMiowFBVV95cUxPemN6Z0NldkFXYzNmMFMtNVI4XzJxcWJmSUJlcVdDWkxUR1J1LTJxY0J2MDhrTEgtSFlZZGNtLWJXRG5HVzhzZ1R5dEJOQU9qRGw5Nkxsb3lpdkNhUGRhcFEySVhrT2ctaHp6OUJOU2dTdlBULVZ1by1DbUFKYTU2MTQ1YUUzQWRiNVVGQzR1NHZjeDJJOHdZTUlBMWVTYms0ek9r?oc=5",
+      "resolvedUrl": "https://abovethelaw.com/2026/06/associate-compensation-scorecard-the-2026-summer-of-salary-increases/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2061,
+        "title": "Associate Compensation Scorecard: The 2026 Summer Of Salary Increases",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "al",
+      "domain": "www.al.com",
+      "publisherDomain": "al.com",
+      "publisher": "AL.com",
+      "rssSample": "AL.com",
+      "rssLink": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNdGNRRFlic1lFN25PdmxrVGRndXFpWTBuZm1teEhBUWFyUnZmamlVekV3dTl3NW55Ul8xN0twaFFhN3VVbjdxbnJNTXp0aUZQU2otZmdiZGwtaVFWX2tSM0FlWXMwbFpwNDlKX0xIQTI3TUkzdmpuZmpXMTBYMWs0Rmhfbl9DYXBpUGxhd1IxbE1pd9IBpgFBVV95cUxQeDJob190dDRLZHhuTGVMUmNhZTRaTnd1T3lSTzNvZnR6bi1KcVlhTHZ6UmJ0MmU3UjhnZEd0V1hPUk1Qa0pyNFVGTy1LVTc5RmRZOEV5cENMMFhJQzBmSl9fX1NDcnlUR21RNnVsdHVUYW4wUkl4czJYa1R6N0dSQWJyMnFaQXRLRllTX0hpaUYwdEJZMF92YkZlVVJYZWx6ZFFpdm5R?oc=5",
+      "resolvedUrl": "https://www.al.com/news/2026/06/woman-injured-in-saturday-night-birmingham-shooting.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 1731,
+        "title": "Woman shot dead in Birmingham in city’s 4th homicide in 48 hours",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "aljazeera",
+      "domain": "www.aljazeera.com",
+      "publisherDomain": "aljazeera.com",
+      "publisher": "Al Jazeera",
+      "rssSample": "Al Jazeera",
+      "rssLink": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOZVpTTEd6S2dFckw1TnF4aEFzSDdVQkFheWRoNUNaR195Z1dGQ054MFluUXZ5YUU3YTFPMWJmUF9mQnFfR080UFBRZ01EQjJyQzdwWlhWR2d3MlNzdWd2QWd3OE1NMjh5RUxBNEhaRk5JS2Z0cTFrTFk4cG4teV9NYWdsSVRxU3VERnV6SHJkMjlHQ2VBcWU2Z2RXZkluaWZaOU9rcVJka0p5dFNaaEU0MdIBtgFBVV95cUxQUkNkZXFReXItOTl2MWpPSWRZTEdCRmxYRjZBVFc1c0hSQjdYYnpQWFJETmxQMUMtdTlWRlpEemFydUVablhaeWVZbzlQbVFwRG03R2VqRmxqZFFLM2MtZ19SWTlta2JmakpuSGdCc0swcmdUOEQ3QU1PX1FVVkdIY0pEZUVGVm5ka1Z2VkJUOFZNLXZ2WGpxZm1feUllVE5tZnNtUnNYamw0ZFFwMjcyNmJQLTN1QQ?oc=5",
+      "resolvedUrl": "https://www.aljazeera.com/gallery/2026/6/6/youth-led-satire-cockroach-janta-party-protests-exam-system-failures",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 1732,
+        "title": "Cockroach Janta Party rallies in New Delhi for youth protests",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "aol",
+      "domain": "www.aol.com",
+      "publisherDomain": "aol.com",
+      "publisher": "AOL.com",
+      "rssSample": "AOL.com",
+      "rssLink": "https://news.google.com/rss/articles/CBMif0FVX3lxTFBjQmloYjJNUjFjRFlIZ0V3VHpaZjNvNGRsZHRNSkNLOGpjWm1BQkVwX3cxNjBqcXU1WmdRV0liaEFkMDJqSkxoeG5pM2gxZjNTME4zeGhRbGZDYWUwNTlpTkVuVU5nTnFxNjRjS2Nhb3BtSjVuZUJiOFpURnpLdjA?oc=5",
+      "resolvedUrl": "https://www.aol.com/articles/theory-could-finally-solve-one-090407000.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 4105,
+        "title": "New theory could finally solve one of Stonehenge’s biggest mysteries",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "apnews",
+      "domain": "www.apnews.com",
+      "publisherDomain": "apnews.com",
+      "publisher": "AP News",
+      "rssSample": "AP News",
+      "rssLink": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPbXpvZ3BsVEUtaXB4SHd5c1RKTGR0d2k2R21tVTRJcGNncHR1LXRfOHpXekhHUXIyeHhwX1d4ZktEZkJJX1VRUXhrNWtDZjBRMU1MRFZPVXFoMkYyVlFQYm9vRHpOUllDeFJMM0JVQWJvdUt0U0JUOFQyRHpIOXIxcDQ2Y1hOTDlaMklxUUFtWWkwbEtuWEtjRU1hWU5faklmT2ZqUDNLNEhnWXRDUVhXRzln?oc=5",
+      "resolvedUrl": "https://apnews.com/article/kosovo-election-politics-stalemate-osmani-kurti-vote-21b9c61aacdb142de6fbaad7059610d8",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 4821,
+        "title": "Kosovo voters head to polls in hope of breaking impasse",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "asiatimes",
+      "domain": "www.asiatimes.com",
+      "publisherDomain": "asiatimes.com",
+      "publisher": "Asia Times",
+      "rssSample": "Asia Times",
+      "rssLink": "https://news.google.com/rss/articles/CBMilgFBVV95cUxOa01rLXJRWF9CX3h1TV9Na3F5aU1pUE43dm5EaEplRWZHWnRBOXMybVh1clhlMExXYWJycUM4bXRSN0VyZC0xWVpHRXFhR3F4bjl2aUowLVppeENWQ1dlRGlSZzVWcnN6eEVmMVh0T2pXRG5MOGFENDlZRmY5ZzNuT2pwYkJCaGY1WXVUTXpMRldtRVFTU0E?oc=5",
+      "resolvedUrl": "https://asiatimes.com/2026/06/trumps-tariffs-back-and-the-timing-couldnt-be-worse-for-asia/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 10793,
+        "title": "Trump&#8217;s tariffs are back – and the timing couldn&#8217;t be worse for Asia",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "autosport",
+      "domain": "www.autosport.com",
+      "publisherDomain": "autosport.com",
+      "publisher": "Autosport",
+      "rssSample": null,
+      "rssLink": null,
+      "resolvedUrl": null,
+      "resolveError": null,
+      "getArticle": {
+        "status": "skip",
+        "reason": "no_rss_sample"
+      }
+    },
+    {
+      "slug": "bbc",
+      "domain": "www.bbc.com",
+      "publisherDomain": "bbc.com",
+      "publisher": "BBC",
+      "rssSample": "BBC",
+      "rssLink": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE9YWHQ4bXpfWWhoZmpxc3V3X3VxNWxIS294Z29YUHMxek9qdk5EbW50YzNxbm9TQmN4OTdzcncyanFpcEIwdzIwRjJ4Sl9yZU5qM005RmVfVXJpUQ?oc=5",
+      "resolvedUrl": "https://www.bbc.com/news/articles/c0q2q4y09elo",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 4377,
+        "title": "Fall in official Ebola numbers appears to be good news but it's not that simple",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "behindthesteelcurtain",
+      "domain": "www.behindthesteelcurtain.com",
+      "publisherDomain": "behindthesteelcurtain.com",
+      "publisher": "Behind the Steel Curtain",
+      "rssSample": "Behind the Steel Curtain",
+      "rssLink": "https://news.google.com/rss/articles/CBMi6AFBVV95cUxQUmNvemRfczJJbEpHbDQxSktscDRnODVPMHpfUGQzNFMzWUVxUklIaXNPRWNBUVR3UDdGWE9BZWpiemhHMmlKLXozUDZPSDNGWkhIOEhrQzQweWlXSVpNTkx2UXZXSnAtTjlKTDZVYlR6S0pIZ1BGVDlYZ2pERmlSLUZlS0ZyRHpvVEp2cDhVX09QU0QwQmdzSzJibHJIVTh3TzAzVDRmTXNmMHJTVkswOEJSb2xsY09xU1JzMjBLSnVoQVhfVDdyVVhmZHM4bV9ERU1wa3RJTmJCVWlPOWRmWmNuOEJucGFG?oc=5",
+      "resolvedUrl": "https://www.behindthesteelcurtain.com/pittsburgh-steelers-news/171535/steelers-would-need-to-pay-hefty-price-for-polarizing-qb-brendan-sorsby-will-howard",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 1927,
+        "title": "Steelers would need to pay hefty price for polarizing QB",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "benzinga",
+      "domain": "www.benzinga.com",
+      "publisherDomain": "benzinga.com",
+      "publisher": "Benzinga",
+      "rssSample": "Benzinga",
+      "rssLink": "https://news.google.com/rss/articles/CBMirwFBVV95cUxPTTJZUHpra2F5VWdmdVdMUzRQV1NLcUF4c2taeXRobDRNUHBqOGk2WDdTMVdaZlFXVXg1VElfbXdLdXdGN043ZkFCc3B2bkF6clFISkx5VU1PTVJXY2traVYyOEpFZW9EM1B1akEzQ2ZFX25GbXFIX1d6cC1RTDV5bWM1dnk3ZkIzRzJoeEYzQ1k3SVo2Y2dmdWlxeUJodDMtTzFOOFNxTWh6QVV3UFJR?oc=5",
+      "resolvedUrl": "https://www.benzinga.com/trading-ideas/movers/26/06/53023602/why-is-marvell-technology-stock-falling-on-friday",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2405,
+        "title": "Why Is Marvell Technology Stock Falling On Friday? - Marvell Technology (NASDAQ:MRVL)",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "bleachernation",
+      "domain": "www.bleachernation.com",
+      "publisherDomain": "bleachernation.com",
+      "publisher": "Bleacher Nation",
+      "rssSample": "Bleacher Nation",
+      "rssLink": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOQ1ZCVTNyU0JLMzFPSy1SSlV4SVZNM25SNDNsNlhLMFlSWU9oQlVlNVBINkdVSzI4R2R2dDVETnBlc28xMERzRVRIV0hlaUF0cURNWVU2V2JWY0ZvT0xDNk1WU3pWQ2ZXQnJjZzlmdFM1aFFJVmgyd05MaHBvOElzWGV1eUc3U25QejF0ODhjcldRdHd0WFJKY0dR?oc=5",
+      "resolvedUrl": "https://www.bleachernation.com/cubs/2026/06/06/enhanced-box-score-cubs-3-giants-2-june-6-2026/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "error",
+        "reason": "unparseable_output",
+        "preview": ""
+      }
+    },
+    {
+      "slug": "bleacherreport",
+      "domain": "www.bleacherreport.com",
+      "publisherDomain": "bleacherreport.com",
+      "publisher": "Bleacher Report",
+      "rssSample": "Bleacher Report",
+      "rssLink": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNMWdzYk8xeVNYWWF3dEw3YzI0T3FVR2pnQVRzcEdUcUhiMFpVM2xndkRJa2h4NTlTbGUxUWlPUDlHemhQUF84ZUZWbV9SV2hSM3dYOGRvQUNQR1RKbm1ZNmhCOVRwVmZxbkVyNVo4QjJVamYyZFNXZU9Qd08xRnplMk9zc3pSM3dCbFQ5YVk1OTFldHRwSnJRT3VXZVU2S1I2eG9CT1hXRzJMUmhxQ21XcVZ4SmxYMmRkMDcxN1pn?oc=5",
+      "resolvedUrl": "https://bleacherreport.com/articles/25434936-mitch-marner-makes-nhl-history-stanley-cup-final-hat-trick-2nd-period-game-3",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2240,
+        "title": "Mitch Marner Makes NHL History with Stanley Cup Final Hat Trick in 2nd Period of Game 3",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "bloomberg",
+      "domain": "www.bloomberg.com",
+      "publisherDomain": "bloomberg.com",
+      "publisher": "Bloomberg",
+      "rssSample": "Bloomberg",
+      "rssLink": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOMDIwYndRTHVjY0tTcVVxNnV5R2F0dXJlV3A2MXI1Z2JwN1lmclI3NWJiRmM1UTE1bHVBbzhqd1pNZW9tbXFpZkdyeUNFZkJUdU5NMlZwVTVfYnRjU0RhVzZjQTZsWVloTnVlajZWQi0tMVFaWU5sQ29Ua1BUR3k3REYxdDU0NmJwYzlhZV9ZeUhKLVpFTTRsOXlSbW04MUpMTklkdWwyQWtSVncyUm40bnhLMUh0Zw?oc=5",
+      "resolvedUrl": "https://www.bloomberg.com/news/articles/2026-06-06/china-escalates-patrols-near-taiwan-over-japan-philippines-talks",
+      "resolveError": null,
+      "getArticle": {
+        "status": "error",
+        "reason": "unparseable_output",
+        "preview": ""
+      }
+    },
+    {
+      "slug": "boingboing",
+      "domain": "www.boingboing.net",
+      "publisherDomain": "boingboing.net",
+      "publisher": "Boing Boing",
+      "rssSample": "Boing Boing",
+      "rssLink": "https://news.google.com/rss/articles/CBMipAFBVV95cUxPN3M5WVc2RGpxR3djdGVLRUVyVjdtX3NSMjZ2eFpSUFl3Wk9TWkUyWjNkZWY0YkRqTHBnNFpXNk5mSXl4YWJtRFJWZk0wLUVoNkVfVzhreUc3S2dRVGxQYi1Gbm9JcUZpZ3hRa2g5SXFtMjRLTzdEbUU2ZTZzOURCT0g4aVVWbEdSTkFqUWVYakNHTWVUM25EQ2JsSnB4TUdFWWxmWtIBqgFBVV95cUxNeGFXYUZiVXNUbzhRTmNVbGZkMjBNSWlMc1I0S3pRd3pndVNjLWw1Rlp2OFM0cERrUjZjVzRHRFNrN25LeDBmMERZNFhaQVFzOHc2LXBUYkhJX2k2STJHWWNwZWhmT21WU1BUU3RoRWtBVFlaRVdnZVBjbWxrTFpvWFJ2cW1qVVcyeDY3VVF1WVdRSFdud2daLUxfRTBtVk15MnVVUHJFNjVuQQ?oc=5",
+      "resolvedUrl": "https://boingboing.net/2026/06/05/why-autism-symptoms-can-ease-during-a-fever-and-how-to-mimic-it.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "error",
+        "reason": "unparseable_output",
+        "preview": ""
+      }
+    },
+    {
+      "slug": "businessinsider",
+      "domain": "www.businessinsider.com",
+      "publisherDomain": "businessinsider.com",
+      "publisher": "Business Insider",
+      "rssSample": "Business Insider",
+      "rssLink": "https://news.google.com/rss/articles/CBMiggFBVV95cUxNekwyb2VzLU1Wb0YtRU0wT0JUWTZTQUJ5OVotZVdnRDFxcXlMQmR3UWZiMDlvZ0h6STlRczhBbm9mQzBLTFRIdERCcXlYNjJfeWEzeEhyYWRpdm9OQ1pBWEkya0lRaHFCRm5YR09iRVEwRWY1Y1VBX0hjTEdiWTZDTjR3?oc=5",
+      "resolvedUrl": "https://www.businessinsider.com/anthropic-ai-pause-reactions-response-2026-6",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 5787,
+        "title": "Smart people weigh in on Anthropic's AI pause proposal",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "buzzfeed",
+      "domain": "www.buzzfeed.com",
+      "publisherDomain": "buzzfeed.com",
+      "publisher": "BuzzFeed",
+      "rssSample": "BuzzFeed",
+      "rssLink": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQRFBoeGtnQktGeDg2bXVJbW9LYTMtdUNQVzAxS0NhUVhtZ2diQ1dMemtka21NTFNDNmhpbUZDUDhZU2doQ0hiS2Rza05EUm9jVG9mYjhpMEFIUjFhbG9hUGlPUmZTc0p2OUdjOE9NcFY0V3JMNlczUGEyVDJwN09aY1hfLXoxSDJRd2JUZQ?oc=5",
+      "resolvedUrl": "https://www.buzzfeed.com/larryfitzmaurice/sarah-michelle-gellar-anthony-head-tribute",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2228,
+        "title": "Sarah Michelle Gellar On Anthony Head's Death",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "ca-news-yahoo-com",
+      "domain": "ca.news.yahoo.com",
+      "publisherDomain": "ca.news.yahoo.com",
+      "publisher": "Yahoo News Canada",
+      "rssSample": "Yahoo News Canada",
+      "rssLink": "https://news.google.com/rss/articles/CBMi7AFBVV95cUxNMm5lRWZFVFdlT2NhS292Z0F3NUo1Q20xVTFTdWU1SG05NjYyd3RIbm9kdU5KZzBSTldBNmZQdUtFanRYOUZOS2tNT0JLU2VuUDVTckJqSFlxRzBJOGQxYkJLLUxLY1NGRlpQRVJCb2RkaTBpNUhxZW9La3dtU2p6QW0tMGw1MTVyWkp6MlRSbm5LVXE0ajZSQ1JsMFdJS2hGTzBmdUhhN0J6Yy10a0Y5dFpScjNTbms3dnJvcEdyUk1lSUstZWJkcTBvUEctYVBlSGlNRzByVUxKQk1hZEJUREJsc1JXbkJabkZXaQ?oc=5",
+      "resolvedUrl": "https://ca.news.yahoo.com/nasa-astronauts-aboard-international-space-station-ordered-to-shelter-in-dragon-spacecraft-amid-worsening-air-leaks-151226804.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2496,
+        "title": "NASA lifts order for International Space Station astronauts to shelter in Dragon spacecraft amid ongoing air leaks",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "cagesideseats",
+      "domain": "www.cagesideseats.com",
+      "publisherDomain": "cagesideseats.com",
+      "publisher": "cagesideseats.com",
+      "rssSample": "cagesideseats.com",
+      "rssLink": "https://news.google.com/rss/articles/CBMizAFBVV95cUxQZWJvQnU0Q3habEZ6RXhlQlpHRzFXeEVzM1ROdlR6UHhPWm0xQllsWjZYSDJ4WFB5NFItRWVZQnFHLUJQNjBIU3ROVjdwWmRKTE9LRm9JSGVHbjlCRFBhbzh3bFNjTnAyUXBEYzhKRWoxUnRVeklLSDgxMU50N1JZeGxKc1FhcFBQdVN2QkZING9DdTRFOUFLOUtoTFpFYVVvdjA0WUExVFlzbnV2TzV5bG5MTzhqZ2ZJcm1TQWxubDZiZy1GcmM4UmtINlo?oc=5",
+      "resolvedUrl": "https://www.cagesideseats.com/wwe/448944/wwe-smackdown-recap-reactions-june-5-2026-gunther-cody-rhodes-zayn-royce-keys-dp-king-queen",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 9135,
+        "title": "WWE SmackDown recap & reactions (June, 5, 2026): Sue everybody",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "cbsnews",
+      "domain": "www.cbsnews.com",
+      "publisherDomain": "cbsnews.com",
+      "publisher": "CBS News",
+      "rssSample": "CBS News",
+      "rssLink": "https://news.google.com/rss/articles/CBMijgFBVV95cUxOU3NHaG0yZHNpaUdoVm9KbDh3VTJ5UEJGdWE1M1V1c216R0hCb2VaM0t5bW0wT2xsYUFxUU1TbG9TaEtGTTU4T2pQNjB4bEZoOVF2ODl3NkhfRVhXSkFWTlh2TlVmamVscUtQQ0czRTZvNXk1Unh1XzV5WFVkLVFWRGxqZndwVnc0b2pvM3Nn?oc=5",
+      "resolvedUrl": "https://www.cbsnews.com/news/treasury-department-iranian-assets-gulf-allies-recovery/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 1367,
+        "title": "Treasury Department plans to use Iranian assets to help U.S. Gulf allies recover, source says",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "chicagotribune",
+      "domain": "www.chicagotribune.com",
+      "publisherDomain": "chicagotribune.com",
+      "publisher": "Chicago Tribune",
+      "rssSample": "Chicago Tribune",
+      "rssLink": "https://news.google.com/rss/articles/CBMixwFBVV95cUxNdG1KNk1LV01PejhqQVIwSTMzZlhQMW5qOVhKQy1UMzRqbGg0cFBJVDVTZXdpeDFrRDRUY3EyekFhYWI2VU9aOGJhX0htQS1PMVprNzBFa0hZT2dLWnRyRG0xWkc1SndMWThPVXNTSXFJa1hRTUNxbW8wR25kNkxFVV9WNUV6RWVnQTF1MG9lWVlhOFVjeTUyU2N0UkNuTlQweVdwWGZKbE54Z2hvSzhqSDl0YTNVWFZVZDU2eHM5c2MzMmxaTW5J?oc=5",
+      "resolvedUrl": "https://www.chicagotribune.com/2026/06/06/bicyclist-killed-in-bridgeport-crash-was-cdot-employee-devoted-to-bike-infrastructure/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 6261,
+        "title": "Bicyclist killed in Bridgeport crash was CDOT employee devoted to bike infrastructure",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "cleveland",
+      "domain": "www.cleveland.com",
+      "publisherDomain": "cleveland.com",
+      "publisher": "Cleveland.com",
+      "rssSample": "Cleveland.com",
+      "rssLink": "https://news.google.com/rss/articles/CBMihgJBVV95cUxNbWoxelcwZS1ZQWhoSGZlVnhnbjJjRmdDM1F6dXA4TnhNa1pNbFJnMEt4VkEzMVMySEpoSS1VcXFLcnJaLUxGaHlOLUxod3lrTEZydXdXZjJETDVMdzJfREZ3MnFVQ1ExVTVVVm9nTUJzTE5GM3VpM2MyZmdwelI3ckVEa2s3cnp3ZDlHakpuYlBMVndrSzhmVkRuS1ZTNElxRm5EcGl0ay1tTFl4Sy1INWZPSWxaR2F6Q0xUMk42cUpQOFZxd0YtQzNMM2VFdS15Tk5RODR6WkdZNUVvUWlmWW1nWENJdWpfQVduZG9BSlVBeFZ5NUNjNTZhOEE2emJsZjRVVGpn0gGaAkFVX3lxTE10OTZUUlYtSElULWoxZS1MY1hNZ0FVY3N6QVJJdGNaT05rcVRIWGxwbm5WRlZBckE3VGtoMnR6TXBPa1N0NWExZ3M2X3JGcjJxUFZHNmRreGN2Mk5sc0ktMkRwdVFfLWxSeldKY1FuUW9tQUI3aEVpTUNpd1UydmNFcDh6SWxNeVV6dGlBUTdZZXkwVjA2N0I4eEVhT1BYZ3lRSVAyZXNvVUtNYjd1SGwwNWl6MmRJT1poQVRwN2FsQWhvMi1zaWlUYmxiNC0wQzNjdW1TNC16cG5RcXV3Q3JtNk9ZaUpQMlZCRHRhcWJlVElJdjBTNG42RFBjbjdmM1pKOENyS213c2FzZXp2cHZXOWY4dXdvOVlPZw?oc=5",
+      "resolvedUrl": "https://www.cleveland.com/browns/2026/06/how-the-rams-would-have-to-give-the-browns-another-1st-rounder-in-the-myles-garrett-trade-eagles-never-made-a-play-mary-kay-cabot.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 4268,
+        "title": "How the Browns could get another 1st-rounder in the Myles Garrett trade; Eagles never made a play: Mary Kay C",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "cnbc",
+      "domain": "www.cnbc.com",
+      "publisherDomain": "cnbc.com",
+      "publisher": "CNBC",
+      "rssSample": "CNBC",
+      "rssLink": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxOb0NyMGlGQkRRY3pxWGQydFJnYWdjQ05ORkgwalREa1NJLUhURDh1S3RfekVnMFhNNUU0c2lTRk9uaVkxQm5Ya3R1aVMtRTRDNERaNmlNdktyTWpNbDFuOGp1OHJ2d3hyVkUxRURjTmRSZlVsaHo1OTdKaDU3aXRac0JuX2E1Ylo3SkJaSFo3Y19nMjdsRVFMZ1lKTlE2djljd2FvcVNSS0VCTUNvM2tkNlRjZW44eWktTUp2cmpQMkFzSHBYaldsREkteUEtcGNjcDRxejNPV3rSAd4BQVVfeXFMUFplSzQxNUlQY1NneFJ5RmFmbm1JeV9Ed3o1WW1XVHdnOUhBX0JDOWlMd2c4TVpKRjd2UEFCR0FCQzk3WlpJVXVOQS13eUJXTmg5SVdzVGJjbEU2MU5rLVBnWWEwN1lkOXU0d1N3MGdSbnRlRTJKTTZjMHB6Y3lQeFFmcklyZXNYTXlfMEF3UFUzMUhPbGhwdFpUcTJnSzdVelR6NXFVZGRHZWJua1VoWnFCRWp1WTl0TjlsUDhPM2JRQWR2ZnQ2ODFieUdkRFRVcDY5d3hTZEpxR1J1SHJ3?oc=5",
+      "resolvedUrl": "https://www.cnbc.com/2026/06/05/ai-is-now-the-leading-reason-companies-give-for-cutting-jobs-says-new-report-what-that-means-for-workers.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 4906,
+        "title": "'AI is now the leading reason companies give for cutting jobs,' says new report—what that means for workers",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "cnn",
+      "domain": "www.cnn.com",
+      "publisherDomain": "cnn.com",
+      "publisher": "CNN",
+      "rssSample": "CNN",
+      "rssLink": "https://news.google.com/rss/articles/CBMihAFBVV95cUxONHFjRGpLc1FpU2dJZVNXQVdpWllQYU5icmZQc0dVZEJjX1RJWXNEUWs4eVE3MmN3Uk9EOWJ1SUhxYzVkcnAtdkJ6M0FzTElOSWNuMWdRS1NSXzBud3dpNHhHbjhOUWtLN2ZmYldzSnEzVTBZTDhtQ215cEFHWFFQejl1M0Q?oc=5",
+      "resolvedUrl": "https://www.cnn.com/2026/06/06/politics/republicans-defy-trump-agenda-midterms",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 8553,
+        "title": "Vulnerable Republicans increasingly willing to defy Trump’s agenda as midterms approach",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "coindesk",
+      "domain": "www.coindesk.com",
+      "publisherDomain": "coindesk.com",
+      "publisher": "CoinDesk",
+      "rssSample": "CoinDesk",
+      "rssLink": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxNeTM3LWFFYTI0ZmdTRDdiUkZ5YUFWYm1HMDFQMzRRM0pJbGw5dHlsYmJpSGx4V3NCRE45cUFCQUNsN2dHb0NCVUtsc1NnSV90TXkxRUwzeTY0UExzTm03RGNoYl9icmRaUXN1S1R3MVF0X3JtNXphLUZ4a0ZOaUtwNmhPRmdleHpYRzR6RVlVREYxWTREXzNteXhqZnFTOWxHZmVCV3E1RW04dmJXNE5ham9PNFF4OG5oZmJRS3FoMXNWb1NVcEpyVQ?oc=5",
+      "resolvedUrl": "https://www.coindesk.com/markets/2026/06/06/bitcoin-ether-eye-worst-weekly-rout-since-ftx-collapse-as-cryptos-shed-usd390-billion",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2010,
+        "title": "Crypto's brutal week: Bitcoin (BTC), Ether (ETH) suffer worst weekly drop since FTX crash",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "consequence",
+      "domain": "www.consequence.net",
+      "publisherDomain": "consequence.net",
+      "publisher": "Consequence of Sound",
+      "rssSample": "Consequence of Sound",
+      "rssLink": "https://news.google.com/rss/articles/CBMijAFBVV95cUxNbUdBLUdnTVBGZWxvNXdMeVZLeUxib0hteXEybGpVNGt1NmxUdEFyOXlmZ1RFM0tBX2NyWWxlemFxQnV1N0d6SF9vNWxudzVLUmkzZ1BhQ3hmNlZEaWRuWUlyaEMwZjFIZEZqTjR2NThGeXZqX05QM2QzcUtJY000MW1mdERibGxUMEFLVg?oc=5",
+      "resolvedUrl": "https://consequence.net/2026/06/olivia-rodrigo-robert-smith-new-song-primavera-song/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "error",
+        "reason": "unparseable_output",
+        "preview": ""
+      }
+    },
+    {
+      "slug": "courthousenews",
+      "domain": "www.courthousenews.com",
+      "publisherDomain": "courthousenews.com",
+      "publisher": "Courthouse News",
+      "rssSample": "Courthouse News",
+      "rssLink": "https://news.google.com/rss/articles/CBMipwFBVV95cUxPTXRFaFJzS0JxM1UwQ1lDbWs5QklvaVhhb2FqbmpxOGxJbzFaTTYwZ2paT2N0Q1lING5RcDBDaS1vVTlWdE42NTdzZWFmUWVZMlRhVTdnRDhENEFKQXU4LVRxT1V2eGhkYnlYa3FscEFuN09YWlJ5aFZOT1R1N2NBcDFicGJQOGNXUVVxZzBXNG8xUFZELU43TlJrbl9nTzJWVHNNSU9Haw?oc=5",
+      "resolvedUrl": "https://courthousenews.com/judge-blocks-trumps-sweeping-freeze-on-immigration-benefits-for-39-countries/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "error",
+        "reason": "unparseable_output",
+        "preview": ""
+      }
+    },
+    {
+      "slug": "cowboystatedaily",
+      "domain": "www.cowboystatedaily.com",
+      "publisherDomain": "cowboystatedaily.com",
+      "publisher": "Cowboy State Daily",
+      "rssSample": "Cowboy State Daily",
+      "rssLink": "https://news.google.com/rss/articles/CBMitAFBVV95cUxNY2dMVFdsRzFhc2NraE9qcnRubEo2a0pqUWYtSDJ2UXNwLV9BajFqTTlydmxXcktVQ0ZHT0VsblZDRHZkS184ZllZMWZSblE0M0drVnczeXJ6WWZEeGRtTHhkdGRYVEZ3VzRwRmpNcXBrZGtuUGdITmZ1bTh4aUJTOFBOUENWNzlHa1g2eGoteW9WWGpCTFk5Ti1pcTluZUR2Q2RjTENoTFBWZElzSE1HR3JjeE0?oc=5",
+      "resolvedUrl": "https://cowboystatedaily.com/2026/06/06/pretty-badass-new-laramie-county-sheriffs-cruiser-is-pure-western-wyoming/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 4674,
+        "title": "Wyoming Sheriff Orders \"Clint Eastwood High Plains Drifter\" Look For New Cruiser",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "cpr",
+      "domain": "www.cpr.org",
+      "publisherDomain": "cpr.org",
+      "publisher": "Colorado Public Radio",
+      "rssSample": null,
+      "rssLink": null,
+      "resolvedUrl": null,
+      "resolveError": null,
+      "getArticle": {
+        "status": "skip",
+        "reason": "no_rss_sample"
+      }
+    },
+    {
+      "slug": "creators-yahoo-com",
+      "domain": "creators.yahoo.com",
+      "publisherDomain": "creators.yahoo.com",
+      "publisher": "Yahoo Creators",
+      "rssSample": "Yahoo Creators",
+      "rssLink": "https://news.google.com/rss/articles/CBMi9gFBVV95cUxOWVk5aHczYTVuNDVNRzFqekFJMVRlQXVtWk5hd2pfbEphXzZIWE50VVQxQ19WTmNQWnhPdzREcExZamZTc0VCYXR6cGtUWjlIWnRXeXREUlBmMXBUdUtMeHJ1VlIwdHdNalNFUDJST0UyN0ViMHBab0Y4ak1nbExpNjd4RjdNMGNYYjRmZmw2eE9JLUJXX2pFcG1FRXNuSk5Tb3hoU2FOeGpObFB6a05tMFNZbHRtVVhIbWsyNm5CMlJVdlNISFlJRlUwVVROTW1HVjFfSEhENmd3WWpnTlNsQklzYThla2RQV0xXVjRCX0hIUU5pQ2c?oc=5",
+      "resolvedUrl": "https://creators.yahoo.com/lifestyle/story/some-people-lose-over-20-of-their-body-weight-on-ozempic-others-lose-almost-nothing-a-doctor-explains-why-014240061.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 11910,
+        "title": "Some people lose over 20% of their body weight on Ozempic. Others lose almost nothing. A doctor explains why",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "csmonitor",
+      "domain": "www.csmonitor.com",
+      "publisherDomain": "csmonitor.com",
+      "publisher": "The Christian Science Monitor",
+      "rssSample": "The Christian Science Monitor",
+      "rssLink": "https://news.google.com/rss/articles/CBMimgFBVV95cUxQdWt6Xy15aG85ckdlaFZod3JMS05QbGZ4V1RRVGhFZmpKMklJT2lwQ0t1UkVlVHdhZl8wdHNjUGdzUEJNa0pjYTcxSVdGVUxuZlVoZ1dma1VQeE1TeHNTOFRLVm9zeUJNc1FRVDRUNHRvcXJNMkxMQlZTbUJtUnFqcG9GN2ZaeWJWaVJFNVdLSUdEMGhjRVZzSU1R0gGzAUFVX3lxTE9qdjJYcW5ZWG03MlNRRGR4RWloQkgyQkxiU29oQTVpZmt6SG5LWHRCTHJOYlQ1cUxERXBXcllVQk1wTllWU19tOG9sSzlJVGEyWHl3YjF3My0zX1BGT2JPd3BLb3RibHQwWGFrU3hFT054eG5DTUhDVzJMU25IeHJTbTl3RG9yVlI4THlFcThsZ2xaWFp2bEwtMmtNbWFPOXFjVUMwcWxEUWFxSzltTGV1QXRj?oc=5",
+      "resolvedUrl": "https://www.csmonitor.com/USA/Politics/2026/0605/donald-trump-presidency-private-wealth-ethics",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 14308,
+        "title": "In Trump’s second term, financial gain has become a defining feature",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "deadline",
+      "domain": "www.deadline.com",
+      "publisherDomain": "deadline.com",
+      "publisher": "Deadline",
+      "rssSample": "Deadline",
+      "rssLink": "https://news.google.com/rss/articles/CBMifEFVX3lxTFBvM2lfUjFGSHVPS05MdzdmekdIWDUzS0F4NUphWE4yUUM2akZNUUtBTkdVZzQ0b1haQnBOdkxGQzFOSnlDZnhacUlVdDFxdFdhWXJsMm1JRlVacDFsc0NiUFBuLTU0MjJCMEFGUWpON0FobXpVa2xjMG14Uk0?oc=5",
+      "resolvedUrl": "https://deadline.com/2026/06/box-office-backrooms-a24-record-1236942792/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "weak",
+        "reason": "short_body",
+        "bodyLength": 346,
+        "title": "&#8216;Backrooms&#8217; Becoming A24&#8217;s Highest Grossing Movie Ever Worldwide, Besting Timothée Chalamet&#8217;s $191M+ &#8216;Marty Supreme&#8217; &#8211; Box Office",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "digitalfoundry",
+      "domain": "www.digitalfoundry.net",
+      "publisherDomain": "digitalfoundry.net",
+      "publisher": "Digital Foundry",
+      "rssSample": "Digital Foundry",
+      "rssLink": "https://news.google.com/rss/articles/CBMimgFBVV95cUxPdm1xZnh5VWV2bjB3dUEzOXBzUUtONGRHbkU5d0RlZW51Z0xZejFoNDZCOVc5VTBwc1BQYWpxT09xc3p5eGE2SU9VeEtQRzk0TU5kT1B2ZTZYLXV4R1BRcGlMN2t4aVA3Yk1xOGcyQzhueVVwamYycnY5eFJtVVA4TFUtcUplMkJndUZsMUU4VkVvR0JUS1VLRGZn?oc=5",
+      "resolvedUrl": "https://www.digitalfoundry.net/features/nintendo-switch-2-year-one-the-digital-foundry-verdict",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 13094,
+        "title": "Nintendo Switch 2 - Year One: The Digital Foundry Verdict",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "dw",
+      "domain": "www.dw.com",
+      "publisherDomain": "dw.com",
+      "publisher": "dw.com",
+      "rssSample": "dw.com",
+      "rssLink": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxPa2pDTHFZQ1V1eWxCYldSamlYTVd6Ymc5QUFfZTJzNldmM0RlWllTV094amtiS2xLcHNVSDljR0RPaFAyTVh2ZERIZnRUQ2FjV2VUeng3SjlZWTF5UTZvWERfcGZSXzU0UnRHR2pwVTBqQV9LRlFSTmhvTjAwTGZROFdLWFRQR3hX0gGIAUFVX3lxTE5Fa002c1FSeC1OZll6cFhxd01SRmJwZlZjMHU5bjRWQjVkTmJHaE5mNlJwSEZyNEVRdTd1SWdlSW1acXVRdlhtWUY2bnNNdFNoZ1NIZGdrTHpfMW9sN0pxQ0FpQXc2QUppUTVjWGczcWZvaktUY2I1Z1htV1Juam5rMXhlbkt0UHY?oc=5",
+      "resolvedUrl": "https://www.dw.com/en/man-killed-in-shark-attack-off-western-australia/a-77443832",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 1343,
+        "title": "Man killed in shark attack off Western Australia",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "eatingwell",
+      "domain": "www.eatingwell.com",
+      "publisherDomain": "eatingwell.com",
+      "publisher": "EatingWell",
+      "rssSample": "EatingWell",
+      "rssLink": "https://news.google.com/rss/articles/CBMilgFBVV95cUxOaXdQMGJEZE44S19YbXNSQWJpNzhjMkQxbXdqX2RmYzl0VnFaeTlrYkFrV0tteWhMbWw2b3hrWmpXT05KRXFYcGRETFZOUzliR3l3SU44UHc0aGNId08yR292Qmt4NGg5YnN4UXA1amVGQnhZdzRsbGVaNVRHZWE4anlSV0h6TVMzY21mNldkMFFaczNSWmc?oc=5",
+      "resolvedUrl": "https://www.eatingwell.com/hot-dogs-vs-hamburgers-which-is-better-for-heart-health-11990381",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 15563,
+        "title": "Hot Dogs vs. Hamburgers: Which Is the Heart-Healthier Option for Your Summer Cookout?",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "eatthis",
+      "domain": "www.eatthis.com",
+      "publisherDomain": "eatthis.com",
+      "publisher": "Eat This Not That",
+      "rssSample": "Eat This Not That",
+      "rssLink": "https://news.google.com/rss/articles/CBMif0FVX3lxTE5lSEpsNEJIcUpFZVVnQS1LTE5BSXRzdVk3WU1KcVBHaVBMMWpkTzd6Rnh3cEJMYkVkVVRxVHdNNTFISUZxVF82ZXpyQW9CZmVFWjBZUmRGTWR0YW9CM0puUlJDV0dWZ3JyNGlSSlRpRGg2LW91Y0VTVFRZNWU4Zmc?oc=5",
+      "resolvedUrl": "https://www.eatthis.com/morning-exercises-build-leg-strength-men-after-60/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 5146,
+        "title": "5 Daily Exercises Men Should Do Each Morning to Build Leg Strength After 60",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "espn",
+      "domain": "www.espn.com",
+      "publisherDomain": "espn.com",
+      "publisher": "ESPN",
+      "rssSample": "ESPN",
+      "rssLink": "https://news.google.com/rss/articles/CBMiogFBVV95cUxPc0tLdEtRN0xMbnlQOXBqYTk5OEZjbVloaVJ4UGlraUlqUDg4Wi1zLV9LZFVxOWRHcnNzSy1tYWYwZDBuSFFUSXRNVmRubUVQR0c4X2dmMVljeXE1YUx6Qmh4SVR1WHpLWjg0cFFKS2ZfWGp6cUkzd2Mwc3ktRlZ6MEZUbENjeHZtUVNxRUpCb0VMeEdxcU1XSVJmY2d0UGVieFE?oc=5",
+      "resolvedUrl": "https://www.espn.com/nhl/story/_/id/48988672/gabriel-bonfim-dominates-belal-muhammad-ufc-fight-night",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 3308,
+        "title": "Gabriel Bonfim dominates Belal Muhammad at UFC Fight Night - ESPN",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "eurogamer",
+      "domain": "www.eurogamer.net",
+      "publisherDomain": "eurogamer.net",
+      "publisher": "Eurogamer",
+      "rssSample": "Eurogamer",
+      "rssLink": "https://news.google.com/rss/articles/CBMickFVX3lxTE5POVJKWnRDSi05dVhuZ2l5Sm92Vlo0MlJkM1AwbUtfd3FjbG9aTkk3cUNDVFg5eVVuTTVpRF9TZWptbGZscE1HNjNvYlI4OXViZndLVnU1dU5YNWNhZ3BnWG9LdTlKREh6b3JvNHlES2dhQQ?oc=5",
+      "resolvedUrl": "https://www.eurogamer.net/monster-hunter-wilds-nintendo-switch-2",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 1834,
+        "title": "Monster Hunter Wilds confirmed for Nintendo Switch 2",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "euronews",
+      "domain": "www.euronews.com",
+      "publisherDomain": "euronews.com",
+      "publisher": "Euronews.com",
+      "rssSample": "Euronews.com",
+      "rssLink": "https://news.google.com/rss/articles/CBMikAFBVV95cUxOdUNweFhLeG1abTY3dGtDamIyNGVyTmtGcHRLRWtFQUprMkdBLVdKZk1YQkJOLXQyTm54c01Td1lSYzE2R0RtZWlsU2JWeUtFeXUzb0J5b1ZBTjBGUG04NUgtV2JWSmw2M3BRQm0zMmZfNl9kWWN5LWVEamFQWHZZRjlseHlUa19HZ2IxdkQ5ZGk?oc=5",
+      "resolvedUrl": "https://www.euronews.com/my-europe/2026/06/06/d-day-82nd-anniversary-honoured-in-france",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2429,
+        "title": "D-Day 82nd anniversary honoured in France",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "eventhubs",
+      "domain": "www.eventhubs.com",
+      "publisherDomain": "eventhubs.com",
+      "publisher": "EventHubs",
+      "rssSample": "EventHubs",
+      "rssLink": "https://news.google.com/rss/articles/CBMiggFBVV95cUxQaHNRQlNxeFQyeVR1a2NBNnZjYUJUU3JZOThtN2Fua1NVOUlKOUk2WGFYbFdRbmpobEQxR2Ezd1JYaHZkWWdiWFI5RTRyYTVmTEE0Zk1tVXBYdUJhMWgzNks4Y2JfUjZ3M21zbERoTlh0b0FJdHdqcG9CVHBia24yNmFn?oc=5",
+      "resolvedUrl": "https://www.eventhubs.com/news/2026/jun/05/bosch-resurrect-street-fighter-6/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "error",
+        "reason": "unparseable_output",
+        "preview": ""
+      }
+    },
+    {
+      "slug": "ew",
+      "domain": "www.ew.com",
+      "publisherDomain": "ew.com",
+      "publisher": "Entertainment Weekly",
+      "rssSample": "Entertainment Weekly",
+      "rssLink": "https://news.google.com/rss/articles/CBMie0FVX3lxTE9qbjJXeXhrcGo1QUtlRGc2MjN3QzBJWFY4QnZET1FrME5jUUxkbW14TUdqeW0zZG9QR3YxZWpFOVVzWDFGUi1samRocURBUEVOWW5jc1E5dnFiaUoyVm5ZYTdBNkttQXMxdkM4U2QyYlBUZ2RvUUw3M3lRNA?oc=5",
+      "resolvedUrl": "https://ew.com/james-handy-final-project-scrapped-after-murder-11992649",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 3713,
+        "title": "James Handy&#39;s final film scrapped after late actor&#39;s murder, producer says",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "f4wonline",
+      "domain": "www.f4wonline.com",
+      "publisherDomain": "f4wonline.com",
+      "publisher": "F4W/WON",
+      "rssSample": "F4W/WON",
+      "rssLink": "https://news.google.com/rss/articles/CBMimAFBVV95cUxNM0lOX3BRZkU2V01FM1Z2d0tVRG9RNEpaLTdMZ0x6ODlEQ21vUjl6YXk3X0lVWWlZVzAyanJ4WVQxZ2FTUGowbzhqYzZhQVhiZnRzOTBDUHV6WE01Vm9pZUtuSUNiNXplRXhySmU0UkdUSXNJLVBpWng5enIzY0hMajM1LWxXVkR3bmRWQW5zTEgyLWFTUEtOaQ?oc=5",
+      "resolvedUrl": "https://www.f4wonline.com/news/wwe/wwe-shareholder-lawsuit-trial-removed-from-court-schedule/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2349,
+        "title": "WWE shareholder lawsuit trial canceled, removed from court schedule",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "finance-yahoo-com",
+      "domain": "finance.yahoo.com",
+      "publisherDomain": "finance.yahoo.com",
+      "publisher": "Yahoo Finance",
+      "rssSample": "Yahoo Finance",
+      "rssLink": "https://news.google.com/rss/articles/CBMilgFBVV95cUxNMENqaDVzZnVRSkFWOVZaSms4aEhVaTNMc2xwdUxnNWRwOWw0ZTUxZXpaOUVJUEx0QWNkLXRfUUxGaXAtbmFhcGt6X01aUEd0YnJyc05TU0hGbUd1SjdvMURaYy1lRXlYV0ZwN1VDVmh1M3NwWm94WERtVjNrQU9aemVoSmJsTmhYOW44UndCQnZTdExtMXc?oc=5",
+      "resolvedUrl": "https://finance.yahoo.com/markets/stocks/articles/spacex-other-mega-ipos-may-203911463.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2854,
+        "title": "SpaceX and Other Mega IPOs May Wait Years to Join the S&P 500",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "forbes",
+      "domain": "www.forbes.com",
+      "publisherDomain": "forbes.com",
+      "publisher": "Forbes",
+      "rssSample": "Forbes",
+      "rssLink": "https://news.google.com/rss/articles/CBMi6gFBVV95cUxQVlJPdU5wNXFwOHFQQms3SFYwSGVMWmJ2cnFQaDlETS1FWHgyR0ZmaGhJdW9zUWkxSlk3NVRDUUVlN29LTHE4eURDckpicUNBNHIwSGIzSUhrbnBDUWRuQUNKcmtkdTdORUFYWlhfT2tldkpxZGFfd2tpdGZpczFWa2w4aXdsaVh6R24yamxOUnlSU202bVFONGh5alo5WmdKWkQ4TmNpUTdib0lVR0NGXzZhRnd1c21YZXRVaHY2NE5PaGtpSTA4WGlvNmNycmtWdjJ5eXFMa3JOWE9yQUdaOWk2SlpURjRsNXc?oc=5",
+      "resolvedUrl": "https://www.forbes.com/sites/antoniopequenoiv/2026/06/06/bernie-sanders-backs-graham-platner-after-allegations-of-toxic-relationships-disturbing-behavior/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 5150,
+        "title": "Bernie Sanders Backs Graham Platner After Allegations Of ‘Toxic’ Relationships",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "fortune",
+      "domain": "www.fortune.com",
+      "publisherDomain": "fortune.com",
+      "publisher": "Fortune",
+      "rssSample": "Fortune",
+      "rssLink": "https://news.google.com/rss/articles/CBMimwFBVV95cUxNT3VQeXZvTWd3c091U0tNaXpvZW5LMmdhZDg4a0ptX19CZS1zTDZ3Z1Y2MFM5bEZJNzZOWlo3aFhuc3J2ZFdULXZTdEt6NEIxYVVTdXZOMWprVjNWdVVyaUdTMGFER1dHU2dYeTk5eUs0UXFqeElmbVY4OVdHNGNSbEhCQ2E2V2VCSFNqZ2llWC05U2FRZGRQZ1dYQQ?oc=5",
+      "resolvedUrl": "https://fortune.com/2026/06/06/trump-iran-war-ceasefire-talks-us-missiles-drones-strait-hormuz/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 4939,
+        "title": "Trump says ‘situation with Iran seems to be going quite well’ while U.S. shoots down more missiles and drones near Strait of Hormuz",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "futurism",
+      "domain": "www.futurism.com",
+      "publisherDomain": "futurism.com",
+      "publisher": "Futurism",
+      "rssSample": "Futurism",
+      "rssLink": "https://news.google.com/rss/articles/CBMia0FVX3lxTE5TZndaV3BYU0pyUjQ4cm5Rd3ZLVXo2TEhsN0NmSHNTUG1nWThfWWloNTJnUHI1eGVSNUJZdWQ4dmEyZFJOWFJJVUNxbEcwbkZOWk13elNQbmtWVXNTUkM4aFdmY2FlcWpoUThv?oc=5",
+      "resolvedUrl": "https://futurism.com/space/nasa-james-webb-3i-atlas-methane",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2521,
+        "title": "NASA&#8217;s James Webb Discovers That 3I/ATLAS Let One Rip as It Passed Through Solar System",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "gameinformer",
+      "domain": "www.gameinformer.com",
+      "publisherDomain": "gameinformer.com",
+      "publisher": "Game Informer",
+      "rssSample": "Game Informer",
+      "rssLink": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNSnEzbm84OUtTcmQ4eXR6UXRGLXFiSzhFTUxrbWxvdUNxSEJOR3lHUklMU0lQUmFNU3dVTEN4Rkw4MDVXajRzcmYwQzVPczF6Rm1zQTQxeVJOU1hhYUVSc3U4UVZrSmZ1RDhuLWdUVzhveWx6VUdraWhhdVZydWRjcWx5RUFiNGpSclQwLThFR3dqOWUyU0o4RktWNXpIcUY2emNjSFJ1M3AyWjJhczhOUlQwdw?oc=5",
+      "resolvedUrl": "https://gameinformer.com/sgf-2026/2026/06/05/heres-everything-announced-during-the-summer-game-fest-2026-showcase",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 9753,
+        "title": "Here's Everything Announced During The Summer Game Fest 2026 Showcase",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "gamesindustry",
+      "domain": "www.gamesindustry.biz",
+      "publisherDomain": "gamesindustry.biz",
+      "publisher": "GamesIndustry.biz",
+      "rssSample": "GamesIndustry.biz",
+      "rssLink": "https://news.google.com/rss/articles/CBMixAFBVV95cUxOZjNUcVk3S0JPU3R4YXNDdlFIQjFsSVhvY1RXUER5UHJXWF9qUVg5cWdETU85VmRjSWVLU3ZTNWpVcmhEN0pRT01CQnhfNmxVX1FpNG14NW54MmE5WFNna0VnSGxKYk5YQnlJZlJqQjREZGx0Y2NPWEFTMU0tTGVuQ0hxMmJvcUdMTUZTcGpLMEM4Z28tZU9WNUNaeFYwYU4wNGY5eFNGcnZ2V00xalhEd1lydVdZejlOSUFmOTRHTzFyX21G?oc=5",
+      "resolvedUrl": "https://www.gamesindustry.biz/asha-sharma-commits-to-resetting-xbox-prioritising-exclusivity-and-addressing-ai-in-new-strategy",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 4162,
+        "title": "Asha Sharma commits to \"resetting\" Xbox, prioritising exclusivity and addressing AI in new strategy",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "gamespress",
+      "domain": "www.gamespress.com",
+      "publisherDomain": "gamespress.com",
+      "publisher": "Games Press",
+      "rssSample": "Games Press",
+      "rssLink": "https://news.google.com/rss/articles/CBMifEFVX3lxTE1sN05ZUWc4M0pOc0ZtanhwU2I5Sk1yUTIzWU1oVUVLYllkZUlaLWNNNVJtOFhCME1PRld5RlRWZ1pTS1F3Qk11QXZyeHBTYTNyczh5ZHlMWmlRMmVScU9TUEZFLW5SV2p2MDczWkV4ZnBUdTNPWlM3ZldPY3Q?oc=5",
+      "resolvedUrl": "https://www.gamespress.com/TUPAC-SHAKUR-JOINS-SEGAS-STRANGER-THAN-HEAVEN",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 3611,
+        "title": "TUPAC SHAKUR JOINS SEGA’S ‘STRANGER THAN HEAVEN’",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "gematsu",
+      "domain": "www.gematsu.com",
+      "publisherDomain": "gematsu.com",
+      "publisher": "Gematsu",
+      "rssSample": "Gematsu",
+      "rssLink": "https://news.google.com/rss/articles/CBMilgFBVV95cUxOcjQwTE1rZzJGLUFZRHVzZGVDNFRHZjVacjVrUWUzNzVpVkR4NFNzbjJxN3VEaWFLTjZIZjRaUTdOemZDQlZIblZudzAyUUQ0aWdhSGtxSHNvclc5T3ltU1pwRzJHajk5UEo5UjJfaDJLV2Qyc3d1S1dHNGZJRlczMk9sVjg4TnEzTXpkTW9UaVVqMEtZZFE?oc=5",
+      "resolvedUrl": "https://www.gematsu.com/2026/06/the-blood-of-dawnwalker-trailer-teases-future-of-the-series",
+      "resolveError": null,
+      "getArticle": {
+        "status": "error",
+        "reason": "unparseable_output",
+        "preview": ""
+      }
+    },
+    {
+      "slug": "goal",
+      "domain": "www.goal.com",
+      "publisherDomain": "goal.com",
+      "publisher": "Goal.com",
+      "rssSample": "Goal.com",
+      "rssLink": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQeVNBakxRVC1kNi03cDluT284LXQ1QW5FdDF2bmlwNFRDajh3QnNzdXJQRklKblRvcnlWeEdiWWpDWG9wTGNpQ1I5WTM1UnZnVU5hdl9vcEhqR1NOMy1FSjRrNXE1Y2xUU0RhMnZzc2ZjLTlxZnJ6MDJuZTAwdzZKZDNub25YYzZIZWRhak1nRnpCeWhHcXFQaVFqLWxZUTVrTHVJ?oc=5",
+      "resolvedUrl": "https://www.goal.com/en-us/lists/england-player-ratings-vs-new-zealand-harry-kane/bltf9971e41b6cab87d",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 8395,
+        "title": "England player ratings vs New Zealand: Wrap Harry Kane in cotton wool! Star striker on target AGAIN as supporting cast fails to shine in glorified training game in Tampa",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "gothamist",
+      "domain": "www.gothamist.com",
+      "publisherDomain": "gothamist.com",
+      "publisher": "Gothamist",
+      "rssSample": "Gothamist",
+      "rssLink": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOcDVyU2pZSkRMRDcwb1daTXVIRWFoWjMtajdEaTh6a1A2S2FRSUFzdU1ORGU4TXoxQ3BpTS1MQW1IX2xxVXIzT0Y3RVNUZUw5Z09DWXNQbDNYTjZyemVleGtZbEE3MlktTHl5YzhQZDdNbG96cGFxUHlQOHZyRWI5R2ZMY3pNQ3U4VkdvakI1Qk9CazJLd1lsZlRFeTY3aE12Tk1UQ3V3?oc=5",
+      "resolvedUrl": "https://gothamist.com/news/ny-lawmakers-vote-to-ban-surveillance-pricing-but-digital-price-tags-survive",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 6997,
+        "title": "NY lawmakers vote to ban ‘surveillance pricing,’ but digital price tags survive",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "hayspost",
+      "domain": "www.hayspost.com",
+      "publisherDomain": "hayspost.com",
+      "publisher": "Hays Post",
+      "rssSample": "Hays Post",
+      "rssLink": "https://news.google.com/rss/articles/CBMicEFVX3lxTE8zVm9WSktsbDRKUHlZYUpxSlFvUUZadldfMHZ2Rk5hdXU0cG9OQ29pemtkVUcxZHRiaXNsRmhEOEhTVnRSbjRUc3dzZHF6V04wNzZWT0VpWDRiRTdvY1RIb2pjdnIzcUVjQ3lfSzY2Y2o?oc=5",
+      "resolvedUrl": "https://hayspost.com/posts/d2ffe70d-e743-46ba-ae86-13313f4edea7",
+      "resolveError": null,
+      "getArticle": {
+        "status": "error",
+        "reason": "unparseable_output",
+        "preview": ""
+      }
+    },
+    {
+      "slug": "hitc",
+      "domain": "www.hitc.com",
+      "publisherDomain": "hitc.com",
+      "publisher": "hitc.com",
+      "rssSample": "hitc.com",
+      "rssLink": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQWC0zUllseHkxOGpyLW9pdjBVbmJMTXZ4UFFYQ2N6TW8zaFNyY2RkblRWQXN4M0VUSURtV2dzbTZvSWQwZWZ5Tk42Nk9wTG95YkV6LTNMRWc4SzA0d2dpbHN3aEp1UGNQS1lsUi1VWWRUTWQ3QVVYRW5DbTNLLWdoUGwxX2xDSE41Q3d6NHZvRkJWUFhsZnNYRE5SeVJfQmo5eXJFdE1STjFJb1RGMU5pVHFR?oc=5",
+      "resolvedUrl": "https://www.hitc.com/jack-nicklaus-stunned-after-what-he-saw-at-muirfield-village-on-friday-i-cant-believe-that/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2145,
+        "title": "Jack Nicklaus stunned after what he saw at Muirfield Village on Friday, &#8216;I can&#8217;t believe that&#8217;",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "hollywoodreporter",
+      "domain": "www.hollywoodreporter.com",
+      "publisherDomain": "hollywoodreporter.com",
+      "publisher": "The Hollywood Reporter",
+      "rssSample": "The Hollywood Reporter",
+      "rssLink": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPa0paSWtNOTFNVVBjeDJTSHFwa2szYk50cDhRU3F2dHMzbHB1QmR0ZTNabzlkOWxEbFVkNGF4VXI3QzhKd3BBdzg3dF9XemZYemhrdk8zZFQ0QUxfdF9CUjJWWnNreWJoUDNjSXFmM21wN2xEWUR1a3dLeU5ZZ254X3ZoSU90RTJZU1FSbHFDV1VOQWxyQ2kzR1Z2RmV6cndINmk4Mm1wX0tPMm1tMllaNFJaUm0waTNsNlF5V3RqakY?oc=5",
+      "resolvedUrl": "https://www.hollywoodreporter.com/movies/movie-news/entertainment-workers-oppose-paramount-wbd-merger-town-hall-1236615502/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "weak",
+        "reason": "short_body",
+        "bodyLength": 202,
+        "title": "Emotions Spill Over at Town Hall of Industry Workers Opposed to Paramount-WBD Merger: “It’s the Death of a Great American Industry”",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "huffpost",
+      "domain": "www.huffpost.com",
+      "publisherDomain": "huffpost.com",
+      "publisher": "HuffPost",
+      "rssSample": "HuffPost",
+      "rssLink": "https://news.google.com/rss/articles/CBMixwFBVV95cUxOb0IwM3hDeEI5V2xxcUV6cTYxR1Y5ZjZpTzFPUU5ITXZVdmctMVE4SkVVeVQxSndzempONjVNRzJ4TlpGOTJOalMySzZ4Xzdsc3ZPZzUxaU9ZTG4zc3l2NjRTUi1pSDFMV0w1UHRDYUl4LUxNcHpJamNrUXNkaTJUTXQwYlpXendfUEdwaC1TRVZLdU1kdWRZX1VOMDBtOU9hUHVrbzM0SkpocHg4eTJPRjJFOUN0OTVua29SSHpsN3VucjZZdzJr0gHMAUFVX3lxTFBlQUczd1A5U0d6b2JGeWx0azE1cGJ0NU5aM0tJV1phS1RwLUhjWlpUazE2NV9Mb0tFYlZJR0NkZUZpVm1HNmNtSlJ2Z0NIX0JpdldsX2hPajRVWFJZMU1WMkdjTHV4RTlVLUhubGpETjgzOUM1djFqaWYtaDJZYUh6RDN1RVpsYkd4SHlCeWNHWGlTczJWXzRlbEMtSjIweUpPWGdJZ1JqNFFHMi1SMElaQ3NjOW5yUEZkZW9zY3lBeHpYUF9aWFYtZk42LQ?oc=5",
+      "resolvedUrl": "https://www.huffpost.com/entry/this-thumb-test-may-indicate-if-youre-at-risk-for-a-heart-problem-goog_l_6a208541e4b08a03cfbeaa0c",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 5587,
+        "title": "This Thumb Test May Indicate If You're At Risk For A Heart Problem",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "ign",
+      "domain": "www.ign.com",
+      "publisherDomain": "ign.com",
+      "publisher": "IGN",
+      "rssSample": "IGN",
+      "rssLink": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxOU2dRZy1fXy14RWZkOGV0V0lwdFBPR3p4WktMc3M5UmZIbEJXQTZHaTZTLU5GbTBQbE5fZkU1RmRGbGlSN1l1aUY2Z2IzTFJhRXcwOFFxYkRPTE0wVGItLUVhNmtUU3hvRUN4RWZCUkV2N0FfSS1zVzFOTlJrbkRyb3d0empaMUxOTU5lU3daZFhJWmRrcnFPSDBnVWZVV1dKUVVzcmUtOHE?oc=5",
+      "resolvedUrl": "https://www.ign.com/articles/subnautica-2-dev-reveals-what-to-expect-from-upcoming-early-access-11-update",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2898,
+        "title": "Subnautica 2 Dev Reveals What to Expect From Upcoming Early Access 1.1 Update",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "inc",
+      "domain": "www.inc.com",
+      "publisherDomain": "inc.com",
+      "publisher": "inc.com",
+      "rssSample": "inc.com",
+      "rssLink": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQR08wUGJ0RXRGZkVHb2ZFUWRnYWYtd183UmRCUVMwYWpkNWQ4UFh3bEtwbV9aaWROUWg1VlRBbDlLczV6YW1NZE1ta3E3a253ZTU2SWZhVUJRYllobVBoblp5NG40MG5qMDMzME9oZklYb0pxbFZFbU9DSmk2YkhhN0FXS2ZGT3JFTmxjMjRKOWNVRzRIcFAzbVI4Sll2QXM?oc=5",
+      "resolvedUrl": "https://www.inc.com/jeff-haden/neuroscience-says-feeling-exhausted-is-mostly-in-your-head/91354189",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 6213,
+        "title": "Neuroscience Says Feeling Exhausted Is (Mostly) in Your Head",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "inews",
+      "domain": "www.inews.co.uk",
+      "publisherDomain": "inews.co.uk",
+      "publisher": "The i Paper",
+      "rssSample": "The i Paper",
+      "rssLink": "https://news.google.com/rss/articles/CBMiigFBVV95cUxPVTZsenR0Y1RKNkRnQXhyQjRtczVZcHNhSzlnN3NqX1hkZFU0d0JfRzAtLXRVd2oyejBSZFB3ekRGSEs4NFoyeVYxY0NkUlpUOTZvbm9USERURkQ0ekJDRWUyb2NLd3dWMk5PLUdTTEJkZVhkd2QzYVQxRlJncUpfc1pYUGNGT1FXOWc?oc=5",
+      "resolvedUrl": "https://inews.co.uk/news/world/rfk-policy-could-have-consequences-millions-4430565",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 7314,
+        "title": "RFK has a radical new health policy – which could have consequences for millions",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "insider-gaming",
+      "domain": "www.insider-gaming.com",
+      "publisherDomain": "insider-gaming.com",
+      "publisher": "Insider Gaming",
+      "rssSample": "Insider Gaming",
+      "rssLink": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOUlFNRjBuMHNDb1k4bWV1NzFQMzdMNHlmREt3bmFOaG8telRVSUp2M3ZqYktyVVlpbHRRZ19Pam5NNXprUkRyZUdjeUI4QlU2VHF4b0gxZkVlR2l1anZMbkdvUW1aZWZwOGdZbklZMUFNcVhiXzdTSG93OE00V2NYYlFncEpzRWthaUJrbg?oc=5",
+      "resolvedUrl": "https://insider-gaming.com/all-confirmed-rumored-games-for-xbox-games-showcase-2026/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 6324,
+        "title": "All Confirmed &amp; Rumored Games For XBOX Games Showcase 2026",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "investors",
+      "domain": "www.investors.com",
+      "publisherDomain": "investors.com",
+      "publisher": "Investor's Business Daily",
+      "rssSample": "Investor's Business Daily",
+      "rssLink": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOeVJwd292MU1RQmlaa1dvYWdpeVJVSS1ZOVA4WVpDdmVFSFhVRjBLNUZfTTUyOVJEcjdQT2FzOWJfb0NmTjQyLWF4YzBjUl9xQTZwNkJnUU15a04taWhfcm5sS21vd0wzWl9odmJKcjI3YTBEZzI4MjFVV3NlRVQyLWpmVW0xV0diMTVkUA?oc=5",
+      "resolvedUrl": "https://www.investors.com/news/technology/nvidia-stock-china-ai-chip-sales-scrutiny/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "weak",
+        "reason": "short_body",
+        "bodyLength": 373,
+        "title": "Nvidia Stock Falls On Concerns Of Backdoor AI Chip Sales To China",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "katu",
+      "domain": "www.katu.com",
+      "publisherDomain": "katu.com",
+      "publisher": "KATU",
+      "rssSample": "KATU",
+      "rssLink": "https://news.google.com/rss/articles/CBMikAJBVV95cUxQcHRsVHFoR0ZPYnlmMjJMYmpLNGpENDFfMTZ2OEtxc2xBM3ctU1JlRU9kWDMya0JCa2kwUzdqaDFTVEw3UWR0b1NLVkpWQXV3azlMaXUzS2FxWVE3a2lFbE9QX29KYWotVE1mT2wtUVk0eXdHX3RFZWlObXpfcVBaOThHRFdsaVI5akc1alhoamMzOGV3Vmg3b2o1MUFBUkpGUzhvSEFGLTFTQnFFY3UtYjFtTWZnMUNzdmlKYW1jeE1mSXBOaFgwV1cyUnd4UFBtaGZ3RzhFbjZhV09MVnV3cnZFVkp5UEUyZXY2M2RJWEFLYVdoS0lxNEFqNmVDTGNlVWhYRC14OVV3YkpvUjdxOQ?oc=5",
+      "resolvedUrl": "https://katu.com/news/local/portland-assault-victim-dies-of-injuries-weeks-later-suspect-now-faces-murder-charge-oregon-portland-assault-attack-police-old-town-naito-parkway-tip-crime",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 5017,
+        "title": "Portland assault victim dies of injuries weeks later; suspect now faces murder charge",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "kotaku",
+      "domain": "www.kotaku.com",
+      "publisherDomain": "kotaku.com",
+      "publisher": "Kotaku",
+      "rssSample": "Kotaku",
+      "rssLink": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxNeVAtWUU3YTJoM1REenQtWEg3UHZzdVlIaURSQndOeEc2UXJiYTdHU01jWU1MUHdDcnNkRy1nLW55SFppUUhlbUNETXNudGdTVS01YjQxSzRqYnFibS1mWTRoSTk1S1ZkRWdMa1hiajFmWW9xTnZaT0VTaFptYjM2aEF0NzdTVmcta1AyRnRyY2ZWOHpGbjJDMU1KUWtWVjBxcFVEdTdHN2hEVHQ3MjhqbW55bXU0cUNXRTZxVHBidnJBRkdLSm9HNGgwVGMxZ09zOEQ5Wmpn?oc=5",
+      "resolvedUrl": "https://kotaku.com/hideo-kojima-says-hes-not-interested-in-ai-maybe-ai-could-create-art-but-while-i-live-i-dont-think-ill-see-it-2000703473",
+      "resolveError": null,
+      "getArticle": {
+        "status": "error",
+        "reason": "unparseable_output",
+        "preview": ""
+      }
+    },
+    {
+      "slug": "ksl",
+      "domain": "www.ksl.com",
+      "publisherDomain": "ksl.com",
+      "publisher": "KSL News",
+      "rssSample": "KSL News",
+      "rssLink": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxOT0JfTV9BTHlRZWl1TGJoR2s2WnNZdmpOY3MyWE9WYW1pNXFrczlDcnIxS0IzSjluWTBSQWZoeFJwX2xsSE45ckc3UUMtWDRtbTlPZ1gzYlNxcG9pUHltZlVKcGlObTVqZWsyVUxUSXItTnFhUnFXX2tuZWJOVjZCQXFkYzVzU0VwMF9xVFBoUzBvWFNMWmZrSWhxdkdHanI4VjdfamRFaG1OSnhhQTRidVJScDFlZDFoaWtfc3R5b0c1Q0VCdGtpdA?oc=5",
+      "resolvedUrl": "https://www.ksl.com/article/51507416/astronauts-briefly-take-shelter-during-repair-to-fix-leak-on-the-international-space-station",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 1001,
+        "title": "Astronauts briefly take shelter during repair to fix leak on the International Space Station",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "ktla",
+      "domain": "www.ktla.com",
+      "publisherDomain": "ktla.com",
+      "publisher": "KTLA",
+      "rssSample": "KTLA",
+      "rssLink": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQM0g1NG00eXZkLS11MmlGNzZ2M0tSLUoyRnFoTHRFTm9mb0lIUFFjUVhHTEtncUVXYUx6NXVWZm5rcU5weVItOERwMVZKVXlQZFZBdng3WnVQWFhydjNJOHE2U0U1SmVLOWxDeldvd0hFNFR0ZnVwdHBtd2tPeUZHM25CZnhiakdOaWI4OTFCTDdOSEJBYjhvOGRIQWVCd29ENlVKRF9TVDNnZUtTQTlWTVFtYnpsTEMzYlgwZTRn0gHDAUFVX3lxTE1BLVdQM3pzLUVXTllPUlQ4dGtJdHA5N3VMd2cyQ0NYQlRRTF8wNWlBN2NUX0ozM2JXOU1YTE1iRlFDc3hIRm9McWUyNjlsdF9CTnNaMkZ0SjNkbnl1MEZONEpLaFY0VUZtVExZNDQ1OWJoU3ZWWlNmRDlGdEk1bldGdkRmM0g4bi1KQWJnaWktcGlqX2FvMjZudGJaNkluNl9ESzAwSFR4ZnVEZ0hfbUdzMXF5UDc5UUFTVHF2d09pLTU4WQ?oc=5",
+      "resolvedUrl": "https://ktla.com/news/nationworld/dog-with-over-a-million-social-media-followers-reportedly-stolen-sold-for-27-and-eaten/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "error",
+        "reason": "unparseable_output",
+        "preview": ""
+      }
+    },
+    {
+      "slug": "kvia",
+      "domain": "www.kvia.com",
+      "publisherDomain": "kvia.com",
+      "publisher": "KVIA",
+      "rssSample": "KVIA",
+      "rssLink": "https://news.google.com/rss/articles/CBMigwJBVV95cUxQNVYyeGtlOE92Uk5nTGJxenAwU0hjcE1kOGV6ZWNiekp3aEF4QTNrVFo3V052Tkk4UHNmMFNWcEFwU3l6N2FSc2NNQ2xIb2FNeGV6cDZLbTdROW1xOFhPdElvZVVRQW9ZVV9NWUlDYlpFaVFYcmMtVTlVeTB6TElEZy1QSDVpXzFZNlluUFRpUnhIX3gyclZFZW44SWI2S01MVHFsSWJaTGhkN0pneVhJVzZJM1MzNklVd0FuS3FVS01KeklnODVUTFNGS1pYR2tPWUsxWU93aExKWmNMREp0T3BpWC1GM3pyVnZFWXZmQXhlZ09jUGZQWFZzQTYzckN1Y0JR?oc=5",
+      "resolvedUrl": "https://kvia.com/health/2026/06/05/parkinsons-disease-is-consistently-linked-to-pesticide-exposure-farmworkers-and-nearby-communities-are-at-risk-in-texas-rio-grande-valley/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "error",
+        "reason": "unparseable_output",
+        "preview": ""
+      }
+    },
+    {
+      "slug": "kyivindependent",
+      "domain": "www.kyivindependent.com",
+      "publisherDomain": "kyivindependent.com",
+      "publisher": "The Kyiv Independent",
+      "rssSample": "The Kyiv Independent",
+      "rssLink": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPMDMxdl9wUUpCYi1iT3ZCNGFYQnA5TFJPWDNQek9WcW9KY0p4UmRka2c0azJydXd1TlFURVpsajJ4RUc5VHNLTFR2cHZDVlFEYVRiX3ZzUENMVE9JTHg0SFZPVEVmemZwVTROaTF5V2RiMDh6TTkwQzg4c1F3cU1yOEdqOE1MOVAzMGNNNFU4WWF3SnlCczJWMG14bEI3MXJBd2lpVWxiSHZ0eGFnV0lhUldEMnh4QXZjMkpoXzlJRQ?oc=5",
+      "resolvedUrl": "https://kyivindependent.com/un-security-council-to-hold-emergency-meeting-in-response-to-russias-ballistic-missile-terror/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 3734,
+        "title": "UN Security Council to hold emergency meeting in response to Russia's ballistic missile terror",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "latimes",
+      "domain": "www.latimes.com",
+      "publisherDomain": "latimes.com",
+      "publisher": "Los Angeles Times",
+      "rssSample": "Los Angeles Times",
+      "rssLink": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOMmtoVldUb09jZ1VBRkdmNEU0Y3g4Rzdfa1ZEY1R6NDZ5UklmME1ncERoS0djTXpMaDA1b2xEUm1MbEZkWGhCSWJQSUlRM2pRZEt3UG9iOVJYbVd4WTRRWTFkLXNmMDl4OEU5NmgwOVdacWZKN1NzTjN6ajh3ZGR2Tzd0ajM5TWJNSktQZ3NibXpDeXhHWGlfckJIWEgta2JXbVVuT2N0Um1NSVlwQ2JHbg?oc=5",
+      "resolvedUrl": "https://www.latimes.com/california/story/2026-06-06/raman-cuts-deeper-into-pratts-lead-as-new-votes-are-tallied",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 3686,
+        "title": "Raman closes in on Pratt as more votes in L.A. mayor's race are tallied",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "liveandletsfly",
+      "domain": "www.liveandletsfly.com",
+      "publisherDomain": "liveandletsfly.com",
+      "publisher": "Live and Let's Fly",
+      "rssSample": "Live and Let's Fly",
+      "rssLink": "https://news.google.com/rss/articles/CBMib0FVX3lxTE5ZVFdBNzhHR2xXRVVGUnFCNFZMSGl5d0NDV1hSTHJrMUVySGNQRzVSRDZZWlRnOXdJcnJEUWVlYTVzTkVSRlA2OVo5LXNtNjdqeXZEa1E2Z2NtX09nSVpIY0hwSkdvelFqcTh5ODh3MA?oc=5",
+      "resolvedUrl": "https://liveandletsfly.com/united-airlines-fake-boarding-pass/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 4509,
+        "title": "Man Sneaks Onto United Airlines Flight With Fake Boarding Pass After Multiple Security Failures",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "livescience",
+      "domain": "www.livescience.com",
+      "publisherDomain": "livescience.com",
+      "publisher": "Live Science",
+      "rssSample": "Live Science",
+      "rssLink": "https://news.google.com/rss/articles/CBMixwFBVV95cUxOa0llZlJXWG1YbXpwUGlSelBaNEtNazRtUEhNS0NYN2ZXWFgzZHl6SWhoMzZWcHRyaUFGRW0zS3Q2WUNpUnY3a3lJLXhIVF9odGl0OFpWNHBHalZNczQ5dDh6M0ptRGhEc3pXTlZXdC1MUEhQLUJJQlZmMzl5WDBkWklCdm9EaE44X1RuQS1QMHlVejFOVkUxTTdBX1BlTjdoRWRGUzB3RjE3M0t1czk4X0Z1R2V5THIwZ2RtdnZtSEJXbjFSRFRR?oc=5",
+      "resolvedUrl": "https://www.livescience.com/space/venus-and-jupiter-are-about-to-almost-touch-in-the-sky-in-one-of-2026s-best-skywatching-events",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 3012,
+        "title": "Venus and Jupiter are about to almost touch in the sky in one of 2026&#039;s best skywatching events",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "markerzone",
+      "domain": "www.markerzone.com",
+      "publisherDomain": "markerzone.com",
+      "publisher": "MarkerZone.com",
+      "rssSample": "MarkerZone.com",
+      "rssLink": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE1weGZsbktWcU1rT3VtY2Z5T1NZdVoxblhzTmMxYjMxNHh3ZVFGYlRMT3pNZjFiN0xYbEtSREctenA2ZkVRMmJOcmVCS1lFeWplaU9PMnA3aXN3NVZhVzAwQg?oc=5",
+      "resolvedUrl": "https://www.markerzone.com/news/index.php?no=590829",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2042,
+        "title": "Scene involving Gavin McKenna at the NHL draft combine is raising serious questions",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "marthastewart",
+      "domain": "www.marthastewart.com",
+      "publisherDomain": "marthastewart.com",
+      "publisher": "marthastewart.com",
+      "rssSample": "marthastewart.com",
+      "rssLink": "https://news.google.com/rss/articles/CBMicEFVX3lxTE8xLVhVRnpuWnRyLXlhaU1iT3RnaDJVX2NtcG1QWXl1X09WeXFEd29qV0Q3UEVqUzhxMVFabVVkSS1uSlJJNEx0dUJ2VWZBanlJemRaZjZvMzQxYTdIbnVITUJJRGo3ZVNfRDJCT0dPTlA?oc=5",
+      "resolvedUrl": "https://www.marthastewart.com/best-food-for-gut-health-11986294",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 5007,
+        "title": "The No. 1 Food to Eat for Better Gut Health, According to Nutrition Experts",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "medicalnewstoday",
+      "domain": "www.medicalnewstoday.com",
+      "publisherDomain": "medicalnewstoday.com",
+      "publisher": "Medical News Today",
+      "rssSample": "Medical News Today",
+      "rssLink": "https://news.google.com/rss/articles/CBMikAFBVV95cUxOUzc5V2NPak5rR05WMlN2SlFUNUhpSEJCaEJLTDJxb2RfOUZSZEhhNWJaLXlHbVNpVXpUeXFNSnFBeUVoWmJtVnd4SzhnS18tRUJiRFZBUFpBUFVQQmhlc0FWQ1FjU19PTHU2UThkOHVERG83VHZOLTBKMDNOX2d3ZXRHdE1iU1NpQm5GOU05NHI?oc=5",
+      "resolvedUrl": "https://www.medicalnewstoday.com/articles/an-avocado-a-day-may-help-control-blood-sugar",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 7552,
+        "title": "An avocado a day may help control blood sugar, study claims",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "medicalxpress",
+      "domain": "www.medicalxpress.com",
+      "publisherDomain": "medicalxpress.com",
+      "publisher": "Medical Xpress",
+      "rssSample": "Medical Xpress",
+      "rssLink": "https://news.google.com/rss/articles/CBMihgFBVV95cUxQMkY2dXhpZmczeDA1NDVLQ3NjME4yZ3M2elFHSmxMRmxUbGc4SDBTSFdpX1lXMkMya2t6dWJWVGwzUC1XQkJ1U1NtRFV6MUlBV3VmNzdiTGxfU3F2cDd0ZS1TcERFS0lvWFR1TS1kMU9id0xKOXpPOEhXZUN4aGx6T3Q0SU9rZw?oc=5",
+      "resolvedUrl": null,
+      "resolveError": "resolve_failed",
+      "getArticle": {
+        "status": "skip",
+        "reason": "resolve_failed",
+        "detail": "resolve_failed"
+      }
+    },
+    {
+      "slug": "mlb",
+      "domain": "www.mlb.com",
+      "publisherDomain": "mlb.com",
+      "publisher": "MLB.com",
+      "rssSample": "MLB.com",
+      "rssLink": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNRzg1TjRZZkg3dHVGWEhJckV0eGZWSnF0VUpUc1hsdF9EWjFSSFdRRlljalpXR0xfMDBPOTJHbmFoVVNQXzFPVTA5dDR2UEcxMHRZS28ydWJXTFpXZGtxRjI0b3NGYV81V0RIMFVTeUdRMUowdlphYkZjR2xHUEVhU1gwb0ppZUFBOTliLUZEVnZYdw?oc=5",
+      "resolvedUrl": "https://www.mlb.com/news/walt-weiss-rewarding-mauricio-dubon-with-increased-playing-time",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 4215,
+        "title": "Weiss continues to feed hot hand as Dubón delivers again as starter",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "mlbtraderumors",
+      "domain": "www.mlbtraderumors.com",
+      "publisherDomain": "mlbtraderumors.com",
+      "publisher": "MLB Trade Rumors",
+      "rssSample": "MLB Trade Rumors",
+      "rssLink": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxOTFFOeXAweWx2UjltNlN3cHdENFd1QmlZSDdzYlZzTVhLNDlEazhpQ2JlY1h4RnpROG41MWhaazMtZUpWV1lQWXN2MFNlZC0wNUwycGtDN005QzZ1YnJCVEhSOV8wdzQ1c1RvZERiUlN3X1VlVlNBU3Ixb0hZRDBsMVlGTFhELWxlVUFkXy1nbTI3VHdBYjBfZU9fbEp0T1owcGMxZjE5UHhGLWs?oc=5",
+      "resolvedUrl": "https://www.mlbtraderumors.com/2026/06/yankees-place-austin-wells-on-10-day-il-with-cervical-headaches.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "error",
+        "reason": "unparseable_output",
+        "preview": ""
+      }
+    },
+    {
+      "slug": "mmafighting",
+      "domain": "www.mmafighting.com",
+      "publisherDomain": "mmafighting.com",
+      "publisher": "MMA Fighting",
+      "rssSample": "MMA Fighting",
+      "rssLink": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPa3pqSVBTSU14aHY1bmJkYy1BSG92YUtmNEU3RlhGUWhfVzUzTFdwWTF4M1BURF84c3dHclhoOHNUQWtYamVMRDc1MzdBdGtvYnktT3pqSWw1VmxxUnp6U0w5VWhTODBVbXAxNkxISlFzUGFCSTdIeldoS0x6dFdiVEpETzBVWFp0WTFLcjVRUFBFenJ6bXNtS3R6NnNiS0lfZzRwZm5BVXFTMWdhMjVvSmRmMXlsOU1i?oc=5",
+      "resolvedUrl": "https://www.mmafighting.com/ufc/492788/ufc-vegas-118-video-bryce-mitchell-scores-dramatic-submission-in-final-seconds",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 1327,
+        "title": "UFC Vegas 118 video: Bryce Mitchell scores dramatic submission in final seconds",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "motorsport",
+      "domain": "www.motorsport.com",
+      "publisherDomain": "motorsport.com",
+      "publisher": "Motorsport.com",
+      "rssSample": "Motorsport.com",
+      "rssLink": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxObkVUSDhHbmNpQy1BOEtxb2gzd2pPVUdoZ2hCcndWMkV6Q2stU2Npc2ZKeldxbFdlc2s0RVdxajRRWE5wSTVaclY3b1BMelNneUtxQldPaUNqbnVvYXlReVVGQ05CRmpjVHR4LWdBdXV5ZHFQR2tJc3FZVktNWGZTbnVCbmR1T2hFYmM1UHB5QVg4TjhMTDdNcG9Kb1NBanJEeUs3LXBJRF9uUi1xWE5mOVdnMVRNRTlCdU55LXNFRk1zdDNhSmxjZk5nVWlUUloyc2VkdVhobFFNZlE?oc=5",
+      "resolvedUrl": "https://www.motorsport.com/f1/news/lewis-hamilton-and-max-verstappen-steal-show-after-kimi-antonelli-monaco-gp-pole-with-viral-moment/10827682/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 1996,
+        "title": "Lewis Hamilton and Max Verstappen steal show after Kimi Antonelli Monaco GP pole with viral moment",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "nascar",
+      "domain": "www.nascar.com",
+      "publisherDomain": "nascar.com",
+      "publisher": "NASCAR.com",
+      "rssSample": "NASCAR.com",
+      "rssLink": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQSUVJZWE0ajV1Wk9XUjF0TFRBV3VqYXJDWUN0cm9HdVNxNjNvekNSanhWcGhra2tWNTlRU25DSlVZWmd6YjJPNU1xcVVVUktlZ1ljbDcyU0N5a3NNYVAwbVhxN2ladU1YOThGUk1iSnRpZjlIdmxKSW8yQmFIVXF3SThSNzRmcTJGY2FyOHBoZ2FMUWF5bEJjctIBngFBVV95cUxPenVNVnBtckVpX25OOWhuaW0yRmNRTFNlV01RdkRyeGxmbkdMY1lyZ3IxVkNoVmQ0WHEtaUJBMzVWZ2FWS3l5by05UWY0cDg4NmVSaWxCd2IwcVNvSGk2UUdZSWJwSGpqSTBzYk1Wd0VRcXhPRUZ4ZnJYUXYwWC11cW50ekt2MmhHZmpVMm9wa2hjSU1pVm1GZHdjRGlydw?oc=5",
+      "resolvedUrl": "https://www.nascar.com/news-media/2026/06/05/racing-insights-2026-michigan-projected-results/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 3101,
+        "title": "Racing Insights: Will Chevrolet, Ford stop Toyota&#8217;s Michigan dominance?",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "nature",
+      "domain": "www.nature.com",
+      "publisherDomain": "nature.com",
+      "publisher": "Nature",
+      "rssSample": "Nature",
+      "rssLink": "https://news.google.com/rss/articles/CBMib0FVX3lxTE5HNXN6Y2lEcWMtelcxSk5YT2ZDbWNmc2xVaEhwQkNudGNiOTAyQUU0SEVsOTJxT3JIRHlwSkUzQzhQNG9wSTNHaHVLd2lHQjE2eGpDNEFTRjBGWmVRdVIteW01Q0dFT2dJeUcyT1YyVQ?oc=5",
+      "resolvedUrl": "https://www.nature.com/immersive/d41586-026-01609-2/index.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 6034,
+        "title": "See a helicopter destined for Mars and a spectacular flowery frame for the Milky Way — May's best science images",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "nba",
+      "domain": "www.nba.com",
+      "publisherDomain": "nba.com",
+      "publisher": "NBA.com",
+      "rssSample": "NBA.com",
+      "rssLink": "https://news.google.com/rss/articles/CBMinwFBVV95cUxOM09EQVRUR09yY051UTcwMHhsWmhqUzVGc2ZSMWhyMmpVN2EwMG1ZdEZrdW9GbUlmUVZVSC1jejhaakNnWEZlREUwMlJXbXpuRmZwYUpwMWZsX0REVjI5aUtJZG1hb1ZPdWpMaFF6OVZ1MWhiaDBnbmcyOFZrRjFmUHo2OC1mcDlOeC1WU2pfNkJMQ3ljZ012Rld3ZnlSUVE?oc=5",
+      "resolvedUrl": "https://www.nba.com/news/finals-mvp-ladder-karl-anthony-towns-tops-list-after-knicks-take-2-0-lead",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 5324,
+        "title": "Finals MVP Ladder: Karl-Anthony Towns tops list after Knicks take 2-0 lead",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "nbcnews",
+      "domain": "www.nbcnews.com",
+      "publisherDomain": "nbcnews.com",
+      "publisher": "NBC News",
+      "rssSample": "NBC News",
+      "rssLink": "https://news.google.com/rss/articles/CBMipwFBVV95cUxOWkFoRzZ3dTB4ZGh1elRVS09oS1V6ZTM4VmtLNnJVMnBoYXJDamNHMWNHSFlFMmxZdzlEdzFoOWY1WS1QaWltdWdLcFI5ZGRwSUtiR2N3ZHhWaUNxR0pURUlaMGk3WVlPWTlQSzZ1cjlVejZCOXRwVFdzc2ZtT0ExajhjMDAwOHFhUkY2bHJoUjZodFJ6dGt1em5aemFreDdSa0YwejFmaw?oc=5",
+      "resolvedUrl": "https://www.nbcnews.com/news/us-news/simone-biles-reveals-health-scare-describes-almost-dying-rcna348833",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 1633,
+        "title": "Simone Biles reveals she had a health scare and describes ‘almost dying’",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "nbcsports",
+      "domain": "www.nbcsports.com",
+      "publisherDomain": "nbcsports.com",
+      "publisher": "NBC Sports",
+      "rssSample": "NBC Sports",
+      "rssLink": "https://news.google.com/rss/articles/CBMizgFBVV95cUxPTVdHd0p0N2xDREREVHVYUDFOZER1T1NYN2xUZzNkeFdJSlZlSjllOXNCamo1dm5BVmRRQkFmRVBMQVh3X3pvQlpxaXg0QTdRSHJiVnJaMEQ1azhQU2tkNHAzMUxwQzFSck5mSWlhaGN5Y0RLOHBCSFduWTBFOGlpUjJIMHc5R0lyY0FlNHZ1OHc4Y1plY05ROW1jdmthZU9lZldwd1p5YllFRDRueXZCQ0xMLWVlYWNuMkdLU3lxZXNDd0J6OXlUb0lUUXJuUQ?oc=5",
+      "resolvedUrl": "https://www.nbcsports.com/nba/news/wembanyama-learning-lesson-kobe-lebron-other-greats-did-before-adversity-comes-before-finals-glory",
+      "resolveError": null,
+      "getArticle": {
+        "status": "error",
+        "reason": "unparseable_output",
+        "preview": ""
+      }
+    },
+    {
+      "slug": "nbcwashington",
+      "domain": "www.nbcwashington.com",
+      "publisherDomain": "nbcwashington.com",
+      "publisher": "NBC4 Washington",
+      "rssSample": "NBC4 Washington",
+      "rssLink": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxPZkVRNUl1eGNRX0JEeFFCZXI0UENUM0R2WlphREhrdk9lNExsWVJfQWdEZUY4WVZrYmQwbWdPOWFNR1ZpRUx3U2VEeEZjdHpsendtQkFmNDRtWVlfLVBJb1ZwUHV2aEF2S1dYMW42Y3ItYVp3T3hLNTdxOGlMRktpMjY0NDU3Z0JXY2pTakIwWWtIeXFaYi0xUzRBZXhBYnl2SmZ6djl1Q3BObkplZG81ay1ZQ3VCY2tVQ0JiUTVLWm1sX1BtQ2x2ZzBpUjBHLUJMSVHSAdoBQVVfeXFMTXR2dlJrQUVNNFhzeGgyMHVjVUtWMWhJUURtQ1c5Q1RKQjNVZnVEbmRQYmhCYkRsV1VIczlrYWJKSG9ZemZVbUVJSTFuUEd2emxPZ013U09YUFhHSmNISGFtNk1nZTFYUDlkZ1l5OWpPS2xsNWJlZi1BZmdXX090OXVERk55RkF3RHBzRTA5WTJ2XzJKUzFsc3Q0T3RDaDdJRzBrbU9jMFAwWGp6NmxMS1dLVGFJbW5MYnhZNks1dnd6YjBCNEVHUGhEREpHTVVFckRTQmJCMm9vbXc?oc=5",
+      "resolvedUrl": "https://www.nbcwashington.com/news/local/trump-says-he-wants-his-new-acting-director-of-national-intelligence-to-cut-the-office/4113464/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "error",
+        "reason": "unparseable_output",
+        "preview": ""
+      }
+    },
+    {
+      "slug": "ncronline",
+      "domain": "www.ncronline.org",
+      "publisherDomain": "ncronline.org",
+      "publisher": "National Catholic Reporter",
+      "rssSample": "National Catholic Reporter",
+      "rssLink": "https://news.google.com/rss/articles/CBMiigFBVV95cUxOd2Q3dEhVQmhyT05Kb0VDamUzODMzdU5ZZ2ZDZk9qMnpjeDB3eVoxTU82ZXV0SnRTRXZaczRjNXRkV3E2bk5ncHc0ZUxTeG5CZHRSNFRkMzQ2cm1LbDZMWERGRUo5VDNQZjdCbHdmV2preFc1c0Q1cWU4Z3dZbGhUV2ZqWW5fU2YyVGc?oc=5",
+      "resolvedUrl": "https://www.ncronline.org/news/bishop-quelimane-mozambique-shot-dead-his-residence",
+      "resolveError": null,
+      "getArticle": {
+        "status": "error",
+        "reason": "unparseable_output",
+        "preview": ""
+      }
+    },
+    {
+      "slug": "ndtv",
+      "domain": "www.ndtv.com",
+      "publisherDomain": "ndtv.com",
+      "publisher": "NDTV",
+      "rssSample": "NDTV",
+      "rssLink": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxPSEtxTjZjQnp4RFc3bzBRck5vOGY3dF9FSi1VM0RzaHBmRDFTQzZtLW5YUXRkSDY3Vi13OHNoRlpGN0lYN0ctMU5mM0RuODVVUkVJYVdGYTJNSS0yV0N3NThqSDc1Q19kclJZbTZRY29WR1M4M1NoT1gzdXVvc1JoeUtOQ0V0VkpqSWk3MF9jSXFpeVhxNmpLQXhUd0cyYVpaNHh0RUxyOXJMTjhsSzB1NTFaVElGNkw0U05ZYWZ2MF8tUdIBygFBVV95cUxPRDVNcnNPaEQxakZNdTdIZXh3Ty01d2xINm9hZEdBSi1JN0ZyN2JJMHpKZ29jZVVlSGJWRUdIazd2LVVQbzcxWWxqVHlYNU9iNDJsb1lzNDVSWlNkaExEOTBEbmZUZlJZZnBlM3lWR3I3UXhqUFVRNHA1MjQ4RlVQb0xZM2VfNVNLNENLMi1kNVNrN0cxd2Z3TUJtYWRueWNGUEViT3g1Wm9jYW1MSDVfaVVSdTFaNVRCWDU0THNYNXRSQmRwU1dkb0NR?oc=5",
+      "resolvedUrl": "https://www.ndtv.com/health/fitness/strength-training-with-cardio-lowers-the-risk-of-death-shows-three-decade-study-11599775",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 4731,
+        "title": "Strength Training With Cardio Lowers The Risk Of Death, Shows Three-Decade Study",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "neurosciencenews",
+      "domain": "www.neurosciencenews.com",
+      "publisherDomain": "neurosciencenews.com",
+      "publisher": "Neuroscience News",
+      "rssSample": "Neuroscience News",
+      "rssLink": "https://news.google.com/rss/articles/CBMiekFVX3lxTFB2ME1ySVV2clJqRXZzVU15TlNBWHgtNTI1eE5NY2NZd1N2RzFRZkpDQ0VXUjhTRDc5VHg1Y0NyQklqdEhlX0phWklEZGtJc2xnSXhNWTJuUk1uaUQtLVVGRjczdndzNm1tQ3loOVVYN2tPUTV3Z3NpTzVB?oc=5",
+      "resolvedUrl": "https://neurosciencenews.com/early-diet-adolescent-intelligence-30839/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 8748,
+        "title": "Early Life Diet Linked to Adolescent Intelligence",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "news-arizona-edu",
+      "domain": "news.arizona.edu",
+      "publisherDomain": "news.arizona.edu",
+      "publisher": "University of Arizona News",
+      "rssSample": "University of Arizona News",
+      "rssLink": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQWmRvSnU1ZzhZa3hjZFJsTUhqLXFxNDBMMWtBT1hnUnZNMGFLcTR6NEM1aEFLV2JyNXRZLVB1cFNUWFVzcF9SXy1melI1QVExU3RKNV9valo1SDN0Z3Fnc25kS0NJOVdYeEF5bGFpcFpzNGgxcVFWckZJVnF4RksweklqdG1Ea29JSlNXNllwSkVKdjBMLU9kYTdRV2xPdTA0bDNyeUFSRVpOSzB5ZEpvY3l0THZXNzA?oc=5",
+      "resolvedUrl": "https://news.arizona.edu/news/struggle-sleeping-these-three-common-sleep-habits-tied-signs-brain-aging-u-study-finds",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 3966,
+        "title": "Struggle sleeping? These three common sleep habits tied to signs of brain aging, U of A study finds",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "news-xbox-com",
+      "domain": "news.xbox.com",
+      "publisherDomain": "news.xbox.com",
+      "publisher": "XBOX Wire",
+      "rssSample": "XBOX Wire",
+      "rssLink": "https://news.google.com/rss/articles/CBMijwFBVV95cUxOTzlPWlRpdHBqTlZpZll2MFR6cW40bmxVakt4U2J6dEZjRVZDZzQxeUpPSEppQnBQMlhtYnJIWlc4anNIc3hQSEt3bjIzRUFxeno4RnNXa2NFYVJfYWpUa1VEanNjNWpTaUZFREx2ZTNhdUxIQlYyS3NVV1c0eFZQX3pJLXhTYVFTX2hPaGd6bw?oc=5",
+      "resolvedUrl": "https://news.xbox.com/en-us/2026/06/05/hitman-classic-trilogy-remastered-sgf-announce/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 4724,
+        "title": "Welcome Back, 47: HITMAN Classic Trilogy Remastered Revealed &#8211; Coming 2027",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "newser",
+      "domain": "www.newser.com",
+      "publisherDomain": "newser.com",
+      "publisher": "Newser",
+      "rssSample": "Newser",
+      "rssLink": "https://news.google.com/rss/articles/CBMifkFVX3lxTE5vVFJkT2xqT2h2bWU1ZnlKRmtGVTFWUHU3TXVvX0p1U0dlX2V2LU1sZzczcFpya3ZTZ19vZllFX0Q0V3RIR3BuWjdqYmJsV21tZmY1OF9RaENVU1RIZjlvMlpuZFpMdFZUdEl4Y0dORVJpbzRPRm5GS1Vld2Nrdw?oc=5",
+      "resolvedUrl": "https://www.newser.com/story/390529/kyle-buschs-widow-breaks-silence.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "error",
+        "reason": "unparseable_output",
+        "preview": ""
+      }
+    },
+    {
+      "slug": "newsweek",
+      "domain": "www.newsweek.com",
+      "publisherDomain": "newsweek.com",
+      "publisher": "Newsweek",
+      "rssSample": "Newsweek",
+      "rssLink": "https://news.google.com/rss/articles/CBMijwFBVV95cUxPb2UzemNqcS11NjhFM21YSmdac2loWXlQMjFfanRGRzZCT2JKNHd3MG5FQXA3UjhxOFRzTUFXXzlXSkRpamFxbmNVbTUzUWk1cDhCa0M0bm9jc1h3aDQ3X05FdkM0ZkFzVEt2ajJzeTdvQUhVUHUtVkhlY2dTVzl3YkVPNDNkV2NfXzlPbUxoSQ?oc=5",
+      "resolvedUrl": "https://www.newsweek.com/colorectal-cancer-new-treatment-breakthrough-surgery-12038502",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 3908,
+        "title": "New Colorectal Cancer Breakthrough Could Eradicate Tumors Without Major Surgery",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "nhl",
+      "domain": "www.nhl.com",
+      "publisherDomain": "nhl.com",
+      "publisher": "NHL.com",
+      "rssSample": "NHL.com",
+      "rssLink": "https://news.google.com/rss/articles/CBMifEFVX3lxTE9kdUhpNm1ycWhQNnZPU2hvVmN2SHFWVVgtVXQxSW50cGhhMmplNEdvcFpGbjZScjZBMnczZ3RLMWJUUU1neHZyUmFwUnM0bXJYMXFLNjl2MWRYU1RPbkhIVnhwM0N6ZVNCNnFQTlMzNTFySlh5TkQ5VG50U3M?oc=5",
+      "resolvedUrl": "https://www.nhl.com/hurricanes/news/projected-lineup-scf-game-3-at-vegas",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2551,
+        "title": "Projected Lineup: SCF, Game 3 at Vegas",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "nintendoeverything",
+      "domain": "www.nintendoeverything.com",
+      "publisherDomain": "nintendoeverything.com",
+      "publisher": "Nintendo Everything",
+      "rssSample": "Nintendo Everything",
+      "rssLink": "https://news.google.com/rss/articles/CBMic0FVX3lxTE51bEwzRzVfRERCclF6S1BsVVQzdjdxV183QzNqM29jdE9qMkdaN1ppang2ZXI5ZjlYS3pnaXJ6RldBNzlCdUZCUzB2a3ZLVWdfVXotSDRwZ3oxUFlqY2xBTzdqWXphbWN2YkQ5dkNXZXpZOFk?oc=5",
+      "resolvedUrl": "https://nintendoeverything.com/super-yooka-laylee-kart-announced/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "error",
+        "reason": "unparseable_output",
+        "preview": ""
+      }
+    },
+    {
+      "slug": "nintendolife",
+      "domain": "www.nintendolife.com",
+      "publisherDomain": "nintendolife.com",
+      "publisher": "Nintendo Life",
+      "rssSample": "Nintendo Life",
+      "rssLink": "https://news.google.com/rss/articles/CBMirwFBVV95cUxPa21mZDUxdzAwYm9ENnVhSmR2cW1fZXFNLWk2TUFaOXlHRHZ1eHF4b1ZEdmpCREo4OE5QdnBpMnA1SnNXZ3hWT0pKRWZNbjBLSjRTX1hkbllFek1SQ3hKc2FldHpQOW9oQjNLMURtTW43Y0ZtVE9tdDN3ZVE0YjNXZmJhd2lEV0xsa0hNQjZsSFNqc2hhMTZPbWY4YWJEWWVFcDc4YzZpemdBa0lsMXpv?oc=5",
+      "resolvedUrl": "https://www.nintendolife.com/news/2026/06/vampire-survivors-announces-switch-2-version-new-dlc-and-name-update",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 4110,
+        "title": "Vampire Survivors Announces Switch 2 Version, New DLC And Name Update",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "npr",
+      "domain": "www.npr.org",
+      "publisherDomain": "npr.org",
+      "publisher": "NPR",
+      "rssSample": "NPR",
+      "rssLink": "https://news.google.com/rss/articles/CBMiggFBVV95cUxOdS1FQm5faURaRlAtYkhLUFNpMlNWZzlsN1VIVVp2Q083OGNsOEZOZmN1Wk9mOVRQb2pxc094cDl5SzF0bDZnX2l0NWVoTUJCZVBpTmZpZG1vVERXX0wxMlo0RzJEemdIOV8tM1hLSGV6ZkpSZkFHbmRaZDlkYlJlUTln?oc=5",
+      "resolvedUrl": "https://www.npr.org/2026/06/06/nx-s1-5848668/israel-lebanon-white-phosphorus",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 4805,
+        "title": "Israel has reportedly used white phosphorus near Lebanese cities and towns. What is it?",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "nypost",
+      "domain": "www.nypost.com",
+      "publisherDomain": "nypost.com",
+      "publisher": "New York Post",
+      "rssSample": "New York Post",
+      "rssLink": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQR3haY211Wm1aRkVXNnJNaVQxOG00MjJYR3RhZExldHNXVE5KOFR4UVNfSExNbndxZHF3Rks4QmZDSmwxb0F1V0ZPV1lscHE4Y24wMjE0bC1kM1V1MFYwTnNzTlRuQjAtcnJVSVJQdUtNVGRBYzlzQnNnV2tUcjdDSTdvQndDMTBHbkg4eWZyQ1ZneE5PaE1acEdvQkRCWERiS0Fr?oc=5",
+      "resolvedUrl": "https://nypost.com/2026/06/06/us-news/spencer-pratt-sums-up-las-glacial-vote-count-in-a-single-image/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 3455,
+        "title": "Spencer Pratt sums up LA's glacial vote count in a single image",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "nz-news-yahoo-com",
+      "domain": "nz.news.yahoo.com",
+      "publisherDomain": "nz.news.yahoo.com",
+      "publisher": "Yahoo News New Zealand",
+      "rssSample": "Yahoo News New Zealand",
+      "rssLink": "https://news.google.com/rss/articles/CBMiggFBVV95cUxOaUhYOFk1bEVnczE3M1A2M203b2VrR0FyaGFRWHhKNU11UHNNZFN1LTF4TFdvbXRiMHJBTm5OckNjX3dSUFFxM1RzZnpyVThnNktvLW0wZktmMmJNT2Z2LWxIT21ZdzhZVmZVTlZHcExnNkdlMGtDczVGdVZzQV9kT253?oc=5",
+      "resolvedUrl": "https://nz.news.yahoo.com/vanilla-ice-admits-bafflement-trump-205231154.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 3697,
+        "title": "Vanilla Ice Admits Bafflement To Trump Concert Backlash: 'I Don't Get It'",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "onemileatatime",
+      "domain": "www.onemileatatime.com",
+      "publisherDomain": "onemileatatime.com",
+      "publisher": "One Mile at a Time",
+      "rssSample": "One Mile at a Time",
+      "rssLink": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOZm9uUlhwV0I3OEgxaktUdUdMTmJkSG5aOWRmelpPWnoycVRCb1VxSTBNeTRMbUJfVmQ0djczUDlwNVB4RDd2Z29BTW94V0M0Z0NkUmNTbExGWjBPNjZoOUx1dkNTeThLYlNRZV9uUDFuLVBlVkRjYzd3aGRRUXZ2U3ZWaG05U1JOMXBEU2JvdW0tR2p3dVdUM19kUzQ?oc=5",
+      "resolvedUrl": "https://onemileatatime.com/news/united-co-pilot-warned-captain-low-approach-boeing-767-hit-pole/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 6923,
+        "title": "United Co-Pilot Warned Captain Of Low Approach Before Boeing 767 Hit Pole",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "opb",
+      "domain": "www.opb.org",
+      "publisherDomain": "opb.org",
+      "publisher": "Oregon Public Broadcasting - OPB",
+      "rssSample": "Oregon Public Broadcasting - OPB",
+      "rssLink": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNb3VKYllFb1VHcnR4TXNmUV9vQ0JKcW9oSThKcjBEYkxMRXZIZEF5VkNpZF8xQ2g5ejJ0X29Venp4Z3k0Q1Z1ak9aMDV1R05aTy0yVUNhYWhTRngtUFBldmRoVmJ1NE9CdXZTRWw1cDBpZmkzYlhsWnlqTjByUWtucjU0b3pMV21ialdUMnRCVGxpQTIzUG9tU25IaDdPWUlvMjZLWEZYY2Y?oc=5",
+      "resolvedUrl": "https://www.opb.org/article/2026/06/06/bob-packwood-longtime-oregon-senator-marred-by-scandal-dies-at-93/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 15035,
+        "title": "Bob Packwood, longtime Oregon Senator marred by scandal, dies at 93",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "pbs",
+      "domain": "www.pbs.org",
+      "publisherDomain": "pbs.org",
+      "publisher": "PBS",
+      "rssSample": "PBS",
+      "rssLink": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxOVjZwVDZUcnB5enk1OG54eUE1QUdqZFZrWWF1eTh5eWpGTm1iMHVZcGRKejhZTzBkTFVoRjIyT3RwWEFUbTlJblNOeEthbmtTa0dOMEo0VXExRjBOWlVTRWVZeWlzZXZ5NEZCQ2gwN3BCSW1IMTVlRjVyV2NDdUlCYjctSDYtMHp5TllES0VyTEJORHBCY3BlajBzTHBxdkg4ak44VTc0cUw4UQ?oc=5",
+      "resolvedUrl": "https://www.pbs.org/newshour/politics/whats-next-for-the-war-powers-resolution-on-iran-politifact-explains",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 7282,
+        "title": "What's next for the War Powers Resolution on Iran? PolitiFact explains",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "pcmag",
+      "domain": "www.pcmag.com",
+      "publisherDomain": "pcmag.com",
+      "publisher": "PCMag",
+      "rssSample": "PCMag",
+      "rssLink": "https://news.google.com/rss/articles/CBMiekFVX3lxTE9qcGJDSFAyY0s1Zm9YYk1BQ0RxbzFTbk5kckx1OHprRS1ENFVxZUdIX0FaQ1djTlVFVWdPc0dkNVhaWTdkTXMtVkpwcUJVNU1DRXJHLWN1ZHR4Y3RReDIydTJXUUVWZjkwNWNZVFRrOVZSOWVaUnpYbzlR?oc=5",
+      "resolvedUrl": "https://www.pcmag.com/news/google-and-spacex-sign-920m-a-month-ai-deal",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2341,
+        "title": "Google Will Pay SpaceX $920 Million Per Month for Compute Access",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "phys",
+      "domain": "www.phys.org",
+      "publisherDomain": "phys.org",
+      "publisher": "Phys.org",
+      "rssSample": "Phys.org",
+      "rssLink": "https://news.google.com/rss/articles/CBMieEFVX3lxTE43RDAtbktadzVSaFV1NEVKLTBLNkdCOE02aHVFVFpjNUt6ODlFR1JpdUg5UFJBb2o3UkdtbFVzNzN0cmNUWjJ3YUVJVGRBNC1KRk0zejZ2TmhiVi00MExXMF9FSVhEUFQtd0lPSmVNLUJfU0g3SkFTeg?oc=5",
+      "resolvedUrl": "https://phys.org/news/2026-06-remote-toll-mental-health-american.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "error",
+        "reason": "unparseable_output",
+        "preview": ""
+      }
+    },
+    {
+      "slug": "pinstripealley",
+      "domain": "www.pinstripealley.com",
+      "publisherDomain": "pinstripealley.com",
+      "publisher": "Pinstripe Alley",
+      "rssSample": "Pinstripe Alley",
+      "rssLink": "https://news.google.com/rss/articles/CBMi3wFBVV95cUxPbmpXMWpnZjQxZG1jdU1tWmpjNTVGaVNUUEh1cEJZdmFZLVFYWlM4elkybXF2bFhSTVhxd0lwaDd5Y1VDQjBxZXBBWlZ2cHlOV2lCd0E1eml1SmNueDdIc0lqcTg0dk9LcHhRWUV2ajZiSFdSeGJVZFNfV1d3cGROVUJRU2FfdFI4dlpYVjhJRGo5YldUVmxrMGhKTTcwWFlNNUZkZWlMTU15cEdreHlqclpFeUs2bUVVZXVkMDFDWUowcjkycVFKaGYtazE0aTRZNlRKckZLTWVIdjNaa0ZB?oc=5",
+      "resolvedUrl": "https://www.pinstripealley.com/yankees-news/191462/yankees-news-catcher-demoted-escarra-sanchez-aaron-judge-rib-injury-trade-cole-contract-stanton",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 3598,
+        "title": "Yankees news: The wide-ranging aftershocks of the Aaron Judge injury",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "prnewswire",
+      "domain": "www.prnewswire.com",
+      "publisherDomain": "prnewswire.com",
+      "publisher": "PR Newswire",
+      "rssSample": "PR Newswire",
+      "rssLink": "https://news.google.com/rss/articles/CBMi6gFBVV95cUxQTzgwQnhxNGFIdG03cnhPdU5iOVhDTGZlUWNlZkVOOFFUeXJaYVdIOHgyQjdGWlA5SkZ2d25qd19sZDhnRFhuay1XTXdicWRjZy1tV2lJckowSmY4ek5TNjRDYTdqX1pONkZvMkVQZ3dwdENqdDB6c0JRWjNXQWNZTmlnaEkxb2FRdVdwU1lYYVc4ZW5mdUxkUG5hWGw2Z3dVYl9mY290VW1tdkltRFNqcTJMeEtlOF9KNVlCU3BVTk9hSXctX1BUeDFmRjR1bW4yRXAtbkF0czdBTmdBdDRZWk9WNXRZczdYX2c?oc=5",
+      "resolvedUrl": "https://www.prnewswire.com/news-releases/guild-wars-3-modern-evolution-of-the-mmorpg-announced-at-summer-game-fest-for-pc-and-playstation-5-302793119.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 4712,
+        "title": "Guild Wars 3, Modern Evolution of the MMORPG, Announced at Summer Game Fest for PC and PlayStation 5",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "pushsquare",
+      "domain": "www.pushsquare.com",
+      "publisherDomain": "pushsquare.com",
+      "publisher": "pushsquare.com",
+      "rssSample": "pushsquare.com",
+      "rssLink": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOQUptWnZLMDJMSS1XdVJXY1lJWmlkUEc4SW84Q2xlQnhjblozamVUc2hTM1k0a2NuVjVsMnFkZExHaVNIRG5oTUQtVkNBTS1ZRWpYV2RSaFpXMlhxakZDYzVFbEpxNl9RbU9kTTBxaHV0ODBtbmxTMlFubXRQaG0wUmhTT0hxLWMwc1psaVFKeGtQb29RcFJRSU5vNDB5bmVoMklIWUx1aTgxb29lWF9HVEJoLTlrQQ?oc=5",
+      "resolvedUrl": "https://www.pushsquare.com/news/2026/06/godzilla-vs-gta-6-retro-remake-makes-playstation-debut-on-ps5-this-november",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2855,
+        "title": "Godzilla vs GTA 6: Retro Remake Makes PlayStation Debut on PS5 This November",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "quantamagazine",
+      "domain": "www.quantamagazine.org",
+      "publisherDomain": "quantamagazine.org",
+      "publisher": "Quanta Magazine",
+      "rssSample": "Quanta Magazine",
+      "rssLink": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPclJ0LVNTbnVNdkVJbURhb1ItT21DV21CdEZSU1lQSUNkZzJDeS15Um5fRHNMeURNcnY4YzJxUGhlOEpRU0UybUh3VXFWM2czemJ6bFYxcFF6YUZYSDV5WUU2X3daTmhjbnllU3FnMFRwTmNtZncxcjVwX3JBNTFiSFZn?oc=5",
+      "resolvedUrl": "https://www.quantamagazine.org/are-memories-transferable-or-edible-20260605/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 20386,
+        "title": "Are Memories Transferable — or Edible?",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "rollingstone",
+      "domain": "www.rollingstone.com",
+      "publisherDomain": "rollingstone.com",
+      "publisher": "Rolling Stone",
+      "rssSample": "Rolling Stone",
+      "rssLink": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxOLXJnLUFlaFEtZTZUZTNPeGdmOVB2U1JQOU5XT1NIaVh1a0R6T1lsQ1VIbmRldmxsMDhjUDU4d3BfQkhkcldjcU15SFB3MTRrTjhhYkNLVDV6dkYtLV94SncyVVRaTW5EQ01qcWhaUTlaUDg3YjU2MnMyOG8zYklqd3BPc2F2Z2RONTluck1HalVCYzRjcTBrNXEwYTJIWDlpQlZwQ0lIX1AtZw?oc=5",
+      "resolvedUrl": "https://www.rollingstone.com/music/music-news/bruce-springsteen-kenny-chesney-dropkick-murphys-1235573021/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "fail",
+        "reason": "no_body",
+        "bodyLength": 197,
+        "title": "See Bruce Springsteen Play With Kenny Chesney, Dropkick Murphys at ‘Music America’ Concert"
+      }
+    },
+    {
+      "slug": "russianmachineneverbreaks",
+      "domain": "www.russianmachineneverbreaks.com",
+      "publisherDomain": "russianmachineneverbreaks.com",
+      "publisher": "RMNB",
+      "rssSample": "RMNB",
+      "rssLink": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxOUzhpcGNFYXJlQXk2U0RDSkNnSURKWWZOMVozWXpZMlJ2UmJDb3h3Wk52bmJkSFYyUUp0MC1TQzVKVDZ3SXFVZTg0RkFXV3dFQ2NZaHltM1Zqd2g2MmFlRWVoVXgtR2ZEcFNpMWNUNTQ3NmdFMWdqbzdQZklMaGNRZ2FzcjZ5QmhnQWtoYUFHcjJ4UmtPcjhfWXdwX2hrUGRBLVhWeC1PZGJDQlFFakpzYy1nQkltWTdZQ0J0S240d3RKZk0?oc=5",
+      "resolvedUrl": "https://russianmachineneverbreaks.com/2026/06/06/logan-thompson-vezina-trophy-voting-nhl-general-managers-andrei-vasilevskiy/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2715,
+        "title": "Logan Thompson left off more than half of NHL GMs&#8217; Vezina ballots as Andrei Vasilevskiy takes home trophy",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "science-nasa-gov",
+      "domain": "science.nasa.gov",
+      "publisherDomain": "science.nasa.gov",
+      "publisher": "NASA Science (.gov)",
+      "rssSample": "NASA Science (.gov)",
+      "rssLink": "https://news.google.com/rss/articles/CBMingFBVV95cUxNTzRidDFqbEtkSmtiYnFrMlV2VDYxNWZoNWw5bTR2S0RiLTJGaFdiZWlqS1c0bTlub0Fyb3hqcFVmMTQ2TUw0bFpOOGZ3TnByWjBCOHRmc215aHdzNFZPUTdrWHRtT1U4bk9jOEU2dXBaZm9vZ2hBMkVBQWxfc1BRWnFOb05fV2hvVE94dFAtMWhXZEdINFRkeHBPMDZCQQ?oc=5",
+      "resolvedUrl": "https://science.nasa.gov/uncategorized/nasas-artemis-ii-moon-mission-research-continues-on-earth/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 5829,
+        "title": "NASA’s Artemis II Moon Mission Research Continues on Earth - NASA Science",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "sciencealert",
+      "domain": "www.sciencealert.com",
+      "publisherDomain": "sciencealert.com",
+      "publisher": "ScienceAlert",
+      "rssSample": "ScienceAlert",
+      "rssLink": "https://news.google.com/rss/articles/CBMimgFBVV95cUxQZng0SlBSd3dYTmc2djc5ZjJJbW5qcXhFTURscDlNNTZzR1IteGdteC12RmJ0dzlhRWRTOE1RNDFucHM2Z3ZaQjFiUXZ6SGVDbVFSSlhiM2lyUnZvdlVDcnVxSzlSRGJtWTRSeVE4SkoxT2tBYmFhZnNpTERwaGJMc290RzlTUUxmamJSRDQ1RHJEY2Rnak9mZVlR?oc=5",
+      "resolvedUrl": "https://www.sciencealert.com/ai-could-soon-use-more-water-than-humanity-drinks-un-report-warns",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 4804,
+        "title": "AI Could Soon Use More Water Than Humanity Drinks, UN Report Warns",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "sciencedaily",
+      "domain": "www.sciencedaily.com",
+      "publisherDomain": "sciencedaily.com",
+      "publisher": "ScienceDaily",
+      "rssSample": "ScienceDaily",
+      "rssLink": "https://news.google.com/rss/articles/CBMib0FVX3lxTE02aXk4ek1vVVhGeHVBS19TMjV2SXR5b0dUb2VRU2JXN2hITzh0MmhQcHY0bDYxRThTenRfWWw0YVBmSUtIeXpINlY0NHc5WDMwdWIzY1QyUkZLc0NfaTd5Y1NjekpSOEREbzVqeDBwdw?oc=5",
+      "resolvedUrl": "https://www.sciencedaily.com/releases/2026/06/260606075510.htm",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 6761,
+        "title": "Scientists found a surprisingly simple way to create powerful quantum states",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "scitechdaily",
+      "domain": "www.scitechdaily.com",
+      "publisherDomain": "scitechdaily.com",
+      "publisher": "SciTechDaily",
+      "rssSample": "SciTechDaily",
+      "rssLink": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNbVdWMUdiTjdRaEtDRDlKLUhNX2tDdFI5cGlueUV1Ny0ybXdxS2syNlExNjZOcFNkQlZIQW1TbllTd0VvaGJ1UWRYZDVnSDkzRlZJY3dhNGpmdHpvTDVLM1EyZWxIdEV3ZVZHMWxNYV9KUHpkcjFyUE44Y3JndGxVdEJNLUFhUklINjJpMG9WMA?oc=5",
+      "resolvedUrl": "https://scitechdaily.com/scientists-discover-gut-signal-that-turns-off-sugar-cravings/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 5689,
+        "title": "Scientists Discover Gut Signal That Turns Off Sugar Cravings",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "scmp",
+      "domain": "www.scmp.com",
+      "publisherDomain": "scmp.com",
+      "publisher": "South China Morning Post",
+      "rssSample": "South China Morning Post",
+      "rssLink": "https://news.google.com/rss/articles/CBMixwFBVV95cUxOdkZJUXk1TzZfNkM2bG85NGV5M01xa0xGVXpVUXNfeVQ2eF9WSEp1QVA4d2pGTExfTHRueGdXWVNTVWhINC1lZWpWQ0gyb1NRdDhBMDJpa2tRdEJhNU9HOWYtektpaGNJT2tzSzlWbEtYY1l6V0hOb2JnU1U2SXBkNk5kZnItWGhaUDBka21Qam5Xd1ktWUxCLVZpNEZYQ3YzWGJndkM1NUxCRXRFV1hlamZuYlh6cmVwMGl2eFFDM3VDSEZYOVRj0gHHAUFVX3lxTE9KNFpkTkladGlhVzNfSXFlQW5sNlpOWnFic19UX0FzYmttazNZam5nZ191S3duU3NnYk9EX1gyY0k4OXdSWjBQT0d1R01sU2VwWDg1SkRLbTdTdmVLUWpxQkw1ZWFCaDFXNnpkZTFPcU9mNEdzWGU3eDF0RVdvWEszZGstVEVTblJvdTVONkwyWTZWYjVXVTNXeFU4bk5zS0hlNGZrZWhxOVI2Rnp6SGgyTWFlMzJGd1RZR2UySXZabDY2U1ZpWnc?oc=5",
+      "resolvedUrl": "https://www.scmp.com/news/china/science/article/3356164/how-china-working-turn-saishiteng-mountain-worlds-largest-astronomy-base",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 3300,
+        "title": "How China is working to turn Saishiteng Mountain into the world’s largest astronomy base",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "screenrant",
+      "domain": "www.screenrant.com",
+      "publisherDomain": "screenrant.com",
+      "publisher": "ScreenRant",
+      "rssSample": "ScreenRant",
+      "rssLink": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNRDdFaWtFbVM5bjQ5TjZxQ1pQbXRJVTJmSFFqMlFBUldmUENVVlhhbnFLSDBFaXg1cnBLcUxaQ3RUV0h6d3JwcW5TQXAydUVfZUZ3eDIxTlVDSmtESDBDMVUwdmR3VUp6V19JUkgzanJDVUpDblFxb1dBdTd4dG9hUEluaVR1alhpY09hUDE1bUExV3psY2VYbzZfb0Y?oc=5",
+      "resolvedUrl": "https://screenrant.com/masters-of-the-universe-2026-movie-rotten-tomatoes-audience-score-record/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 3821,
+        "title": "Masters Of The Universe Rotten Tomatoes Score Sets An All-Time Audience Record After 41 Years",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "si",
+      "domain": "www.si.com",
+      "publisherDomain": "si.com",
+      "publisher": "Sports Illustrated",
+      "rssSample": "Sports Illustrated",
+      "rssLink": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQMHFOTDZRZXhidUxBOUVxd3QyYVhPeTJtMVQ2VUNpOHNyQ3U3YmN4RGFRUmVCTXpWcjlvdEI1cFE2M1hSY1F1cFEzNU9nbnE4R2ZneXFSTFRMQ00xNTJUaU1sNkM2WHVBd2Y5QkZ0MkJZSDFvblNRQ0FIWGtGWVBDMzZUOWFwUWpKelljMzhxMFF5Zw?oc=5",
+      "resolvedUrl": "https://www.si.com/nba/finals/how-teams-trailing-2-0-nba-finals-spurs-have-fared-history",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2708,
+        "title": "How Teams Trailing 2–0 in NBA Finals (Like the Spurs) Have Fared in History—Full List",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "slate",
+      "domain": "www.slate.com",
+      "publisherDomain": "slate.com",
+      "publisher": "Slate Magazine",
+      "rssSample": "Slate Magazine",
+      "rssLink": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQSXZ1V2kwTC04eThCNEQxcGJ6VEJ6VHhYTVQ5ZTZtcW14dzNaeVlJM2VTbFhtZ0xTODA3OHF3azBaM01xMlUwN0xGeERPX1lVUWdFa2FLSVdSN3Rwc3VDQ0llNVhLMEZiU3lQY25ON1JBMDRKSndhQnk2QVAyYnc1WmM1VDBCUW5wLVMyaXVOQXJGZEc2dVJUUWRxQmk4WW8?oc=5",
+      "resolvedUrl": "https://slate.com/culture/2026/06/netflix-jennifer-lopez-movie-brett-goldstein-office-romance.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 6438,
+        "title": "Jennifer Lopez’s New Netflix Rom-Com Proves Exactly What She Needs to Do for the Rest of Her Life",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "space",
+      "domain": "www.space.com",
+      "publisherDomain": "space.com",
+      "publisher": "Space",
+      "rssSample": "Space",
+      "rssLink": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPYnc0WGNnRU92U1FtaDRPQS16bTltOEl3VGRfS2gyb1BPZXhjUWM1SWFHWTlVS09sOGFlalhzOGpOcHVxZ0U1NjBDYk9ueVROUTg5ODREZXVXSHJyMmFBSFBHUzVOUHAxRWltNlhpcDVBMncybHFyUlZXdFN1dTVPbmduZ1hJV1pPNXM2R2JGYmxfTjJDZDhPdWFlRXlBTzFuRnpnMkFjLVR4UmdqMnpzd1R3?oc=5",
+      "resolvedUrl": "https://www.space.com/technology/aerospace/going-supersonic-nasas-x-59-jet-breaks-sound-barrier-for-the-1st-time",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 3743,
+        "title": "Going supersonic! NASA&#039;s X-59 jet breaks sound barrier for the 1st time",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "spacedaily",
+      "domain": "www.spacedaily.com",
+      "publisherDomain": "spacedaily.com",
+      "publisher": "Space Daily",
+      "rssSample": "Space Daily",
+      "rssLink": "https://news.google.com/rss/articles/CBMiowJBVV95cUxQcFFxZV9mTnh0a3ZNQkJoZE92NzFVOEQ3bDN1a0JqcXNJeVJfSjNYMVFBN2U3c0NRbW1TQUhTSFpSVm1lRW11SkxDVjJ4amx6OGdQRGIySVc1dVhMS1lPdFZsSjBoVVF0SVpEallCeGlWVzdTMkNLamFnZnR6aWRzc1hrY21lbTRMTWZrbllKaXlxeEwySXhPN21KWHFrajhfNl81VFRjclcwTkJLdWhKbmMwU09jaTk3MXlpaEZnNW5MUkJjYzMxOFBIUjFma29EN05JUnFNdzZUUlNlV1l6NE9yTUgwT0I1aU9rX1gtdkwyR1BQZl9rWVlzQTRNcnFMaVh2cFBpR3Azd0RoSXJ3NTBEMm9VeXdOWGtLa2pSYkdZOWs?oc=5",
+      "resolvedUrl": "https://spacedaily.com/n-there-are-millions-of-objects-in-our-own-solar-system-that-have-never-been-seen-and-the-facility-that-will-find-them-is-expected-to-come-online-before-the-end-of-this-year/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 8851,
+        "title": "There are millions of objects in our own solar system that have never been seen and the facility that will",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "sports-yahoo-com",
+      "domain": "sports.yahoo.com",
+      "publisherDomain": "sports.yahoo.com",
+      "publisher": "Yahoo Sports",
+      "rssSample": "Yahoo Sports",
+      "rssLink": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNeUl6OHhSbjg2RzJveldhY0FxZDVoSF82NWlBYlBoLTVfVGJnYldTNzNUZVFFUGszUDVHSkhVeW1oSnpXazRleXh4WnE4NzRTbkRZVng0NTZjLXFoNWUwY0hDWXhYbG1FSTJCd09mQVdEVWpqZzV5eGpYUDg5SEZxbGVoSWhpeGd1WTJLUXVn?oc=5",
+      "resolvedUrl": "https://sports.yahoo.com/articles/knicks-issue-warning-ahead-president-001649751.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "error",
+        "reason": "unparseable_output",
+        "preview": ""
+      }
+    },
+    {
+      "slug": "sportscar365",
+      "domain": "www.sportscar365.com",
+      "publisherDomain": "sportscar365.com",
+      "publisher": "Sportscar365",
+      "rssSample": "Sportscar365",
+      "rssLink": "https://news.google.com/rss/articles/CBMinwFBVV95cUxOdlNWQTdoR1lqODYwRnlReHZZR3dGalZDUlVRSVBXSzJjUVBuRXlpVC1wM05VaWFRdXpxRmZVYU5rZ3hhcjRpX3ZBZDd5b1M1UjRJRkVvRF9jVy1YdGxuSUlaWFB5QjFJQklpcmlNbFdRT1ZMV3RkczRtcHctWVdydExBOTJoak1QSnBONnVUdFJVQm4weTJWb0QtMXB3YnM?oc=5",
+      "resolvedUrl": "https://sportscar365.com/industry/audi-hints-at-return-to-gt3-racing-with-newly-launched-nuvolari/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2362,
+        "title": "Audi Hints at Return to GT3 With Newly Launched Nuvolari",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "statnews",
+      "domain": "www.statnews.com",
+      "publisherDomain": "statnews.com",
+      "publisher": "statnews.com",
+      "rssSample": "statnews.com",
+      "rssLink": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQZl9JTUJIOF9UWEVzNlE0V2kxd2tNcWdLUnB0SDhkWlRPVjBiTjZLZmE1eGotWENpTFZ6TUxaazViUHVLMFluRGRnQXk1YmhVaVFxUVpBNGhLYmtfckhWa2gtYUhZMGpBWGk1Yzh3T0c4Qlp6YlhVTHhkSS1YbEpEdkdSRVFSUkNjaTl2NWRNUXdnNlBjTm1xZ3hISUhqSUk?oc=5",
+      "resolvedUrl": "https://www.statnews.com/2026/06/06/illy-retatrutide-triple-g-weight-loss-obesity-safety-data-ada/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "fail",
+        "reason": "no_body",
+        "bodyLength": 87,
+        "title": "Lilly shares safety, tolerability data on its next-gen obesity drug"
+      }
+    },
+    {
+      "slug": "tampabay",
+      "domain": "www.tampabay.com",
+      "publisherDomain": "tampabay.com",
+      "publisher": "Tampa Bay Times",
+      "rssSample": "Tampa Bay Times",
+      "rssLink": "https://news.google.com/rss/articles/CBMikAFBVV95cUxPd1M3VEJqNi1zRmRDNTBKUE5Ba0I5S2JTU2dudnA3TGpkeFJwZ2V6N2VIRGtDZXhRU0RMZGV2VVA0Yl9sblRaMmtLekZyZmlEUDRaY1lTRTB3WkNWdkpBcWpMZ1hLYnFqSXkwS3d0Z0cwT2lDb2UtR3g2d0FYcUlZN3gzOGMxNWU3OEI3REhEcno?oc=5",
+      "resolvedUrl": "https://www.tampabay.com/news/florida/2026/06/06/womans-body-florida-beach-boat-strike/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 1140,
+        "title": "Woman found dead on Florida beach had been hit by boat, cops say",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "tastingtable",
+      "domain": "www.tastingtable.com",
+      "publisherDomain": "tastingtable.com",
+      "publisher": "Tasting Table",
+      "rssSample": "Tasting Table",
+      "rssLink": "https://news.google.com/rss/articles/CBMid0FVX3lxTE9fZklFQVVaZUNSOG1XYTF3TEJFXzlwSUhrSlBLVjJ6cnFYMWZfVFdvT3ZneDZLNHJlN0ctYUdMNlBzUmxZMG40YjJ5aGEyemRXaFViZm5fbnFCcjZERkp4WFNpTW96VGQ5UmszZHN6MDJtZ29yNjlv?oc=5",
+      "resolvedUrl": "https://www.tastingtable.com/2187921/unhealthiest-protein-bars-2026/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 14446,
+        "title": "The 10 Unhealthiest Protein Bars On Store Shelves In 2026",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "tech-yahoo-com",
+      "domain": "tech.yahoo.com",
+      "publisherDomain": "tech.yahoo.com",
+      "publisher": "Yahoo Tech",
+      "rssSample": "Yahoo Tech",
+      "rssLink": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQRk1OVWllbnNjbTQ0X2dRd2k1YmU5S241OVVCSzBNdnhLRk1UVW85QzF0U3NROGxZSWhnWGFqcnNnNEF2akRSWWZxN0tWRmlueGRkZVZKUHJHTTJRdHd4cWlsRVNsbFNGUXAycTltNTdPQlhJMktnM2s0emhhcGI5S1daVy16X1hIZHF3UzZsbGtwRVRv?oc=5",
+      "resolvedUrl": "https://tech.yahoo.com/ai/deals/articles/mcdonalds-introduces-ai-drive-thru-000717731.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 3857,
+        "title": "McDonald's Introduces AI Drive-Thru System, Sparking Customer Backlash",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "techcrunch",
+      "domain": "www.techcrunch.com",
+      "publisherDomain": "techcrunch.com",
+      "publisher": "TechCrunch",
+      "rssSample": "TechCrunch",
+      "rssLink": "https://news.google.com/rss/articles/CBMitwFBVV95cUxOUU45cGV6YjZSUzlta3J6MUtRaG5aU240UlFtbFJuQTFYc0hnQXBnaklySDZHTkVSRWdLTWlLUHRtNzNYRWx6RXVVaWRfSHM2T19GbC1pUUpOMTUwbEJ0cFpPM1k0ZEc2ZjJLNmdRYkxDbWtKaHhtYU5fMGlwY09tNnFWQW1BbUdEWk1NMU1BSjNqcFU2MVpEU3lxUEJLa1U4enpCczYyeV8zUEc1QTRvQ012aXVKVW8?oc=5",
+      "resolvedUrl": "https://techcrunch.com/2026/06/05/the-token-bill-comes-due-inside-the-industry-scramble-to-manage-ais-runaway-costs/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 9825,
+        "title": "The token bill comes due: Inside the industry scramble to manage AI’s runaway costs",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "techradar",
+      "domain": "www.techradar.com",
+      "publisherDomain": "techradar.com",
+      "publisher": "TechRadar",
+      "rssSample": "TechRadar",
+      "rssLink": "https://news.google.com/rss/articles/CBMiqAJBVV95cUxOcUJmNk5GVDNTaUN5TVhkM0JVeFRnZzhrdFl3RFIxZDU2RmlJTDYyVndiVlRQaWU4MU03ZllPNkJiVEEwWnkzZWg1Y21EQzRDck8wbF9fMHlNMlNOdmFMN2JVSDZhNFZKdWpWN014OE5SWXNZb3Nmd3FOY2hxZlVPWEdQY2U1Y0dxSXBXWFBOX3lSVjdZXzI1T011LXNDUDNoWG9iZTkwWHBLNkI4aHlYamk4ZVpaSzl0N0x5c0xrR255QjdKYVpTMm9HUXZ5QUw5eUhPTXplOVAwbkRxVmVCVEp5X3h1SThBUzNkanVfUFJsQi02TGVXX2pZb3AtZWZpa1ZFWjNZUVlfZ0tWNzBHWUlzZ2JKYmR5cUFvb2ZUOGdFSzVzeHpPbw?oc=5",
+      "resolvedUrl": "https://www.techradar.com/pro/hp-announces-the-most-powerful-windows-ai-pc-ever-built-nvidia-gb300-workstation-can-handle-one-trillion-parameters-thanks-to-its-784gb-unified-memory-but-it-wont-be-cheap",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 4725,
+        "title": "HP announces the most powerful Windows AI PC ever built &mdash; Nvidia GB300 workstation can handle one trillion parameters thanks to its 784GB unified memory, but it won&#039;t be cheap",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "techspot",
+      "domain": "www.techspot.com",
+      "publisherDomain": "techspot.com",
+      "publisher": "TechSpot",
+      "rssSample": "TechSpot",
+      "rssLink": "https://news.google.com/rss/articles/CBMimwFBVV95cUxQX1ROY2gtaDB5VDk1aXdwT0JEdFp2RGR4TGxHendVamFmYU50M1RHZzZUMFo1ZVdGUE0xX3FqMkV3ZHJrZ2tTeXZIMGUtRFdpaEtNWWk1aHhGekltbzBKbm9RSE5kNGhkYVFMRVA3VDRuTXI2cjBmQ1Iwb1VHOF9hTVY4am5SVVZzbExlQzlBVG93QjBxUC00NnYwSQ?oc=5",
+      "resolvedUrl": "https://www.techspot.com/news/112677-nsa-using-anthropic-claude-mythos-offensive-cyber-ops.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 3207,
+        "title": "Anthropic is blacklisted by the Pentagon and being used by the NSA at the same time",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "thebrighterside",
+      "domain": "www.thebrighterside.news",
+      "publisherDomain": "thebrighterside.news",
+      "publisher": "The Brighter Side of News",
+      "rssSample": "The Brighter Side of News",
+      "rssLink": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPSlpkNHMzXzRwVEFCeS1NX2xGRWU2bl9pcDloLW5JVDY1Z2JFWU11R0VjSUN1ZUpwY2R3OHZRcU94MHhOTWlzUTVNYkw5WTNpMVJlWnhiZVg2aGhWUkNfM2lUa3NSVnNCZDl5YVZyaVRaRlFnbjBKeUFvT0pCQTZ6MTl3QkpRekZUNTBEZ2ZmaEs1N2RRLWJXdTkzWTdTTWNCampyLTJwa1ZxcGxKQ0Ywcg?oc=5",
+      "resolvedUrl": "https://www.thebrighterside.news/post/new-tachyon-theory-could-unlock-the-secrets-of-time-travel-and-causality/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 7327,
+        "title": "New tachyon theory could unlock the secrets of time travel and causality",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "theconversation",
+      "domain": "www.theconversation.com",
+      "publisherDomain": "theconversation.com",
+      "publisher": "The Conversation",
+      "rssSample": "The Conversation",
+      "rssLink": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxQamZCY29iR3pNeThrSkJIZHJFQVBmYm1UVmktTkV5TFFEa2JaZm9xVndTRVJnbGdUcER0blctbG9FMFVFVXdkLXBld1pFMXBfVGRaSXJXOUg2cEc4a0QyZVZOWnRORGNRdnQ3SGVIY3VfUWVMb2FwWUJDQ0VUalFMX0JOOUdFb0hPODhRVkFYSlEyY3ZmSld5Mk9aa2xHMnBlU3BkQjZ6YURIbi1KSTF2VV9QX3QzWWZFTENzYVYyQ1hJUzV0TTRMOVlFZW9WczZh?oc=5",
+      "resolvedUrl": "https://theconversation.com/could-it-be-aliens-from-cheyava-falls-on-mars-to-exoplanet-k2-18b-heres-what-scientists-really-think-284393",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 5795,
+        "title": "Could it be aliens? From Cheyava Falls on Mars to exoplanet K2‑18b – here’s what scientists really think",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "thedodo",
+      "domain": "www.thedodo.com",
+      "publisherDomain": "thedodo.com",
+      "publisher": "The Dodo",
+      "rssSample": "The Dodo",
+      "rssLink": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQOGJJUDljNHIzQXVJbU14R1BGTW16cWZxUF84RlRDUU5mQTZjRThMUXNVdDI5WmM4OUlqOGF6aENvZkVoNUhVdlpJVWlxaHRlTnF3QzFCanZsRk4zYmptblhfRVlHdGJPZGdNLUpDTlFNVk03UW93c1dTWjVhaVZ4SUJzRlJCbFQ2MDBYN1VIa3NRRFdMMnQ2WVluT3REcVBLSWc1R2U3RFo1bW5MYjZhcC1vRE8?oc=5",
+      "resolvedUrl": "https://www.thedodo.com/daily-dodo/diver-spots-unusual-hairy-looking-fish-and-finally-solves-a-20-year-old-mystery",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2501,
+        "title": "Diver Spots Unusual Hairy-Looking Fish — And Finally Solves A 20-Year-Old Mystery",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "theguardian",
+      "domain": "www.theguardian.com",
+      "publisherDomain": "theguardian.com",
+      "publisher": "The Guardian",
+      "rssSample": "The Guardian",
+      "rssLink": "https://news.google.com/rss/articles/CBMid0FVX3lxTE8yc2pKNDY3UERvdjV5VEVOaVZrYjRsT05RdU0tMmZCV293SGVMTll5VjRqanQ3R2pNN253Wk5NQUExVk13SVlPOWdaYThoMklITGtDY0Y3aTd5dU4zT212SXIxc2VOX1lKQXowaEZJNHpZQlE5clN3?oc=5",
+      "resolvedUrl": "https://www.theguardian.com/us-news/2026/jun/06/toledo-ohio-shooting",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2004,
+        "title": "Multiple people shot near street festival in Toledo, Ohio, authorities say",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "thehackernews",
+      "domain": "www.thehackernews.com",
+      "publisherDomain": "thehackernews.com",
+      "publisher": "The Hacker News",
+      "rssSample": "The Hacker News",
+      "rssLink": "https://news.google.com/rss/articles/CBMifEFVX3lxTE95dFVsNTQ5TGZGMTJ6S0dYXzdtMi1LbjJtM0t3a3ZfMEVmaFQ4QXhXMW1mVmR6QTlvRVYzM0Q4WXhUcVRYLUZTaG5jeW9sZEdMUmVfcjd0dGRTMDlwRHVlYkhENWRUOEFVTmVvdnpQNXNVWE9BcmFGTjN6VW4?oc=5",
+      "resolvedUrl": "https://thehackernews.com/2026/06/ai-agent-uncovers-21-zero-days-in.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 3773,
+        "title": "AI Agent Uncovers 21 Zero-Days in FFmpeg; Chrome Patches Record 429 Bugs",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "theringer",
+      "domain": "www.theringer.com",
+      "publisherDomain": "theringer.com",
+      "publisher": "The Ringer",
+      "rssSample": null,
+      "rssLink": null,
+      "resolvedUrl": null,
+      "resolveError": null,
+      "getArticle": {
+        "status": "skip",
+        "reason": "no_rss_sample"
+      }
+    },
+    {
+      "slug": "thestreet",
+      "domain": "www.thestreet.com",
+      "publisherDomain": "thestreet.com",
+      "publisher": "thestreet.com",
+      "rssSample": "thestreet.com",
+      "rssLink": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOR1gwbmxsWmF5enVMTEVTWGwzd1NiY2syLUpnM3ZkYzMyb1pPc3M5SnVOZlI3cUlKel9hWTlWVVlmNzdVQXJ1UEFkRzdDdWRVQlVXMnN3MjMxbzJfWTJjWXMwTVJ4MXVKdTcyWlEzZEVQbDJjUDNIanQ0U2ZHdXY0OHdrcTB1THhyVXlMZ045Wk93R19qQVBKMGR1U3dEaTN4NDdfUko5UGZoenVs?oc=5",
+      "resolvedUrl": "https://www.thestreet.com/investing/stocks/bank-of-america-resets-broadcom-stock-price-target-after-earnings",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 4158,
+        "title": "Bank of America resets Broadcom stock price target after earnings",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "theurbanist",
+      "domain": "www.theurbanist.org",
+      "publisherDomain": "theurbanist.org",
+      "publisher": "The Urbanist",
+      "rssSample": "The Urbanist",
+      "rssLink": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPZUhqY1ZMenNDUE1Td0R2OExHVWQwb09NNnRhbG5YTXZQVjgtLTNrOXI3QmxFcmZvUFBtZkZKVjQwejlYZmhZTS1EQ3hlSE5rY3BLUkxWN09nMHg5ODNSaG5BZG1rRFRiRFJVTkd3TUpWOC1FRk5JdndvZjctMlp0Wjln?oc=5",
+      "resolvedUrl": "https://www.theurbanist.org/sound-transit-most-used-light-rail-system-in-us/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "error",
+        "reason": "unparseable_output",
+        "preview": ""
+      }
+    },
+    {
+      "slug": "theverge",
+      "domain": "www.theverge.com",
+      "publisherDomain": "theverge.com",
+      "publisher": "The Verge",
+      "rssSample": "The Verge",
+      "rssLink": "https://news.google.com/rss/articles/CBMinwFBVV95cUxOYmdRbkc2T0RLOFF0Njd0cXBNeXcwcFhPSHpJQ21fWHJ2YUhOd2hPcTFMcDdfNDU3aFRUUlFaVzBDLVllMWU1ZFVvbi1kQnBrVU5iT2txc2hPNWpJdEc5N3ZybEQ4UjhCTjF5SkVkY1VOZDByZUxfYlpEWXlZWnBEVVFSSmhldk1MOHhoTHk5X2hUZVREWEJnS3V4OFc0R1k?oc=5",
+      "resolvedUrl": "https://www.theverge.com/entertainment/944229/grand-theft-auto-6-release-calendar-summer-game-fest",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 4439,
+        "title": "Grand Theft Auto VI is warping the video game release calendar",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "timesofindia-indiatimes-com",
+      "domain": "timesofindia.indiatimes.com",
+      "publisherDomain": "timesofindia.indiatimes.com",
+      "publisher": "The Times of India",
+      "rssSample": "The Times of India",
+      "rssLink": "https://news.google.com/rss/articles/CBMi7AJBVV95cUxQeFRIT3BjMW5ZcDNMbzBqbzV2NWhmVGVYQWNoMlRLSHBjTm1EYUY5Tk9oQThkalg0Uy1KMTRtQU5nVkdBZGYtRU9KdEpIV1lZYmx2WmxrSG1WMVpTQjlsQnV3SFJzdFZyZW5iNW5YTDFfR3pvMnFmaXV2dEJ3c1kzTlRkSjNmRzBLWTU3ZW5XY2xqeWh2VVZ3dXZTRE40VF9xSUNwMWE2VzdFc3ctbzZTVGlJZXlSWERHbDYtbXZqSDNwbVkydXF5aUFkenZMX3g4LXdFTWRHTzl4YVJ6QXdLeWpMWnlTdHRVLS0wUmRpOWF2SW0yZVVUZDlWbFZuVUZtb0dkZFEtNl80RG0tXzA1Um1MX1pXOXRMQWMyUmt4U0MxWmJWVmtiWEVzbEcyLXg5M1dKV2FmVUt4clp3SV9CcFlfYkgzRk9Qcnc2NldmejJ1QWY4ZmpEMlBqa1ByclRQRHVSeVFsSlZNSWJ00gHyAkFVX3lxTE9LMl85NjB3c2xxSXB3TzIzUE5kWEVuUlo0T053MExsTHFOd1ZQVGowR002QUZ5eFY4ZmljN21MSlVpd1FKOTJXUkpfMHRwODZWemhPTFZZVlB4Z3BLa1h3RDQyTlVIbC1ham13azhHYjRpV20ybm9XQVY2VFF3LUUzaVppUV9OMS1DcXBXYkhFdjBHVXlvbHJuOUJaMjlhaFM4UkhtSjdNTFgtTnl4UGFxZUFtNTEzazIxaWM4QmdLdnpmZ0VvM3hTVU9hVHJLLWFfb2FHZWpnRVF3MU1kSjJQeGw0OEZabnV5WVNoYlp5Y2dfTnpTVzdiQkUzRHZQcnRyaDNXQWk4UU1UZEsxTUFPLVlaTTRVNnlvWUR1ZFktQzFGUExJX0lVY1NqRS01VkZMdDRqVXltNUc5cElhemJncEE5RnJUWXA4MWxqR0k1M3BQRHlRLVQwZ3pLTnFwYXQ1VXNpVE1fZlB2YlJBMk9fc1E?oc=5",
+      "resolvedUrl": "https://timesofindia.indiatimes.com/world/rest-of-world/aswedish-research-robot-submarine-detects-unknown-structures-beneath-antarcticas-dotson-ice-shelf-and-the-find-suggests-ice-shelfs-underside-is-more-complex-than-expected/articleshow/131525237.cms",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 4122,
+        "title": "A Swedish research robot submarine detects unknown structures beneath Antarctica’s Dotson Ice Shelf, and the find suggests ice shelf’s underside is more complex than expected",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "timesofisrael",
+      "domain": "www.timesofisrael.com",
+      "publisherDomain": "timesofisrael.com",
+      "publisher": "The Times of Israel",
+      "rssSample": "The Times of Israel",
+      "rssLink": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOek5zeTF4akRTTnRBVDE0b2ducGxXY2dSellKM2lUZTRRU2NmQ1RkbWgzZlEwY0JwRXRfa2ZVNmw2UXEzcGZ3dzJhaXhwanNMZmw4MnA0UGExWU5lOXVRc3RnTTFGZzFUVGljVGhyTGtlVWxMOWZyNTVqUnFMS01mWWpNeVQ5Sm9pVWF0cUdvbC1TSFVzYTNTUTBaMVZXSlctb0kwYmVpYi1feEowU18zZWpwdk5Sd9IBuwFBVV95cUxQc08wRklxQ2xMbEdXdndsZ0lHamJOd3ZuY1ZFM25Kai1idGpxRjEtUEJqVXhaTHVOc216MEdkcURDMW41ZkFSc0llQ2dkMGwyVTltY0wwRW01djNubFU1eDBubmd2NU91WU44STBnQThwZEdteVViRmlDSE9aYVhLYmdfRkpNUUdYZmFCUTFQalJtUnhBX3FGY01PVFZnMlEtT1h3VVBNV2pQZ0J6OVFpUUNLbXRiQU02cWdv?oc=5",
+      "resolvedUrl": "https://www.timesofisrael.com/two-idf-soldiers-killed-in-separate-incidents-in-south-lebanon-as-fighting-continues/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "error",
+        "reason": "unparseable_output",
+        "preview": ""
+      }
+    },
+    {
+      "slug": "tmz",
+      "domain": "www.tmz.com",
+      "publisherDomain": "tmz.com",
+      "publisher": "TMZ",
+      "rssSample": "TMZ",
+      "rssLink": "https://news.google.com/rss/articles/CBMid0FVX3lxTE5GNlIwWVk0aVlTM2VMM0M3eF9mb3Z4VHBORTBpc19ySnczN1lxUU9xVkhmenNvX3Vfel9DY1JHQXI2NzlIYWg0ZDVrNEhjbWstOE5pdV9UQ0k2OWc0YlhyOHdHaHJaWDFIdzlrclpFRWdRRC01LXY4?oc=5",
+      "resolvedUrl": "https://www.tmz.com/2026/06/06/charlie-puth-cancels-florida-concert/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 1331,
+        "title": "Charlie Puth Cancels Concert Due to Illness",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "triblive",
+      "domain": "www.triblive.com",
+      "publisherDomain": "triblive.com",
+      "publisher": "TribLIVE.com",
+      "rssSample": "TribLIVE.com",
+      "rssLink": "https://news.google.com/rss/articles/CBMihAFBVV95cUxOTjd4V3FNWHNLa2x3SDd4aXQxVWZDQU5Wa3RQT2kyMTEtblZIRURxcXRHVXVVMzlrSUVfbnhscFE5NEdlQlowYjF3VVJjeTQtZXN0V0hmcC05OUg3aFh1UExtNXdjVWtoazBVN0hHZG51VVRwNWZYTTlKTDVqc3FEN3BaRVg?oc=5",
+      "resolvedUrl": "https://triblive.com/aande/music/morgan-wallen-cancels-2nd-pittsburgh-concert/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 4325,
+        "title": "Morgan Wallen cancels 2nd Pittsburgh concert",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "understandingwar",
+      "domain": "www.understandingwar.org",
+      "publisherDomain": "understandingwar.org",
+      "publisher": "Institute for the Study of War",
+      "rssSample": "Institute for the Study of War",
+      "rssLink": "https://news.google.com/rss/articles/CBMipgFBVV95cUxPN3ZxS1pMYXNJay0wbHdWWm85NHhZajlWTG1oZUVuUlRUNzJIbTVfRDZRbFZ3RjlMOHRweW5IRHZBeGJfak8tNTdiMEtUN3g3MjVyN0x1RXR4bXc4N1Y4MHp5TFBDVWlEaEtGRk0zc09XcVRYQVpwRzg2U2d4MVdzZnktbjVLM3g5UEFUVU1kanpRZFZFRTZGenNLeDFGdUJRWjhZODdR?oc=5",
+      "resolvedUrl": "https://understandingwar.org/research/russia-ukraine/russian-offensive-campaign-assessment-june-5-2026/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 53482,
+        "title": "Russian Offensive Campaign Assessment, June 5, 2026",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "unherd",
+      "domain": "www.unherd.com",
+      "publisherDomain": "unherd.com",
+      "publisher": "UnHerd",
+      "rssSample": "UnHerd",
+      "rssLink": "https://news.google.com/rss/articles/CBMigwFBVV95cUxOUGlBYzM0ck1xdk1ISExuR2YzWElpTHM5d3Q5aE1qX19jLU93eUVUUGVEU1NuVkFScXJlSFM3WkJXODBtZ0xtTEY3T0dBUV9CRlRjakp6YV9aM3dCUmY5NnJoTkROUTlGQzAyS1d4d0RidVNxcFByVEpUelBNRnNXRXNHSQ?oc=5",
+      "resolvedUrl": "https://unherd.com/newsroom/germanys-un-humiliation-marks-death-of-old-order/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 3872,
+        "title": "Germany’s UN humiliation marks death of old order",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "universetoday",
+      "domain": "www.universetoday.com",
+      "publisherDomain": "universetoday.com",
+      "publisher": "Universe Today",
+      "rssSample": "Universe Today",
+      "rssLink": "https://news.google.com/rss/articles/CBMijgFBVV95cUxPRUlKOVIwZFczTWtCLUxkTDdNNVRneVBPWjZUODZ1cEVDWW1TNHNyNHhMMWFkdzJWM3IwY3FPRnJNdmlqNVZ3ZTNQRzZ4UUtUemhHc20tNjMtdndHS3NDR1ZXQXlBQkp5clNjMm9QLUhiY0dodmtDME9FUVRNOGlWRXRfeUk5M01WSlJFbWNR?oc=5",
+      "resolvedUrl": "https://www.universetoday.com/articles/the-cosmic-web-like-youve-never-seen-it-before",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 6205,
+        "title": "The Cosmic Web Like You've Never Seen it Before",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "ussoccer",
+      "domain": "www.ussoccer.com",
+      "publisherDomain": "ussoccer.com",
+      "publisher": "US Soccer",
+      "rssSample": "US Soccer",
+      "rssLink": "https://news.google.com/rss/articles/CBMimwFBVV95cUxQTXVYclBoMjhMeGxQXy1SYTJKQ00tNEhfWENmLXEzRzBTeURObDZ3eXBTQ2F3b0szeWlCeDhRMXZHREFPRlZvUDhBRjU1UDNyVXlQZ0Fnblo3ckM1YlFNRUExQm9wckZRVmRNUDZiakRCazBXZ1JLUVRkNkZuaHhXQVZ3bnZOT2VKYmpWUWdxSWlJTS02MVZWd0lmUQ?oc=5",
+      "resolvedUrl": "https://ussoccer.com/stories/2026/06/usmnt/starting-xi-lineup-notes-vs-germany-chicago-illinois",
+      "resolveError": null,
+      "getArticle": {
+        "status": "error",
+        "reason": "unparseable_output",
+        "preview": ""
+      }
+    },
+    {
+      "slug": "vanityfair",
+      "domain": "www.vanityfair.com",
+      "publisherDomain": "vanityfair.com",
+      "publisher": "Vanity Fair",
+      "rssSample": "Vanity Fair",
+      "rssLink": "https://news.google.com/rss/articles/CBMikgFBVV95cUxOZU91MFZVYUNzVEZuT0pvY2w1eFpMRVBWWDllQW1LbnUyYWFHc20xaXNjOVllSWhCRmFDTnp4bFlvalRxRGdwM2g4OUVrNVo4a05qY1ZlOEpZUHZieEpQU29zTnliWGp1U3V4V2hObndEVXQ2eUNrTlB4Qk0yZmp2VncxQ2RGaVFVSTl1TlFTXzQ1Zw?oc=5",
+      "resolvedUrl": "https://www.vanityfair.com/story/dua-lipa-callum-turner-sicily-palermo-wedding-reception",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 7964,
+        "title": "Dua Lipa and Callum Turner Marry In Sicily, As Elton John Serenades Them With “Your Song”",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "variety",
+      "domain": "www.variety.com",
+      "publisherDomain": "variety.com",
+      "publisher": "Variety",
+      "rssSample": "Variety",
+      "rssLink": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNcHowNDhka190Q0NObkJBNVZldGJMUlZ1UkVXUnI4ZUctRjlBRlNKd1FJblpZRWFKWG1oanlzWWwzRnZEdDZKRlhycGp5Q3BrNGVvUVBiNmJoaDVnNVB0bjAzc1lnaHZFSHpBTEhYWkNwY3JOUkYtUUJIdVVBZ0I1WG9TUHhEX3hCdG5COUlRcXU5bU5LVHk1Tm9CMDVTM0tBOTRibWhVRFZCSVE5QkE?oc=5",
+      "resolvedUrl": "https://variety.com/2026/film/box-office/box-office-scary-movie-masters-of-the-universe-backrooms-1236768580/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "weak",
+        "reason": "short_body",
+        "bodyLength": 333,
+        "title": "Box Office: 'Scary Movie 6' Starts Strong With $24.7 Million on Friday",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "venturebeat",
+      "domain": "www.venturebeat.com",
+      "publisherDomain": "venturebeat.com",
+      "publisher": "Venturebeat",
+      "rssSample": "Venturebeat",
+      "rssLink": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxQaDVTNXM0N0pNdzF1TndmYVhTd2l0ZXRrUC1VZmZxV2lSNzFLcy1SNnk0d0V0NlpTR0NnaHFQWHA0b2pvb282RTFiQzdyT2g3NmVfWmJMVnJBcGtkRlFSS0dRR0JqYXhhUkJ3akdrWDRzQlkzVHhqdGFKVGQzZ0JZLW5YbFd4ZkEwdnRfa25NeXVFSTBoLTRtd19GU2MtVUxxT1dnc2s4Q1ZsWDRhU2RaRld5cGU3Sm50SHVn?oc=5",
+      "resolvedUrl": "https://venturebeat.com/technology/microsoft-ai-chief-says-company-was-set-free-from-openai-to-pursue-superintelligence",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 17917,
+        "title": "Microsoft AI chief says company was “set free” from OpenAI to pursue superintelligence",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "videocardz",
+      "domain": "www.videocardz.com",
+      "publisherDomain": "videocardz.com",
+      "publisher": "VideoCardz.com",
+      "rssSample": "VideoCardz.com",
+      "rssLink": "https://news.google.com/rss/articles/CBMiigFBVV95cUxQOXl5M05hcEJqVlRNREZDNFJ6YnpGQUttUFJHQnBsa3NxT2pJQXRYM21yQ2Jic3RjZVdfQWRDelVTak1xa2c5N2FKSWtiVlVYRDk3OU01THpUaHN6UmtGZVhaQWZGLVlaWWFoSDFqckxQMHV5NGVUOXFtMU1oLU10QlpibEVfa2tpdlE?oc=5",
+      "resolvedUrl": "https://videocardz.com/newz/hp-and-ferrari-launch-5599-ai-pc-limited-to-4999-units",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 1829,
+        "title": "HP and Ferrari launch $5,599 AI PC limited to 4,999 units",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "vogue",
+      "domain": "www.vogue.com",
+      "publisherDomain": "vogue.com",
+      "publisher": "Vogue",
+      "rssSample": "Vogue",
+      "rssLink": "https://news.google.com/rss/articles/CBMinwFBVV95cUxPT29CT3dxX3Z2bFRsWjNXOWN5WURSZy1mVE9tSHF0S3VwWG1QaWZHOHlnbGZTV1ptbDFLN2NGdF9IalBUb1UzR2Z0cHJlT1ZRNHZEcG5IN2s1cndmVTRoREgwMDNiVE1LYzQ5UlZXSHVhN1d5cGZzS3ZBMUQtenRrYXMwelFIa05iNTVZTFhLQ3NJNjR2MUNFYmd0YXJPWnc?oc=5",
+      "resolvedUrl": "https://www.vogue.com/article/harriet-sperling-wears-emilia-wickstead-peter-phillips-royal-wedding",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2595,
+        "title": "Harriet Sperling Wears Emilia Wickstead to Marry Peter Phillips Among Royals in Gloucestershire",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "vox",
+      "domain": "www.vox.com",
+      "publisherDomain": "vox.com",
+      "publisher": "vox.com",
+      "rssSample": "vox.com",
+      "rssLink": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQaWl6SUp5Y0hRVy1NWTZ6azRZZ0VOaEZBZERpY1hndHJsVlo1YV9OcUN2U295dkdJUmplRVQzczhOSTkyV1R2TmVOVXVnZTVjczU4WGFLVFBrRmh4akxlSEt0VjRpVlBIVW5BREhBSDhkSXluN013UjVUMktyNC1wYUNqU3VqWThFTVhrU29EV2hBc3d2R2gwWkRJYktqX2s?oc=5",
+      "resolvedUrl": "https://www.vox.com/future-perfect/491138/pancreatic-cancer-asco-daraxonrasib-trump-administration",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 7889,
+        "title": "The most hopeful cancer news in years",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "wccftech",
+      "domain": "www.wccftech.com",
+      "publisherDomain": "wccftech.com",
+      "publisher": "Wccftech",
+      "rssSample": "Wccftech",
+      "rssLink": "https://news.google.com/rss/articles/CBMiywFBVV95cUxOUnp5eUxQM1NNZXd4WHN2TWc4azhRNmNJMERQd0prS0Y4NXAwZHliVGhOTGJOQ2VETjQ4T3dUS2JuYmJJMk1KaEhDUUxxaUNGWk9ObWdhYTFaNnZfRjNWTGRSZTlVLUJmUTY2R3pnYV9RVDhDUjBZQXJVcWFMamRwWEFnRTNkSE1sMlhOX0NBVlR0Zm5rbm9zS2xCTnE3cERidjV1b2M1YTI0aTZvTFczQzVhQ2l5OHpjWWx1SXRiV3c1YUFLOVNacE5LUdIB0AFBVV95cUxPM0FrQXZkUkJDMFBuQXEyMzRrbm01T0ktN0FPUXNiME5ZNGlzVHN6MV9GQnNUQjFYQUExUjh1clJFNjh0VzRMTFRqcGc3V2swZ0dvdEJSWENsaExnYWVfbllCTWdoZ1RjMG5keXVKYzhWTnNhQ3NqT2VUZ1k0MWJBa3lVMlVUdkd1NS11dzA0bnNkdGQxdkp2WnVtUHVqSVZWSUNfbUpRckdvNXJUclhFTUQzOHpkdmdaYlYwRkgyT1RBRmtaTHdfMlhMc3QxNmtt?oc=5",
+      "resolvedUrl": "https://wccftech.com/intel-arc-g3-extreme-performance-benchmarks-disruption-in-handled-segment-double-the-battery-same-performance/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 11049,
+        "title": "Intel Arc G3 Extreme Performance Benchmarks Show Clear Disruption In The Handled Segment, Offers Double The Battery At Same Performance As Z2 Extreme",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "wdwnt",
+      "domain": "www.wdwnt.com",
+      "publisherDomain": "wdwnt.com",
+      "publisher": "WDW News Today",
+      "rssSample": "WDW News Today",
+      "rssLink": "https://news.google.com/rss/articles/CBMiigFBVV95cUxOaUVEWGJtWDBPc2xVeWZxdld0bVZCaVdIZ3ZMNWxfalF0el84NG11Q2ZaZXV6eTNpaVV5VHd1Rk1CWXNVRU8wWmtQbWZxZUp5d3g0alJEZmxhaTRtNld5bll2N1NocHBidEtnVkhxQVNkWmZ2Mm5JN1FvREc0T2x3NDdyX09SbVZFUUE?oc=5",
+      "resolvedUrl": "https://wdwnt.com/2026/06/taylor-swifts-toy-story-5-song-breaks-streaming-records/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 2529,
+        "title": "Taylor Swift&#8217;s &#8216;Toy Story 5&#8217; Song Breaks Streaming Records",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "whitehouse",
+      "domain": "www.whitehouse.gov",
+      "publisherDomain": "whitehouse.gov",
+      "publisher": "The White House (.gov)",
+      "rssSample": "The White House (.gov)",
+      "rssLink": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxOaWZDSXgxaGVKaTF2a3JsUTRVNUE3NWFvME4xSDFnYktGZFZwUU8xYnV2ZnRLTnRQbFhDY2t0b250dnRCUEd1aWxzcjg2TkhDSVVZNDVyNG92NlhwQXJybzNUcG91VVpydTBFakdicndBYWVCWFRrd2YyamQ3VU5FU2xrcXdVT25EbThIa1dfZlY2TFZubXRJUWNiMGNfU0ZlaVBkNkJtbEd6UQ?oc=5",
+      "resolvedUrl": "https://www.whitehouse.gov/presidential-actions/2026/06/national-security-presidential-memorandum-nspm-11/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 18425,
+        "title": "National Security Presidential Memorandum/NSPM-11",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "wired",
+      "domain": "www.wired.com",
+      "publisherDomain": "wired.com",
+      "publisher": "WIRED",
+      "rssSample": "WIRED",
+      "rssLink": "https://news.google.com/rss/articles/CBMilwFBVV95cUxORi16bVRrWkZMZTZZR0x3eWhIdmRVNlkwUUVKMlJEeGJGTTI5b2FGUEFfam4yQU5sbUhyX0NlZzhpZU0zQ0tLM3BTalJvSHh1VWxfSmUwWndqamxWMEl4cVA3Wi16Wm56d2ZhTGY4bEc3YW0waTJnei1fT0JVY3JnUjQ1TUdQSXA0N1ZGN0ZSZlZ0SjB0Nmk0?oc=5",
+      "resolvedUrl": "https://www.wired.com/story/the-moons-of-uranus-may-hold-the-key-to-finding-missing-planets/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 3545,
+        "title": "The Moons of Uranus May Hold the Key to Finding Missing Planets",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "womenshealthmag",
+      "domain": "www.womenshealthmag.com",
+      "publisherDomain": "womenshealthmag.com",
+      "publisher": "Women's Health",
+      "rssSample": "Women's Health",
+      "rssLink": "https://news.google.com/rss/articles/CBMipAFBVV95cUxQT2YzeF9PS2tDQ0NMNERObWNtUV9ta0IxZVYybUdLVEZuLVdDbHBqOWFrUDdCbkg3ZVJZaEJ6eEd6TzZQRVNqajdBbHVBQnllN0M0SHhQcUsyRU1yT1J1a2RDWHhPSHdiWFhhb3dwbVNVRTQ2bjVhaWUtQ3RXaHd1aHg4bFZKTGg1Q1V1NVVUQ0NZTUhKN29YSEpxUEZkckd6TlBGSQ?oc=5",
+      "resolvedUrl": "https://www.womenshealthmag.com/uk/fitness/fat-loss/a71504823/3-2-1-cardio-formula-body-recomposition/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 5023,
+        "title": "Lose fat without sacrificing muscle – why Bella Hadid’s trainer recommends the 3-2-1 cardio formula",
+        "source": "jsonLd"
+      }
+    },
+    {
+      "slug": "wtop",
+      "domain": "www.wtop.com",
+      "publisherDomain": "wtop.com",
+      "publisher": "WTOP",
+      "rssSample": "WTOP",
+      "rssLink": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxQb3RfTmdHeU9lSTRBS240dVUwcjRxbXZaa3RDNGtNYlhrY2V5b2F1bC1NWXl1cndvV19ieTVGM2tRZW9RQ0QxcU1sRHBvbVJfbGN0bUlTNmtFWk9WWnpjRDI1N1ozNmh3WmQ4N1k3YTM0dXJEcFY4ZzI1MEZUVVg2bEpxUzRtbnRISjR4Ty1QMjktOER6QUlUM1ZrVTNhd3BucUZrZVZlV0wxQVBMQzA0c21LbzBjQmZ0U1UzcW5aN0lPNE1SclpBck1aYll1VnB5eDNZ?oc=5",
+      "resolvedUrl": "https://wtop.com/dc/2026/06/i-want-it-to-stay-vs-it-doesnt-belong-locals-and-tourists-react-to-trumps-name-removal-at-the-kennedy-center/",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 3005,
+        "title": "Locals and tourists weigh removal of Trump&#8217;s name from Kennedy Center",
+        "source": "dom"
+      }
+    },
+    {
+      "slug": "yahoo",
+      "domain": "www.yahoo.com",
+      "publisherDomain": "yahoo.com",
+      "publisher": "Yahoo",
+      "rssSample": "Yahoo",
+      "rssLink": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxOamlCdU9CemQzbEsyNG41VG5zMUdCYTBGMXNuOUhmRk9SNnduWTVYcVBOTGVQV0Z6SDVSUHBfMFYxNnBwdEd6YXJTM3MySExYdmk2cnY3NzZpazBrelZkVUw0ZTJyZ05zczlJekF2NV9iSHJtdjM4b05PbGVXQng4Rjk2dnRuSFZ3akZmdWR2SnYzc18xcDF3aFZOZk1TTFJwNnoxb2tPbktDelh2YnBNLWVBVDBvS2Y0WjN3QWsxLVlHR2lwVnVXTUVHQy1PNzNoZ3BzeXFMSQ?oc=5",
+      "resolvedUrl": "https://www.yahoo.com/news/politics/articles/trump-delighted-when-reporter-asks-about-probe-into-cocaine-found-at-white-house-134900617.html",
+      "resolveError": null,
+      "getArticle": {
+        "status": "error",
+        "reason": "unparseable_output",
+        "preview": ""
+      }
+    },
+    {
+      "slug": "ynetnews",
+      "domain": "www.ynetnews.com",
+      "publisherDomain": "ynetnews.com",
+      "publisher": "Ynetnews",
+      "rssSample": "Ynetnews",
+      "rssLink": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE5vaEwtRUM3UkY4RTItTWdJR1hCaklXdGpzT053cS1kaHZvWFFyVkc2WnIzRWhpVHJOOFhRTTZoOXlRRnZsU29KLTIzODBqSEZxeHdEQnlHdw?oc=5",
+      "resolvedUrl": "https://www.ynetnews.com/article/hjaeekb11fe",
+      "resolveError": null,
+      "getArticle": {
+        "status": "pass",
+        "reason": "full_body",
+        "bodyLength": 6882,
+        "title": "Trump faces political risk as Iran insists on immediate cash release",
+        "source": "jsonLd"
+      }
+    }
+  ]
+}
