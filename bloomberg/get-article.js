@@ -20,7 +20,7 @@ async function (args) {
      * and get-article adapters (via scripts/inject-cloudflare-module.mjs).
      */
     function installCloudflareHelpers() {
-      var VERSION = 2;
+      var VERSION = 4;
     
       if (globalThis.__cloudflareHelpers && globalThis.__cloudflareHelpers.version === VERSION) {
         return globalThis.__cloudflareHelpers;
@@ -86,7 +86,8 @@ async function (args) {
         if (
           doc.querySelector(
             '.cf-turnstile, #challenge-running, #cf-challenge-running, #cf-wrapper, #challenge-stage, ' +
-              '.challenge-form, iframe[src*="challenges.cloudflare"], iframe[src*="turnstile"], ' +
+              '.challenge-form, .cb-lb, .cb-i, #verifying-i, #challenge-spinner, ' +
+              'iframe[src*="challenges.cloudflare"], iframe[src*="turnstile"], ' +
               'form[action*="cdn-cgi/challenge"]'
           )
         ) {
@@ -324,11 +325,99 @@ async function (args) {
         return (await tryTabToHoldButton(doc, holdMs)) || false;
       }
     
+      function tryClickByHumanLabel(doc) {
+        doc = doc || document;
+        var clicked = false;
+        var labels = queryAllDeep(doc, "label, span, div, p");
+        for (var i = 0; i < labels.length; i++) {
+          var el = labels[i];
+          var text = (el.innerText || el.textContent || "").trim();
+          if (!/verify you are human/i.test(text)) continue;
+          var rect = el.getBoundingClientRect();
+          if (rect.width < 8 || rect.height < 8) continue;
+          try {
+            el.click();
+            clicked = true;
+          } catch (e) {}
+          var coords = pointerCoords(el);
+          dispatchPointer(el, "pointerdown", coords, 1);
+          dispatchPointer(el, "pointerup", coords, 0);
+          clicked = true;
+        }
+        return clicked;
+      }
+    
+      function tryClickTurnstileIframes(doc) {
+        doc = doc || document;
+        var iframes = doc.querySelectorAll(
+          'iframe[src*="challenges.cloudflare"], iframe[src*="turnstile"], iframe[title*="Widget"], iframe[title*="challenge"], iframe[title*="Challenge"]'
+        );
+        var clicked = false;
+        for (var i = 0; i < iframes.length; i++) {
+          var iframe = iframes[i];
+          var rect = iframe.getBoundingClientRect();
+          if (rect.width < 16 || rect.height < 16) continue;
+          try {
+            if (typeof iframe.scrollIntoView === "function") {
+              iframe.scrollIntoView({ behavior: "auto", block: "center", inline: "center" });
+            }
+          } catch (e) {}
+          // Turnstile checkbox sits on the left edge of the widget (e.g. grok.com).
+          var coords = {
+            x: rect.left + Math.min(24, rect.width * 0.12),
+            y: rect.top + rect.height / 2,
+          };
+          var target = iframe;
+          try {
+            var hit = doc.elementFromPoint(coords.x, coords.y);
+            if (hit) target = hit;
+          } catch (e2) {}
+          dispatchPointer(target, "pointerdown", coords, 1);
+          dispatchPointer(target, "mousedown", coords, 1);
+          dispatchPointer(target, "pointerup", coords, 0);
+          dispatchPointer(target, "mouseup", coords, 0);
+          try {
+            target.dispatchEvent(
+              new MouseEvent("click", {
+                bubbles: true,
+                cancelable: true,
+                view: window,
+                clientX: coords.x,
+                clientY: coords.y,
+                button: 0,
+              })
+            );
+          } catch (e3) {}
+          clicked = true;
+        }
+        return clicked;
+      }
+    
+      function probeChallengeWidgets(doc) {
+        doc = doc || document;
+        var iframes = doc.querySelectorAll(
+          'iframe[src*="challenges.cloudflare"], iframe[src*="turnstile"], iframe[title*="Widget"], iframe[title*="challenge"], iframe[title*="Challenge"]'
+        );
+        var text = getDocText(doc, 4000);
+        return {
+          turnstile: !!doc.querySelector(".cf-turnstile, [data-sitekey]"),
+          cbLb: queryAllDeep(doc, ".cb-lb").length,
+          cbCheckbox: queryAllDeep(doc, ".cb-lb input[type='checkbox'], #challenge-stage input[type='checkbox']").length,
+          iframes: iframes.length,
+          verifyHumanText: /verify you are human/i.test(text),
+          securityVerificationText: /performing security verification/i.test(text),
+          justAMomentTitle: /^just a moment/i.test(((doc.querySelector("title") && doc.querySelector("title").textContent) || "").trim()),
+        };
+      }
+    
       function tryClickChallenge(doc) {
         doc = doc || document;
         var clicked = false;
         var selectors = [
           "#challenge-stage input[type='checkbox']",
+          ".cb-lb input[type='checkbox']",
+          ".cb-lb",
+          ".cb-i",
           ".ctp-checkbox-label",
           "label.ctp-checkbox-label",
           ".cf-turnstile",
@@ -338,6 +427,9 @@ async function (args) {
           "#px-captcha button",
           "[role='button']",
         ];
+    
+        clicked = tryClickTurnstileIframes(doc) || clicked;
+        clicked = tryClickByHumanLabel(doc) || clicked;
     
         for (var i = 0; i < selectors.length; i++) {
           var els = queryAllDeep(doc, selectors[i]);
@@ -360,6 +452,27 @@ async function (args) {
         }
     
         return clicked;
+      }
+    
+      function pollOnce(opts) {
+        opts = opts || {};
+        var autoClick = opts.autoClick !== false;
+        var attempt = Number(opts.attempt) || 1;
+        var html = document.documentElement ? document.documentElement.outerHTML : "";
+        var challenge = detectChallenge(document, html);
+        var clicked = false;
+        if (challenge && autoClick && attempt % 3 === 1) {
+          clicked = tryClickChallenge(document);
+        }
+        return {
+          cleared: !challenge,
+          challenge: challenge,
+          clicked: clicked,
+          widgets: probeChallengeWidgets(document),
+          url: location.href,
+          title: document.title,
+          attempt: attempt,
+        };
       }
     
       async function waitForClearance(opts) {
@@ -407,6 +520,8 @@ async function (args) {
               attempts: attempts,
               url: location.href,
               held: held,
+              clicked: clicked,
+              widgets: probeChallengeWidgets(document),
             };
           }
     
@@ -444,6 +559,8 @@ async function (args) {
           url: location.href,
           challenge: still,
           held: held,
+          clicked: clicked,
+          widgets: probeChallengeWidgets(document),
           hint: still
             ? still.reason && isHoldChallengeReason(still.reason)
               ? "Press-and-hold challenge did not clear. Open the URL in Chrome, hold the verification button ~10s, or run: bun-browser site cloudflare/wait <url> holdMs=12000 maxWaitMs=45000"
@@ -474,10 +591,14 @@ async function (args) {
       var api = {
         version: VERSION,
         sleep: sleep,
+        pollOnce: pollOnce,
+        probeChallengeWidgets: probeChallengeWidgets,
         detectChallenge: detectChallenge,
         isChallenge: isChallenge,
         findHoldButton: findHoldButton,
         tryHoldChallenge: tryHoldChallenge,
+        tryClickByHumanLabel: tryClickByHumanLabel,
+        tryClickTurnstileIframes: tryClickTurnstileIframes,
         tryClickChallenge: tryClickChallenge,
         waitForClearance: waitForClearance,
         fetchAfterClearance: fetchAfterClearance,

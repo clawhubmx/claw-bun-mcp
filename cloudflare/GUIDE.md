@@ -67,7 +67,35 @@ For press-and-hold challenges:
 bun-browser site cloudflare/wait "https://www.bloomberg.com/news/articles/..." holdMs=12000 maxWaitMs=45000
 ```
 
-Turnstile inside cross-origin iframes may still require manual completion — open the tab and watch for the checkbox.
+Turnstile inside cross-origin iframes may still require manual completion — open the tab and watch for the checkbox. The module tries coordinate clicks on the left edge of Turnstile iframes and on "Verify you are human" labels (used by grok.com and similar custom challenge pages).
+
+### winehq.org (orchestrate managed challenge)
+
+Pages like [winehq.org](https://www.winehq.org/) use Cloudflare's newer **orchestrate** challenge (`cdn-cgi/challenge-platform/.../chl_page`). They show the site name, "Performing security verification", and may auto-clear without a visible checkbox — or surface a `.cb-lb` Turnstile checkbox / iframe when interaction is required.
+
+```bash
+bun-browser open https://www.winehq.org/
+bun-browser site cloudflare/wait "https://www.winehq.org/" maxWaitMs=60000 diag=true
+```
+
+Verify all wait behaviors (500ms polling, auto-click paths) with the test script:
+
+```bash
+bun scripts/test-cloudflare-wait.mjs --url https://www.winehq.org/
+```
+
+`diag=true` adds `clicked`, `widgets`, and `pollMs` to the wait response so you can confirm which paths fired.
+
+### grok.com (Turnstile managed challenge)
+
+Custom pages that show the site name, "Performing security verification", and a Cloudflare Turnstile checkbox are already detected (`security_verification`, `verify_human`). Use the standalone waiter on a real Chrome tab:
+
+```bash
+bun-browser open https://grok.com/
+bun-browser site cloudflare/wait maxWaitMs=45000 reloadOnce=true
+```
+
+After `cleared: true`, confirm with `bun-browser site grok/health`. Grok chat adapters (`grok/chat`, etc.) detect Cloudflare but do not auto-wait yet — run `cloudflare/wait` first, or complete the checkbox manually in the open tab.
 
 ## Files
 
