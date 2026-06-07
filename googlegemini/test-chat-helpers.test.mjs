@@ -136,6 +136,27 @@ describe("gemini chat completion detection", () => {
     expect(items[0].date).toBe("Today");
   });
 
+  test("detectGeminiResponseBlock catches Workspace connect prompt", () => {
+    const block = h.detectGeminiResponseBlock(
+      "First, you'll need to connect Google Workspace to turn on this app.\nConnect",
+    );
+    expect(block).not.toBeNull();
+    expect(block.error).toBe("Google Workspace not connected");
+    expect(block.kind).toBe("workspace_required");
+    expect(block.message).toContain("connect Google Workspace");
+  });
+
+  test("checkGeminiAnswerBlocked reads latest model-response text", () => {
+    document.body.innerHTML = `
+      <model-response>
+        <message-content>First, you'll need to connect Google Workspace to turn on this app.</message-content>
+      </model-response>
+    `;
+    const block = h.checkGeminiAnswerBlocked("");
+    expect(block).not.toBeNull();
+    expect(block.kind).toBe("workspace_required");
+  });
+
   test("scrapeGeminiLibrary detects empty state", () => {
     document.body.innerHTML = `
       <library-sections-overview-page>

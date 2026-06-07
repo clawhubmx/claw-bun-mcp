@@ -3,7 +3,7 @@
  * Inlined by googlegemini/chat.js and googlegemini/chatfollow.js — keep in sync.
  */
 function installGeminiChatHelpers() {
-  var HELPERS_VERSION = 5;
+  var HELPERS_VERSION = 7;
   var GEMINI_MOBILE_BREAKPOINT = 768;
 
   var GEMINI_CHAT_WAIT_MS = 15 * 60 * 1000;
@@ -450,6 +450,69 @@ function installGeminiChatHelpers() {
     return null;
   }
 
+  function detectGeminiWorkspaceRequired(text) {
+    if (!text) return false;
+    var t = String(text);
+    if (/connect\s+google\s+workspace/i.test(t)) return true;
+    if (/need to connect google workspace/i.test(t)) return true;
+    if (/google\s+workspace/i.test(t) && /turn on this app|connect\b/i.test(t)) return true;
+    return false;
+  }
+
+  function buildGeminiWorkspaceError(sourceText) {
+    var message = '';
+    if (sourceText) {
+      var lines = String(sourceText).split('\n').map(function(line) {
+        return line.trim();
+      }).filter(Boolean);
+      for (var i = 0; i < lines.length; i++) {
+        if (/connect.*workspace|workspace.*turn on|need to connect/i.test(lines[i])) {
+          message = lines[i];
+          break;
+        }
+      }
+      if (!message) message = lines.slice(0, 3).join(' ');
+    }
+    return {
+      error: 'Google Workspace not connected',
+      kind: 'workspace_required',
+      message: message || 'Connect Google Workspace to use this Gemini feature (e.g. Canvas).',
+      hint: 'Open gemini.google.com in the browser and connect Google Workspace when prompted.',
+      action: 'bun-browser open https://gemini.google.com/app'
+    };
+  }
+
+  function getLatestAssistantResponseText() {
+    var messages = getAssistantMessages();
+    var latest = messages[messages.length - 1];
+    if (!latest) return '';
+    return stripRolePrefix((latest.innerText || latest.textContent || '').trim());
+  }
+
+  function detectGeminiResponseBlock(text, rootEl) {
+    var sources = [];
+    if (text) sources.push(String(text));
+    if (rootEl) {
+      sources.push(stripRolePrefix((rootEl.innerText || rootEl.textContent || '').trim()));
+    }
+    for (var i = 0; i < sources.length; i++) {
+      if (detectGeminiWorkspaceRequired(sources[i])) {
+        return buildGeminiWorkspaceError(sources[i]);
+      }
+    }
+    return null;
+  }
+
+  function checkGeminiAnswerBlocked(answer) {
+    var block = detectGeminiResponseBlock(answer);
+    if (!block) block = detectGeminiResponseBlock(getLatestAssistantResponseText());
+    if (!block) {
+      var latest = getAssistantMessages().slice(-1)[0];
+      if (latest) block = detectGeminiResponseBlock('', latest);
+    }
+    return block;
+  }
+
   function resolveGeminiMode(raw) {
     var text = String(raw || 'flash').trim().toLowerCase();
     var aliases = {
@@ -776,6 +839,14 @@ function installGeminiChatHelpers() {
       if (generating || pending) sawInFlight = true;
       var rawText = latest ? getAssistantText(latest) : '';
       answer = rawText ? cleanAssistantText(rawText) : '';
+      if (latest && messages.length > beforeCount && !generating && !pending) {
+        var streamBlock = detectGeminiResponseBlock(answer, latest);
+        if (streamBlock) {
+          lastWaitAbnormal = streamBlock;
+          lastWaitPending = false;
+          return '';
+        }
+      }
       var ready = looksLikeFinalAnswer(answer);
 
       var hasNewMessage = messages.length > beforeCount && ready;
@@ -807,10 +878,22 @@ function installGeminiChatHelpers() {
       return parsedJson || answer;
     }
     if (!looksLikeFinalAnswer(answer) || isGeminiGenerating() || isGeminiReplyPending(beforeCount, beforeText)) {
+      var latestMsg = getAssistantMessages().slice(-1)[0];
+      var pendingBlock = latestMsg ? detectGeminiResponseBlock(getLatestAssistantResponseText(), latestMsg) : null;
+      if (pendingBlock) {
+        lastWaitAbnormal = pendingBlock;
+        lastWaitPending = false;
+        return '';
+      }
       lastWaitPending = sawInFlight || isGeminiReplyPending(beforeCount, beforeText) || isGeminiGenerating();
       return '';
     }
     lastWaitPending = false;
+    var finalBlock = detectGeminiResponseBlock(answer);
+    if (finalBlock) {
+      lastWaitAbnormal = finalBlock;
+      return '';
+    }
     var json = extractJsonBlock(answer);
     return json || answer;
   }
@@ -1035,7 +1118,7 @@ function installGeminiChatHelpers() {
   function dedupeLibraryItems(items) {
     var seen = {};
     return items.filter(function(item) {
-      var key = (item.url || '') + '|' + (item.title || '');
+      var key = (item.url || item.thumbnailUrl || '') + '|' + (item.title || '');
       if (seen[key]) return false;
       seen[key] = true;
       return !!(item.title || item.url);
@@ -1074,11 +1157,37 @@ function installGeminiChatHelpers() {
     return items;
   }
 
+  function isLibraryPlaceholderText(text) {
+    if (!text) return true;
+    return /will appear here|any documents or media you create/i.test(text);
+  }
+
+  function scrapeGeminiLibraryMediaCards(page) {
+    var media = [];
+    Array.prototype.slice.call(page.querySelectorAll('library-item-card')).forEach(function(card) {
+      var img = card.querySelector('img.thumbnail, img');
+      var btn = card.querySelector('.library-item-card[role="button"], [role="button"].library-item-card');
+      var alt = img ? (img.getAttribute('alt') || '').trim() : '';
+      var aria = btn ? (btn.getAttribute('aria-label') || '').trim() : '';
+      var title = alt.replace(/^Image of\s*/i, '').trim() ||
+        aria.replace(/^Preview or open\s*/i, '').trim() ||
+        'Generated image';
+      if (isLibraryPlaceholderText(title)) return;
+      media.push({
+        title: title,
+        thumbnailUrl: img ? img.src : null,
+        type: 'media'
+      });
+    });
+    return media;
+  }
+
   function scrapeGeminiLibrary() {
     var page = document.querySelector('library-sections-overview-page');
     if (!page) return { ok: false, error: 'Library page not found' };
 
-    if (page.querySelector('[data-test-id=empty-state-disclaimer]')) {
+    if (page.querySelector('[data-test-id=empty-state-disclaimer]') &&
+        !page.querySelector('library-item-card')) {
       return {
         ok: true,
         empty: true,
@@ -1088,15 +1197,16 @@ function installGeminiChatHelpers() {
       };
     }
 
-    var media = [];
+    var media = scrapeGeminiLibraryMediaCards(page);
     var documents = [];
     var headings = Array.prototype.slice.call(page.querySelectorAll(
-      '.gds-headline-m, .gds-headline-s, .gds-title-m, h2, h3, .section-title'
+      '.gds-headline-m, .gds-headline-s, .gds-title-m, h2, h3, .section-title, .gds-emphasized-body-l'
     ));
 
     for (var h = 0; h < headings.length; h++) {
       var headingText = (headings[h].innerText || '').trim();
-      var sectionParent = headings[h].closest('[class*="section"]') || headings[h].parentElement;
+      var sectionParent = headings[h].closest('[class*="section"], .media-container, .sections-container') ||
+        headings[h].parentElement;
       if (/^media$/i.test(headingText)) {
         media = media.concat(scrapeGeminiLibrarySection(sectionParent, 'media'));
       } else if (/^documents?$/i.test(headingText)) {
@@ -1108,27 +1218,32 @@ function installGeminiChatHelpers() {
       '[data-test-id*="media-item"], [data-test-id*="media"] a, a[href*="/mystuff/media"]'
     )).forEach(function(el) {
       var title = (el.getAttribute('aria-label') || el.innerText || '').trim();
-      if (title) media.push({ title: title.split('\n')[0].trim(), url: el.href || null, type: 'media' });
+      if (title && !isLibraryPlaceholderText(title)) {
+        media.push({ title: title.split('\n')[0].trim(), url: el.href || null, type: 'media' });
+      }
     });
 
     Array.prototype.slice.call(page.querySelectorAll(
-      '[data-test-id*="document"], .library-document-item, a[href*="/mystuff/documents"], a[href*="canvas"]'
+      'library-document-card, [data-test-id*="document-item"], .library-document-item, a[href*="/mystuff/documents"], a[href*="canvas"]'
     )).forEach(function(el) {
+      if (el.closest('[data-test-id=documents-empty-state], .section-empty-state')) return;
       var title = (el.querySelector('.title, .gds-body-l, .gds-body-m') || el).innerText.trim();
-      if (title) {
-        documents.push({
-          title: title.split('\n')[0].trim(),
-          url: el.href || null,
-          type: inferLibraryDocumentType(el)
-        });
-      }
+      if (!title || isLibraryPlaceholderText(title)) return;
+      documents.push({
+        title: title.split('\n')[0].trim(),
+        url: el.href || null,
+        type: inferLibraryDocumentType(el)
+      });
     });
+
+    media = dedupeLibraryItems(media);
+    documents = dedupeLibraryItems(documents);
 
     return {
       ok: true,
       empty: !media.length && !documents.length,
-      media: dedupeLibraryItems(media),
-      documents: dedupeLibraryItems(documents)
+      media: media,
+      documents: documents
     };
   }
 
@@ -1194,6 +1309,10 @@ function installGeminiChatHelpers() {
     wasLastWaitPending: wasLastWaitPending,
     getLastWaitAbnormal: getLastWaitAbnormal,
     detectGeminiPageAbnormal: detectGeminiPageAbnormal,
+    detectGeminiWorkspaceRequired: detectGeminiWorkspaceRequired,
+    detectGeminiResponseBlock: detectGeminiResponseBlock,
+    getLatestAssistantResponseText: getLatestAssistantResponseText,
+    checkGeminiAnswerBlocked: checkGeminiAnswerBlocked,
     getLoginState: getLoginState,
     getChatEditor: getChatEditor,
     getSubmitButton: getSubmitButton,

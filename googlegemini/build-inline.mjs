@@ -78,6 +78,8 @@ writeFileSync(
     if (!waitedAnswer) {
       var waitAbnormal = h.getLastWaitAbnormal();
       if (waitAbnormal) return waitAbnormal;
+      var waitWorkspaceBlock = h.checkGeminiAnswerBlocked('');
+      if (waitWorkspaceBlock) return waitWorkspaceBlock;
       if (h.wasLastWaitPending()) {
         return {
           error: 'Still generating',
@@ -91,6 +93,8 @@ writeFileSync(
         action: 'bun-browser open https://gemini.google.com/'
       };
     }
+    var waitWorkspaceAnswerBlock = h.checkGeminiAnswerBlocked(waitedAnswer);
+    if (waitWorkspaceAnswerBlock) return waitWorkspaceAnswerBlock;
     var waitOut = {
       query: args.query,
       model: modeId,
@@ -169,6 +173,8 @@ writeFileSync(
   if (!answer) {
     var answerAbnormal = h.getLastWaitAbnormal();
     if (answerAbnormal) return answerAbnormal;
+    var workspaceBlock = h.checkGeminiAnswerBlocked('');
+    if (workspaceBlock) return workspaceBlock;
     if (h.wasLastWaitPending()) {
       return {
         error: 'Still generating',
@@ -182,6 +188,9 @@ writeFileSync(
       action: 'bun-browser open https://gemini.google.com/'
     };
   }
+
+  var workspaceAnswerBlock = h.checkGeminiAnswerBlocked(answer);
+  if (workspaceAnswerBlock) return workspaceAnswerBlock;
 
   var out = {
     query: args.query,
@@ -293,6 +302,8 @@ writeFileSync(
     if (!waitedAnswer) {
       var waitAbnormal = h.getLastWaitAbnormal();
       if (waitAbnormal) return waitAbnormal;
+      var waitWorkspaceBlock = h.checkGeminiAnswerBlocked('');
+      if (waitWorkspaceBlock) return waitWorkspaceBlock;
       if (h.wasLastWaitPending()) {
         return {
           error: 'Still generating',
@@ -306,6 +317,8 @@ writeFileSync(
         action: 'bun-browser open https://gemini.google.com/'
       };
     }
+    var waitWorkspaceAnswerBlock = h.checkGeminiAnswerBlocked(waitedAnswer);
+    if (waitWorkspaceAnswerBlock) return waitWorkspaceAnswerBlock;
     var waitOut = {
       conversationId: conversationId,
       query: args.query,
@@ -371,6 +384,8 @@ writeFileSync(
   if (!answer) {
     var answerAbnormal = h.getLastWaitAbnormal();
     if (answerAbnormal) return answerAbnormal;
+    var workspaceBlock = h.checkGeminiAnswerBlocked('');
+    if (workspaceBlock) return workspaceBlock;
     if (h.wasLastWaitPending()) {
       return {
         error: 'Still generating',
@@ -384,6 +399,9 @@ writeFileSync(
       action: 'bun-browser open https://gemini.google.com/app/' + conversationId
     };
   }
+
+  var workspaceAnswerBlock = h.checkGeminiAnswerBlocked(answer);
+  if (workspaceAnswerBlock) return workspaceAnswerBlock;
 
   var out = {
     conversationId: conversationId,
