@@ -171,4 +171,76 @@ describe("gemini chat completion detection", () => {
     expect(library.media).toEqual([]);
     expect(library.documents).toEqual([]);
   });
+
+  test("prepareGeminiAttachmentPlan merges context and file content", () => {
+    const plan = h.prepareGeminiAttachmentPlan({
+      query: "Summarize this",
+      context: "Background notes",
+      fileName: "notes.txt",
+      fileContent: "Alpha facts",
+    });
+    expect(plan.hasContext).toBe(true);
+    expect(plan.hasFiles).toBe(true);
+    expect(plan.query).toContain("--- External context ---");
+    expect(plan.query).toContain("Background notes");
+    expect(plan.query).toContain("Summarize this");
+    expect(plan.files[0].fileName).toBe("notes.txt");
+    expect(plan.files[0].bytes).toBe("Alpha facts");
+  });
+
+  test("decodeGeminiBase64 decodes utf8 text", () => {
+    const bytes = h.decodeGeminiBase64("SGVsbG8=");
+    expect(new TextDecoder().decode(bytes)).toBe("Hello");
+  });
+
+  test("conversationHexToCid normalizes hex ids", () => {
+    expect(h.conversationHexToCid("abc123")).toBe("c_abc123");
+    expect(h.conversationHexToCid("c_abc123")).toBe("c_abc123");
+  });
+
+  test("parseGeminiStreamGenerateText extracts final streamed answer", () => {
+    const sample =
+      'rc_111\\",[\\"Draft\\"],rc_222\\",[\\"Final answer\\"]';
+    expect(h.parseGeminiStreamGenerateText(sample)).toBe("Final answer");
+  });
+
+  test("parseConversationIdArg accepts hex id and app URL", () => {
+    expect(h.parseConversationIdArg("abc123def456")).toBe("abc123def456");
+    expect(h.parseConversationIdArg("c_abc123")).toBe("abc123");
+    expect(h.parseConversationIdArg("https://gemini.google.com/app/DEADbeef")).toBe(
+      "deadbeef",
+    );
+    expect(h.parseConversationIdArg("not-an-id")).toBeNull();
+  });
+
+  test("scrapeGeminiConversationSnapshot reads user and assistant turns", () => {
+    document.body.innerHTML = `
+      <user-query>Reply with exactly: OK</user-query>
+      <model-response>
+        <message-content>OK</message-content>
+      </model-response>
+    `;
+    const snap = h.scrapeGeminiConversationSnapshot();
+    expect(snap.turnCount).toBe(1);
+    expect(snap.userQueries[0]).toContain("Reply with exactly: OK");
+    expect(snap.responses[0]).toBe("OK");
+  });
+
+  test("findAssistantMessageActions maps response index to message-actions", () => {
+    document.body.innerHTML = `
+      <response-container>
+        <model-response><message-content>A</message-content></model-response>
+        <message-actions><button aria-label="Show more options"></button></message-actions>
+      </response-container>
+      <response-container>
+        <model-response><message-content>B</message-content></model-response>
+        <message-actions><button aria-label="Show more options"></button></message-actions>
+      </response-container>
+    `;
+    expect(h.findAssistantMessageActions(0)).not.toBeNull();
+    expect(h.findAssistantMessageActions(1)).not.toBeNull();
+    expect(
+      h.findAssistantMessageActions(0).querySelector('[aria-label="Show more options"]'),
+    ).not.toBeNull();
+  });
 });

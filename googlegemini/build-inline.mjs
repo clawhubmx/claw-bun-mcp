@@ -32,6 +32,10 @@ writeFileSync(
     "model": {"required": false, "description": "Gemini model: flash, thinking, pro (default flash). Aliases: 3.5-flash, 3.5-thinking, 3.1-pro"},
     "newChat": {"required": false, "description": "Start a new chat thread (default true)"},
     "waitOnly": {"required": false, "description": "Skip new chat / submit; only poll for the in-flight assistant reply (default false)"},
+    "context": {"required": false, "description": "External text content prepended to the prompt (inline context block)"},
+    "fileName": {"required": false, "description": "Attachment file name when using fileContent or fileBase64"},
+    "fileContent": {"required": false, "description": "UTF-8 text file content to upload and attach"},
+    "fileBase64": {"required": false, "description": "Base64-encoded file bytes to upload and attach"},
     "maxWaitMs": {"required": false, "description": "Override max wait in ms (default by mode: flash 15m, thinking/pro 25m)"},
     "graceWaitMs": {"required": false, "description": "Optional extra wait in ms added on top of maxWaitMs"}
   },
@@ -64,6 +68,8 @@ writeFileSync(
   var waitOpts = h.buildWaitOpts(args, modeId);
   var waitOnly = parseBool(args.waitOnly, false);
   var loginState = h.getLoginState();
+  var attachmentPlan = h.prepareGeminiAttachmentPlan(args);
+  var effectiveQuery = attachmentPlan.query;
 
   var accessBlock = h.detectGeminiPageAbnormal();
   if (accessBlock) return accessBlock;
@@ -96,7 +102,7 @@ writeFileSync(
     var waitWorkspaceAnswerBlock = h.checkGeminiAnswerBlocked(waitedAnswer);
     if (waitWorkspaceAnswerBlock) return waitWorkspaceAnswerBlock;
     var waitOut = {
-      query: args.query,
+      query: effectiveQuery,
       model: modeId,
       modeLabel: h.readGeminiModeLabel(),
       answer: waitedAnswer,
@@ -105,6 +111,7 @@ writeFileSync(
       loggedIn: loginState.loggedIn,
       anonymous: loginState.anonymous
     };
+    if (attachmentPlan.hasContext) waitOut.context = true;
     var waitAnswerJson = h.parseAnswerJson(waitedAnswer);
     if (waitAnswerJson) {
       waitOut.answerJson = waitAnswerJson;
@@ -123,6 +130,39 @@ writeFileSync(
         action: chatNav.action || 'bun-browser open https://gemini.google.com/app'
       };
     }
+  }
+
+  if (attachmentPlan.hasFiles) {
+    var attachResult = await h.submitGeminiWithAttachments({
+      query: effectiveQuery,
+      files: attachmentPlan.files,
+      modeId: modeId
+    });
+    if (!attachResult.ok) {
+      return {
+        error: attachResult.error || 'Attachment submit failed',
+        hint: attachResult.hint || 'Could not upload and send files to Gemini.',
+        action: 'bun-browser open https://gemini.google.com/app'
+      };
+    }
+    var attachOut = {
+      query: effectiveQuery,
+      model: modeId,
+      modeLabel: h.readGeminiModeLabel(),
+      answer: attachResult.answer,
+      conversationId: attachResult.conversationId || getConversationId(),
+      attachments: attachResult.attachments,
+      transport: attachResult.transport,
+      loggedIn: loginState.loggedIn,
+      anonymous: loginState.anonymous
+    };
+    if (attachmentPlan.hasContext) attachOut.context = true;
+    var attachAnswerJson = h.parseAnswerJson(attachResult.answer);
+    if (attachAnswerJson) {
+      attachOut.answerJson = attachAnswerJson;
+      attachOut.answerFormat = 'json';
+    }
+    return attachOut;
   }
 
   if (!h.getChatEditor()) {
@@ -146,7 +186,7 @@ writeFileSync(
   var beforeCount = h.getAssistantMessages().length;
   var beforeText = h.getAssistantMessages().map(h.getAssistantText).join('\\n');
 
-  if (!h.setChatInput(args.query)) {
+  if (!h.setChatInput(effectiveQuery)) {
     return {
       error: 'Chat input not found',
       hint: 'Could not set Gemini chat input.',
@@ -193,7 +233,7 @@ writeFileSync(
   if (workspaceAnswerBlock) return workspaceAnswerBlock;
 
   var out = {
-    query: args.query,
+    query: effectiveQuery,
     model: modeId,
     modeTitle: modeResult.modeTitle || null,
     modeLabel: modeResult.label || h.readGeminiModeLabel(),
@@ -202,6 +242,7 @@ writeFileSync(
     loggedIn: loginState.loggedIn,
     anonymous: loginState.anonymous
   };
+  if (attachmentPlan.hasContext) out.context = true;
   var answerJson = h.parseAnswerJson(answer);
   if (answerJson) {
     out.answerJson = answerJson;
@@ -224,6 +265,10 @@ writeFileSync(
     "query": {"required": true, "description": "Follow-up prompt to send in the existing thread"},
     "model": {"required": false, "description": "Gemini model: flash, thinking, pro (default flash)"},
     "waitOnly": {"required": false, "description": "Skip navigation/submit; only poll for the in-flight assistant reply (default false)"},
+    "context": {"required": false, "description": "External text content prepended to the follow-up prompt"},
+    "fileName": {"required": false, "description": "Attachment file name when using fileContent or fileBase64"},
+    "fileContent": {"required": false, "description": "UTF-8 text file content to upload and attach"},
+    "fileBase64": {"required": false, "description": "Base64-encoded file bytes to upload and attach"},
     "maxWaitMs": {"required": false, "description": "Override max wait in ms"},
     "graceWaitMs": {"required": false, "description": "Optional extra wait in ms added on top of maxWaitMs"}
   },
@@ -282,12 +327,14 @@ writeFileSync(
   var waitOpts = h.buildWaitOpts(args, modeId);
   var waitOnly = parseBool(args.waitOnly, false);
   var loginState = h.getLoginState();
+  var attachmentPlan = h.prepareGeminiAttachmentPlan(args);
+  var effectiveQuery = attachmentPlan.query;
 
   var accessBlock = h.detectGeminiPageAbnormal();
   if (accessBlock) return accessBlock;
 
   var currentId = getConversationId();
-  if (currentId !== conversationId) {
+  if (!attachmentPlan.hasFiles && currentId !== conversationId) {
     location.href = 'https://gemini.google.com/app/' + conversationId;
     await h.sleep(2000);
   }
@@ -321,7 +368,7 @@ writeFileSync(
     if (waitWorkspaceAnswerBlock) return waitWorkspaceAnswerBlock;
     var waitOut = {
       conversationId: conversationId,
-      query: args.query,
+      query: effectiveQuery,
       model: modeId,
       modeLabel: h.readGeminiModeLabel(),
       answer: waitedAnswer,
@@ -329,12 +376,48 @@ writeFileSync(
       loggedIn: loginState.loggedIn,
       anonymous: loginState.anonymous
     };
+    if (attachmentPlan.hasContext) waitOut.context = true;
     var waitAnswerJson = h.parseAnswerJson(waitedAnswer);
     if (waitAnswerJson) {
       waitOut.answerJson = waitAnswerJson;
       waitOut.answerFormat = 'json';
     }
     return waitOut;
+  }
+
+  if (attachmentPlan.hasFiles) {
+    var followAttach = await h.submitGeminiWithAttachments({
+      query: effectiveQuery,
+      files: attachmentPlan.files,
+      modeId: modeId,
+      conversationHexId: conversationId
+    });
+    if (!followAttach.ok) {
+      return {
+        error: followAttach.error || 'Attachment submit failed',
+        hint: followAttach.hint || 'Could not upload and send files in this conversation.',
+        conversationId: conversationId,
+        action: 'bun-browser open https://gemini.google.com/app/' + conversationId
+      };
+    }
+    var followAttachOut = {
+      conversationId: conversationId,
+      query: effectiveQuery,
+      model: modeId,
+      modeLabel: h.readGeminiModeLabel(),
+      answer: followAttach.answer,
+      attachments: followAttach.attachments,
+      transport: followAttach.transport,
+      loggedIn: loginState.loggedIn,
+      anonymous: loginState.anonymous
+    };
+    if (attachmentPlan.hasContext) followAttachOut.context = true;
+    var followAttachJson = h.parseAnswerJson(followAttach.answer);
+    if (followAttachJson) {
+      followAttachOut.answerJson = followAttachJson;
+      followAttachOut.answerFormat = 'json';
+    }
+    return followAttachOut;
   }
 
   if (!h.getChatEditor()) {
@@ -358,7 +441,7 @@ writeFileSync(
   var beforeCount = h.getAssistantMessages().length;
   var beforeText = h.getAssistantMessages().map(h.getAssistantText).join('\\n');
 
-  if (!h.setChatInput(args.query)) {
+  if (!h.setChatInput(effectiveQuery)) {
     return {
       error: 'Chat input not found',
       hint: 'Could not set Gemini chat input.',
@@ -405,7 +488,7 @@ writeFileSync(
 
   var out = {
     conversationId: conversationId,
-    query: args.query,
+    query: effectiveQuery,
     model: modeId,
     modeTitle: modeResult.modeTitle || null,
     modeLabel: modeResult.label || h.readGeminiModeLabel(),
@@ -414,6 +497,7 @@ writeFileSync(
     loggedIn: loginState.loggedIn,
     anonymous: loginState.anonymous
   };
+  if (attachmentPlan.hasContext) out.context = true;
   var answerJson = h.parseAnswerJson(answer);
   if (answerJson) {
     out.answerJson = answerJson;
@@ -759,4 +843,88 @@ writeFileSync(
   ),
 );
 
-console.log("Regenerated chat.js, chatfollow.js, health.js, modes.js, search.js, library.js");
+writeFileSync(
+  join(dir, "branch.js"),
+  makeFile(
+    `/* @meta
+{
+  "name": "googlegemini/branch",
+  "description": "Branch a Gemini conversation at an assistant reply (fork into a new chat thread)",
+  "domain": "gemini.google.com",
+  "args": {
+    "conversation": {"required": true, "description": "Source conversation id or https://gemini.google.com/app/{id} URL"},
+    "messageIndex": {"required": false, "description": "0-based assistant reply index to branch from (default: last reply)"}
+  },
+  "capabilities": ["network"],
+  "readOnly": true,
+  "example": "bun-browser site googlegemini/branch 470d783cedf1bbb6"
+}
+*/`,
+    `  if (!args.conversation) {
+    return {
+      error: 'Missing argument: conversation',
+      hint: 'Provide a conversation id or URL from googlegemini/chat or googlegemini/search',
+      action: 'bun-browser site googlegemini/search \\"*\\" 5 3'
+    };
+  }
+
+  var h = ${inline};
+
+  var conversationId = h.parseConversationIdArg(args.conversation);
+  if (!conversationId) {
+    return {
+      error: 'Invalid conversation id',
+      hint: 'conversation must be a hex id or https://gemini.google.com/app/{id} URL',
+      action: 'bun-browser site googlegemini/search \\"*\\" 5 3'
+    };
+  }
+
+  var messageIndex = args.messageIndex;
+  if (messageIndex != null && messageIndex !== '') {
+    messageIndex = parseInt(messageIndex, 10);
+    if (isNaN(messageIndex)) {
+      return {
+        error: 'Invalid messageIndex',
+        hint: 'messageIndex must be a non-negative integer',
+        action: 'bun-browser site googlegemini/branch ' + conversationId
+      };
+    }
+  } else {
+    messageIndex = undefined;
+  }
+
+  var loginState = h.getLoginState();
+
+  var accessBlock = h.detectGeminiPageAbnormal();
+  if (accessBlock) return accessBlock;
+
+  var result = await h.branchGeminiConversationAt(conversationId, messageIndex);
+  if (!result.ok) {
+    return {
+      error: result.error || 'Branch failed',
+      hint: result.hint || 'Open the conversation in Gemini and retry.',
+      sourceConversationId: conversationId,
+      action: 'bun-browser open https://gemini.google.com/app/' + conversationId,
+      viewport: h.getGeminiViewport(),
+      loggedIn: loginState.loggedIn,
+      anonymous: loginState.anonymous
+    };
+  }
+
+  return {
+    sourceConversationId: result.sourceConversationId,
+    conversationId: result.conversationId,
+    url: result.url,
+    title: result.title,
+    messageIndex: result.messageIndex,
+    messagesCopied: result.messagesCopied,
+    snapshot: result.snapshot,
+    viewport: h.getGeminiViewport(),
+    loggedIn: loginState.loggedIn,
+    anonymous: loginState.anonymous,
+    hint: 'Continue the branched thread with googlegemini/chatfollow ' + result.conversationId
+  };`,
+  ),
+);
+
+console.log("Regenerated chat.js, chatfollow.js, health.js, modes.js, search.js, library.js, branch.js");

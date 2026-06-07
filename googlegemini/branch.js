@@ -1,16 +1,27 @@
 /* @meta
 {
-  "name": "googlegemini/modes",
-  "description": "List available Gemini models from the mode picker (flash, thinking, pro)",
+  "name": "googlegemini/branch",
+  "description": "Branch a Gemini conversation at an assistant reply (fork into a new chat thread)",
   "domain": "gemini.google.com",
-  "args": {},
+  "args": {
+    "conversation": {"required": true, "description": "Source conversation id or https://gemini.google.com/app/{id} URL"},
+    "messageIndex": {"required": false, "description": "0-based assistant reply index to branch from (default: last reply)"}
+  },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bun-browser site googlegemini/modes"
+  "example": "bun-browser site googlegemini/branch 470d783cedf1bbb6"
 }
 */
 
 async function(args) {
+  if (!args.conversation) {
+    return {
+      error: 'Missing argument: conversation',
+      hint: 'Provide a conversation id or URL from googlegemini/chat or googlegemini/search',
+      action: 'bun-browser site googlegemini/search \"*\" 5 3'
+    };
+  }
+
   var h = (function installGeminiChatHelpers() {
   var HELPERS_VERSION = 11;
   var GEMINI_MOBILE_BREAKPOINT = 768;
@@ -1937,28 +1948,58 @@ async function(args) {
   return globalThis.__geminiChatHelpers;
 })();
 
-  var accessBlock = h.detectGeminiPageAbnormal();
-  if (accessBlock) return accessBlock;
+  var conversationId = h.parseConversationIdArg(args.conversation);
+  if (!conversationId) {
+    return {
+      error: 'Invalid conversation id',
+      hint: 'conversation must be a hex id or https://gemini.google.com/app/{id} URL',
+      action: 'bun-browser site googlegemini/search \"*\" 5 3'
+    };
+  }
 
-  var ui = await h.listGeminiModesFromUi();
-  var modes = ui.modes || [];
-  var byTitle = {};
-  for (var i = 0; i < modes.length; i++) {
-    var title = modes[i].title || '';
-    if (/3\.5\s*flash/i.test(title)) byTitle.flash = modes[i];
-    else if (/3\.5\s*thinking/i.test(title)) byTitle.thinking = modes[i];
-    else if (/3\.1\s*pro/i.test(title)) byTitle.pro = modes[i];
+  var messageIndex = args.messageIndex;
+  if (messageIndex != null && messageIndex !== '') {
+    messageIndex = parseInt(messageIndex, 10);
+    if (isNaN(messageIndex)) {
+      return {
+        error: 'Invalid messageIndex',
+        hint: 'messageIndex must be a non-negative integer',
+        action: 'bun-browser site googlegemini/branch ' + conversationId
+      };
+    }
+  } else {
+    messageIndex = undefined;
   }
 
   var loginState = h.getLoginState();
 
+  var accessBlock = h.detectGeminiPageAbnormal();
+  if (accessBlock) return accessBlock;
+
+  var result = await h.branchGeminiConversationAt(conversationId, messageIndex);
+  if (!result.ok) {
+    return {
+      error: result.error || 'Branch failed',
+      hint: result.hint || 'Open the conversation in Gemini and retry.',
+      sourceConversationId: conversationId,
+      action: 'bun-browser open https://gemini.google.com/app/' + conversationId,
+      viewport: h.getGeminiViewport(),
+      loggedIn: loginState.loggedIn,
+      anonymous: loginState.anonymous
+    };
+  }
+
   return {
-    defaultModeId: 'flash',
-    current: ui.current || h.readGeminiModeLabel(),
-    available: Object.keys(byTitle).length ? Object.keys(byTitle) : ['flash', 'thinking', 'pro'],
-    modes: modes,
-    modeMap: byTitle,
+    sourceConversationId: result.sourceConversationId,
+    conversationId: result.conversationId,
+    url: result.url,
+    title: result.title,
+    messageIndex: result.messageIndex,
+    messagesCopied: result.messagesCopied,
+    snapshot: result.snapshot,
+    viewport: h.getGeminiViewport(),
     loggedIn: loginState.loggedIn,
-    anonymous: loginState.anonymous
+    anonymous: loginState.anonymous,
+    hint: 'Continue the branched thread with googlegemini/chatfollow ' + result.conversationId
   };
 }

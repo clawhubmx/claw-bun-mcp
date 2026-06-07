@@ -139,18 +139,71 @@ bun-browser site googlegemini/library documents 10
 | `documents` | 文档项：`title`、`type`（`document` / `research` / `code`）、`url` |
 | `viewport` | 当前视口与布局（见上文） |
 
+## 外部内容与文件附件
+
+`googlegemini/chat` 与 `googlegemini/chatfollow` 支持两类「外部输入」：
+
+| 参数 | 作用 |
+|------|------|
+| `context` | 将外部文本以 `--- External context ---` 块拼接到 prompt 前（走 DOM 发送） |
+| `fileName` + `fileContent` | 上传 UTF-8 文本文件并作为附件提问（走 `StreamGenerate`） |
+| `fileName` + `fileBase64` | 上传二进制文件（base64）并作为附件提问 |
+
+> **CLI 提示**：`bun-browser` 顶层会吞掉未知 `--flag`，附件参数请用**位置参数**按 meta 顺序传入（见下）。
+
+### chat 位置参数顺序
+
+`query` → `model` → `newChat` → `waitOnly` → `context` → `fileName` → `fileContent` → `fileBase64` → `maxWaitMs` → `graceWaitMs`
+
+```bash
+# 新对话 + 文本附件
+bun-browser site googlegemini/chat \
+  "List 2 facts from the attached file about Paris." \
+  flash true false "" \
+  notes.txt "The Eiffel Tower is in Paris, France."
+
+# 仅附加外部 context（无文件）
+bun-browser site googlegemini/chat \
+  "Reply with exactly: CONTEXT-OK-123" \
+  flash false false \
+  "External note: the magic word is CONTEXT-OK-123"
+```
+
+### chatfollow 位置参数顺序
+
+`conversation` → `query` → `model` → `waitOnly` → `context` → `fileName` → `fileContent` → `fileBase64` → `maxWaitMs` → `graceWaitMs`
+
+```bash
+bun-browser site googlegemini/chatfollow abc123def456 \
+  "What is the secret in the attached file?" \
+  flash false "" \
+  followup.txt "The follow-up secret is GAMMA-77."
+```
+
+带文件时会通过 `content-push.googleapis.com` 上传，再用浏览器会话调用 `StreamGenerate`；**不需要**在 UI 里手动点 Upload。`chatfollow` 会通过 `hNvQHb` 读取对话 metadata，无需先打开该对话页（但 DOM 续聊仍建议先打开对应 URL）。
+
+### 附件相关返回字段
+
+| 字段 | 说明 |
+|------|------|
+| `attachments` | `[{ fileName, fileId, mimeType }]` |
+| `transport` | 带文件时为 `stream_generate` |
+| `context` | 为 `true` 表示使用了 `context` 参数 |
+
 ## 返回字段（chat / chatfollow）
 
 成功时 JSON 包含：
 
 | 字段 | 说明 |
 |------|------|
-| `query` | 发送的 prompt |
+| `query` | 发送的 prompt（含 context 块时已是合并后的文本） |
 | `model` | 请求的 mode id |
 | `modeLabel` | 页面模型选择器当前显示文字 |
 | `answer` | 助手回复正文 |
 | `answerJson` / `answerFormat` | 若回复含 JSON 块则解析 |
 | `conversationId` | 对话 id（用于 chatfollow） |
+| `attachments` / `transport` | 文件附件时才有（见上文） |
+| `context` | 使用 `context` 参数时为 `true` |
 | `loggedIn` | 是否检测到 Google 登录 cookie |
 | `anonymous` | 是否为匿名会话（页面有 Sign in 按钮） |
 

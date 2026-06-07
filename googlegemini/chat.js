@@ -8,6 +8,10 @@
     "model": {"required": false, "description": "Gemini model: flash, thinking, pro (default flash). Aliases: 3.5-flash, 3.5-thinking, 3.1-pro"},
     "newChat": {"required": false, "description": "Start a new chat thread (default true)"},
     "waitOnly": {"required": false, "description": "Skip new chat / submit; only poll for the in-flight assistant reply (default false)"},
+    "context": {"required": false, "description": "External text content prepended to the prompt (inline context block)"},
+    "fileName": {"required": false, "description": "Attachment file name when using fileContent or fileBase64"},
+    "fileContent": {"required": false, "description": "UTF-8 text file content to upload and attach"},
+    "fileBase64": {"required": false, "description": "Base64-encoded file bytes to upload and attach"},
     "maxWaitMs": {"required": false, "description": "Override max wait in ms (default by mode: flash 15m, thinking/pro 25m)"},
     "graceWaitMs": {"required": false, "description": "Optional extra wait in ms added on top of maxWaitMs"}
   },
@@ -23,7 +27,7 @@ async function(args) {
   }
 
   var h = (function installGeminiChatHelpers() {
-  var HELPERS_VERSION = 7;
+  var HELPERS_VERSION = 11;
   var GEMINI_MOBILE_BREAKPOINT = 768;
 
   var GEMINI_CHAT_WAIT_MS = 15 * 60 * 1000;
@@ -64,6 +68,12 @@ async function(args) {
         clientY: y
       }));
     });
+  }
+
+  function tapElement(el) {
+    if (!el) return;
+    try { el.focus(); } catch (e) {}
+    el.click();
   }
 
   function isElementVisible(el) {
@@ -1312,6 +1322,554 @@ async function(args) {
     };
   }
 
+  var GEMINI_PUSH_ID = 'feeds/mcudyrk2a4khkz';
+  var GEMINI_MODEL_SPECS = {
+    flash: { modelId: 'fbb127bbb056c959', capacity: 1 },
+    thinking: { modelId: '5bf011840784117a', capacity: 1 },
+    pro: { modelId: '9d8ca3786ebdfbea', capacity: 1 }
+  };
+
+  function conversationHexToCid(conversationHexId) {
+    if (!conversationHexId) return null;
+    var hex = String(conversationHexId).trim().toLowerCase();
+    if (/^c_/.test(hex)) return hex;
+    if (/^[0-9a-f]+$/.test(hex)) return 'c_' + hex;
+    return null;
+  }
+
+  function conversationCidToHex(cid) {
+    if (!cid) return null;
+    var text = String(cid).trim();
+    return text.replace(/^c_/, '').toLowerCase();
+  }
+
+  function guessGeminiMimeType(fileName) {
+    var lower = String(fileName || '').toLowerCase();
+    if (/\.(txt|md|csv|log)$/.test(lower)) return 'text/plain';
+    if (/\.json$/.test(lower)) return 'application/json';
+    if (/\.html?$/.test(lower)) return 'text/html';
+    if (/\.pdf$/.test(lower)) return 'application/pdf';
+    if (/\.png$/.test(lower)) return 'image/png';
+    if (/\.jpe?g$/.test(lower)) return 'image/jpeg';
+    if (/\.gif$/.test(lower)) return 'image/gif';
+    if (/\.webp$/.test(lower)) return 'image/webp';
+    return 'application/octet-stream';
+  }
+
+  function decodeGeminiBase64(fileBase64) {
+    var cleaned = String(fileBase64 || '').replace(/\s+/g, '');
+    var binary = atob(cleaned);
+    var bytes = new Uint8Array(binary.length);
+    for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return bytes;
+  }
+
+  function prepareGeminiAttachmentPlan(args) {
+    args = args || {};
+    var context = args.context != null ? String(args.context).trim() : '';
+    var query = String(args.query || '').trim();
+    if (context) {
+      query = '--- External context ---\n' + context + '\n--- End context ---\n\n' + query;
+    }
+    var files = [];
+    var hasFileContent = args.fileContent != null && String(args.fileContent).length > 0;
+    var hasFileBase64 = args.fileBase64 != null && String(args.fileBase64).trim().length > 0;
+    if (hasFileContent || hasFileBase64) {
+      var fileName = String(args.fileName || 'attachment.txt').trim() || 'attachment.txt';
+      var bytes = hasFileBase64
+        ? decodeGeminiBase64(args.fileBase64)
+        : String(args.fileContent);
+      files.push({
+        fileName: fileName,
+        bytes: bytes,
+        mimeType: guessGeminiMimeType(fileName)
+      });
+    }
+    return {
+      query: query,
+      files: files,
+      hasFiles: files.length > 0,
+      hasContext: !!context
+    };
+  }
+
+  function getGeminiSessionParams() {
+    var wiz = globalThis.WIZ_global_data || {};
+    var sid = wiz.FdrFJe != null ? String(wiz.FdrFJe) : '';
+    var bl = wiz.cfb2h != null ? String(wiz.cfb2h) : '';
+    var at = wiz.SNlM0e != null ? String(wiz.SNlM0e) : '';
+    if (!sid || !bl || !at) {
+      return {
+        ok: false,
+        error: 'Gemini session unavailable',
+        hint: 'Open gemini.google.com in a logged-in tab and retry.'
+      };
+    }
+    return { ok: true, sid: sid, bl: bl, at: at };
+  }
+
+  function getGeminiModelSpec(modeId) {
+    return GEMINI_MODEL_SPECS[modeId] || GEMINI_MODEL_SPECS.flash;
+  }
+
+  function buildGeminiModelHeaderValue(modeId) {
+    var spec = getGeminiModelSpec(modeId);
+    return '[1,null,null,null,"' + spec.modelId + '",null,null,0,[4],null,null,' + spec.capacity + ']';
+  }
+
+  async function uploadGeminiFileBytes(fileName, bytes, mimeType) {
+    mimeType = mimeType || guessGeminiMimeType(fileName);
+    var boundary = '----GeminiFormBoundary' + Math.random().toString(36).slice(2);
+    var header = '--' + boundary + '\r\nContent-Disposition: form-data; name="file"; filename="' +
+      fileName + '"\r\nContent-Type: ' + mimeType + '\r\n\r\n';
+    var footer = '\r\n--' + boundary + '--\r\n';
+    var body;
+    if (typeof bytes === 'string') {
+      body = header + bytes + footer;
+    } else {
+      var enc = new TextEncoder();
+      var headerBytes = enc.encode(header);
+      var footerBytes = enc.encode(footer);
+      body = new Uint8Array(headerBytes.length + bytes.length + footerBytes.length);
+      body.set(headerBytes, 0);
+      body.set(bytes, headerBytes.length);
+      body.set(footerBytes, headerBytes.length + bytes.length);
+    }
+    var resp = await fetch('https://content-push.googleapis.com/upload', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'content-type': 'multipart/form-data; boundary=' + boundary,
+        'push-id': GEMINI_PUSH_ID,
+        'X-Tenant-Id': 'bard-storage'
+      },
+      body: body
+    });
+    if (!resp.ok) {
+      return {
+        ok: false,
+        error: 'File upload failed',
+        status: resp.status,
+        hint: 'Gemini rejected the file upload. Check file type/size and retry.'
+      };
+    }
+    var fileId = (await resp.text()).trim();
+    if (!fileId || fileId.indexOf('/contrib_service/') !== 0) {
+      return {
+        ok: false,
+        error: 'Invalid upload response',
+        hint: fileId.slice(0, 200) || 'Empty upload response'
+      };
+    }
+    return { ok: true, fileId: fileId, fileName: fileName, mimeType: mimeType };
+  }
+
+  function parseGeminiConversationMetadataFromReadChat(text) {
+    if (!text) return null;
+    var match = text.match(/c_[0-9a-f]+\\?",\\"r_[0-9a-f]+/i) ||
+      text.match(/c_[0-9a-f]+","r_[0-9a-f]+/i);
+    if (!match) return null;
+    var parts = match[0].split(/\\?",\\"|","/);
+    return { cid: parts[0], rid: parts[1] };
+  }
+
+  async function readGeminiConversationMetadata(conversationHexId) {
+    var cid = conversationHexToCid(conversationHexId);
+    if (!cid) {
+      return { ok: false, error: 'Invalid conversation id', hint: 'Provide a hex conversation id from googlegemini/chat' };
+    }
+    var session = getGeminiSessionParams();
+    if (!session.ok) return session;
+    var sourcePath = '/app/' + String(conversationHexId).replace(/^c_/, '').toLowerCase();
+    var fReq = JSON.stringify([[[ 'hNvQHb', JSON.stringify([cid]), null, 'generic' ]]]);
+    var reqId = Math.floor(Math.random() * 900000) + 100000;
+    var url = 'https://gemini.google.com/_/BardChatUi/data/batchexecute' +
+      '?rpcids=hNvQHb&source-path=' + encodeURIComponent(sourcePath) +
+      '&bl=' + encodeURIComponent(session.bl) +
+      '&f.sid=' + encodeURIComponent(session.sid) +
+      '&hl=en&_reqid=' + reqId + '&rt=c';
+    var resp = await fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        'x-same-domain': '1'
+      },
+      body: 'f.req=' + encodeURIComponent(fReq) + '&at=' + encodeURIComponent(session.at)
+    });
+    if (!resp.ok) {
+      return { ok: false, error: 'Failed to read conversation', status: resp.status };
+    }
+    var text = await resp.text();
+    var meta = parseGeminiConversationMetadataFromReadChat(text);
+    if (!meta) {
+      return {
+        ok: false,
+        error: 'Conversation metadata not found',
+        hint: 'Open the conversation in Gemini and retry chatfollow.'
+      };
+    }
+    return { ok: true, metadata: [meta.cid, meta.rid, '', null, null, null, null, null, null, ''] };
+  }
+
+  function unescapeGeminiStreamChunk(text) {
+    return String(text || '')
+      .replace(/\\n/g, '\n')
+      .replace(/\\"/g, '"')
+      .replace(/\\\\/g, '\\');
+  }
+
+  function parseGeminiStreamGenerateText(text) {
+    if (!text) return '';
+    var chunks = [];
+    var re = /rc_[0-9a-f]+(?:\\",\[\\"|","\[\")((?:\\.|[^"\\])+?)(?:\\"|")/g;
+    var m;
+    while ((m = re.exec(text)) !== null) {
+      var piece = unescapeGeminiStreamChunk(m[1]);
+      if (piece) chunks.push(piece);
+    }
+    if (chunks.length) return chunks[chunks.length - 1];
+
+    var tailMatches = text.match(/,\[\\?"((?:\\.|[^"\\])+?)\\?",0\]/g) ||
+      text.match(/,\["((?:\\.|[^"\\])+?)",0\]/g);
+    if (tailMatches && tailMatches.length) {
+      var last = tailMatches[tailMatches.length - 1];
+      var tm = last.match(/\[\\?"((?:\\.|[^"\\])+?)\\?",0\]/) ||
+        last.match(/\["((?:\\.|[^"\\])+?)",0\]/);
+      if (tm) return unescapeGeminiStreamChunk(tm[1]);
+    }
+    return '';
+  }
+
+  function extractGeminiConversationHexFromStream(text) {
+    if (!text) return null;
+    var match = text.match(/\\"c_([0-9a-f]+)\\"/i) || text.match(/"c_([0-9a-f]+)"/i);
+    return match ? match[1].toLowerCase() : null;
+  }
+
+  function buildGeminiStreamInnerRequest(options) {
+    options = options || {};
+    var fileRefs = options.fileRefs || [];
+    var fileData = fileRefs.length
+      ? fileRefs.map(function(ref) { return [[ref.fileId], ref.fileName]; })
+      : null;
+    var messageContent = [options.query, 0, null, fileData, null, null, 0];
+    var inner = new Array(69).fill(null);
+    inner[0] = messageContent;
+    inner[1] = [options.lang || 'en'];
+    inner[2] = options.metadata || null;
+    inner[6] = [1];
+    inner[7] = 1;
+    inner[10] = 1;
+    inner[11] = 0;
+    inner[17] = [[0]];
+    inner[18] = 0;
+    inner[27] = 1;
+    inner[30] = [4];
+    inner[41] = [1];
+    inner[53] = 0;
+    inner[55] = [[1]];
+    inner[61] = [];
+    inner[68] = 2;
+    inner[59] = (globalThis.crypto && crypto.randomUUID
+      ? crypto.randomUUID().toUpperCase()
+      : String(Math.random()).slice(2).toUpperCase());
+    return inner;
+  }
+
+  async function submitGeminiWithAttachments(options) {
+    options = options || {};
+    var files = options.files || [];
+    if (!options.query) {
+      return { ok: false, error: 'Missing query', hint: 'Provide a prompt for Gemini' };
+    }
+    if (!files.length) {
+      return { ok: false, error: 'No files to attach', hint: 'Provide fileName with fileContent or fileBase64' };
+    }
+
+    var session = getGeminiSessionParams();
+    if (!session.ok) return session;
+
+    var uploaded = [];
+    for (var i = 0; i < files.length; i++) {
+      var upload = await uploadGeminiFileBytes(files[i].fileName, files[i].bytes, files[i].mimeType);
+      if (!upload.ok) return upload;
+      uploaded.push(upload);
+    }
+
+    var metadata = options.metadata || null;
+    if (!metadata && options.conversationHexId) {
+      var readMeta = await readGeminiConversationMetadata(options.conversationHexId);
+      if (!readMeta.ok) return readMeta;
+      metadata = readMeta.metadata;
+    }
+
+    var inner = buildGeminiStreamInnerRequest({
+      query: options.query,
+      fileRefs: uploaded,
+      metadata: metadata,
+      lang: options.lang || 'en'
+    });
+    var uuid = inner[59];
+    var fReq = JSON.stringify([null, JSON.stringify(inner)]);
+    var reqId = Math.floor(Math.random() * 900000) + 100000;
+    var url = 'https://gemini.google.com/_/BardChatUi/data/assistant.lamda.BardFrontendService/StreamGenerate' +
+      '?bl=' + encodeURIComponent(session.bl) +
+      '&f.sid=' + encodeURIComponent(session.sid) +
+      '&hl=en&_reqid=' + reqId + '&rt=c';
+    var resp = await fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        'x-same-domain': '1',
+        'x-goog-ext-525005358-jspb': JSON.stringify([uuid, 1]),
+        'x-goog-ext-525001261-jspb': buildGeminiModelHeaderValue(options.modeId || 'flash'),
+        'x-goog-ext-73010989-jspb': '[0]'
+      },
+      body: 'f.req=' + encodeURIComponent(fReq) + '&at=' + encodeURIComponent(session.at)
+    });
+    var respText = await resp.text();
+    if (!resp.ok) {
+      return {
+        ok: false,
+        error: 'Gemini generation failed',
+        status: resp.status,
+        hint: respText.slice(0, 300) || 'StreamGenerate request failed'
+      };
+    }
+    var answer = parseGeminiStreamGenerateText(respText);
+    if (!answer) {
+      return {
+        ok: false,
+        error: 'Empty response',
+        hint: 'Gemini returned no content for the file attachment request.'
+      };
+    }
+    var conversationId = options.conversationHexId
+      ? String(options.conversationHexId).replace(/^c_/, '').toLowerCase()
+      : extractGeminiConversationHexFromStream(respText);
+    return {
+      ok: true,
+      answer: answer,
+      attachments: uploaded.map(function(item) {
+        return { fileName: item.fileName, fileId: item.fileId, mimeType: item.mimeType };
+      }),
+      conversationId: conversationId,
+      transport: 'stream_generate'
+    };
+  }
+
+  function parseConversationIdArg(raw) {
+    if (raw == null || raw === '') return null;
+    var text = String(raw).trim();
+    var fromPath = text.match(/\/app\/([0-9a-f]+)/i);
+    if (fromPath) return fromPath[1].toLowerCase();
+    if (/^c_[0-9a-f]+$/i.test(text)) return text.slice(2).toLowerCase();
+    if (/^[0-9a-f]+$/i.test(text)) return text.toLowerCase();
+    return null;
+  }
+
+  function scrapeGeminiConversationSnapshot() {
+    var users = Array.prototype.slice.call(document.querySelectorAll('user-query')).map(function(el) {
+      return stripRolePrefix((el.innerText || el.textContent || '').trim()).slice(0, 500);
+    });
+    var responses = getAssistantMessages().map(function(el) {
+      return cleanAssistantText(getAssistantText(el)).slice(0, 500);
+    });
+    return {
+      turnCount: Math.max(users.length, responses.length),
+      userQueries: users,
+      responses: responses
+    };
+  }
+
+  function findAssistantMessageActions(index) {
+    var allActions = Array.prototype.slice.call(document.querySelectorAll('message-actions'));
+    if (allActions[index]) return allActions[index];
+    var responses = getAssistantMessages();
+    var response = responses[index];
+    if (!response) return null;
+    var container = response.closest('response-container');
+    if (container) {
+      var inContainer = container.querySelector('message-actions');
+      if (inContainer) return inContainer;
+    }
+    var sibling = response.nextElementSibling;
+    while (sibling) {
+      if (String(sibling.tagName || '').toLowerCase() === 'message-actions') return sibling;
+      sibling = sibling.nextElementSibling;
+    }
+    return null;
+  }
+
+  function findBranchMenuItem() {
+    var menu = document.querySelector('gem-menu, [role="menu"]');
+    var root = menu || document;
+    var items = Array.prototype.slice.call(
+      root.querySelectorAll('gem-menu-item[role="menuitem"], [role="menuitem"]')
+    );
+    for (var i = 0; i < items.length; i++) {
+      var el = items[i];
+      var label = el.getAttribute('aria-label') || '';
+      var text = (el.innerText || el.textContent || '').trim();
+      if (/branch in new chat/i.test(label + ' ' + text)) return el;
+    }
+    return null;
+  }
+
+  async function openAssistantMoreMenu(messageIndex) {
+    var actions = findAssistantMessageActions(messageIndex);
+    if (!actions) {
+      return {
+        ok: false,
+        error: 'Message actions not found',
+        hint: 'Could not locate message-actions for assistant message ' + messageIndex + '.'
+      };
+    }
+
+    var moreBtn = findByAriaLabel(/^show more options$/i, actions);
+    if (!moreBtn) {
+      return {
+        ok: false,
+        error: 'Show more options button not found',
+        hint: 'Gemini message action bar may have changed.'
+      };
+    }
+
+    await dismissOpenOverlays();
+    await sleep(200);
+
+    var branchItem = findBranchMenuItem();
+    if (!branchItem) {
+      tapElement(moreBtn);
+      for (var attempt = 0; attempt < 8; attempt++) {
+        await sleep(attempt === 0 ? 500 : 250);
+        branchItem = findBranchMenuItem();
+        if (branchItem) break;
+      }
+    }
+
+    if (!branchItem) {
+      await dismissOpenOverlays();
+      return {
+        ok: false,
+        error: 'Branch in new chat menu item not found',
+        hint: 'Open Show more options on an assistant reply and confirm Branch in new chat is available.'
+      };
+    }
+
+    return { ok: true, branchItem: branchItem, moreBtn: moreBtn };
+  }
+
+  async function ensureGeminiConversationPage(conversationId, opts) {
+    opts = opts || {};
+    var hex = parseConversationIdArg(conversationId);
+    if (!hex) {
+      return { ok: false, error: 'Invalid conversation id' };
+    }
+    var target = 'https://gemini.google.com/app/' + hex;
+    var current = parseConversationIdFromLocation();
+    if (current !== hex) {
+      location.href = target;
+      await sleep(opts.waitMs || 2500);
+    }
+    var matched = await waitForGeminiSelector([
+      'model-response',
+      'user-query',
+      'rich-textarea',
+      '[contenteditable="true"]'
+    ], opts.timeoutMs || 15000);
+    if (!matched) {
+      return {
+        ok: false,
+        error: 'Conversation page did not load',
+        url: location.href,
+        viewport: getGeminiViewport()
+      };
+    }
+    await dismissGeminiSidebarIfBlocking();
+    return {
+      ok: true,
+      url: location.href,
+      conversationId: hex,
+      viewport: getGeminiViewport()
+    };
+  }
+
+  async function branchGeminiConversationAt(conversationId, messageIndex) {
+    var page = await ensureGeminiConversationPage(conversationId);
+    if (!page.ok) return page;
+
+    var responses = getAssistantMessages();
+    if (!responses.length) {
+      return {
+        ok: false,
+        error: 'No assistant messages in conversation',
+        hint: 'Open a conversation that has at least one Gemini reply.'
+      };
+    }
+
+    var idx = messageIndex == null || messageIndex === ''
+      ? responses.length - 1
+      : Number(messageIndex);
+    if (!Number.isFinite(idx) || idx < 0 || idx >= responses.length) {
+      return {
+        ok: false,
+        error: 'Invalid messageIndex',
+        hint: 'Use a 0-based assistant message index; conversation has ' + responses.length + ' reply(ies).'
+      };
+    }
+
+    var sourceId = parseConversationIdFromLocation();
+    var responseEl = responses[idx];
+    try {
+      responseEl.scrollIntoView({ block: 'center' });
+    } catch (e) {
+      responseEl.scrollIntoView();
+    }
+    await sleep(300);
+
+    var menuResult = await openAssistantMoreMenu(idx);
+    if (!menuResult.ok) return menuResult;
+
+    tapElement(menuResult.branchItem);
+
+    var deadline = Date.now() + 12000;
+    var newId = null;
+    while (Date.now() < deadline) {
+      await sleep(400);
+      newId = parseConversationIdFromLocation();
+      if (newId && newId !== sourceId) break;
+    }
+
+    if (!newId || newId === sourceId) {
+      return {
+        ok: false,
+        error: 'Branch did not navigate to a new conversation',
+        sourceConversationId: sourceId,
+        hint: 'Branch may still be loading, or the UI blocked navigation.'
+      };
+    }
+
+    await waitForGeminiSelector(['model-response'], 8000);
+    await sleep(500);
+
+    var snapshot = scrapeGeminiConversationSnapshot();
+    var title = document.title.replace(/\s*-\s*Google Gemini\s*$/i, '').trim();
+
+    return {
+      ok: true,
+      sourceConversationId: sourceId,
+      conversationId: newId,
+      url: 'https://gemini.google.com/app/' + newId,
+      title: title,
+      messageIndex: idx,
+      messagesCopied: snapshot.turnCount,
+      snapshot: snapshot
+    };
+  }
+
   globalThis.__geminiChatHelpers = {
     version: HELPERS_VERSION,
     GEMINI_CHAT_WAIT_MS: GEMINI_CHAT_WAIT_MS,
@@ -1319,6 +1877,7 @@ async function(args) {
     MODE_WAIT_MS: MODE_WAIT_MS,
     MODE_LABELS: MODE_LABELS,
     sleep: sleep,
+    tapElement: tapElement,
     getAssistantMessages: getAssistantMessages,
     getAssistantText: getAssistantText,
     cleanAssistantText: cleanAssistantText,
@@ -1360,6 +1919,13 @@ async function(args) {
     navigateToGeminiPath: navigateToGeminiPath,
     parseConversationIdFromPath: parseConversationIdFromPath,
     parseConversationIdFromLocation: parseConversationIdFromLocation,
+    parseConversationIdArg: parseConversationIdArg,
+    scrapeGeminiConversationSnapshot: scrapeGeminiConversationSnapshot,
+    findAssistantMessageActions: findAssistantMessageActions,
+    findBranchMenuItem: findBranchMenuItem,
+    openAssistantMoreMenu: openAssistantMoreMenu,
+    ensureGeminiConversationPage: ensureGeminiConversationPage,
+    branchGeminiConversationAt: branchGeminiConversationAt,
     getGeminiSearchInput: getGeminiSearchInput,
     ensureGeminiSearchPage: ensureGeminiSearchPage,
     scrapeGeminiRecentChats: scrapeGeminiRecentChats,
@@ -1369,7 +1935,18 @@ async function(args) {
     resolveGeminiConversationIds: resolveGeminiConversationIds,
     scrapeGeminiLibrary: scrapeGeminiLibrary,
     scrapeGeminiLibraryDocumentsPage: scrapeGeminiLibraryDocumentsPage,
-    ensureGeminiLibraryPage: ensureGeminiLibraryPage
+    ensureGeminiLibraryPage: ensureGeminiLibraryPage,
+    GEMINI_PUSH_ID: GEMINI_PUSH_ID,
+    conversationHexToCid: conversationHexToCid,
+    conversationCidToHex: conversationCidToHex,
+    guessGeminiMimeType: guessGeminiMimeType,
+    decodeGeminiBase64: decodeGeminiBase64,
+    prepareGeminiAttachmentPlan: prepareGeminiAttachmentPlan,
+    getGeminiSessionParams: getGeminiSessionParams,
+    uploadGeminiFileBytes: uploadGeminiFileBytes,
+    readGeminiConversationMetadata: readGeminiConversationMetadata,
+    parseGeminiStreamGenerateText: parseGeminiStreamGenerateText,
+    submitGeminiWithAttachments: submitGeminiWithAttachments
   };
 
   return globalThis.__geminiChatHelpers;
@@ -1393,6 +1970,8 @@ async function(args) {
   var waitOpts = h.buildWaitOpts(args, modeId);
   var waitOnly = parseBool(args.waitOnly, false);
   var loginState = h.getLoginState();
+  var attachmentPlan = h.prepareGeminiAttachmentPlan(args);
+  var effectiveQuery = attachmentPlan.query;
 
   var accessBlock = h.detectGeminiPageAbnormal();
   if (accessBlock) return accessBlock;
@@ -1425,7 +2004,7 @@ async function(args) {
     var waitWorkspaceAnswerBlock = h.checkGeminiAnswerBlocked(waitedAnswer);
     if (waitWorkspaceAnswerBlock) return waitWorkspaceAnswerBlock;
     var waitOut = {
-      query: args.query,
+      query: effectiveQuery,
       model: modeId,
       modeLabel: h.readGeminiModeLabel(),
       answer: waitedAnswer,
@@ -1434,6 +2013,7 @@ async function(args) {
       loggedIn: loginState.loggedIn,
       anonymous: loginState.anonymous
     };
+    if (attachmentPlan.hasContext) waitOut.context = true;
     var waitAnswerJson = h.parseAnswerJson(waitedAnswer);
     if (waitAnswerJson) {
       waitOut.answerJson = waitAnswerJson;
@@ -1452,6 +2032,39 @@ async function(args) {
         action: chatNav.action || 'bun-browser open https://gemini.google.com/app'
       };
     }
+  }
+
+  if (attachmentPlan.hasFiles) {
+    var attachResult = await h.submitGeminiWithAttachments({
+      query: effectiveQuery,
+      files: attachmentPlan.files,
+      modeId: modeId
+    });
+    if (!attachResult.ok) {
+      return {
+        error: attachResult.error || 'Attachment submit failed',
+        hint: attachResult.hint || 'Could not upload and send files to Gemini.',
+        action: 'bun-browser open https://gemini.google.com/app'
+      };
+    }
+    var attachOut = {
+      query: effectiveQuery,
+      model: modeId,
+      modeLabel: h.readGeminiModeLabel(),
+      answer: attachResult.answer,
+      conversationId: attachResult.conversationId || getConversationId(),
+      attachments: attachResult.attachments,
+      transport: attachResult.transport,
+      loggedIn: loginState.loggedIn,
+      anonymous: loginState.anonymous
+    };
+    if (attachmentPlan.hasContext) attachOut.context = true;
+    var attachAnswerJson = h.parseAnswerJson(attachResult.answer);
+    if (attachAnswerJson) {
+      attachOut.answerJson = attachAnswerJson;
+      attachOut.answerFormat = 'json';
+    }
+    return attachOut;
   }
 
   if (!h.getChatEditor()) {
@@ -1475,7 +2088,7 @@ async function(args) {
   var beforeCount = h.getAssistantMessages().length;
   var beforeText = h.getAssistantMessages().map(h.getAssistantText).join('\n');
 
-  if (!h.setChatInput(args.query)) {
+  if (!h.setChatInput(effectiveQuery)) {
     return {
       error: 'Chat input not found',
       hint: 'Could not set Gemini chat input.',
@@ -1522,7 +2135,7 @@ async function(args) {
   if (workspaceAnswerBlock) return workspaceAnswerBlock;
 
   var out = {
-    query: args.query,
+    query: effectiveQuery,
     model: modeId,
     modeTitle: modeResult.modeTitle || null,
     modeLabel: modeResult.label || h.readGeminiModeLabel(),
@@ -1531,6 +2144,7 @@ async function(args) {
     loggedIn: loginState.loggedIn,
     anonymous: loginState.anonymous
   };
+  if (attachmentPlan.hasContext) out.context = true;
   var answerJson = h.parseAnswerJson(answer);
   if (answerJson) {
     out.answerJson = answerJson;

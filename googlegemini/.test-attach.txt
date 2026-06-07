@@ -1,0 +1,5 @@
+MCP Gemini attachment test
+Key facts for summarization:
+- The Eiffel Tower is in Paris, France.
+- Browser automation can attach files to Gemini chat.
+- This file was created for googlegemini/chat testing.
