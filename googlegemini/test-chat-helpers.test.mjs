@@ -222,6 +222,7 @@ describe("gemini chat completion detection", () => {
     `;
     const snap = h.scrapeGeminiConversationSnapshot();
     expect(snap.turnCount).toBe(1);
+    expect(snap.userQueries).toHaveLength(1);
     expect(snap.userQueries[0]).toContain("Reply with exactly: OK");
     expect(snap.responses[0]).toBe("OK");
   });
