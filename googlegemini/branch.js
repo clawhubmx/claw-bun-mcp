@@ -23,7 +23,7 @@ async function(args) {
   }
 
   var h = (function installGeminiChatHelpers() {
-  var HELPERS_VERSION = 11;
+  var HELPERS_VERSION = 12;
   var GEMINI_MOBILE_BREAKPOINT = 768;
 
   var GEMINI_CHAT_WAIT_MS = 15 * 60 * 1000;
@@ -1667,14 +1667,18 @@ async function(args) {
   }
 
   function scrapeGeminiConversationSnapshot() {
-    var users = Array.prototype.slice.call(document.querySelectorAll('user-query')).map(function(el) {
-      return stripRolePrefix((el.innerText || el.textContent || '').trim()).slice(0, 500);
-    });
-    var responses = getAssistantMessages().map(function(el) {
+    var responseEls = getAssistantMessages();
+    var userEls = Array.prototype.slice.call(document.querySelectorAll('user-query'));
+    var responses = responseEls.map(function(el) {
       return cleanAssistantText(getAssistantText(el)).slice(0, 500);
     });
+    var users = responseEls.map(function(_, index) {
+      var el = userEls[index];
+      if (!el) return '';
+      return stripRolePrefix((el.innerText || el.textContent || '').trim()).slice(0, 500);
+    });
     return {
-      turnCount: Math.max(users.length, responses.length),
+      turnCount: responses.length,
       userQueries: users,
       responses: responses
     };
