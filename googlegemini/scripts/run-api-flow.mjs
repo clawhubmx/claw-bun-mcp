@@ -38,6 +38,7 @@ const tabIdx = args.includes("--tab") ? args[args.indexOf("--tab") + 1] : "0";
 
 const FLOW_ID = `GEMINI-FLOW-${Date.now().toString(36).toUpperCase()}`;
 const EXACT_TOKEN = `OK-${FLOW_ID}`;
+const THINK_TOKEN = `THINK-${FLOW_ID}`;
 const JSON_TEST_ID = `JSON-${FLOW_ID}`;
 const FOLLOW_EXACT = `FOLLOW-${FLOW_ID}`;
 const CHAT_TIMEOUT_MS = 300000;
@@ -207,6 +208,36 @@ recordStep(steps, {
 
 settleApp(4000);
 waitForSubmitReady(120);
+
+const thinkModeChat = runSite(
+  "googlegemini/chat",
+  [
+    `Reply with exactly: ${THINK_TOKEN}`,
+    "thinking",
+    "true",
+    "false",
+    "",
+    "",
+    "",
+    "",
+    "180000",
+  ],
+  { timeoutMs: 240000 },
+);
+const thinkModeErr = String(thinkModeChat.data?.error || thinkModeChat.error || "");
+recordStep(steps, {
+  name: "googlegemini/chat (thinking mode)",
+  status: thinkModeErr === "Mode selection failed" ? "fail" : "pass",
+  errors: thinkModeErr === "Mode selection failed" ? [thinkModeErr, thinkModeChat.data?.hint].filter(Boolean) : [],
+  data: thinkModeChat.data,
+  note:
+    thinkModeErr && thinkModeErr !== "Mode selection failed"
+      ? `mode ok; chat: ${thinkModeErr}`
+      : undefined,
+});
+
+settleApp(3000);
+waitForSubmitReady(90);
 
 let chatExactResult = retryExactIfGenerating(
   "googlegemini/chat",

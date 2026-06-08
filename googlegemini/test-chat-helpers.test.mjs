@@ -88,6 +88,83 @@ describe("gemini chat completion detection", () => {
     expect(h.modeLabelMatches("flash", "Flash Lite")).toBe(true);
   });
 
+  test("thinkingLevelMatchesTier recognizes Standard and Extended", () => {
+    expect(h.thinkingLevelMatchesTier("Standard", "standard")).toBe(true);
+    expect(h.thinkingLevelMatchesTier("Extended", "high")).toBe(true);
+    expect(h.thinkingLevelMatchesTier("Extended", "standard")).toBe(false);
+  });
+
+  test("modeLabelMatches thinking accepts flash label with extended thinking level", () => {
+    expect(h.modeLabelMatches("thinking", "Gemini Flash", "Extended")).toBe(true);
+    expect(h.modeLabelMatches("thinking", "Gemini Flash", "Standard")).toBe(false);
+    expect(h.modeLabelMatches("thinking", "Flash Extended")).toBe(true);
+    expect(h.modeLabelMatches("flash", "Gemini Flash", "Standard")).toBe(true);
+    expect(h.modeLabelMatches("flash", "Gemini Flash", "Extended")).toBe(false);
+    expect(h.modeLabelMatches("flash", "Flash Extended")).toBe(false);
+  });
+
+  test("isFlashFamilyLabel accepts Gemini Flash variants", () => {
+    expect(h.isFlashFamilyLabel("Gemini Flash")).toBe(true);
+    expect(h.isFlashFamilyLabel("Gemini Flash-Lite")).toBe(true);
+    expect(h.isFlashFamilyLabel("3.1 Pro")).toBe(false);
+  });
+
+  test("getModeMenuTiming uses longer waits on mobile layout", () => {
+    Object.defineProperty(window, "innerWidth", { configurable: true, value: 390 });
+    document.body.innerHTML = '<div class="is-mobile"></div>';
+    const mobile = h.getModeMenuTiming();
+    expect(mobile.layout).toBe("mobile");
+    expect(mobile.submenuMs).toBeGreaterThan(1200);
+
+    document.body.innerHTML = "";
+    Object.defineProperty(window, "innerWidth", { configurable: true, value: 1280 });
+    const desktop = h.getModeMenuTiming();
+    expect(desktop.layout).toBe("desktop");
+  });
+
+  test("listThinkingLevelOptions prefers desktop flyout submenu roots", () => {
+    function mockRect(el, left, top, width, height) {
+      const rect = {
+        left,
+        top,
+        width,
+        height,
+        right: left + width,
+        bottom: top + height,
+        x: left,
+        y: top,
+      };
+      el.getBoundingClientRect = () => rect;
+    }
+
+    document.body.innerHTML = `
+      <div role="menu" id="main-menu">
+        <div role="menuitem" id="thinking-level">Thinking level\nStandard</div>
+      </div>
+      <div role="menu" id="flyout-menu">
+        <div role="menuitem">Standard\nBest for most questions</div>
+        <div role="menuitem">Extended\nComplex problem solving</div>
+      </div>
+    `;
+    Object.defineProperty(window, "innerWidth", { configurable: true, value: 1280 });
+
+    const anchor = document.getElementById("thinking-level");
+    const mainMenu = document.getElementById("main-menu");
+    const flyoutMenu = document.getElementById("flyout-menu");
+    mockRect(anchor, 64, 244, 220, 57);
+    mockRect(mainMenu, 64, 56, 220, 220);
+    mockRect(flyoutMenu, 300, 120, 220, 120);
+    for (const item of flyoutMenu.querySelectorAll("[role=menuitem]")) {
+      mockRect(item, 300, item.textContent.startsWith("Extended") ? 177 : 120, 220, 57);
+    }
+
+    const flyouts = h.getThinkingLevelFlyoutRoots(anchor);
+    expect(flyouts.some((el) => el.id === "flyout-menu")).toBe(true);
+
+    const levels = h.listThinkingLevelOptions(anchor);
+    expect(levels.map((row) => row.title)).toEqual(["Standard", "Extended"]);
+  });
+
   test("getGeminiViewport classifies mobile below breakpoint", () => {
     Object.defineProperty(window, "innerWidth", {
       configurable: true,

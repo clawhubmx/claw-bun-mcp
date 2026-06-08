@@ -120,6 +120,24 @@ writeFileSync(
     return waitOut;
   }
 
+  if (!h.getChatEditor() && !h.getModelPickerButton()) {
+    return {
+      error: 'Chat input not found',
+      hint: 'Gemini page did not finish loading. Open gemini.google.com and retry.',
+      action: 'bun-browser open https://gemini.google.com/'
+    };
+  }
+
+  var modeResult = await h.setGeminiMode(modeId);
+  if (!modeResult.ok) {
+    return {
+      error: 'Mode selection failed',
+      hint: modeResult.hint || modeResult.error || ('Could not select Gemini model "' + modeId + '"'),
+      requestedMode: modeId,
+      action: 'bun-browser site googlegemini/modes'
+    };
+  }
+
   var startNewChat = args.newChat !== false;
   if (startNewChat) {
     var chatNav = await h.startNewChat();
@@ -170,16 +188,6 @@ writeFileSync(
       error: 'Chat input not found',
       hint: 'Gemini page did not finish loading. Open gemini.google.com and retry.',
       action: 'bun-browser open https://gemini.google.com/'
-    };
-  }
-
-  var modeResult = await h.setGeminiMode(modeId);
-  if (!modeResult.ok) {
-    return {
-      error: 'Mode selection failed',
-      hint: modeResult.hint || modeResult.error || ('Could not select Gemini model "' + modeId + '"'),
-      requestedMode: modeId,
-      action: 'bun-browser site googlegemini/modes'
     };
   }
 
@@ -597,19 +605,34 @@ writeFileSync(
   var ui = await h.listGeminiModesFromUi();
   var modes = ui.modes || [];
   var byTitle = {};
+  var hasThinkingLevel = false;
   for (var i = 0; i < modes.length; i++) {
     var title = modes[i].title || '';
     if (/3\\.5\\s*flash/i.test(title)) byTitle.flash = modes[i];
     else if (/3\\.5\\s*thinking/i.test(title)) byTitle.thinking = modes[i];
     else if (/3\\.1\\s*pro/i.test(title)) byTitle.pro = modes[i];
+    else if (/thinking\\s*level/i.test(title)) {
+      hasThinkingLevel = true;
+      byTitle.thinking = {
+        title: 'Thinking level',
+        description: ui.currentThinkingLevel || modes[i].description || null,
+        available: true,
+        levels: ui.thinkingLevels || []
+      };
+    }
   }
+
+  var available = Object.keys(byTitle);
+  if (!available.length) available = hasThinkingLevel ? ['flash', 'thinking', 'pro'] : ['flash', 'thinking', 'pro'];
 
   var loginState = h.getLoginState();
 
   return {
     defaultModeId: 'flash',
     current: ui.current || h.readGeminiModeLabel(),
-    available: Object.keys(byTitle).length ? Object.keys(byTitle) : ['flash', 'thinking', 'pro'],
+    currentThinkingLevel: ui.currentThinkingLevel || null,
+    thinkingLevels: ui.thinkingLevels || [],
+    available: available,
     modes: modes,
     modeMap: byTitle,
     loggedIn: loginState.loggedIn,

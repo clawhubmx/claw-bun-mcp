@@ -39,12 +39,16 @@ bun-browser site googlegemini/modes
 | id | UI 标题 | 说明 |
 |----|---------|------|
 | `flash` | 3.5 Flash | 默认，快速通用回复 |
-| `thinking` | 3.5 Thinking | 复杂推理，耗时更长 |
+| `thinking` | 3.5 Thinking / Thinking level → Extended | 复杂推理；新 UI 下为 Flash + **Extended** 思考级别 |
 | `pro` | 3.1 Pro | 数学与代码 |
 
 别名：`3.5-flash`、`3.5-thinking`、`3.1-pro` 等会自动映射。
 
 若页面当前为 **Flash-Lite**（如 `Gemini Flash-Lite` / `3.1 Flash-Lite`），请求 `flash` 时会视为已匹配，无需强制切换到 3.5 Flash。
+
+**Thinking level（2024+ UI）：** 部分账号的模型选择器不再单独列出 `3.5 Thinking`，而是用 **Thinking level** 子菜单（`Standard` / `Extended`）。`--model thinking` 会自动选择 Flash 系列并将思考级别设为 **Extended**；`--model flash` 会设为 **Standard**。`googlegemini/modes` 会在 `thinkingLevels` 与 `currentThinkingLevel` 中反映该子菜单。
+
+**窄屏 / 宽屏差异：** 在 **mobile**（&lt; 768px 或 `is-mobile`）下，Thinking level 会在同一菜单内向下展开 `Standard` / `Extended`；在 **desktop** 下，这两项出现在右侧 flyout 子面板中，位置不同。adapter 会按 `viewport.layout` 调整等待时间、滚动到可见区域，并在桌面端优先搜索 flyout 子菜单。
 
 ### 使用示例
 

@@ -12,7 +12,7 @@
 
 async function(args) {
   var h = (function installGeminiChatHelpers() {
-  var HELPERS_VERSION = 13;
+  var HELPERS_VERSION = 15;
   var GEMINI_MOBILE_BREAKPOINT = 768;
 
   var GEMINI_CHAT_WAIT_MS = 15 * 60 * 1000;
@@ -28,6 +28,9 @@ async function(args) {
     thinking: '3.5 Thinking',
     pro: '3.1 Pro'
   };
+
+  var THINKING_LEVEL_HIGH = ['extended', 'high', 'deep', 'complex'];
+  var THINKING_LEVEL_STANDARD = ['standard', 'medium', 'low', 'minimal', 'best for most'];
 
   if (globalThis.__geminiChatHelpers && globalThis.__geminiChatHelpers.version === HELPERS_VERSION) {
     return globalThis.__geminiChatHelpers;
@@ -570,6 +573,57 @@ async function(args) {
     return findByAriaLabel(/^open mode picker/i);
   }
 
+  function isGeminiMobileLayoutForModes() {
+    var width = window.innerWidth || document.documentElement.clientWidth || 0;
+    if (width > 0 && width < GEMINI_MOBILE_BREAKPOINT) return true;
+    return !!document.querySelector('.is-mobile, chat-app.is-mobile, [class*="is-mobile"]');
+  }
+
+  function getModeMenuTiming() {
+    var mobile = isGeminiMobileLayoutForModes();
+    return {
+      layout: mobile ? 'mobile' : 'desktop',
+      menuOpenMs: mobile ? 1100 : 900,
+      submenuMs: mobile ? 1500 : 1300,
+      afterSelectMs: mobile ? 1400 : 1200
+    };
+  }
+
+  function hasLayoutRect(el) {
+    if (!el) return false;
+    var rect = el.getBoundingClientRect();
+    return rect.width > 0 && rect.height > 0;
+  }
+
+  function scrollInteractionTargetIntoView(el) {
+    if (!el) return;
+    try {
+      el.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    } catch (e) {
+      try { el.scrollIntoView(false); } catch (e2) {}
+    }
+  }
+
+  function activateMenuItem(el) {
+    if (!el) return;
+    scrollInteractionTargetIntoView(el);
+    if (isGeminiMobileLayoutForModes()) tapElement(el);
+    else el.click();
+  }
+
+  function getThinkingLevelFlyoutRoots(anchorItem) {
+    var roots = [];
+    if (!anchorItem) return roots;
+    var anchorRect = anchorItem.getBoundingClientRect();
+    var menus = Array.prototype.slice.call(document.querySelectorAll('[role="menu"], [role="listbox"]'));
+    for (var i = 0; i < menus.length; i++) {
+      var rect = menus[i].getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) continue;
+      if (rect.left > anchorRect.left + 40) roots.push(menus[i]);
+    }
+    return roots;
+  }
+
   function readGeminiModeLabel() {
     var btn = getModelPickerButton();
     if (!btn) return null;
@@ -584,17 +638,174 @@ async function(args) {
     return String(label || '').trim().toLowerCase();
   }
 
-  function modeLabelMatches(requestedMode, currentLabel) {
+  function normalizeThinkingLevel(level) {
+    return String(level || '').trim().toLowerCase();
+  }
+
+  function isFlashFamilyLabel(label) {
+    if (!label) return false;
+    var current = normalizeModeLabel(label);
+    if (/flash-lite/i.test(current) || (/\/lite\b/i.test(current) && /flash/i.test(current))) return true;
+    if (/pro|thinking/i.test(current) && !/flash/i.test(current)) return false;
+    return /flash/i.test(current) || current === 'flash';
+  }
+
+  function thinkingLevelMatchesTier(level, tier) {
+    var normalized = normalizeThinkingLevel(level);
+    if (!normalized) return false;
+    var aliases = tier === 'high' ? THINKING_LEVEL_HIGH : THINKING_LEVEL_STANDARD;
+    for (var i = 0; i < aliases.length; i++) {
+      if (normalized === aliases[i] || normalized.indexOf(aliases[i]) !== -1) return true;
+    }
+    return false;
+  }
+
+  function parseMenuItemLines(el) {
+    var text = (el.innerText || el.textContent || '').trim();
+    var lines = text.split('\n').map(function(line) { return line.trim(); }).filter(Boolean);
+    return {
+      title: lines[0] || '',
+      description: lines[1] || null,
+      lines: lines
+    };
+  }
+
+  function menuItemFirstLine(el) {
+    return parseMenuItemLines(el).title.toLowerCase();
+  }
+
+  function isThinkingLevelMenuTitle(title) {
+    return /thinking\s*level/i.test(String(title || ''));
+  }
+
+  function isLegacyThinkingModelTitle(title) {
+    var text = String(title || '').toLowerCase();
+    if (!text || isThinkingLevelMenuTitle(text)) return false;
+    return /3\.5\s*thinking/i.test(text) || (text.indexOf('thinking') !== -1 && text.indexOf('flash') === -1);
+  }
+
+  function findThinkingLevelMenuItem(root) {
+    root = root || getModeMenuRoot();
+    var items = Array.prototype.slice.call(root.querySelectorAll('[role="menuitem"], [role="option"], button'))
+      .filter(hasLayoutRect);
+    for (var i = 0; i < items.length; i++) {
+      if (isThinkingLevelMenuTitle(menuItemFirstLine(items[i]))) return items[i];
+    }
+    return null;
+  }
+
+  function readThinkingLevelFromOpenMenu(root) {
+    var item = findThinkingLevelMenuItem(root);
+    if (!item) return null;
+    return parseMenuItemLines(item).description;
+  }
+
+  function isThinkingLevelOptionTitle(title) {
+    var text = String(title || '').trim();
+    if (!text || isThinkingLevelMenuTitle(text)) return false;
+    if (/^3\./i.test(text)) return false;
+    if (/flash|pro/i.test(text) && text.indexOf('thinking') === -1) return false;
+    return thinkingLevelMatchesTier(text, 'high') || thinkingLevelMatchesTier(text, 'standard');
+  }
+
+  function collectThinkingLevelOptions(root) {
+    var options = Array.prototype.slice.call((root || document).querySelectorAll(
+      '[role="menuitem"], [role="option"], button, [role="radio"]'
+    )).filter(hasLayoutRect);
+    var levels = [];
+    var seen = {};
+    for (var i = 0; i < options.length; i++) {
+      var parsed = parseMenuItemLines(options[i]);
+      if (!isThinkingLevelOptionTitle(parsed.title)) continue;
+      var key = parsed.title.toLowerCase();
+      if (seen[key]) continue;
+      seen[key] = true;
+      levels.push({
+        title: parsed.title,
+        description: parsed.description,
+        element: options[i]
+      });
+    }
+    return levels;
+  }
+
+  function listThinkingLevelOptions(anchorItem) {
+    var levels = [];
+    var seen = {};
+    var roots = [];
+
+    if (anchorItem && !isGeminiMobileLayoutForModes()) {
+      roots = getThinkingLevelFlyoutRoots(anchorItem);
+    }
+    if (!roots.length) roots = [getModeMenuRoot(), document];
+
+    for (var r = 0; r < roots.length; r++) {
+      var chunk = collectThinkingLevelOptions(roots[r]);
+      for (var i = 0; i < chunk.length; i++) {
+        var key = chunk[i].title.toLowerCase();
+        if (seen[key]) continue;
+        seen[key] = true;
+        levels.push(chunk[i]);
+      }
+    }
+    return levels;
+  }
+
+  function findThinkingLevelOptionElement(tier, anchorItem) {
+    var levels = listThinkingLevelOptions(anchorItem);
+    var aliases = tier === 'high' ? THINKING_LEVEL_HIGH : THINKING_LEVEL_STANDARD;
+    for (var a = 0; a < aliases.length; a++) {
+      for (var i = 0; i < levels.length; i++) {
+        var title = normalizeThinkingLevel(levels[i].title);
+        if (title === aliases[a] || title.indexOf(aliases[a]) !== -1) return levels[i].element;
+      }
+    }
+    if (tier === 'high' && levels.length) return levels[levels.length - 1].element;
+    if (tier === 'standard' && levels.length) return levels[0].element;
+    return null;
+  }
+
+  function isModelMenuOpen() {
+    var nodes = Array.prototype.slice.call(document.querySelectorAll('[role="menu"], [role="listbox"], [role="menuitem"]'));
+    for (var i = 0; i < nodes.length; i++) {
+      if (isElementVisible(nodes[i])) return true;
+    }
+    return false;
+  }
+
+  async function dismissModelMenu() {
+    if (isModelMenuOpen()) {
+      var picker = getModelPickerButton();
+      if (picker) {
+        picker.click();
+        await sleep(400);
+      }
+    }
+    for (var i = 0; i < 3; i++) {
+      if (!isModelMenuOpen()) break;
+      document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      await sleep(200);
+    }
+    await sleep(250);
+  }
+
+  function modeLabelMatches(requestedMode, currentLabel, thinkingLevel) {
     if (!currentLabel) return false;
     var resolved = resolveGeminiMode(requestedMode);
     var current = normalizeModeLabel(currentLabel);
 
     if (resolved === 'flash') {
-      if (/flash-lite/i.test(current) || (/\/lite\b/i.test(current) && /flash/i.test(current))) return true;
-      if (/pro|thinking/i.test(current) && !/flash/i.test(current)) return false;
-      if (/flash/i.test(current) || current === 'flash') return true;
+      if (!isFlashFamilyLabel(currentLabel)) return false;
+      if (/extended/i.test(current)) return false;
+      if (thinkingLevel && thinkingLevelMatchesTier(thinkingLevel, 'high')) return false;
+      return true;
     }
     if (resolved === 'thinking') {
+      if (/thinking/i.test(current) && !/flash/i.test(current)) return true;
+      if (/extended/i.test(current) && /flash/i.test(current)) return true;
+      if (isFlashFamilyLabel(currentLabel) && thinkingLevel && thinkingLevelMatchesTier(thinkingLevel, 'high')) {
+        return true;
+      }
       if (/thinking/i.test(current)) return true;
     }
     if (resolved === 'pro') {
@@ -608,21 +819,67 @@ async function(args) {
     return false;
   }
 
+  async function readGeminiThinkingLevel() {
+    if (!(await openModelMenu())) return null;
+    var level = readThinkingLevelFromOpenMenu();
+    await dismissModelMenu();
+    return level;
+  }
+
+  async function modeStateMatches(requested) {
+    var resolved = resolveGeminiMode(requested);
+    var label = readGeminiModeLabel();
+    if (resolved === 'thinking') {
+      if (modeLabelMatches('thinking', label)) return true;
+      if (!isFlashFamilyLabel(label)) return false;
+      var thinkingLevel = await readGeminiThinkingLevel();
+      return !!(thinkingLevel && thinkingLevelMatchesTier(thinkingLevel, 'high'));
+    }
+    if (resolved === 'flash') {
+      if (!modeLabelMatches('flash', label)) return false;
+      var flashLevel = await readGeminiThinkingLevel();
+      if (!flashLevel) return true;
+      return thinkingLevelMatchesTier(flashLevel, 'standard');
+    }
+    return modeLabelMatches(requested, label);
+  }
+
   async function openModelMenu() {
-    await dismissOpenOverlays();
-    var btn = getModelPickerButton();
-    if (!btn) return false;
-    btn.click();
-    await sleep(800);
-    return !!document.querySelector('[role="menu"], [role="listbox"], [role="menuitem"]');
+    if (isModelMenuOpen()) return true;
+    var timing = getModeMenuTiming();
+    for (var attempt = 0; attempt < 4; attempt++) {
+      await dismissOpenOverlays();
+      var btn = getModelPickerButton();
+      if (!btn) {
+        await sleep(500);
+        continue;
+      }
+      scrollInteractionTargetIntoView(btn);
+      if (timing.layout === 'mobile') tapElement(btn);
+      else btn.click();
+      await sleep(timing.menuOpenMs + attempt * 300);
+      if (isModelMenuOpen()) return true;
+    }
+    return false;
   }
 
   function getModeMenuRoot() {
     return document.querySelector('[role="menu"], [role="listbox"]') || document;
   }
 
+  function findLegacyThinkingModelOption(root) {
+    root = root || getModeMenuRoot();
+    var options = Array.prototype.slice.call(root.querySelectorAll('[role="menuitem"], [role="option"], button'))
+      .filter(isElementVisible);
+    for (var i = 0; i < options.length; i++) {
+      if (isLegacyThinkingModelTitle(menuItemFirstLine(options[i]))) return options[i];
+    }
+    return null;
+  }
+
   function findModeOptionElement(modeId) {
     var resolved = resolveGeminiMode(modeId);
+    if (resolved === 'thinking') return findLegacyThinkingModelOption();
     var title = MODE_LABELS[resolved] || resolved;
     var wanted = String(title).trim().toLowerCase();
     var root = getModeMenuRoot();
@@ -630,12 +887,12 @@ async function(args) {
       .filter(isElementVisible);
 
     function firstLine(el) {
-      return ((el.innerText || el.textContent || '').trim().split('\n')[0] || '').trim().toLowerCase();
+      return menuItemFirstLine(el);
     }
 
     for (var i = 0; i < options.length; i++) {
       var line = firstLine(options[i]);
-      if (!line) continue;
+      if (!line || isThinkingLevelMenuTitle(line)) continue;
       if (line === wanted) return options[i];
       if (line.indexOf(wanted) === 0) return options[i];
     }
@@ -643,10 +900,12 @@ async function(args) {
     if (resolved === 'flash') {
       for (var j = 0; j < options.length; j++) {
         var flashLine = firstLine(options[j]);
+        if (isThinkingLevelMenuTitle(flashLine)) continue;
         if (flashLine.indexOf('3.5') !== -1 && flashLine.indexOf('flash') !== -1) return options[j];
       }
       for (var k = 0; k < options.length; k++) {
         var genericFlash = firstLine(options[k]);
+        if (isThinkingLevelMenuTitle(genericFlash)) continue;
         if (genericFlash === 'flash') return options[k];
         if (genericFlash.indexOf('flash') !== -1 &&
           genericFlash.indexOf('lite') === -1 &&
@@ -656,79 +915,288 @@ async function(args) {
       }
       for (var l = 0; l < options.length; l++) {
         var liteLine = firstLine(options[l]);
+        if (isThinkingLevelMenuTitle(liteLine)) continue;
         if (liteLine.indexOf('flash') !== -1 && liteLine.indexOf('lite') !== -1) return options[l];
       }
     }
     if (resolved === 'pro') {
       for (var p = 0; p < options.length; p++) {
+        if (isThinkingLevelMenuTitle(firstLine(options[p]))) continue;
         if (firstLine(options[p]).indexOf('pro') !== -1) return options[p];
-      }
-    }
-    if (resolved === 'thinking') {
-      for (var t = 0; t < options.length; t++) {
-        if (firstLine(options[t]).indexOf('thinking') !== -1) return options[t];
       }
     }
     return null;
   }
 
-  async function setGeminiMode(modeId) {
-    var requested = resolveGeminiMode(modeId);
-    var currentLabel = readGeminiModeLabel();
-    if (modeLabelMatches(requested, currentLabel)) {
-      return {
-        ok: true,
-        changed: false,
-        mode: requested,
-        label: currentLabel,
-        modeTitle: MODE_LABELS[requested] || requested
-      };
+  async function selectModeOptionInOpenMenu(modeId) {
+    var option = findModeOptionElement(modeId);
+    if (!option) return false;
+    clickElement(option);
+    await sleep(1200);
+    return true;
+  }
+
+  async function setGeminiThinkingLevel(tier) {
+    var timing = getModeMenuTiming();
+    if (!(await openModelMenu())) {
+      return { ok: false, error: 'Could not open mode picker' };
     }
 
-    if (!getModelPickerButton()) {
-      if (modeLabelMatches(requested, currentLabel) || !currentLabel) {
+    var current = readThinkingLevelFromOpenMenu();
+    if (current && thinkingLevelMatchesTier(current, tier)) {
+      await dismissModelMenu();
+      return { ok: true, changed: false, level: current, appliedVia: 'current' };
+    }
+
+    var tlItem = findThinkingLevelMenuItem();
+    if (!tlItem) {
+      await dismissModelMenu();
+      return { ok: false, error: 'Thinking level control not found in mode picker' };
+    }
+
+    activateMenuItem(tlItem);
+    await sleep(timing.submenuMs);
+
+    var option = findThinkingLevelOptionElement(tier, tlItem);
+    if (!option) {
+      await dismissModelMenu();
+      return { ok: false, error: 'Thinking level option not found for tier ' + tier };
+    }
+
+    activateMenuItem(option);
+    await sleep(timing.afterSelectMs);
+    await dismissModelMenu();
+    await sleep(300);
+
+    if (!(await openModelMenu())) {
+      return { ok: false, error: 'Could not verify thinking level' };
+    }
+    var applied = readThinkingLevelFromOpenMenu();
+    await dismissModelMenu();
+
+    if (applied && thinkingLevelMatchesTier(applied, tier)) {
+      return { ok: true, changed: true, level: applied, appliedVia: 'thinking-level' };
+    }
+
+    return {
+      ok: false,
+      level: applied,
+      error: 'Thinking level did not apply',
+      hint: 'Expected ' + tier + ' thinking level' + (applied ? (', got ' + applied) : '')
+    };
+  }
+
+  async function applyThinkingModeSelection() {
+    var timing = getModeMenuTiming();
+    if (!(await openModelMenu())) {
+      return { ok: false, error: 'Could not open mode picker' };
+    }
+
+    var legacyThinking = findLegacyThinkingModelOption();
+    if (legacyThinking) {
+      activateMenuItem(legacyThinking);
+      await sleep(timing.afterSelectMs);
+      await dismissModelMenu();
+      var legacyLabel = readGeminiModeLabel();
+      if (modeLabelMatches('thinking', legacyLabel)) {
         return {
           ok: true,
-          changed: false,
-          mode: requested,
-          label: currentLabel,
-          modeTitle: MODE_LABELS[requested] || requested,
-          appliedVia: 'unavailable-picker'
+          changed: true,
+          label: legacyLabel,
+          appliedVia: 'legacy-model'
         };
       }
     }
 
-    if (await openModelMenu()) {
-      var option = findModeOptionElement(requested);
-      if (option) {
-        clickElement(option);
-        await sleep(1200);
-        var appliedLabel = readGeminiModeLabel();
-        if (modeLabelMatches(requested, appliedLabel)) {
-          return {
-            ok: true,
-            changed: true,
-            mode: requested,
-            label: appliedLabel,
-            modeTitle: MODE_LABELS[requested] || requested,
-            appliedVia: 'ui'
-          };
-        }
+    if (!isFlashFamilyLabel(readGeminiModeLabel())) {
+      var flashOpt = findModeOptionElement('flash');
+      if (flashOpt) {
+        activateMenuItem(flashOpt);
+        await sleep(timing.afterSelectMs);
       }
-      document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
-      await sleep(200);
     }
 
-    var finalLabel = readGeminiModeLabel();
-    if (modeLabelMatches(requested, finalLabel)) {
+    var current = readThinkingLevelFromOpenMenu();
+    if (current && thinkingLevelMatchesTier(current, 'high')) {
+      await dismissModelMenu();
       return {
         ok: true,
         changed: false,
-        mode: requested,
-        label: finalLabel,
-        modeTitle: MODE_LABELS[requested] || requested,
+        label: readGeminiModeLabel(),
+        thinkingLevel: current,
         appliedVia: 'current'
       };
+    }
+
+    var tlItem = findThinkingLevelMenuItem();
+    if (!tlItem) {
+      await dismissModelMenu();
+      return { ok: false, error: 'Thinking level control not found in mode picker' };
+    }
+
+    activateMenuItem(tlItem);
+    await sleep(timing.submenuMs);
+
+    var option = findThinkingLevelOptionElement('high', tlItem);
+    if (!option) {
+      await dismissModelMenu();
+      return {
+        ok: false,
+        error: 'Extended thinking level not found',
+        hint: timing.layout === 'desktop'
+          ? 'Desktop flyout submenu did not open. Retry or widen the tab.'
+          : 'Mobile thinking submenu did not open. Scroll the mode picker and retry.'
+      };
+    }
+
+    activateMenuItem(option);
+    await sleep(timing.afterSelectMs);
+    await dismissModelMenu();
+    await sleep(300);
+
+    if (!(await openModelMenu())) {
+      return { ok: false, error: 'Could not verify thinking mode' };
+    }
+    var appliedLevel = readThinkingLevelFromOpenMenu();
+    await dismissModelMenu();
+
+    if (appliedLevel && thinkingLevelMatchesTier(appliedLevel, 'high')) {
+      return {
+        ok: true,
+        changed: true,
+        label: readGeminiModeLabel(),
+        thinkingLevel: appliedLevel,
+        appliedVia: 'thinking-level'
+      };
+    }
+
+    return {
+      ok: false,
+      label: readGeminiModeLabel(),
+      thinkingLevel: appliedLevel,
+      error: 'Thinking level did not apply',
+      hint: 'Expected Extended thinking level' + (appliedLevel ? (', got ' + appliedLevel) : '')
+    };
+  }
+
+  function buildModeSuccessResult(requested, opts) {
+    opts = opts || {};
+    return {
+      ok: true,
+      changed: !!opts.changed,
+      mode: requested,
+      label: opts.label != null ? opts.label : readGeminiModeLabel(),
+      modeTitle: MODE_LABELS[requested] || requested,
+      thinkingLevel: opts.thinkingLevel || null,
+      appliedVia: opts.appliedVia || null
+    };
+  }
+
+  async function setGeminiMode(modeId) {
+    var requested = resolveGeminiMode(modeId);
+    var currentLabel = readGeminiModeLabel();
+
+    if (requested === 'thinking') {
+      if (modeLabelMatches('thinking', currentLabel)) {
+        return buildModeSuccessResult(requested, {
+          changed: false,
+          label: currentLabel,
+          appliedVia: 'current'
+        });
+      }
+    } else if (await modeStateMatches(requested)) {
+      var matchedLevel = requested === 'flash' ? await readGeminiThinkingLevel() : null;
+      return buildModeSuccessResult(requested, {
+        changed: false,
+        label: currentLabel,
+        thinkingLevel: matchedLevel,
+        appliedVia: 'current'
+      });
+    }
+
+    if (!getModelPickerButton()) {
+      if (!currentLabel) {
+        return buildModeSuccessResult(requested, {
+          changed: false,
+          label: currentLabel,
+          appliedVia: 'unavailable-picker'
+        });
+      }
+    }
+
+    if (requested === 'thinking') {
+      var thinkingResult = await applyThinkingModeSelection();
+      if (thinkingResult.ok) {
+        return buildModeSuccessResult(requested, {
+          changed: thinkingResult.changed,
+          label: thinkingResult.label,
+          thinkingLevel: thinkingResult.thinkingLevel || null,
+          appliedVia: thinkingResult.appliedVia || 'thinking-level'
+        });
+      }
+
+      return {
+        ok: false,
+        changed: false,
+        mode: requested,
+        modeTitle: MODE_LABELS[requested] || requested,
+        currentLabel: thinkingResult.label || readGeminiModeLabel(),
+        thinkingLevel: thinkingResult.thinkingLevel || null,
+        error: 'Mode selection failed',
+        hint: thinkingResult.hint || thinkingResult.error ||
+          ('Could not switch to ' + (MODE_LABELS[requested] || requested) +
+            ' (current: ' + (readGeminiModeLabel() || 'unknown') + ')' +
+            '. Run googlegemini/modes to see available models.')
+      };
+    }
+
+    if (requested === 'flash') {
+      if (await openModelMenu()) {
+        await selectModeOptionInOpenMenu('flash');
+        await dismissModelMenu();
+      }
+      var flashLevelResult = await setGeminiThinkingLevel('standard');
+      if (!flashLevelResult.ok && flashLevelResult.error === 'Thinking level control not found in mode picker') {
+        if (modeLabelMatches('flash', readGeminiModeLabel())) {
+          return buildModeSuccessResult(requested, { changed: true, appliedVia: 'ui' });
+        }
+      } else if (flashLevelResult.ok || modeLabelMatches('flash', readGeminiModeLabel())) {
+        return buildModeSuccessResult(requested, {
+          changed: true,
+          thinkingLevel: flashLevelResult.level || null,
+          appliedVia: flashLevelResult.appliedVia || 'ui'
+        });
+      }
+    }
+
+    if (requested === 'pro') {
+      if (await openModelMenu()) {
+        if (await selectModeOptionInOpenMenu('pro')) {
+          await dismissModelMenu();
+          var proLabel = readGeminiModeLabel();
+          if (modeLabelMatches('pro', proLabel)) {
+            return buildModeSuccessResult(requested, {
+              changed: true,
+              label: proLabel,
+              appliedVia: 'ui'
+            });
+          }
+        } else {
+          await dismissModelMenu();
+        }
+      }
+    }
+
+    var finalLabel = readGeminiModeLabel();
+    var finalLevel = await readGeminiThinkingLevel();
+    if (modeLabelMatches(requested, finalLabel, finalLevel) ||
+        (requested === 'thinking' && finalLevel && thinkingLevelMatchesTier(finalLevel, 'high') && isFlashFamilyLabel(finalLabel))) {
+      return buildModeSuccessResult(requested, {
+        changed: false,
+        label: finalLabel,
+        thinkingLevel: finalLevel,
+        appliedVia: 'current'
+      });
     }
 
     return {
@@ -737,33 +1205,56 @@ async function(args) {
       mode: requested,
       modeTitle: MODE_LABELS[requested] || requested,
       currentLabel: finalLabel,
+      thinkingLevel: finalLevel,
       error: 'Mode selection failed',
       hint: 'Could not switch to ' + (MODE_LABELS[requested] || requested) +
         (finalLabel ? (' (current: ' + finalLabel + ')') : '') +
+        (finalLevel ? (', thinking: ' + finalLevel) : '') +
         '. Run googlegemini/modes to see available models.'
     };
   }
 
   async function listGeminiModesFromUi() {
     if (!(await openModelMenu())) {
-      return { modes: [], current: readGeminiModeLabel() };
+      return { modes: [], current: readGeminiModeLabel(), currentThinkingLevel: null, thinkingLevels: [] };
     }
     var items = Array.prototype.slice.call(document.querySelectorAll('[role="menuitem"]'));
     var modes = [];
+    var currentThinkingLevel = null;
+    var thinkingLevels = [];
+
+    var thinkingLevelItem = null;
     for (var i = 0; i < items.length; i++) {
       var text = (items[i].innerText || items[i].textContent || '').trim();
       if (!text || /sign in for all models/i.test(text)) continue;
-      var lines = text.split('\n').map(function(line) { return line.trim(); }).filter(Boolean);
-      if (!lines.length) continue;
+      var parsed = parseMenuItemLines(items[i]);
+      if (!parsed.title) continue;
       modes.push({
-        title: lines[0],
-        description: lines[1] || null,
+        title: parsed.title,
+        description: parsed.description,
         available: true
       });
+      if (isThinkingLevelMenuTitle(parsed.title)) {
+        currentThinkingLevel = parsed.description;
+        thinkingLevelItem = items[i];
+      }
     }
-    document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
-    await sleep(200);
-    return { modes: modes, current: readGeminiModeLabel() };
+
+    if (thinkingLevelItem) {
+      activateMenuItem(thinkingLevelItem);
+      await sleep(getModeMenuTiming().submenuMs);
+      thinkingLevels = listThinkingLevelOptions(thinkingLevelItem).map(function(level) {
+        return { title: level.title, description: level.description };
+      });
+    }
+    await dismissModelMenu();
+
+    return {
+      modes: modes,
+      current: readGeminiModeLabel(),
+      currentThinkingLevel: currentThinkingLevel,
+      thinkingLevels: thinkingLevels
+    };
   }
 
   async function startNewChat() {
@@ -1892,7 +2383,17 @@ async function(args) {
     resolveGeminiModeWaitMs: resolveGeminiModeWaitMs,
     buildWaitOpts: buildWaitOpts,
     modeLabelMatches: modeLabelMatches,
+    thinkingLevelMatchesTier: thinkingLevelMatchesTier,
+    isFlashFamilyLabel: isFlashFamilyLabel,
+    getModelPickerButton: getModelPickerButton,
+    getModeMenuTiming: getModeMenuTiming,
+    isGeminiMobileLayoutForModes: isGeminiMobileLayoutForModes,
+    listThinkingLevelOptions: listThinkingLevelOptions,
+    getThinkingLevelFlyoutRoots: getThinkingLevelFlyoutRoots,
+    activateMenuItem: activateMenuItem,
     readGeminiModeLabel: readGeminiModeLabel,
+    readGeminiThinkingLevel: readGeminiThinkingLevel,
+    setGeminiThinkingLevel: setGeminiThinkingLevel,
     setGeminiMode: setGeminiMode,
     listGeminiModesFromUi: listGeminiModesFromUi,
     setChatInput: setChatInput,
