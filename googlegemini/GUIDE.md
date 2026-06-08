@@ -18,6 +18,7 @@ bun-browser open https://gemini.google.com/ --tab current
 |------|------|
 | `bun-browser site googlegemini/chat "<prompt>"` | 向 Gemini 提问（推荐） |
 | `bun-browser site googlegemini/chatfollow <conversation> "<prompt>"` | 在已有对话中继续提问 |
+| `bun-browser site googlegemini/branch <conversation> [messageIndex]` | 从某条助手回复处分叉到新对话（UI：Branch in new chat） |
 | `bun-browser site googlegemini/search [query] [limit] [resolveLimit]` | 列出最近对话或搜索聊天历史 |
 | `bun-browser site googlegemini/library [section] [limit]` | 列出 Library（My Stuff）中的创作 |
 | `bun-browser site googlegemini/modes` | 查看当前账号可用的模型 |
@@ -42,6 +43,8 @@ bun-browser site googlegemini/modes
 | `pro` | 3.1 Pro | 数学与代码 |
 
 别名：`3.5-flash`、`3.5-thinking`、`3.1-pro` 等会自动映射。
+
+若页面当前为 **Flash-Lite**（如 `Gemini Flash-Lite` / `3.1 Flash-Lite`），请求 `flash` 时会视为已匹配，无需强制切换到 3.5 Flash。
 
 ### 使用示例
 
@@ -200,12 +203,86 @@ bun-browser site googlegemini/chatfollow abc123def456 \
 | `model` | 请求的 mode id |
 | `modeLabel` | 页面模型选择器当前显示文字 |
 | `answer` | 助手回复正文 |
-| `answerJson` / `answerFormat` | 若回复含 JSON 块则解析 |
+| `answerJson` / `answerFormat` | 若回复含 JSON 块则解析（见下文「结构化 JSON 回复」） |
 | `conversationId` | 对话 id（用于 chatfollow） |
 | `attachments` / `transport` | 文件附件时才有（见上文） |
 | `context` | 使用 `context` 参数时为 `true` |
 | `loggedIn` | 是否检测到 Google 登录 cookie |
 | `anonymous` | 是否为匿名会话（页面有 Sign in 按钮） |
+
+## 结构化 JSON 回复
+
+`chat` 与 `chatfollow` 会在助手回复中检测 JSON（含 ` ```json ` 代码块或裸 `{...}`），并额外返回：
+
+| 字段 | 说明 |
+|------|------|
+| `answerFormat` | 为 `"json"` 表示已成功解析 |
+| `answerJson` | 解析后的对象（可直接用于程序消费） |
+
+示例 prompt：
+
+```bash
+bun-browser site googlegemini/chat \
+  'Reply with ONLY a JSON object: {"status":"ok","code":"PING-1"}'
+```
+
+成功时除 `answer` 外还有：
+
+```json
+{
+  "answerFormat": "json",
+  "answerJson": { "status": "ok", "code": "PING-1" }
+}
+```
+
+建议在 prompt 中明确要求「仅 JSON、无多余文字」，或指定键名与类型，以提高解析成功率。
+
+## 分叉对话 (googlegemini/branch)
+
+对应 Gemini 网页端助手回复 **Show more options → Branch in new chat**：从某条助手回复处复制上下文，**新建一条独立对话**，原对话不变。
+
+### 使用示例
+
+```bash
+# 从最后一条助手回复处分叉（默认）
+bun-browser site googlegemini/branch 4b4ee6aa216306a2
+
+# 从第 0 条助手回复处分叉（0-based index）
+bun-browser site googlegemini/branch 4b4ee6aa216306a2 0
+
+# 也支持完整 URL
+bun-browser site googlegemini/branch "https://gemini.google.com/app/4b4ee6aa216306a2"
+```
+
+位置参数顺序：`conversation`（必填）→ `messageIndex`（可选，默认最后一条助手回复）。
+
+### 返回字段
+
+| 字段 | 说明 |
+|------|------|
+| `sourceConversationId` | 原对话 id（未被修改） |
+| `conversationId` | 新分叉对话 id |
+| `url` | `https://gemini.google.com/app/{id}` |
+| `title` | 通常为 `Branch • {原标题}` |
+| `messageIndex` | 分叉所依据的助手回复索引 |
+| `messagesCopied` | 复制到新对话的轮数 |
+| `snapshot` | `{ turnCount, userQueries[], responses[] }` 快照 |
+| `viewport` / `loggedIn` / `anonymous` | 同其他 adapter |
+
+分叉后继续提问：
+
+```bash
+bun-browser site googlegemini/chatfollow <newConversationId> "Try a different approach"
+```
+
+### 与 chatfollow 的区别
+
+| 操作 | 效果 |
+|------|------|
+| `chatfollow` | 在**同一条**对话里追加后续轮次 |
+| `branch` | **新建**对话 id，保留分叉点之前的上下文，原线程不受影响 |
+
+适用场景：从同一检查点并行尝试不同 follow-up、A/B 对比、保留「主对话」的同时探索变体。
 
 ## 多轮对话
 
@@ -226,15 +303,41 @@ bun-browser site googlegemini/chatfollow abc123... "What is its population?"
 
 `conversation` 参数支持纯 id 或 `https://gemini.google.com/app/{id}` URL。
 
+### 典型工作流
+
+```bash
+# 1. 新对话提问
+bun-browser site googlegemini/chat "Outline three options for X"
+# => conversationId: abc123...
+
+# 2. 同线程继续
+bun-browser site googlegemini/chatfollow abc123... "Expand option 2"
+
+# 3. 从某轮回复分叉，在新线程探索
+bun-browser site googlegemini/branch abc123... 
+# => conversationId: def456...（新 id）
+
+bun-browser site googlegemini/chatfollow def456... "What if we chose option 1 instead?"
+```
+
+或从历史恢复：
+
+```bash
+bun-browser site googlegemini/search "*" 5 3
+bun-browser site googlegemini/chatfollow <conversationId> "Resume where we left off"
+```
+
 ## 长时间生成 / waitOnly
 
 Thinking 模式或长回复可能仍在流式输出。若返回 `Still generating`：
 
 ```bash
 bun-browser site googlegemini/chat "long task..." --model thinking
-# 若超时或仍在生成：
-bun-browser site googlegemini/chat "long task..." --waitOnly true
+# 若超时或仍在生成（位置参数 waitOnly = true）：
+bun-browser site googlegemini/chat "long task..." flash false true
 ```
+
+`chat` / `chatfollow` 位置参数中第 4 项为 `waitOnly`（默认 `false`）；最后一项可设 `maxWaitMs` 覆盖等待上限（毫秒）。
 
 ## 健康检查
 
@@ -277,15 +380,61 @@ Gemini 网页在较窄窗口或带 `is-mobile` 标记时会收起侧栏。`searc
 | `Search page not available` | `bun-browser open https://gemini.google.com/search` 后重试 |
 | `Library page not available` | `bun-browser open https://gemini.google.com/library` 后重试 |
 | `results` 无 `conversationId` | 对最近列表使用 `googlegemini/search "*"`，或带关键词搜索 |
+| `Branch in new chat menu item not found` | 打开对话页，确认助手回复旁有 **Show more options**；窄屏下先展开 `message-actions` |
+| `Branch did not navigate` | 重试 `branch`；确保标签页停留在 `gemini.google.com/app/{id}` |
 | 空回复 | 页面 DOM 可能已更新，请反馈 adapter |
+
+## 测试
+
+### 单元测试（无需浏览器）
+
+```bash
+cd googlegemini
+bun test test-chat-helpers.test.mjs test-api-schemas.test.mjs
+```
+
+- `test-chat-helpers.test.mjs` — DOM 解析、模式匹配、JSON 提取等 helper 逻辑
+- `test-api-schemas.test.mjs` — 各 adapter 返回结构的 schema 校验（`api-schemas.mjs`）
+
+### 端到端 API 流程（需要 bun-browser + Gemini 标签页）
+
+```bash
+# 前置：bun-browser status 正常，并已打开 gemini.google.com
+bun googlegemini/scripts/run-api-flow.mjs
+
+# 可选
+bun googlegemini/scripts/run-api-flow.mjs --skip-attach    # 跳过附件上传步骤
+bun googlegemini/scripts/run-api-flow.mjs --tab 0          # 指定标签页
+bun googlegemini/scripts/run-api-flow.mjs --json-out /tmp/gemini-flow.json
+```
+
+流程依次验证：`health` → `modes` → `chat` / `chatfollow`（含 JSON 结构）→ `search` → `library` → `branch` → 分叉后续聊。结果写入 `googlegemini/.api-flow-results.json`。
+
+开发 adapter 后需同步到 bun-browser 社区目录（或运行 `bun-browser site update`）：
+
+```bash
+cp googlegemini/{chat,chatfollow,branch,health,modes,search,library}.js \
+  ~/.bun-browser/claw-bun-mcp/googlegemini/
+```
+
+修改 `chat-helpers.js` 后请运行 `node googlegemini/build-inline.mjs` 再同步上述文件。
 
 ## English summary
 
 Use bun-browser site adapters on an open `gemini.google.com` tab:
 
-- **chat** / **chatfollow** — ask and continue threads; models `flash` (default), `thinking`, `pro`
+- **chat** / **chatfollow** — ask and continue threads; models `flash` (default), `thinking`, `pro`; Flash-Lite counts as `flash`
+- **branch** — fork a thread at an assistant reply into a **new** `conversationId` (UI: *Branch in new chat*); original thread unchanged
 - **search** — list recent chats (`/search`) or keyword search; use query `*` to resolve `conversationId`
 - **library** — list My Stuff creations at `/library` (Canvas, Deep Research, images, videos); not chat history
 - **modes** / **health** — model list and access checks
 
-`search` and `library` return `viewport` (`mobile` / `desktop`) and adapt to narrow layouts (sidebar open/close, longer waits). Positional args: `search [query] [limit] [resolveLimit]`, `library [section] [limit]`. Chain `search` → `chatfollow` for multi-turn workflows. Anonymous chat is supported without Google sign-in.
+**JSON outputs:** when the model reply contains parseable JSON, responses include `answerFormat: "json"` and `answerJson` (object).
+
+**Positional args:** `search [query] [limit] [resolveLimit]`, `library [section] [limit]`, `branch <conversation> [messageIndex]`. Chat/chatfollow arg order is documented above (`newChat`, `waitOnly`, attachments, `maxWaitMs`, etc.).
+
+**Typical chain:** `chat` → `chatfollow` (same thread) or `chat` → `branch` → `chatfollow` (forked thread). Use `search` / `search "*"` to recover `conversationId`.
+
+**Tests:** `bun test googlegemini/test-*.test.mjs` (unit); `bun googlegemini/scripts/run-api-flow.mjs` (live E2E). Regenerate adapters with `node googlegemini/build-inline.mjs` after editing `chat-helpers.js`.
+
+`search` and `library` return `viewport` (`mobile` / `desktop`) and adapt to narrow layouts. Anonymous chat is supported without Google sign-in.

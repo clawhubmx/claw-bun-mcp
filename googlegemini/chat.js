@@ -27,7 +27,7 @@ async function(args) {
   }
 
   var h = (function installGeminiChatHelpers() {
-  var HELPERS_VERSION = 12;
+  var HELPERS_VERSION = 13;
   var GEMINI_MOBILE_BREAKPOINT = 768;
 
   var GEMINI_CHAT_WAIT_MS = 15 * 60 * 1000;
@@ -605,7 +605,7 @@ async function(args) {
     var current = normalizeModeLabel(currentLabel);
 
     if (resolved === 'flash') {
-      if (/flash-lite|lite/i.test(current)) return false;
+      if (/flash-lite/i.test(current) || (/\/lite\b/i.test(current) && /flash/i.test(current))) return true;
       if (/pro|thinking/i.test(current) && !/flash/i.test(current)) return false;
       if (/flash/i.test(current) || current === 'flash') return true;
     }
@@ -668,6 +668,10 @@ async function(args) {
           genericFlash.indexOf('thinking') === -1) {
           return options[k];
         }
+      }
+      for (var l = 0; l < options.length; l++) {
+        var liteLine = firstLine(options[l]);
+        if (liteLine.indexOf('flash') !== -1 && liteLine.indexOf('lite') !== -1) return options[l];
       }
     }
     if (resolved === 'pro') {
@@ -2089,8 +2093,11 @@ async function(args) {
     };
   }
 
-  var beforeCount = h.getAssistantMessages().length;
-  var beforeText = h.getAssistantMessages().map(h.getAssistantText).join('\n');
+  var existingMessages = h.getAssistantMessages();
+  var beforeCount = existingMessages.length;
+  var beforeText = beforeCount
+    ? (h.getAssistantText(existingMessages[beforeCount - 1]) || '')
+    : '';
 
   if (!h.setChatInput(effectiveQuery)) {
     return {

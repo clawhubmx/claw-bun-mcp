@@ -1,0 +1,303 @@
+{
+  "flowId": "GEMINI-FLOW-MQ47MBCH",
+  "testedAt": "2026-06-07T20:22:52.269Z",
+  "conversationId": "7900f1d8de65fb88",
+  "branchedConversationId": "effb64474b98b746",
+  "total": 13,
+  "pass": 9,
+  "fail": 3,
+  "skip": 1,
+  "steps": [
+    {
+      "name": "bun-browser status",
+      "status": "pass"
+    },
+    {
+      "name": "googlegemini/health",
+      "status": "pass",
+      "errors": [],
+      "data": {
+        "ok": true,
+        "loggedIn": true,
+        "anonymous": false,
+        "chatInput": true,
+        "submitEnabled": true,
+        "modeLabel": "Gemini Flash-Lite",
+        "url": "https://gemini.google.com/app",
+        "hint": "Gemini chat appears accessible."
+      }
+    },
+    {
+      "name": "googlegemini/modes",
+      "status": "pass",
+      "errors": [],
+      "data": {
+        "defaultModeId": "flash",
+        "current": "Gemini Flash-Lite",
+        "available": [
+          "flash",
+          "pro"
+        ],
+        "modes": [
+          {
+            "title": "3.1 Flash-Lite",
+            "description": "Fastest answers",
+            "available": true
+          },
+          {
+            "title": "3.5 Flash",
+            "description": "Limit resets Jun 8, 7:45 AM",
+            "available": true
+          },
+          {
+            "title": "3.1 Pro",
+            "description": "Limit resets Jun 8, 7:45 AM",
+            "available": true
+          },
+          {
+            "title": "Thinking level",
+            "description": "Standard",
+            "available": true
+          }
+        ],
+        "modeMap": {
+          "flash": {
+            "title": "3.5 Flash",
+            "description": "Limit resets Jun 8, 7:45 AM",
+            "available": true
+          },
+          "pro": {
+            "title": "3.1 Pro",
+            "description": "Limit resets Jun 8, 7:45 AM",
+            "available": true
+          }
+        },
+        "loggedIn": true,
+        "anonymous": false
+      }
+    },
+    {
+      "name": "googlegemini/chat (exact)",
+      "status": "fail",
+      "errors": [
+        "Still generating"
+      ],
+      "data": {
+        "error": "Still generating",
+        "hint": "Gemini is still generating (streaming/thinking). Retry with waitOnly: true"
+      },
+      "conversationId": null
+    },
+    {
+      "name": "conversation fallback (search)",
+      "status": "pass",
+      "note": "using 7900f1d8de65fb88 from search"
+    },
+    {
+      "name": "googlegemini/chatfollow (exact)",
+      "status": "fail",
+      "errors": [
+        "Still generating"
+      ],
+      "data": {
+        "error": "Still generating",
+        "hint": "Gemini is still generating. Retry with waitOnly: true"
+      }
+    },
+    {
+      "name": "googlegemini/chatfollow (json)",
+      "status": "pass",
+      "errors": [],
+      "data": {
+        "conversationId": "7900f1d8de65fb88",
+        "query": "Reply with ONLY a JSON object and no other text. Keys: \"testId\" (string), \"phase\" (string). Set testId to \"JSON-GEMINI-FLOW-MQ47MBCH\" and phase to \"follow\".",
+        "model": "flash",
+        "modeTitle": "3.5 Flash",
+        "modeLabel": "Gemini Flash-Lite",
+        "answer": "{\n\"testId\": \"JSON-GEMINI-FLOW-MQ47MBCH\",\n\"phase\": \"follow\"\n}",
+        "turn": 3,
+        "loggedIn": true,
+        "anonymous": false,
+        "answerJson": {
+          "testId": "JSON-GEMINI-FLOW-MQ47MBCH",
+          "phase": "follow"
+        },
+        "answerFormat": "json"
+      }
+    },
+    {
+      "name": "googlegemini/chat (attachment)",
+      "status": "skip",
+      "skipReason": "--skip-attach"
+    },
+    {
+      "name": "googlegemini/search (recent)",
+      "status": "pass",
+      "errors": [],
+      "data": {
+        "query": null,
+        "mode": "recent",
+        "count": 5,
+        "results": [
+          {
+            "title": "Exact Response Confirmation",
+            "date": "Today"
+          },
+          {
+            "title": "Exact Response Confirmation",
+            "date": "Today"
+          },
+          {
+            "title": "Exact Response Confirmation",
+            "date": "Today"
+          },
+          {
+            "title": "Haru • JSON Object Response",
+            "date": "Today"
+          },
+          {
+            "title": "JSON Object Response",
+            "date": "Today"
+          }
+        ],
+        "resolveIds": false,
+        "resolveLimit": 0,
+        "viewport": {
+          "width": 893,
+          "height": 787,
+          "layout": "mobile"
+        },
+        "loggedIn": true,
+        "anonymous": false,
+        "hint": "Pass query * (or search a keyword) to populate conversationId and url fields."
+      }
+    },
+    {
+      "name": "googlegemini/search (* resolve)",
+      "status": "pass",
+      "errors": [],
+      "data": {
+        "query": null,
+        "mode": "recent",
+        "count": 5,
+        "results": [
+          {
+            "title": "Exact Response Confirmation",
+            "date": "Today",
+            "conversationId": "7900f1d8de65fb88",
+            "url": "https://gemini.google.com/app/7900f1d8de65fb88"
+          },
+          {
+            "title": "Exact Response Confirmation",
+            "date": "Today"
+          },
+          {
+            "title": "Exact Response Confirmation",
+            "date": "Today"
+          },
+          {
+            "title": "Haru • JSON Object Response",
+            "date": "Today"
+          },
+          {
+            "title": "JSON Object Response",
+            "date": "Today"
+          }
+        ],
+        "resolveIds": true,
+        "resolveLimit": 1,
+        "viewport": {
+          "width": 893,
+          "height": 787,
+          "layout": "mobile"
+        },
+        "loggedIn": true,
+        "anonymous": false,
+        "hint": "Use conversationId with googlegemini/chatfollow to continue a thread."
+      }
+    },
+    {
+      "name": "googlegemini/library",
+      "status": "pass",
+      "errors": [],
+      "data": {
+        "section": "all",
+        "empty": false,
+        "viewport": {
+          "width": 893,
+          "height": 787,
+          "layout": "mobile"
+        },
+        "loggedIn": true,
+        "anonymous": false,
+        "url": "https://gemini.google.com/library",
+        "count": 2,
+        "media": [
+          {
+            "title": "Generated image",
+            "thumbnailUrl": "https://lh3.googleusercontent.com/gg/AEir0wLnv14OldO2l6J7tjPeSJ2BMG42L7X5nVjJGXQ3sqkS24yBIj9WrBTtFuqgH-y2xmy2kHsLPAnEWiuJDAbUmfaWvLfJwhKmSppxZoCiPFunodPf91S1IjTtqu8cRCLWl8aVb1Y5-_qecEJi5YpEyb2RkEQqcvdv3g1dKfXjeSpgEv_OxhZsCHnLs0o31-ITag76HvWJA3U-8xILqEmhsKp8Q7HCpm_BgE5KUVUXTggLl0DEWRheFwGdyPidwq-eoZIrYVlTydVdS8GEV5o8t7btGX57puuhBiqeAJ-MorMEHMth8dqdsPWlz_dKvsga04z00_sVXGewkJxzB8VkdJTV=w320-h320-n-v1-rj",
+            "type": "media"
+          },
+          {
+            "title": "Generated image",
+            "thumbnailUrl": "https://lh3.googleusercontent.com/gg/AEir0wLW_mtULstpvHU-XDGbX4KkhE1KmrunqVDKn4q2IAvHG7JxrdJMzrH4k82hvRZwIKkPX6M89N9eXReYnUPFWX_6TDPm_s83JBZreHUoFf-BOofhdyrOKs8p8zuma_z5KIr0c1gttChxly9DVcW732ROL_8onhtBfSvu6Z34reeLc3dwDPXkpqFz6YCeqsg0eDuihAZ7Uu0Ljyp9-ZnbI43fH96jrYWBqpNs6axZdSM4NXZpOrlOgsScbdKEuD9qK0tcZjCnD6mcECvh_hwqpuoFQLp0QnsBKe4Bjb8AApbbXhvlrqabkx6QdWdE3s-rH0oX3JRhOicuJtHvPvkGiyQ=w320-h320-n-v1-rj",
+            "type": "media"
+          }
+        ],
+        "documents": []
+      }
+    },
+    {
+      "name": "googlegemini/branch",
+      "status": "pass",
+      "errors": [],
+      "data": {
+        "sourceConversationId": "7900f1d8de65fb88",
+        "conversationId": "effb64474b98b746",
+        "url": "https://gemini.google.com/app/effb64474b98b746",
+        "title": "Branch • Exact Response Confirmation",
+        "messageIndex": 2,
+        "messagesCopied": 6,
+        "snapshot": {
+          "turnCount": 6,
+          "userQueries": [
+            "Reply with exactly: OK-GEMINI-FLOW-MQ47MBCH",
+            "Reply with exactly: FOLLOW-GEMINI-FLOW-MQ47MBCH",
+            "Reply with ONLY a JSON object and no other text. Keys: \"testId\" (string), \"phase\" (string). Set testId to \"JSON-GEMINI-FLOW-MQ47MBCH\" and phase to \"follow\".",
+            "Reply with exactly: OK-GEMINI-FLOW-MQ47MBCH",
+            "Reply with exactly: FOLLOW-GEMINI-FLOW-MQ47MBCH",
+            "Reply with ONLY a JSON object and no other text. Keys: \"testId\" (string), \"phase\" (string). Set testId to \"JSON-GEMINI-FLOW-MQ47MBCH\" and phase to \"follow\"."
+          ],
+          "responses": [
+            "OK-GEMINI-FLOW-MQ47MBCH",
+            "FOLLOW-GEMINI-FLOW-MQ47MBCH",
+            "{\n\"testId\": \"JSON-GEMINI-FLOW-MQ47MBCH\",\n\"phase\": \"follow\"\n}",
+            "OK-GEMINI-FLOW-MQ47MBCH",
+            "FOLLOW-GEMINI-FLOW-MQ47MBCH",
+            "{\n\"testId\": \"JSON-GEMINI-FLOW-MQ47MBCH\",\n\"phase\": \"follow\"\n}"
+          ]
+        },
+        "viewport": {
+          "width": 893,
+          "height": 787,
+          "layout": "mobile"
+        },
+        "loggedIn": true,
+        "anonymous": false,
+        "hint": "Continue the branched thread with googlegemini/chatfollow effb64474b98b746"
+      },
+      "branchedConversationId": "effb64474b98b746"
+    },
+    {
+      "name": "googlegemini/chatfollow (branched)",
+      "status": "fail",
+      "errors": [
+        "Still generating"
+      ],
+      "data": {
+        "error": "Still generating",
+        "hint": "Gemini is still generating. Retry with waitOnly: true"
+      }
+    }
+  ]
+}

@@ -83,6 +83,11 @@ describe("gemini chat completion detection", () => {
     expect(h.modeLabelMatches("flash", "Flash")).toBe(true);
   });
 
+  test("modeLabelMatches accepts Flash-Lite for flash requests", () => {
+    expect(h.modeLabelMatches("flash", "Gemini Flash-Lite")).toBe(true);
+    expect(h.modeLabelMatches("flash", "Flash Lite")).toBe(true);
+  });
+
   test("getGeminiViewport classifies mobile below breakpoint", () => {
     Object.defineProperty(window, "innerWidth", {
       configurable: true,

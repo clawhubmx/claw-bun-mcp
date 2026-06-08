@@ -183,8 +183,11 @@ writeFileSync(
     };
   }
 
-  var beforeCount = h.getAssistantMessages().length;
-  var beforeText = h.getAssistantMessages().map(h.getAssistantText).join('\\n');
+  var existingMessages = h.getAssistantMessages();
+  var beforeCount = existingMessages.length;
+  var beforeText = beforeCount
+    ? (h.getAssistantText(existingMessages[beforeCount - 1]) || '')
+    : '';
 
   if (!h.setChatInput(effectiveQuery)) {
     return {
@@ -438,8 +441,11 @@ writeFileSync(
     };
   }
 
-  var beforeCount = h.getAssistantMessages().length;
-  var beforeText = h.getAssistantMessages().map(h.getAssistantText).join('\\n');
+  var existingMessages = h.getAssistantMessages();
+  var beforeCount = existingMessages.length;
+  var beforeText = beforeCount
+    ? (h.getAssistantText(existingMessages[beforeCount - 1]) || '')
+    : '';
 
   if (!h.setChatInput(effectiveQuery)) {
     return {
