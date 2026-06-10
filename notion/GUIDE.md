@@ -1,6 +1,9 @@
-# Notion AI 使用指南
+# Notion 使用指南
 
-通过 bun-browser 在浏览器中驱动 **Notion 侧边栏 AI 聊天**（`app.notion.com`）。
+通过 bun-browser 在浏览器中驱动 **Notion**（`app.notion.com`）：
+
+- **AI 聊天**：侧边栏 Chat / 全屏 `/ai` 页
+- **文章页**：`create-article` 新建子页面，`edit-article` 编辑已有页面
 
 ## 前置条件
 
@@ -42,6 +45,8 @@ flowchart LR
   health --> chat[notion/chat]
   chat --> search[notion/search]
   search --> follow[notion/chatfollow]
+  health --> create[notion/create-article]
+  create --> edit[notion/edit-article]
 ```
 
 ### 新建对话
@@ -108,24 +113,54 @@ bun-browser site notion/create-article "Notes" "Body text" --parent "https://app
 
 ### 编辑已有文章页
 
-参数顺序：`page`、`content` 为位置参数；`--title`、`--mode`、`--step` 为可选 flag。**content 写在 flag 前面**：
+在已有 Notion 页面更新标题和/或正文（URL 或 32 位 page id）：
 
 ```bash
+# 只改正文（保留原标题）
+bun-browser site notion/edit-article "37b773dd10fd80288a68c2fda0897975" "Updated lead."$'\n\n'"New second paragraph."
+
+# 同时改标题 + 正文（content 必须写在 --title 等 flag 前面）
 bun-browser site notion/edit-article "https://app.notion.com/p/37b773dd10fd80288a68c2fda0897975" "Updated lead."$'\n\n'"New second paragraph." --title "Weekly Recap (Updated)"
+
+# 在末尾追加段落（不改写已有正文）
+bun-browser site notion/edit-article "37b773dd10fd80288a68c2fda0897975" "One more paragraph." --mode append
 ```
 
-流程：打开目标页（若返回 `Navigation required` 则重跑）→ 更新标题（若提供 `--title` 且与当前不同）→ 替换正文（`mode=replace`，默认）或追加段落（`mode=append`）。
+**参数顺序（重要）**：bun-browser 按 meta 顺序填充位置参数：`page` → `content`。可选 flag（`--title`、`--mode`、`--step`）请放在 **content 之后**。若把 `--title` 写在 content 前面，content 可能被误当成标题。
+
+流程（通常 **1～2 次**重跑同一条命令）：
+
+1. 标签页未打开目标页 → 返回 `Navigation required` → 重跑
+2. 提供了 `--title` 且与当前标题不同 → 返回 `partialSuccess`（`nextStep: body`）→ 重跑写入正文
+3. 否则一次完成 → 返回 `edited: true`
+
+`mode=replace`（默认）会把多段正文写入第一个正文块（段间以空行连接）。`mode=append` 在现有正文后追加新段落。
 
 返回示例：
 
 ```json
 {
   "title": "Weekly Recap (Updated)",
+  "content": "Updated lead.\n\nNew second paragraph.",
+  "mode": "replace",
   "paragraphCount": 2,
-  "bodyPreview": ["Updated lead.", "New second paragraph."],
   "pageId": "37b773dd10fd80288a68c2fda0897975",
-  "url": "https://app.notion.com/p/37b773dd10fd80288a68c2fda0897975",
-  "edited": true
+  "url": "https://app.notion.com/p/Weekly-Recap-Updated-37b773dd10fd80288a68c2fda0897975",
+  "edited": true,
+  "step": "body"
+}
+```
+
+标题阶段返回：
+
+```json
+{
+  "partialSuccess": true,
+  "step": "title",
+  "nextStep": "body",
+  "title": "Weekly Recap (Updated)",
+  "hint": "Title updated. Re-run the same command to update the body.",
+  "action": "retry same command"
 }
 ```
 
@@ -161,7 +196,17 @@ bun-browser site notion/chat "Explain CRDTs" --model sonnet
   "models": [
     { "id": "auto", "title": "Auto", "available": true, "mapped": true },
     { "id": "sonnet-4-6", "title": "Sonnet 4.6", "available": true, "mapped": true },
-    { "id": "opus-4-7", "title": "Opus 4.7", "available": true, "mapped": true }
+    { "id": "opus-4-7", "title": "Opus 4.7", "available": true, "mapped": true },
+    { "id": "opus-4-8", "title": "Opus 4.8", "available": true, "mapped": true },
+    { "id": "fable-5", "title": "Fable 5", "available": true, "mapped": true },
+    { "id": "gemini-3-1-pro", "title": "Gemini 3.1 Pro", "available": true, "mapped": true },
+    { "id": "gpt-5-2", "title": "GPT-5.2", "available": true, "mapped": true },
+    { "id": "gpt-5-4", "title": "GPT-5.4", "available": true, "mapped": true },
+    { "id": "gpt-5-5", "title": "GPT-5.5", "available": true, "mapped": true },
+    { "id": "grok-4-3", "title": "Grok 4.3", "available": true, "mapped": true },
+    { "id": "grok-build-0-1", "title": "Grok Build 0.1", "available": true, "mapped": true },
+    { "id": "kimi-k2-6", "title": "Kimi K2.6", "available": true, "mapped": true },
+    { "id": "deepseek-v4-pro", "title": "DeepSeek V4 Pro", "available": true, "mapped": true }
   ]
 }
 ```
@@ -175,25 +220,27 @@ bun-browser site notion/chat "Explain CRDTs" --model sonnet
 | `models[].title` | Notion UI 中的显示名称 |
 | `models[].mapped` | `true` = 已在别名表中有对应项；`false` = 新模型，需在 `chat-helpers.js` 的 `MODE_ALIASES` 中补充 |
 
-#### 已知别名（`MODE_ALIASES`）
+#### 可用模型一览
 
-以下为当前内置别名。运行 `notion/models` 可获取你工作区**实际可用**的完整列表（可能与下表不同）。
+下表为 `notion/models` 返回的完整模型列表（slug id 由 UI 标题派生：`title.toLowerCase().replace(/[^a-z0-9]+/g, '-')`）。运行 `bun-browser site notion/models` 可确认你工作区**当前实际可用**的模型（Notion 可能随时间增减）。
 
-| 别名 / slug | UI 标题 |
-|-------------|---------|
-| `auto` | Auto |
-| `sonnet`, `sonnet-4.6` | Sonnet 4.6 |
-| `opus`, `opus-4.7` | Opus 4.7 |
-| `opus-4.8` | Opus 4.8 |
-| `fable`, `fable-5` | Fable 5 |
-| `gemini`, `gemini-3.1-pro` | Gemini 3.1 Pro |
-| `gpt-5.2` | GPT-5.2 |
-| `gpt-5.4` | GPT-5.4 |
-| `gpt-5.5` | GPT-5.5 |
-| `grok`, `grok-4.3` | Grok 4.3 |
-| `grok-build` | Grok Build 0.1 |
-| `kimi`, `kimi-k2.6` | Kimi K2.6 |
-| `deepseek`, `deepseek-v4-pro` | DeepSeek V4 Pro |
+| slug id | UI 标题 | `--model` 别名 |
+|---------|---------|----------------|
+| `auto` | Auto | `auto` |
+| `sonnet-4-6` | Sonnet 4.6 | `sonnet`, `sonnet-4.6` |
+| `opus-4-7` | Opus 4.7 | `opus`, `opus-4.7` |
+| `opus-4-8` | Opus 4.8 | `opus-4.8` |
+| `fable-5` | Fable 5 | `fable`, `fable-5` |
+| `gemini-3-1-pro` | Gemini 3.1 Pro | `gemini`, `gemini-3.1-pro` |
+| `gpt-5-2` | GPT-5.2 | `gpt-5.2` |
+| `gpt-5-4` | GPT-5.4 | `gpt-5.4` |
+| `gpt-5-5` | GPT-5.5 | `gpt-5.5` |
+| `grok-4-3` | Grok 4.3 | `grok`, `grok-4.3` |
+| `grok-build-0-1` | Grok Build 0.1 | `grok-build` |
+| `kimi-k2-6` | Kimi K2.6 | `kimi`, `kimi-k2.6` |
+| `deepseek-v4-pro` | DeepSeek V4 Pro | `deepseek`, `deepseek-v4-pro` |
+
+别名定义见 `chat-helpers.js` 的 `MODE_ALIASES`。`mapped: false` 的模型（Notion 新上、别名表尚未更新）仍可通过 **slug id** 或 **完整 UI 标题** 传给 `--model`。
 
 #### 列表可能不完整的情况
 
@@ -245,7 +292,7 @@ bun-browser site notion/chat --model sonnet --selectOnly true
 | `content` | 必填 | 正文（纯文本；段落以空行分隔） |
 | `title` | 保持原标题 | 新标题（省略则不修改） |
 | `mode` | `replace` | `replace`：替换正文；`append`：在末尾追加段落 |
-| `step` | `auto` | `auto` / `navigate` / `title` / `body` |
+| `step` | `auto` | `auto`：未打开目标页则 `navigate`，标题待改则 `title`，否则 `body`；也可显式指定某一阶段 |
 
 ### notion/chatfollow
 
@@ -264,6 +311,9 @@ bun-browser site notion/chat --model sonnet --selectOnly true
 | 找不到 AI 侧边栏 | `AI chat sidebar not found` | 打开工作区并确认 AI 已启用 |
 | 找不到 New chat | `New chat button not found` | `bun-browser site notion/health` |
 | 需要页面跳转 | `Navigation required` | 重跑同一条命令 |
+| 标题已写入、正文待填 | `partialSuccess` + `nextStep: body` | 重跑同一条命令 |
+| 无法设置标题/正文 | `Could not set page title` / `Could not set body text` | 等待页面加载完成后重跑 |
+| 找不到正文区 | `Body editor not found` | 确认页面已打开且为普通文章页，然后重跑 |
 | 仍在生成 | `Still generating` | 加 `--waitOnly true` 重试 |
 | 无回复 | `Empty response` | 刷新 Notion 标签页 |
 | 免费 AI 次数用尽 | `Run out of free AI responses` | 等待或升级计划 |
@@ -290,6 +340,8 @@ bun notion/scripts/inline-helpers.mjs
 
 ## 实现说明
 
+### AI 聊天
+
 - **登录检测**：`notion_user_id` + `notion_users` cookie（在任何 DOM/API 操作之前检查）
 - **侧边栏入口**：`[role=tab][aria-label="Chat"]`，或全屏聊天布局 `/ai`、`/chat`
 - **New chat**：`[aria-label="New chat"]`
@@ -301,3 +353,12 @@ bun notion/scripts/inline-helpers.mjs
 - **模型选择器定位**：聊天输入框附近的 `aria-haspopup="menu"` 按钮，或 Submit 按钮同区域的可见按钮
 - **回复完整性**：轮询 DOM 直至 `looksLikeFinalAnswer` 通过且文本稳定；进度行（`Thinking`、`Searching`、`Notion AI finished` 等）会被过滤
 - **异常检测**：`detectNotionPageAbnormal` 识别 `credits_exhausted`（含 `Run out of free AI responses`）、`rate_limit`、`submit_disabled`
+
+### 文章页（create-article / edit-article）
+
+- **标题编辑器**：`h1[contenteditable=true][role=textbox]`
+- **正文编辑器**：`[data-content-editable-leaf=true]`、`[contenteditable=true][placeholder]` 等 leaf 节点
+- **空白页创建**：点击 `[aria-label="New page"]` → 菜单选 **Page** → 等待导航完成后再填写
+- **写入方式**：空白页标题/正文优先 `document.execCommand('insertText')`；**已有页面**的标题与正文需 `beforeinput` + `insertReplacementText`（否则 DOM 改动不会持久化）
+- **同步写入**：每个填写阶段必须是一次短同步 eval（脚本内不能 `await sleep` 等待）；`create-article` 在 `open` 与 `title` 之间需在外部等待约 10 秒
+- **分步执行**：`step=auto` 每次 invocation 只做一个阶段（`open` / `title` / `body` 或 `navigate` / `title` / `body`），通过重跑同一条命令推进
