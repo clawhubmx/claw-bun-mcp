@@ -20,7 +20,7 @@ async function (args) {
      * and get-article adapters (via scripts/inject-cloudflare-module.mjs).
      */
     function installCloudflareHelpers() {
-      var VERSION = 4;
+      var VERSION = 6;
     
       if (globalThis.__cloudflareHelpers && globalThis.__cloudflareHelpers.version === VERSION) {
         return globalThis.__cloudflareHelpers;
@@ -347,6 +347,95 @@ async function (args) {
         return clicked;
       }
     
+      function findTurnstileWidgetContainer(doc) {
+        doc = doc || document;
+        var hidden = doc.querySelector('input[name="cf-turnstile-response"], input[id*="cf-chl-widget"][id*="_response"]');
+        if (hidden) {
+          var host =
+            hidden.closest('[style*="grid"]') ||
+            hidden.closest("#BbLB6, #challenge-stage, #cf-turnstile, .cf-turnstile") ||
+            hidden.parentElement;
+          if (host) {
+            var hr = host.getBoundingClientRect();
+            if (hr.width >= 40 && hr.height >= 20) return host;
+          }
+        }
+        return (
+          doc.querySelector("#BbLB6, #challenge-stage .cb-lb, .cf-turnstile, [data-sitekey]") ||
+          null
+        );
+      }
+    
+      function getTurnstilePhase(doc) {
+        doc = doc || document;
+        var text = getDocText(doc, 4000);
+        var hidden = doc.querySelector('input[name="cf-turnstile-response"], input[id*="cf-chl-widget"][id*="_response"]');
+        if (hidden && hidden.value) return "token_ready";
+        if (/verifying you are human/i.test(text)) return "verifying";
+        var container = findTurnstileWidgetContainer(doc);
+        if (container) {
+          var rect = container.getBoundingClientRect();
+          if (rect.height >= 36 && rect.width >= 120) return "interactive";
+        }
+        if (/performing security verification/i.test(text)) return "background";
+        if (isChallenge(doc)) return "loading";
+        return "cleared";
+      }
+    
+      function hasOrchestrateTurnstile(doc) {
+        doc = doc || document;
+        return !!doc.querySelector(
+          'input[name="cf-turnstile-response"], input[id*="cf-chl-widget"][id*="_response"]'
+        );
+      }
+    
+      function shouldAutoClickTurnstile(doc, widgets) {
+        doc = doc || document;
+        widgets = widgets || probeChallengeWidgets(doc);
+        var phase = widgets.turnstilePhase || getTurnstilePhase(doc);
+        if (phase === "verifying" || phase === "token_ready" || phase === "background") return false;
+        return phase === "interactive" || widgets.cbCheckbox > 0 || widgets.pageIframes > 0;
+      }
+    
+      function tryClickOrchestrateContainer(doc) {
+        doc = doc || document;
+        var container = findTurnstileWidgetContainer(doc);
+        if (!container) return false;
+        var rect = container.getBoundingClientRect();
+        if (rect.width < 40 || rect.height < 12) return false;
+        try {
+          if (typeof container.scrollIntoView === "function") {
+            container.scrollIntoView({ behavior: "auto", block: "center", inline: "center" });
+          }
+        } catch (e) {}
+        var coords = {
+          x: rect.left + Math.min(24, rect.width * 0.12),
+          y: rect.top + rect.height / 2,
+        };
+        var target = container;
+        try {
+          var hit = doc.elementFromPoint(coords.x, coords.y);
+          if (hit) target = hit;
+        } catch (e2) {}
+        dispatchPointer(target, "pointerdown", coords, 1);
+        dispatchPointer(target, "mousedown", coords, 1);
+        dispatchPointer(target, "pointerup", coords, 0);
+        dispatchPointer(target, "mouseup", coords, 0);
+        try {
+          target.dispatchEvent(
+            new MouseEvent("click", {
+              bubbles: true,
+              cancelable: true,
+              view: window,
+              clientX: coords.x,
+              clientY: coords.y,
+              button: 0,
+            })
+          );
+        } catch (e3) {}
+        return true;
+      }
+    
       function tryClickTurnstileIframes(doc) {
         doc = doc || document;
         var iframes = doc.querySelectorAll(
@@ -399,13 +488,25 @@ async function (args) {
           'iframe[src*="challenges.cloudflare"], iframe[src*="turnstile"], iframe[title*="Widget"], iframe[title*="challenge"], iframe[title*="Challenge"]'
         );
         var text = getDocText(doc, 4000);
+        var orchestrateContainer = hasOrchestrateTurnstile(doc);
+        var pageIframes = iframes.length;
+        var turnstilePhase = getTurnstilePhase(doc);
         return {
           turnstile: !!doc.querySelector(".cf-turnstile, [data-sitekey]"),
           cbLb: queryAllDeep(doc, ".cb-lb").length,
           cbCheckbox: queryAllDeep(doc, ".cb-lb input[type='checkbox'], #challenge-stage input[type='checkbox']").length,
-          iframes: iframes.length,
+          iframes: pageIframes,
+          pageIframes: pageIframes,
+          orchestrateContainer: orchestrateContainer,
+          needsCdpClick: orchestrateContainer && pageIframes === 0,
+          turnstilePhase: turnstilePhase,
+          turnstileResponse: (function () {
+            var el = doc.querySelector('input[name="cf-turnstile-response"], input[id*="cf-chl-widget"][id*="_response"]');
+            return el && el.value ? true : false;
+          })(),
           verifyHumanText: /verify you are human/i.test(text),
           securityVerificationText: /performing security verification/i.test(text),
+          verifyingHumanText: /verifying you are human/i.test(text),
           justAMomentTitle: /^just a moment/i.test(((doc.querySelector("title") && doc.querySelector("title").textContent) || "").trim()),
         };
       }
@@ -429,6 +530,7 @@ async function (args) {
         ];
     
         clicked = tryClickTurnstileIframes(doc) || clicked;
+        clicked = tryClickOrchestrateContainer(doc) || clicked;
         clicked = tryClickByHumanLabel(doc) || clicked;
     
         for (var i = 0; i < selectors.length; i++) {
@@ -460,15 +562,16 @@ async function (args) {
         var attempt = Number(opts.attempt) || 1;
         var html = document.documentElement ? document.documentElement.outerHTML : "";
         var challenge = detectChallenge(document, html);
+        var widgets = probeChallengeWidgets(document);
         var clicked = false;
-        if (challenge && autoClick && attempt % 3 === 1) {
+        if (challenge && autoClick && attempt % 3 === 1 && shouldAutoClickTurnstile(document, widgets)) {
           clicked = tryClickChallenge(document);
         }
         return {
           cleared: !challenge,
           challenge: challenge,
           clicked: clicked,
-          widgets: probeChallengeWidgets(document),
+          widgets: widgets,
           url: location.href,
           title: document.title,
           attempt: attempt,
@@ -512,6 +615,24 @@ async function (args) {
     
         while (Date.now() - start < maxWaitMs()) {
           attempts++;
+          var widgets = probeChallengeWidgets(document);
+          if (widgets.turnstileResponse) {
+            await sleep(Math.min(pollMs * 4, 3000));
+            var afterToken = detectChallenge(document, document.documentElement ? document.documentElement.outerHTML : "");
+            if (!afterToken) {
+              return {
+                cleared: true,
+                waitedMs: Date.now() - start,
+                attempts: attempts,
+                url: location.href,
+                held: held,
+                clicked: clicked,
+                widgets: widgets,
+                viaTurnstileToken: true,
+              };
+            }
+          }
+    
           var challenge = detectChallenge(document, document.documentElement ? document.documentElement.outerHTML : "");
           if (!challenge) {
             return {
@@ -564,7 +685,9 @@ async function (args) {
           hint: still
             ? still.reason && isHoldChallengeReason(still.reason)
               ? "Press-and-hold challenge did not clear. Open the URL in Chrome, hold the verification button ~10s, or run: bun-browser site cloudflare/wait <url> holdMs=12000 maxWaitMs=45000"
-              : "Cloudflare challenge did not clear in time. Open the URL in Chrome and complete verification, or run: bun-browser site cloudflare/wait <url>"
+              : probeChallengeWidgets(document).needsCdpClick
+                ? "Orchestrate Turnstile checkbox is in closed shadow DOM — page clicks cannot reach it. Run: bun cloudflare/wait-host.mjs --url <url> maxWaitMs=45000"
+                : "Cloudflare challenge did not clear in time. Open the URL in Chrome and complete verification, or run: bun cloudflare/wait-host.mjs --url <url>"
             : null,
         };
       }
@@ -599,6 +722,10 @@ async function (args) {
         tryHoldChallenge: tryHoldChallenge,
         tryClickByHumanLabel: tryClickByHumanLabel,
         tryClickTurnstileIframes: tryClickTurnstileIframes,
+        tryClickOrchestrateContainer: tryClickOrchestrateContainer,
+        getTurnstilePhase: getTurnstilePhase,
+        shouldAutoClickTurnstile: shouldAutoClickTurnstile,
+        findTurnstileWidgetContainer: findTurnstileWidgetContainer,
         tryClickChallenge: tryClickChallenge,
         waitForClearance: waitForClearance,
         fetchAfterClearance: fetchAfterClearance,
