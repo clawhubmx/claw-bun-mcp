@@ -32,10 +32,33 @@ async function(args) {
     };
   }
 
-  var text = (document.body && (document.body.innerText || document.body.textContent) || '').slice(-12000);
+  var root = document.querySelector('.layout-chat') || document.body || document;
+  var labels = root.querySelectorAll('[aria-label]');
+  var hasCopyResponse = false;
+  var hasFeedback = false;
+  for (var i = 0; i < labels.length; i++) {
+    var label = (labels[i].getAttribute('aria-label') || '').trim().toLowerCase();
+    if (label === 'copy response') hasCopyResponse = true;
+    if (label === 'share positive feedback' || label === 'share negative feedback') hasFeedback = true;
+  }
+  if (hasCopyResponse && hasFeedback) {
+    return { busy: false, loggedIn: true, helpersLoaded: false, url: location.href };
+  }
+
+  var text = (root.innerText || root.textContent || '').slice(-5000);
   if (/Notion AI finished/i.test(text)) {
     return { busy: false, loggedIn: true, helpersLoaded: false, url: location.href };
   }
-  var busy = /exploring|computing|thought|thinking|searching|reading files|running tool|generating|writing file|loading web page|loaded web page|called function|searched the web|browsing|fetch(?:ing)? (?:top|recent)/i.test(text);
+  var lines = text.split('\n').slice(-30);
+  var busy = false;
+  for (var j = 0; j < lines.length; j++) {
+    var line = String(lines[j] || '').trim();
+    if (!line) continue;
+    if (/^Notion AI finished\.?$/i.test(line)) continue;
+    if (/^(Searching|Reading|Browsing|Fetching|Thinking|Running|Exploring|Computing|Thought|Searching the web|Reading files|Running tool|Generating|Writing file|Loading web page|Loaded web page|Called function|Searched the web|Browsing|Fetching top|Fetching recent|\d+s)\b/i.test(line)) {
+      busy = true;
+      break;
+    }
+  }
   return { busy: busy, loggedIn: true, helpersLoaded: false, url: location.href };
 }

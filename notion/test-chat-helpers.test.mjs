@@ -212,12 +212,37 @@ describe("notion chat helpers", () => {
     expect(h.isGenerating()).toBe(true);
   });
 
-  test("isChatInProgress detects in-flight agent work", () => {
+  test("isGenerating is false when reply actions are visible", () => {
     const h = installHelpers();
     document.body.innerHTML =
       '<div class="layout-chat">' +
-      "prompt ".repeat(1200) +
-      "Searching the web</div>" +
+      "Searching the web\n".repeat(20) +
+      "Thought\nSearched the web\n" +
+      "Final report complete." +
+      '<button aria-label="Copy response"></button>' +
+      '<button aria-label="Share positive feedback"></button>' +
+      '<button aria-label="Share negative feedback"></button>' +
+      '</div>';
+    expect(h.isGenerating()).toBe(false);
+    expect(h.isChatInProgress()).toBe(false);
+  });
+
+  test("isGenerating ignores stale agent progress outside recent lines", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      ("Searching the web\nThought\nSearched the web\n").repeat(10) +
+      ("Completed report line with enough detail.\n").repeat(40) +
+      '</div>' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Completed report line with enough detail.</div></div>';
+    expect(h.isGenerating()).toBe(false);
+    expect(h.isChatInProgress()).toBe(false);
+  });
+
+  test("isChatInProgress detects in-flight agent work", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">Searching the web\nThinking</div>' +
       '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Let me check the latest chain TVL rankings.</div></div>';
     expect(h.isChatInProgress()).toBe(true);
   });
@@ -233,7 +258,8 @@ describe("notion chat helpers", () => {
   test("getChatActivityText keeps tail where agent status appears", () => {
     const h = installHelpers();
     document.body.innerHTML = `
-      <div class="layout-chat">${"prompt ".repeat(1200)}TAIL Loaded web page: api.llama.fi/chains</div>
+      <div class="layout-chat">${"prompt ".repeat(1200)}
+Loaded web page: api.llama.fi/chains</div>
     `;
     expect(h.getChatActivityText(200)).toContain("Loaded web page");
     expect(h.getChatActivityText(200)).not.toMatch(/^prompt/);

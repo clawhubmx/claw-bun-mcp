@@ -1,0 +1,13 @@
+{
+  "id": "e1e11763-75ae-4bf7-bfd9-0ea4b5565085",
+  "success": true,
+  "data": {
+    "result": {
+      "bestLen": 377,
+      "answer": "Arkham Intel (https://intel.arkm.com/) could not be loaded via web crawling — it returns a 504 timeout. I cannot directly query entity labels, transfer flows, or visualizers. The analysis below relies on DefiLlama Hacks, SlowMist Hacked, PeckShield/CertiK alerts, and public security reports. For full Arkham coverage, you'll need to manually query addresses at intel.arkm.com.",
+      "conv": "https://app.notion.com/chat?t=37b773dd10fd805bad0800a99f63aca5&wfv=chat"
+    },
+    "tab": "8100",
+    "seq": 41980
+  }
+}

@@ -675,6 +675,16 @@ async function(args) {
     return false;
   }
 
+  function isAgentStatusLine(line) {
+    var t = String(line || '').trim();
+    if (!t) return false;
+    if (isProgressLine(t)) return true;
+    if (/^(Exploring|Computing|Thought|Thinking|Searching the web|Reading files|Running tool|Generating|Writing file|Loading web page|Loaded web page|Called function|Searched the web|Browsing|Fetching top|Fetching recent)\b/i.test(t)) {
+      return true;
+    }
+    return false;
+  }
+
   function cleanAssistantText(text) {
     if (!text) return '';
     var cleaned = String(text).replace(/^Notion AI finished\.?\s*/i, '').trim();
@@ -718,28 +728,50 @@ async function(args) {
     return text.slice(-maxLen);
   }
 
-  function isGenerating() {
-    if (isUrlTrustPromptVisible()) return true;
-    var text = getChatActivityText(12000);
-    if (/Notion AI finished/i.test(text)) return false;
-    if (/exploring|computing|thought|thinking|searching|reading files|running tool|generating|writing file|loading web page|loaded web page|called function|searched the web|browsing|fetch(?:ing)? (?:top|recent)/i.test(text)) {
-      return true;
+  function getRecentChatLines(maxLines) {
+    maxLines = maxLines || 30;
+    var lines = getChatActivityText(5000).split('\n');
+    if (lines.length <= maxLines) return lines;
+    return lines.slice(lines.length - maxLines);
+  }
+
+  function hasActiveAgentStatusLines() {
+    var lines = getRecentChatLines(30);
+    for (var i = 0; i < lines.length; i++) {
+      if (isAgentStatusLine(lines[i])) return true;
     }
     return false;
   }
 
+  function hasAssistantReplyActions() {
+    var root = document.querySelector('.layout-chat') || document;
+    var nodes = root.querySelectorAll('[aria-label]');
+    var hasCopyResponse = false;
+    var hasFeedback = false;
+    for (var i = 0; i < nodes.length; i++) {
+      var label = (nodes[i].getAttribute('aria-label') || '').trim().toLowerCase();
+      if (label === 'copy response') hasCopyResponse = true;
+      if (label === 'share positive feedback' || label === 'share negative feedback') hasFeedback = true;
+    }
+    return hasCopyResponse && hasFeedback;
+  }
+
+  function isGenerating() {
+    if (isUrlTrustPromptVisible()) return true;
+    if (hasAssistantReplyActions()) return false;
+    var text = getChatActivityText(12000);
+    if (/Notion AI finished/i.test(text)) return false;
+    return hasActiveAgentStatusLines();
+  }
+
   function isChatInProgress() {
+    if (hasAssistantReplyActions()) return false;
     if (isGenerating()) return true;
     var msgs = getAssistantMessages();
     if (!msgs.length) return false;
     var latest = getAssistantText(msgs[msgs.length - 1]);
     if (looksLikeInProgressAnswer(latest)) return true;
-    if (latest && !looksLikeFinalAnswer(latest)) {
-      var activity = getChatActivityText(6000);
-      if (/exploring|computing|thought|thinking|searching|reading files|running tool|generating|writing file|loading web page|loaded web page|called function|searched the web|browsing|fetch(?:ing)? (?:top|recent)/i.test(activity)) {
-        return true;
-      }
-    }
+    if (latest && !looksLikeFinalAnswer(latest) && hasActiveAgentStatusLines()) return true;
     return false;
   }
 
