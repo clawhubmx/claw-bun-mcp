@@ -3,7 +3,7 @@
  * Inlined by googlegemini/chat.js and googlegemini/chatfollow.js — keep in sync.
  */
 function installGeminiChatHelpers() {
-  var HELPERS_VERSION = 15;
+  var HELPERS_VERSION = 16;
   var GEMINI_MOBILE_BREAKPOINT = 768;
 
   var GEMINI_CHAT_WAIT_MS = 15 * 60 * 1000;
@@ -207,6 +207,7 @@ function installGeminiChatHelpers() {
     if (!text) return false;
     var t = stripRolePrefix(String(text).trim());
     if (!t || isProgressText(t)) return false;
+    if (detectGeminiTransientError(t)) return false;
     var json = extractJsonBlock(t);
     if (json) {
       try {
@@ -491,6 +492,82 @@ function installGeminiChatHelpers() {
     };
   }
 
+  function detectGeminiTransientError(text) {
+    if (!text) return false;
+    var t = String(text).trim();
+    if (!t) return false;
+    if (detectRateLimitText(t)) return false;
+    if (/something went wrong/i.test(t)) return true;
+    if (/check (your )?internet/i.test(t)) return true;
+    if (/connection (issue|problem|error|lost)/i.test(t) && /try again|retry/i.test(t)) return true;
+    if (/couldn.?t (complete|finish|generate|process)/i.test(t)) return true;
+    if (/failed to generate/i.test(t)) return true;
+    if (/an error occurred/i.test(t) && /try again/i.test(t)) return true;
+    if (/error\s*\(?\d{3,5}\)?/i.test(t) && /something went wrong|try again/i.test(t)) return true;
+    return false;
+  }
+
+  function findGeminiTryAgainButton(rootEl) {
+    var scopes = [];
+    if (rootEl) scopes.push(rootEl);
+    else {
+      scopes.push(document);
+      var latest = getAssistantMessages().slice(-1)[0];
+      if (latest) scopes.push(latest);
+    }
+    var candidates = [];
+    var seen = {};
+    for (var s = 0; s < scopes.length; s++) {
+      var nodes = Array.prototype.slice.call(scopes[s].querySelectorAll(
+        'button, [role="button"], a'
+      ));
+      for (var i = 0; i < nodes.length; i++) {
+        var el = nodes[i];
+        if (seen[el]) continue;
+        seen[el] = true;
+        var label = el.getAttribute('aria-label') || '';
+        var text = (el.innerText || el.textContent || '').trim();
+        if (/^try again$/i.test(text) || /^try again$/i.test(label)) {
+          candidates.push(el);
+        }
+      }
+    }
+    return findVisibleElement(candidates);
+  }
+
+  async function clickGeminiTryAgain(rootEl) {
+    var btn = findGeminiTryAgainButton(rootEl);
+    if (!btn) return { ok: false };
+    clickElement(btn);
+    await sleep(400);
+    return { ok: true };
+  }
+
+  function buildGeminiTransientError(sourceText, rootEl) {
+    var message = '';
+    if (sourceText) {
+      var lines = String(sourceText).split('\n').map(function(line) {
+        return line.trim();
+      }).filter(Boolean);
+      for (var i = 0; i < lines.length; i++) {
+        if (detectGeminiTransientError(lines[i]) ||
+          /something went wrong|check.*internet/i.test(lines[i])) {
+          message = lines[i];
+          break;
+        }
+      }
+      if (!message) message = lines.slice(0, 4).join(' ');
+    }
+    return {
+      error: 'Gemini generation failed',
+      kind: 'transient_error',
+      message: message || 'Something went wrong — Gemini could not complete the response.',
+      hint: 'Transient Gemini error (the internet message is often misleading). Retry the same command or click Try again in the browser.',
+      action: 'retry same command',
+      canRetry: !!findGeminiTryAgainButton(rootEl)
+    };
+  }
+
   function getLatestAssistantResponseText() {
     var messages = getAssistantMessages();
     var latest = messages[messages.length - 1];
@@ -508,6 +585,12 @@ function installGeminiChatHelpers() {
       if (detectGeminiWorkspaceRequired(sources[i])) {
         return buildGeminiWorkspaceError(sources[i]);
       }
+      if (detectGeminiTransientError(sources[i])) {
+        return buildGeminiTransientError(sources[i], rootEl);
+      }
+    }
+    if (rootEl && findGeminiTryAgainButton(rootEl)) {
+      return buildGeminiTransientError(text || getLatestAssistantResponseText(), rootEl);
     }
     return null;
   }
@@ -2364,6 +2447,9 @@ function installGeminiChatHelpers() {
     getLastWaitAbnormal: getLastWaitAbnormal,
     detectGeminiPageAbnormal: detectGeminiPageAbnormal,
     detectGeminiWorkspaceRequired: detectGeminiWorkspaceRequired,
+    detectGeminiTransientError: detectGeminiTransientError,
+    findGeminiTryAgainButton: findGeminiTryAgainButton,
+    clickGeminiTryAgain: clickGeminiTryAgain,
     detectGeminiResponseBlock: detectGeminiResponseBlock,
     getLatestAssistantResponseText: getLatestAssistantResponseText,
     checkGeminiAnswerBlocked: checkGeminiAnswerBlocked,

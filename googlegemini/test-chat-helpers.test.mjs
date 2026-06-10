@@ -228,6 +228,41 @@ describe("gemini chat completion detection", () => {
     expect(block.message).toContain("connect Google Workspace");
   });
 
+  test("detectGeminiTransientError catches Something went wrong messages", () => {
+    expect(
+      h.detectGeminiTransientError("Something went wrong. Try again later."),
+    ).toBe(true);
+    expect(
+      h.detectGeminiTransientError(
+        "Check your internet connection and try again.",
+      ),
+    ).toBe(true);
+    expect(h.detectGeminiTransientError("Hello world.")).toBe(false);
+  });
+
+  test("looksLikeFinalAnswer rejects transient Gemini failure text", () => {
+    expect(h.looksLikeFinalAnswer("Something went wrong")).toBe(false);
+    expect(
+      h.looksLikeFinalAnswer("Check your internet connection and try again."),
+    ).toBe(false);
+  });
+
+  test("detectGeminiResponseBlock catches transient error with Try again button", () => {
+    document.body.innerHTML = `
+      <model-response>
+        <message-content>Something went wrong</message-content>
+        <button>Try again</button>
+      </model-response>
+    `;
+    const el = document.querySelector("model-response");
+    const block = h.detectGeminiResponseBlock("Something went wrong", el);
+    expect(block).not.toBeNull();
+    expect(block.kind).toBe("transient_error");
+    expect(block.error).toBe("Gemini generation failed");
+    expect(block.canRetry).toBe(true);
+    expect(block.action).toBe("retry same command");
+  });
+
   test("checkGeminiAnswerBlocked reads latest model-response text", () => {
     document.body.innerHTML = `
       <model-response>

@@ -83,6 +83,14 @@ writeFileSync(
     var waitedAnswer = await h.waitForAssistantAnswer(pollBeforeCount, pollBeforeText, waitOpts);
     if (!waitedAnswer) {
       var waitAbnormal = h.getLastWaitAbnormal();
+      if (waitAbnormal && waitAbnormal.kind === 'transient_error') {
+        var waitRetryClick = await h.clickGeminiTryAgain();
+        if (waitRetryClick.ok) {
+          waitedAnswer = await h.waitForAssistantAnswer(pollBeforeCount, pollBeforeText, waitOpts);
+          if (!waitedAnswer) waitAbnormal = h.getLastWaitAbnormal();
+        }
+      }
+      if (!waitedAnswer) {
       if (waitAbnormal) return waitAbnormal;
       var waitWorkspaceBlock = h.checkGeminiAnswerBlocked('');
       if (waitWorkspaceBlock) return waitWorkspaceBlock;
@@ -98,6 +106,7 @@ writeFileSync(
         hint: 'Gemini returned no content. The page DOM may have changed.',
         action: 'bun-browser open https://gemini.google.com/'
       };
+      }
     }
     var waitWorkspaceAnswerBlock = h.checkGeminiAnswerBlocked(waitedAnswer);
     if (waitWorkspaceAnswerBlock) return waitWorkspaceAnswerBlock;
@@ -223,21 +232,30 @@ writeFileSync(
 
   if (!answer) {
     var answerAbnormal = h.getLastWaitAbnormal();
-    if (answerAbnormal) return answerAbnormal;
-    var workspaceBlock = h.checkGeminiAnswerBlocked('');
-    if (workspaceBlock) return workspaceBlock;
-    if (h.wasLastWaitPending()) {
+    if (answerAbnormal && answerAbnormal.kind === 'transient_error') {
+      var retryClick = await h.clickGeminiTryAgain();
+      if (retryClick.ok) {
+        answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
+        if (!answer) answerAbnormal = h.getLastWaitAbnormal();
+      }
+    }
+    if (!answer) {
+      if (answerAbnormal) return answerAbnormal;
+      var workspaceBlock = h.checkGeminiAnswerBlocked('');
+      if (workspaceBlock) return workspaceBlock;
+      if (h.wasLastWaitPending()) {
+        return {
+          error: 'Still generating',
+          hint: 'Gemini is still generating (streaming/thinking). Retry with waitOnly: true',
+          action: 'retry with waitOnly: true'
+        };
+      }
       return {
-        error: 'Still generating',
-        hint: 'Gemini is still generating (streaming/thinking). Retry with waitOnly: true',
-        action: 'retry with waitOnly: true'
+        error: 'Empty response',
+        hint: 'Gemini returned no content. The page DOM may have changed.',
+        action: 'bun-browser open https://gemini.google.com/'
       };
     }
-    return {
-      error: 'Empty response',
-      hint: 'Gemini returned no content. The page DOM may have changed.',
-      action: 'bun-browser open https://gemini.google.com/'
-    };
   }
 
   var workspaceAnswerBlock = h.checkGeminiAnswerBlocked(answer);
@@ -359,6 +377,14 @@ writeFileSync(
     var waitedAnswer = await h.waitForAssistantAnswer(pollBeforeCount, pollBeforeText, waitOpts);
     if (!waitedAnswer) {
       var waitAbnormal = h.getLastWaitAbnormal();
+      if (waitAbnormal && waitAbnormal.kind === 'transient_error') {
+        var waitRetryClick = await h.clickGeminiTryAgain();
+        if (waitRetryClick.ok) {
+          waitedAnswer = await h.waitForAssistantAnswer(pollBeforeCount, pollBeforeText, waitOpts);
+          if (!waitedAnswer) waitAbnormal = h.getLastWaitAbnormal();
+        }
+      }
+      if (!waitedAnswer) {
       if (waitAbnormal) return waitAbnormal;
       var waitWorkspaceBlock = h.checkGeminiAnswerBlocked('');
       if (waitWorkspaceBlock) return waitWorkspaceBlock;
@@ -374,6 +400,7 @@ writeFileSync(
         hint: 'Gemini returned no content.',
         action: 'bun-browser open https://gemini.google.com/'
       };
+      }
     }
     var waitWorkspaceAnswerBlock = h.checkGeminiAnswerBlocked(waitedAnswer);
     if (waitWorkspaceAnswerBlock) return waitWorkspaceAnswerBlock;
@@ -480,21 +507,30 @@ writeFileSync(
   var answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
   if (!answer) {
     var answerAbnormal = h.getLastWaitAbnormal();
-    if (answerAbnormal) return answerAbnormal;
-    var workspaceBlock = h.checkGeminiAnswerBlocked('');
-    if (workspaceBlock) return workspaceBlock;
-    if (h.wasLastWaitPending()) {
+    if (answerAbnormal && answerAbnormal.kind === 'transient_error') {
+      var retryClick = await h.clickGeminiTryAgain();
+      if (retryClick.ok) {
+        answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
+        if (!answer) answerAbnormal = h.getLastWaitAbnormal();
+      }
+    }
+    if (!answer) {
+      if (answerAbnormal) return answerAbnormal;
+      var workspaceBlock = h.checkGeminiAnswerBlocked('');
+      if (workspaceBlock) return workspaceBlock;
+      if (h.wasLastWaitPending()) {
+        return {
+          error: 'Still generating',
+          hint: 'Gemini is still generating. Retry with waitOnly: true',
+          action: 'retry with waitOnly: true'
+        };
+      }
       return {
-        error: 'Still generating',
-        hint: 'Gemini is still generating. Retry with waitOnly: true',
-        action: 'retry with waitOnly: true'
+        error: 'Empty response',
+        hint: 'Gemini returned no content.',
+        action: 'bun-browser open https://gemini.google.com/app/' + conversationId
       };
     }
-    return {
-      error: 'Empty response',
-      hint: 'Gemini returned no content.',
-      action: 'bun-browser open https://gemini.google.com/app/' + conversationId
-    };
   }
 
   var workspaceAnswerBlock = h.checkGeminiAnswerBlocked(answer);
