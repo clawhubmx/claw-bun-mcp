@@ -123,6 +123,14 @@ describe("notion chat helpers", () => {
 
   test("matchPromptRejected detects Notion prompt rejection message", () => {
     const h = installHelpers();
+    expect(
+      h.matchPromptRejected("44 steps\nThought\nAn error occurred, please try again\nShare feedback"),
+    ).toEqual({
+      error: "An error occurred, please try again.",
+      kind: "prompt_rejected",
+      hint: "Notion AI rejected the prompt. Retry with a shorter or simpler prompt.",
+      action: "retry with a revised prompt",
+    });
     expect(h.matchPromptRejected("An error occurred, please try again.")).toEqual({
       error: "An error occurred, please try again.",
       kind: "prompt_rejected",
@@ -147,6 +155,151 @@ describe("notion chat helpers", () => {
   test("looksLikeFinalAnswer rejects Notion prompt rejection message", () => {
     const h = installHelpers();
     expect(h.looksLikeFinalAnswer("An error occurred, please try again.")).toBe(false);
+  });
+
+  test("findUrlTrustAllowButton prefers Allow always over Allow once", () => {
+    const h = installHelpers();
+    document.body.innerHTML = `
+      <div id="trust-card">
+        <div>Do you trust api.llama.fi?</div>
+        <div>Allowing Notion AI to access untrusted URLs can be a security risk.</div>
+        <button>Allow once</button>
+        <button id="allow-always">Allow always</button>
+        <button>Reject</button>
+      </div>
+    `;
+    expect(h.isUrlTrustPromptVisible()).toBe(true);
+    expect(h.acceptUrlTrustPrompt()).toBe(true);
+    expect(h.getLastUrlTrustAccepts()[0]?.label).toBe("allow always");
+  });
+
+  test("drainUrlTrustPrompts accepts multiple trust dialogs", async () => {
+    const h = installHelpers();
+    document.body.innerHTML = `
+      <div class="trust-a">
+        <div>Do you trust api.llama.fi?</div>
+        <button>Allow once</button>
+      </div>
+    `;
+    const result = await h.drainUrlTrustPrompts({ maxRounds: 3, pauseMs: 0 });
+    expect(result.accepted).toBe(1);
+    expect(result.prompts[0]?.domain).toContain("api.llama.fi");
+  });
+
+  test("acceptUrlTrustPrompt clicks Allow once when trust dialog is visible", () => {
+    const h = installHelpers();
+    document.body.innerHTML = `
+      <div>Do you trust api.llama.fi?</div>
+      <div>Allowing Notion AI to access untrusted URLs can be a security risk.</div>
+      <button id="allow-once">Allow once</button>
+      <button>Reject</button>
+    `;
+    expect(h.isUrlTrustPromptVisible()).toBe(true);
+    expect(h.acceptUrlTrustPrompt()).toBe(true);
+  });
+
+  test("acceptUrlTrustPrompt ignores pages without trust dialog", () => {
+    const h = installHelpers();
+    document.body.innerHTML = '<button>Allow once</button>';
+    expect(h.isUrlTrustPromptVisible()).toBe(false);
+    expect(h.acceptUrlTrustPrompt()).toBe(false);
+  });
+
+  test("isGenerating detects Computing agent status", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' + "prompt ".repeat(1200) + "Computing\nThought</div>";
+    expect(h.isGenerating()).toBe(true);
+  });
+
+  test("isChatInProgress detects in-flight agent work", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      "prompt ".repeat(1200) +
+      "Searching the web</div>" +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Let me check the latest chain TVL rankings.</div></div>';
+    expect(h.isChatInProgress()).toBe(true);
+  });
+
+  test("isChatInProgress is false when reply looks final", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">Notion AI finished.</div>' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Here is the completed answer with enough detail.</div></div>';
+    expect(h.isChatInProgress()).toBe(false);
+  });
+
+  test("getChatActivityText keeps tail where agent status appears", () => {
+    const h = installHelpers();
+    document.body.innerHTML = `
+      <div class="layout-chat">${"prompt ".repeat(1200)}TAIL Loaded web page: api.llama.fi/chains</div>
+    `;
+    expect(h.getChatActivityText(200)).toContain("Loaded web page");
+    expect(h.getChatActivityText(200)).not.toMatch(/^prompt/);
+    expect(h.isGenerating()).toBe(true);
+  });
+
+  test("looksLikeThoughtBlock rejects reasoning stubs", () => {
+    const h = installHelpers();
+    expect(h.looksLikeThoughtBlock("The user wants me to perform a massive on-chain security research task. I need to:")).toBe(true);
+    expect(h.looksLikeThoughtBlock("Fetch top 10 Ethereum protocols")).toBe(true);
+    expect(h.looksLikeThoughtBlock("| Chain | Protocol | Risk |")).toBe(false);
+  });
+
+  test("looksLikeInProgressAnswer rejects short agent intro stubs", () => {
+    const h = installHelpers();
+    expect(
+      h.looksLikeInProgressAnswer(
+        "I\u2019ll start by pulling the public DefiLlama data for top chains and recent hacks, then assess what Arkham Intel data is actually reachable without authentication.",
+      ),
+    ).toBe(true);
+    expect(
+      h.looksLikeInProgressAnswer(
+        "I'll start by pulling the public DefiLlama data for top chains and recent hacks, then assess what Arkham Intel data is actually reachable without authentication.",
+      ),
+    ).toBe(true);
+    expect(h.looksLikeInProgressAnswer("Let me check the latest chain TVL rankings.")).toBe(
+      true,
+    );
+    expect(
+      h.looksLikeInProgressAnswer(
+        "I see you\u2019ve queued two distinct assignments. I\u2019ll prioritize the DeFi exploit-hunter task (latest) and begin the DefiLlama \u2192 Arkham workflow now.",
+      ),
+    ).toBe(true);
+  });
+
+  test("looksLikeInProgressAnswer accepts completed multi-block answers", () => {
+    const h = installHelpers();
+    const completed =
+      "I'll start by pulling DefiLlama data.\n\n| Chain | Protocol | Risk |\n| Ethereum | Aave | Low |\n\nNo major exploitable contracts found today.";
+    expect(h.looksLikeInProgressAnswer(completed)).toBe(false);
+    expect(h.looksLikeFinalAnswer(completed)).toBe(true);
+  });
+
+  test("getAssistantAnswerSince joins all new assistant blocks", () => {
+    const h = installHelpers();
+    document.body.innerHTML = `
+      <div class="notion-text-block"><div class="content-editable-leaf-rtl">First block.</div></div>
+      <div class="notion-text-block"><div class="content-editable-leaf-rtl">Second block.</div></div>
+      <div class="notion-text-block"><div class="content-editable-leaf-rtl">Third block.</div></div>
+    `;
+    const messages = h.getAssistantMessages();
+    expect(messages).toHaveLength(3);
+    expect(h.getAssistantAnswerSince(messages, 1)).toBe("Second block.\nThird block.");
+    expect(h.getAssistantAnswerSince(messages, 0)).toBe(
+      "First block.\nSecond block.\nThird block.",
+    );
+  });
+
+  test("isUrlTrustPromptVisible finds dialog below long page prefix", () => {
+    const h = installHelpers();
+    const prefix = "sidebar ".repeat(2000);
+    document.body.innerHTML =
+      prefix +
+      '<div id="trust-card"><div>Do you trust api.llama.fi?</div><button>Allow once</button></div>';
+    expect(h.isUrlTrustPromptVisible()).toBe(true);
+    expect(h.acceptUrlTrustPrompt()).toBe(true);
   });
 
   test("detectNotionPageAbnormal ignores chat transcript mentioning rate limits", () => {

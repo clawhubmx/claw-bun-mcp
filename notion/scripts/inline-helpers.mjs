@@ -39,6 +39,20 @@ const loginBlock = `  var loginBlock = (function() {
   if (loginBlock) return loginBlock;
 
 `;
+const trustDrainBlock = "  await h.drainUrlTrustPrompts();\n";
+const busyTabGuardBlock = `  var allowBusyTab = parseBool(args.allowBusyTab, false);
+  if (newChat && !waitOnly && !allowBusyTab && h.isChatInProgress()) {
+    return {
+      error: 'Tab busy',
+      kind: 'chat_in_progress',
+      hint: 'This Notion tab is still generating a reply. Open a fresh tab for a new prompt instead of restarting this one.',
+      action: 'bun-browser open https://app.notion.com/ai --tab new',
+      conversationId: h.getConversationId(),
+      generating: true
+    };
+  }
+
+`;
 const attachBlock = `  var attachPlan = h.prepareNotionAttachmentPlan(args);
   if (attachPlan.error) {
     return { error: attachPlan.error, hint: attachPlan.hint || attachPlan.error };
@@ -73,6 +87,7 @@ writeFileSync(
     "newChat": {"required": false, "description": "Start a new chat thread (default true)"},
     "selectOnly": {"required": false, "description": "Only open chat and select model; do not submit a prompt (default false)"},
     "waitOnly": {"required": false, "description": "Skip new chat / submit; only poll for the in-flight assistant reply (default false)"},
+    "allowBusyTab": {"required": false, "description": "Allow newChat on a tab that is still generating (default false; use a new tab instead)"},
     "maxWaitMs": {"required": false, "description": "Override max wait in ms (default 15m)"},
     "graceWaitMs": {"required": false, "description": "Optional extra wait in ms added on top of maxWaitMs"},
     "context": {"required": false, "description": "Optional text prepended to the prompt"},
@@ -104,6 +119,7 @@ writeFileSync(
 
 ${loginBlock}
 ${installBlock}
+  h.resetUrlTrustState();
   var waitOpts = h.buildWaitOpts(args);
   var waitOnly = parseBool(args.waitOnly, false);
   var newChat = parseBool(args.newChat, true);
@@ -111,8 +127,7 @@ ${installBlock}
 
   var accessBlock = h.detectNotionPageAbnormal();
   if (accessBlock) return accessBlock;
-
-  if (selectOnly) {
+${trustDrainBlock}${busyTabGuardBlock}  if (selectOnly) {
     if (newChat) {
       var selectNav = await h.ensureNewChatView();
       if (!selectNav.ok) {
@@ -153,7 +168,7 @@ ${installBlock}
   }
 
   if (waitOnly) {
-    var existing = h.getAssistantMessages();
+${trustDrainBlock}    var existing = h.getAssistantMessages();
     var pollBeforeCount = Math.max(0, existing.length - 1);
     var pollBeforeText = pollBeforeCount < existing.length ? h.getAssistantText(existing[pollBeforeCount]) : '';
     var waitedAnswer = await h.waitForAssistantAnswer(pollBeforeCount, pollBeforeText, waitOpts);
@@ -173,6 +188,8 @@ ${installBlock}
       conversationId: h.getConversationId(),
       waitOnly: true
     };
+    var waitTrust = h.getLastUrlTrustAccepts();
+    if (waitTrust.length) waitOut.urlTrustAccepted = waitTrust;
     var waitJson = h.parseAnswerJson(waitedAnswer);
     if (waitJson) { waitOut.answerJson = waitJson; waitOut.answerFormat = 'json'; }
     return waitOut;
@@ -190,7 +207,7 @@ ${installBlock}
       }
       return nav;
     }
-  }
+${trustDrainBlock}  }
 
   if (!h.getChatInput()) {
     return {
@@ -209,7 +226,7 @@ ${installBlock}
       action: 'bun-browser site notion/models'
     };
   }
-
+${trustDrainBlock}
 ${attachBlock}
   var beforeCount = h.getAssistantMessages().length;
   var beforeText = h.getAssistantMessages().map(h.getAssistantText).join('\\n');
@@ -218,7 +235,7 @@ ${attachBlock}
     return { error: 'Chat input not found', hint: 'Could not fill the Notion AI prompt box.', action: 'bun-browser open https://app.notion.com/ai' };
   }
   await h.sleep(400);
-
+${trustDrainBlock}
   accessBlock = h.detectNotionPageAbnormal();
   if (accessBlock) return accessBlock;
 
@@ -227,7 +244,7 @@ ${attachBlock}
     if (accessBlock) return accessBlock;
     return { error: 'Submit button not found', hint: 'Could not find the Notion AI send button.', action: 'bun-browser open https://app.notion.com/ai' };
   }
-
+${trustDrainBlock}
   var answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
   if (!answer) {
     var answerAbnormal = h.getLastWaitAbnormal();
@@ -247,6 +264,8 @@ ${attachBlock}
     conversationId: h.getConversationId()
   };
   if (attachedItems) out.attachments = attachedItems;
+  var trustAccepted = h.getLastUrlTrustAccepts();
+  if (trustAccepted.length) out.urlTrustAccepted = trustAccepted;
   var answerJson = h.parseAnswerJson(answer);
   if (answerJson) { out.answerJson = answerJson; out.answerFormat = 'json'; }
   return out;`
@@ -290,6 +309,7 @@ writeFileSync(
 
 ${loginBlock}
 ${installBlock}
+  h.resetUrlTrustState();
   function parseBool(val, defaultVal) {
     if (val === undefined || val === null || val === '') return defaultVal;
     if (val === true || val === false) return val;
@@ -310,9 +330,9 @@ ${installBlock}
 
   var accessBlock = h.detectNotionPageAbnormal();
   if (accessBlock) return accessBlock;
-
+${trustDrainBlock}
   if (waitOnly) {
-    var existing = h.getAssistantMessages();
+${trustDrainBlock}    var existing = h.getAssistantMessages();
     var pollBeforeCount = Math.max(0, existing.length - 1);
     var pollBeforeText = pollBeforeCount < existing.length ? h.getAssistantText(existing[pollBeforeCount]) : '';
     var waitedAnswer = await h.waitForAssistantAnswer(pollBeforeCount, pollBeforeText, waitOpts);
@@ -324,7 +344,7 @@ ${installBlock}
       if (waitAbnormal) return waitAbnormal;
       return { error: 'Empty response', hint: 'Notion AI returned no content.', action: 'bun-browser open https://app.notion.com/' };
     }
-    return {
+    var waitFollowOut = {
       query: args.query,
       conversationId: conversationId,
       model: modeId,
@@ -334,6 +354,9 @@ ${installBlock}
       url: location.href,
       waitOnly: true
     };
+    var waitFollowTrust = h.getLastUrlTrustAccepts();
+    if (waitFollowTrust.length) waitFollowOut.urlTrustAccepted = waitFollowTrust;
+    return waitFollowOut;
   }
 
   var nav = await h.navigateToConversation(conversationId);
@@ -348,7 +371,7 @@ ${installBlock}
     }
     return nav;
   }
-
+${trustDrainBlock}
   if (!h.getChatInput()) {
     return { error: 'Chat input not found', hint: 'Conversation page did not expose the Notion AI input.', action: nav.action || ('bun-browser open ' + h.buildConversationUrl(conversationId)) };
   }
@@ -362,7 +385,7 @@ ${installBlock}
       action: 'bun-browser site notion/models'
     };
   }
-
+${trustDrainBlock}
 ${attachBlock}
   var beforeCount = h.getAssistantMessages().length;
   var beforeText = h.getAssistantMessages().map(h.getAssistantText).join('\\n');
@@ -371,7 +394,7 @@ ${attachBlock}
     return { error: 'Chat input not found', hint: 'Could not fill the Notion AI prompt box.', action: 'bun-browser open ' + h.buildConversationUrl(conversationId) };
   }
   await h.sleep(400);
-
+${trustDrainBlock}
   accessBlock = h.detectNotionPageAbnormal();
   if (accessBlock) return accessBlock;
 
@@ -380,7 +403,7 @@ ${attachBlock}
     if (accessBlock) return accessBlock;
     return { error: 'Submit button not found', hint: 'Could not find the Notion AI send button.', action: 'bun-browser open ' + h.buildConversationUrl(conversationId) };
   }
-
+${trustDrainBlock}
   var answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
   if (!answer) {
     var answerAbnormal = h.getLastWaitAbnormal();
@@ -402,6 +425,8 @@ ${attachBlock}
     url: location.href
   };
   if (attachedItems) out.attachments = attachedItems;
+  var followTrustAccepted = h.getLastUrlTrustAccepts();
+  if (followTrustAccepted.length) out.urlTrustAccepted = followTrustAccepted;
   var answerJson = h.parseAnswerJson(answer);
   if (answerJson) { out.answerJson = answerJson; out.answerFormat = 'json'; }
   return out;`

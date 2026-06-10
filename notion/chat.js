@@ -9,6 +9,7 @@
     "newChat": {"required": false, "description": "Start a new chat thread (default true)"},
     "selectOnly": {"required": false, "description": "Only open chat and select model; do not submit a prompt (default false)"},
     "waitOnly": {"required": false, "description": "Skip new chat / submit; only poll for the in-flight assistant reply (default false)"},
+    "allowBusyTab": {"required": false, "description": "Allow newChat on a tab that is still generating (default false; use a new tab instead)"},
     "maxWaitMs": {"required": false, "description": "Override max wait in ms (default 15m)"},
     "graceWaitMs": {"required": false, "description": "Optional extra wait in ms added on top of maxWaitMs"},
     "context": {"required": false, "description": "Optional text prepended to the prompt"},
@@ -59,7 +60,7 @@ async function(args) {
 
 
   var h = (function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 12;
+  var HELPERS_VERSION = 22;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 500;
 
@@ -99,6 +100,7 @@ async function(args) {
 
   var lastWaitPending = false;
   var lastWaitAbnormal = null;
+  var lastUrlTrustAccepts = [];
 
   function sleep(ms) {
     return new Promise(function(resolve) { setTimeout(resolve, ms); });
@@ -175,6 +177,109 @@ async function(args) {
       }
     }
     return null;
+  }
+
+  function isUrlTrustPromptContext(text) {
+    return /do you trust\b|untrusted urls?\b|access untrusted urls?\b/i.test(String(text || ''));
+  }
+
+  function getUrlTrustButtonLabel(btn) {
+    return String((btn && (btn.innerText || btn.textContent || btn.getAttribute('aria-label'))) || '')
+      .trim()
+      .toLowerCase();
+  }
+
+  function urlTrustButtonPriority(label) {
+    if (label === 'allow always') return 3;
+    if (label === 'allow once') return 2;
+    if (label === 'allow') return 1;
+    return 0;
+  }
+
+  function isUrlTrustAllowLabel(label) {
+    return urlTrustButtonPriority(label) > 0;
+  }
+
+  function findUrlTrustHost(btn) {
+    var container = btn && btn.parentElement;
+    for (var depth = 0; depth < 12 && container; depth++) {
+      var ctxt = container.innerText || container.textContent || '';
+      if (isUrlTrustPromptContext(ctxt)) return container;
+      container = container.parentElement;
+    }
+    return null;
+  }
+
+  function getUrlTrustPromptInfo(btn) {
+    btn = btn || findUrlTrustAllowButton();
+    if (!btn) return null;
+    var host = findUrlTrustHost(btn);
+    var text = host ? (host.innerText || host.textContent || '') : '';
+    var urlMatch = text.match(/https?:\/\/[^\s]+/i);
+    var domainMatch = text.match(/do you trust[`'"\s]*([^`'"?\n]+)/i);
+    return {
+      label: getUrlTrustButtonLabel(btn),
+      url: urlMatch ? urlMatch[0] : null,
+      domain: domainMatch ? String(domainMatch[1]).trim().replace(/[`'"]/g, '') : null
+    };
+  }
+
+  function findUrlTrustAllowButton() {
+    var els = Array.prototype.slice.call(document.querySelectorAll('[role=button], button'));
+    var best = null;
+    var bestPriority = 0;
+    for (var i = 0; i < els.length; i++) {
+      var label = getUrlTrustButtonLabel(els[i]);
+      if (!isUrlTrustAllowLabel(label)) continue;
+      if (!findUrlTrustHost(els[i])) continue;
+      var priority = urlTrustButtonPriority(label);
+      if (priority > bestPriority) {
+        best = els[i];
+        bestPriority = priority;
+      }
+    }
+    return best;
+  }
+
+  function isUrlTrustPromptVisible() {
+    return !!findUrlTrustAllowButton();
+  }
+
+  function acceptUrlTrustPrompt() {
+    if (!isUrlTrustPromptVisible()) return false;
+    var btn = findUrlTrustAllowButton();
+    if (!btn) return false;
+    var info = getUrlTrustPromptInfo(btn);
+    clickElement(btn);
+    if (info) lastUrlTrustAccepts.push(info);
+    return true;
+  }
+
+  async function drainUrlTrustPrompts(opts) {
+    opts = opts || {};
+    var maxRounds = opts.maxRounds == null ? 16 : Math.max(1, Number(opts.maxRounds));
+    var pauseMs = opts.pauseMs == null ? 350 : Math.max(0, Number(opts.pauseMs));
+    var accepted = [];
+    var lastKey = '';
+    for (var round = 0; round < maxRounds; round++) {
+      if (!isUrlTrustPromptVisible()) break;
+      var info = getUrlTrustPromptInfo();
+      var key = info ? String(info.url || info.domain || info.label || '') : '';
+      if (key && key === lastKey) break;
+      if (!acceptUrlTrustPrompt()) break;
+      if (info) accepted.push(info);
+      lastKey = key;
+      await sleep(pauseMs);
+    }
+    return { accepted: accepted.length, prompts: accepted };
+  }
+
+  function getLastUrlTrustAccepts() {
+    return lastUrlTrustAccepts.slice();
+  }
+
+  function resetUrlTrustState() {
+    lastUrlTrustAccepts = [];
   }
 
   function getVisiblePageText(maxLen) {
@@ -362,7 +467,7 @@ async function(args) {
   function matchPromptRejected(text) {
     var t = String(text || '').trim();
     if (!t) return null;
-    if (/^an error occurred,?\s*please try again\.?$/i.test(t)) {
+    if (/\ban error occurred,?\s*please try again\.?\b/i.test(t)) {
       return {
         error: 'An error occurred, please try again.',
         kind: 'prompt_rejected',
@@ -380,7 +485,7 @@ async function(args) {
     if (creditsBlock) return creditsBlock;
     var rateBlock = matchRateLimit(text);
     if (rateBlock) return rateBlock;
-    var rejectBlock = matchPromptRejected(text);
+    var rejectBlock = matchPromptRejected(text) || matchPromptRejected(getChatActivityText(6000));
     if (rejectBlock) return rejectBlock;
     if (!opts.skipSubmitCheck) {
       var submit = getSubmitButton();
@@ -558,7 +663,8 @@ async function(args) {
   }
 
   function getAssistantMessages() {
-    var leaves = Array.prototype.slice.call(document.querySelectorAll('.content-editable-leaf-rtl'));
+    var root = document.querySelector('.layout-chat') || document;
+    var leaves = Array.prototype.slice.call(root.querySelectorAll('.content-editable-leaf-rtl'));
     var out = [];
     for (var i = 0; i < leaves.length; i++) {
       var text = (leaves[i].innerText || leaves[i].textContent || '').trim();
@@ -594,10 +700,84 @@ async function(args) {
     return cleanAssistantText(el.innerText || el.textContent || '');
   }
 
+  function getAssistantAnswerSince(messages, beforeCount) {
+    if (!messages || messages.length <= beforeCount) return '';
+    var parts = [];
+    for (var i = beforeCount; i < messages.length; i++) {
+      var part = getAssistantText(messages[i]);
+      if (!part || looksLikeThoughtBlock(part)) continue;
+      parts.push(part);
+    }
+    return parts.join('\n').trim();
+  }
+
+  function normalizeAnswerText(text) {
+    return String(text || '')
+      .replace(/[\u2018\u2019\u02BC\u0060\u00B4]/g, "'")
+      .replace(/\u00A0/g, ' ');
+  }
+
+  function getChatActivityText(maxLen) {
+    maxLen = maxLen || 12000;
+    var chatRoot = document.querySelector('.layout-chat');
+    var text = chatRoot
+      ? (chatRoot.innerText || chatRoot.textContent || '')
+      : getVisiblePageText(maxLen);
+    if (text.length <= maxLen) return text;
+    return text.slice(-maxLen);
+  }
+
   function isGenerating() {
-    var text = getVisiblePageText(4000);
+    if (isUrlTrustPromptVisible()) return true;
+    var text = getChatActivityText(12000);
     if (/Notion AI finished/i.test(text)) return false;
-    if (/thinking|searching|reading files|running tool|generating/i.test(text)) return true;
+    if (/exploring|computing|thought|thinking|searching|reading files|running tool|generating|writing file|loading web page|loaded web page|called function|searched the web|browsing|fetch(?:ing)? (?:top|recent)/i.test(text)) {
+      return true;
+    }
+    return false;
+  }
+
+  function isChatInProgress() {
+    if (isGenerating()) return true;
+    var msgs = getAssistantMessages();
+    if (!msgs.length) return false;
+    var latest = getAssistantText(msgs[msgs.length - 1]);
+    if (looksLikeInProgressAnswer(latest)) return true;
+    if (latest && !looksLikeFinalAnswer(latest)) {
+      var activity = getChatActivityText(6000);
+      if (/exploring|computing|thought|thinking|searching|reading files|running tool|generating|writing file|loading web page|loaded web page|called function|searched the web|browsing|fetch(?:ing)? (?:top|recent)/i.test(activity)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function looksLikeThoughtBlock(text) {
+    var t = normalizeAnswerText(text).trim();
+    if (!t) return false;
+    if (/^The user wants me to\b/i.test(t)) return true;
+    if (/^I already have some data:/i.test(t)) return true;
+    if (/^From web\.loadPage on\b/i.test(t)) return true;
+    if (/^Fetch (?:recent|top)\b/i.test(t)) return true;
+    if (/^Wait, in the first turn\b/i.test(t)) return true;
+    if (/^Let me scroll back\b/i.test(t)) return true;
+    if (/^Actually in the first turn\b/i.test(t)) return true;
+    if (/^I need to:\s*$/i.test(t)) return true;
+    return false;
+  }
+
+  function looksLikeInProgressAnswer(text) {
+    var t = normalizeAnswerText(text).trim();
+    if (!t) return false;
+    if (looksLikeThoughtBlock(t)) return true;
+    if (t.length > 450) return false;
+    if (/\|.+\|/.test(t) || /```/.test(t)) return false;
+    if (/^I see you(?:'ve| have)\b/i.test(t)) return true;
+    var intro = /^I'll\b|^I will\b|^Let me\b|^I'm going to\b|^Give me a (moment|minute|second)\b|^Starting\b|^Working on\b|^First,?\s+I'll\b/i;
+    if (intro.test(t)) return true;
+    if (/\bI'll prioritize\b/i.test(t)) return true;
+    if (/\bbegin the\b.*\bworkflow\b/i.test(t)) return true;
+    if (/\b(prioritize|workflow now|queued)\b/i.test(t) && t.length < 320) return true;
     return false;
   }
 
@@ -607,6 +787,7 @@ async function(args) {
     if (!t || isProgressLine(t)) return false;
     if (matchCreditsExhausted(t)) return false;
     if (matchPromptRejected(t)) return false;
+    if (looksLikeInProgressAnswer(t)) return false;
     if (t.length < 2) return false;
     if (/^Auto$/i.test(t)) return false;
     if (/[.!?]/.test(t) && /[A-Za-z]{2,}/.test(t)) return true;
@@ -646,12 +827,20 @@ async function(args) {
     var answer = '';
     var stableRounds = 0;
     var lastText = '';
+    var lastMessageCount = beforeCount;
     var sawInFlight = false;
     lastWaitPending = false;
     lastWaitAbnormal = null;
 
     while (Date.now() < deadline) {
       await sleep(pollMs);
+      await drainUrlTrustPrompts({ maxRounds: 4, pauseMs: 250 });
+      var chatRejectBlock = matchPromptRejected(getChatActivityText(6000));
+      if (chatRejectBlock) {
+        lastWaitAbnormal = chatRejectBlock;
+        lastWaitPending = false;
+        return '';
+      }
       var abnormal = detectNotionPageAbnormal({ skipSubmitCheck: true });
       if (abnormal) {
         lastWaitAbnormal = abnormal;
@@ -660,13 +849,17 @@ async function(args) {
       }
 
       var messages = getAssistantMessages();
-      var latest = messages[messages.length - 1];
       var generating = isGenerating();
       var pending = generating || messages.length <= beforeCount;
       if (pending) sawInFlight = true;
 
-      var rawText = latest ? getAssistantText(latest) : '';
-      answer = rawText ? cleanAssistantText(rawText) : '';
+      answer = getAssistantAnswerSince(messages, beforeCount);
+      if (messages.length > lastMessageCount) {
+        lastMessageCount = messages.length;
+        stableRounds = 0;
+        lastText = '';
+        sawInFlight = true;
+      }
 
       var answerCreditsBlock = matchCreditsExhausted(answer);
       if (answerCreditsBlock) {
@@ -682,7 +875,7 @@ async function(args) {
         return '';
       }
 
-      if (latest && messages.length > beforeCount && !generating) {
+      if (messages.length > beforeCount && !generating && !looksLikeInProgressAnswer(answer)) {
         var answerRateBlock = matchRateLimit(answer);
         if (answerRateBlock && !looksLikeFinalAnswer(answer)) {
           lastWaitAbnormal = answerRateBlock;
@@ -700,7 +893,7 @@ async function(args) {
         }
       }
 
-      if (/Notion AI finished/i.test(getVisiblePageText(3000)) && looksLikeFinalAnswer(answer)) {
+      if (/Notion AI finished/i.test(getChatActivityText(6000)) && looksLikeFinalAnswer(answer)) {
         lastWaitPending = false;
         return answer;
       }
@@ -2016,6 +2209,13 @@ async function(args) {
     getConversationId: getConversationId,
     buildConversationUrl: buildConversationUrl,
     dismissCookieBanner: dismissCookieBanner,
+    isUrlTrustPromptVisible: isUrlTrustPromptVisible,
+    isUrlTrustPromptContext: isUrlTrustPromptContext,
+    getUrlTrustPromptInfo: getUrlTrustPromptInfo,
+    acceptUrlTrustPrompt: acceptUrlTrustPrompt,
+    drainUrlTrustPrompts: drainUrlTrustPrompts,
+    getLastUrlTrustAccepts: getLastUrlTrustAccepts,
+    resetUrlTrustState: resetUrlTrustState,
     matchCreditsExhausted: matchCreditsExhausted,
     matchRateLimit: matchRateLimit,
     matchPromptRejected: matchPromptRejected,
@@ -2030,7 +2230,12 @@ async function(args) {
     clickSubmit: clickSubmit,
     getAssistantMessages: getAssistantMessages,
     getAssistantText: getAssistantText,
+    getAssistantAnswerSince: getAssistantAnswerSince,
+    getChatActivityText: getChatActivityText,
+    looksLikeInProgressAnswer: looksLikeInProgressAnswer,
+    looksLikeThoughtBlock: looksLikeThoughtBlock,
     isGenerating: isGenerating,
+    isChatInProgress: isChatInProgress,
     looksLikeFinalAnswer: looksLikeFinalAnswer,
     wasLastWaitPending: wasLastWaitPending,
     getLastWaitAbnormal: getLastWaitAbnormal,
@@ -2082,6 +2287,7 @@ async function(args) {
   return api;
   })();
 
+  h.resetUrlTrustState();
   var waitOpts = h.buildWaitOpts(args);
   var waitOnly = parseBool(args.waitOnly, false);
   var newChat = parseBool(args.newChat, true);
@@ -2089,6 +2295,18 @@ async function(args) {
 
   var accessBlock = h.detectNotionPageAbnormal();
   if (accessBlock) return accessBlock;
+  await h.drainUrlTrustPrompts();
+  var allowBusyTab = parseBool(args.allowBusyTab, false);
+  if (newChat && !waitOnly && !allowBusyTab && h.isChatInProgress()) {
+    return {
+      error: 'Tab busy',
+      kind: 'chat_in_progress',
+      hint: 'This Notion tab is still generating a reply. Open a fresh tab for a new prompt instead of restarting this one.',
+      action: 'bun-browser open https://app.notion.com/ai --tab new',
+      conversationId: h.getConversationId(),
+      generating: true
+    };
+  }
 
   if (selectOnly) {
     if (newChat) {
@@ -2131,6 +2349,7 @@ async function(args) {
   }
 
   if (waitOnly) {
+  await h.drainUrlTrustPrompts();
     var existing = h.getAssistantMessages();
     var pollBeforeCount = Math.max(0, existing.length - 1);
     var pollBeforeText = pollBeforeCount < existing.length ? h.getAssistantText(existing[pollBeforeCount]) : '';
@@ -2151,6 +2370,8 @@ async function(args) {
       conversationId: h.getConversationId(),
       waitOnly: true
     };
+    var waitTrust = h.getLastUrlTrustAccepts();
+    if (waitTrust.length) waitOut.urlTrustAccepted = waitTrust;
     var waitJson = h.parseAnswerJson(waitedAnswer);
     if (waitJson) { waitOut.answerJson = waitJson; waitOut.answerFormat = 'json'; }
     return waitOut;
@@ -2168,6 +2389,7 @@ async function(args) {
       }
       return nav;
     }
+  await h.drainUrlTrustPrompts();
   }
 
   if (!h.getChatInput()) {
@@ -2187,6 +2409,7 @@ async function(args) {
       action: 'bun-browser site notion/models'
     };
   }
+  await h.drainUrlTrustPrompts();
 
   var attachPlan = h.prepareNotionAttachmentPlan(args);
   if (attachPlan.error) {
@@ -2214,6 +2437,7 @@ async function(args) {
     return { error: 'Chat input not found', hint: 'Could not fill the Notion AI prompt box.', action: 'bun-browser open https://app.notion.com/ai' };
   }
   await h.sleep(400);
+  await h.drainUrlTrustPrompts();
 
   accessBlock = h.detectNotionPageAbnormal();
   if (accessBlock) return accessBlock;
@@ -2223,6 +2447,7 @@ async function(args) {
     if (accessBlock) return accessBlock;
     return { error: 'Submit button not found', hint: 'Could not find the Notion AI send button.', action: 'bun-browser open https://app.notion.com/ai' };
   }
+  await h.drainUrlTrustPrompts();
 
   var answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
   if (!answer) {
@@ -2243,6 +2468,8 @@ async function(args) {
     conversationId: h.getConversationId()
   };
   if (attachedItems) out.attachments = attachedItems;
+  var trustAccepted = h.getLastUrlTrustAccepts();
+  if (trustAccepted.length) out.urlTrustAccepted = trustAccepted;
   var answerJson = h.parseAnswerJson(answer);
   if (answerJson) { out.answerJson = answerJson; out.answerFormat = 'json'; }
   return out;
