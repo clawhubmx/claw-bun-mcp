@@ -2,4 +2,10 @@
 !data/.gitkeep
 deploy.yml
 */examples/
+*/notion/example/kimi26.*
+*/notion/example/hunt-kimi26.*
+*/notion/example/hunt.txt
+grok/example/hunt.txt
+grok/example/test2.txt
+grok/example/test1.txt
 */node_modules/
