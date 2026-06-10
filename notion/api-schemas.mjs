@@ -112,6 +112,29 @@ export function validateChatResponse(data, opts = {}) {
   }
   if (!isNonEmptyString(data.modeLabel)) errors.push("modeLabel must be a non-empty string");
 
+  if (data.attachments != null) {
+    if (!Array.isArray(data.attachments)) {
+      errors.push("attachments must be an array when present");
+    } else {
+      for (let i = 0; i < data.attachments.length; i++) {
+        const item = data.attachments[i];
+        if (!isObject(item)) {
+          errors.push(`attachments[${i}] must be an object`);
+          continue;
+        }
+        if (item.type !== "file" && item.type !== "page") {
+          errors.push(`attachments[${i}].type must be "file" or "page"`);
+        }
+        if (item.type === "file" && !isNonEmptyString(item.fileName)) {
+          errors.push(`attachments[${i}].fileName required for file attachments`);
+        }
+        if (item.type === "page" && !isNonEmptyString(item.title)) {
+          errors.push(`attachments[${i}].title required for page attachments`);
+        }
+      }
+    }
+  }
+
   if (opts.expectExact && opts.exactText) {
     const answer = String(data.answer).trim();
     if (answer !== opts.exactText) {
@@ -155,6 +178,36 @@ export function validateSearchResponse(data) {
   if (data.error) return { ok: false, errors: [String(data.error)], data };
   if (!Array.isArray(data.results)) errors.push("results must be an array");
   if (typeof data.count !== "number") errors.push("count must be a number");
+  return { ok: errors.length === 0, errors, data };
+}
+
+export const NOTION_BEHAVIOR_MODE_ALIASES = {
+  default: "Default",
+  ask: "Ask",
+  plan: "Plan",
+  research: "Research",
+};
+
+export function validateBehaviorModes(data) {
+  const errors = [];
+  if (!isObject(data)) return { ok: false, errors: ["response must be an object"] };
+  if (data.error) return { ok: false, errors: [String(data.error)], data };
+  if (data.defaultModeId !== "default") errors.push('defaultModeId must be "default"');
+  if (!isNonEmptyString(data.current)) errors.push("current must be a non-empty string");
+  if (!Array.isArray(data.modes)) errors.push("modes must be an array");
+  if (Array.isArray(data.modes)) {
+    if (!data.modes.length) errors.push("modes must not be empty");
+    for (let i = 0; i < data.modes.length; i++) {
+      const row = data.modes[i];
+      if (!isObject(row)) errors.push(`modes[${i}] must be an object`);
+      else {
+        if (!isNonEmptyString(row.id)) errors.push(`modes[${i}].id required`);
+        if (!isNonEmptyString(row.title)) errors.push(`modes[${i}].title required`);
+        if (row.available !== true) errors.push(`modes[${i}].available must be true`);
+        if (typeof row.mapped !== "boolean") errors.push(`modes[${i}].mapped must be boolean`);
+      }
+    }
+  }
   return { ok: errors.length === 0, errors, data };
 }
 

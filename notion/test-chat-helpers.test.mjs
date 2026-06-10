@@ -112,6 +112,15 @@ describe("notion chat helpers", () => {
     }
   });
 
+  test("resolveNotionBehaviorMode maps behavior aliases", () => {
+    const h = installHelpers();
+    expect(h.resolveNotionBehaviorMode("ask")).toBe("Ask");
+    expect(h.resolveNotionBehaviorMode("research")).toBe("Research");
+    for (const [alias, title] of Object.entries(h.BEHAVIOR_MODE_ALIASES)) {
+      expect(h.resolveNotionBehaviorMode(alias)).toBe(title);
+    }
+  });
+
   test("modelTitleToId derives stable slugs", () => {
     const h = installHelpers();
     expect(h.modelTitleToId("Sonnet 4.6")).toBe("sonnet-4-6");
@@ -123,6 +132,270 @@ describe("notion chat helpers", () => {
     const h = installHelpers();
     expect(h.isModelTitleMapped("Auto")).toBe(true);
     expect(h.isModelTitleMapped("Brand New Model 9.9")).toBe(false);
+  });
+
+  test("isLikelyModelMenuTitle rejects chat history sidebar entries", () => {
+    const h = installHelpers();
+    expect(h.isLikelyModelMenuTitle("Search news on protest\n1h")).toBe(false);
+    expect(h.isLikelyModelMenuTitle("Sonnet 4.6")).toBe(true);
+  });
+
+  test("findModelPickerSurface prefers in-viewport model menu near picker", () => {
+    const dom = new JSDOM(
+      `<!DOCTYPE html><html><body>
+        <button id="picker">Sonnet 4.6</button>
+        <div id="sidebar" role="menu">
+          <div role="menuitem">Search news on protest\n1h</div>
+          <div role="menuitem">Auto</div>
+          <div role="menuitem">Sonnet 4.6</div>
+        </div>
+        <div id="models" role="dialog">
+          <div role="menuitem">Auto</div>
+          <div role="menuitem">Sonnet 4.6</div>
+          <div role="menuitem">Opus 4.7</div>
+        </div>
+      </body></html>`,
+      { url: "https://app.notion.com/ai" },
+    );
+    globalThis.document = dom.window.document;
+    globalThis.window = dom.window;
+    Object.defineProperty(window, "innerWidth", { value: 1125, configurable: true });
+    Object.defineProperty(window, "innerHeight", { value: 700, configurable: true });
+    const loadHelpers = new Function(`${helpersSource}\nreturn installNotionAiChatHelpers;`);
+    const h = loadHelpers()();
+
+    const picker = document.getElementById("picker");
+    const sidebar = document.getElementById("sidebar");
+    const models = document.getElementById("models");
+    for (const el of [picker, sidebar, models]) {
+      Object.defineProperty(el, "offsetParent", { value: document.body, configurable: true });
+    }
+    picker.getBoundingClientRect = () => ({
+      left: 600,
+      top: 300,
+      width: 120,
+      height: 28,
+      right: 720,
+      bottom: 328,
+      x: 600,
+      y: 300,
+    });
+    sidebar.getBoundingClientRect = () => ({
+      left: -250,
+      top: 100,
+      width: 270,
+      height: 400,
+      right: 20,
+      bottom: 500,
+      x: -250,
+      y: 100,
+    });
+    models.getBoundingClientRect = () => ({
+      left: 580,
+      top: 340,
+      width: 288,
+      height: 300,
+      right: 868,
+      bottom: 640,
+      x: 580,
+      y: 340,
+    });
+
+    expect(h.findModelPickerSurface(picker)?.id).toBe("models");
+    const knownTitles = [...new Set(Object.values(h.MODE_ALIASES))];
+    expect(h.scoreModelPickerSurface(sidebar, picker, knownTitles)).toBeLessThan(
+      h.scoreModelPickerSurface(models, picker, knownTitles),
+    );
+  });
+
+  test("findBehaviorModeSurface prefers in-viewport behavior mode menu near settings entry", () => {
+    const dom = new JSDOM(
+      `<!DOCTYPE html><html><body>
+        <div id="modeEntry" role="menuitem">Mode Default</div>
+        <div id="sidebar" role="menu">
+          <div role="menuitemradio">Default</div>
+          <div role="menuitemradio">Ask</div>
+        </div>
+        <div id="behaviorMenu" role="menu">
+          <div role="menuitemradio">Default\nCan search, edit, and more</div>
+          <div role="menuitemradio">Ask\nAnswers only</div>
+          <div role="menuitemradio">Plan\nPlans first</div>
+          <div role="menuitemradio">Research\nThink deeper</div>
+        </div>
+      </body></html>`,
+      { url: "https://app.notion.com/ai" },
+    );
+    globalThis.document = dom.window.document;
+    globalThis.window = dom.window;
+    Object.defineProperty(window, "innerWidth", { value: 800, configurable: true });
+    Object.defineProperty(window, "innerHeight", { value: 600, configurable: true });
+    const loadHelpers = new Function(`${helpersSource}\nreturn installNotionAiChatHelpers;`);
+    const h = loadHelpers()();
+
+    const modeEntry = document.getElementById("modeEntry");
+    const sidebar = document.getElementById("sidebar");
+    const behaviorMenu = document.getElementById("behaviorMenu");
+    for (const el of [modeEntry, sidebar, behaviorMenu]) {
+      Object.defineProperty(el, "offsetParent", { value: document.body, configurable: true });
+    }
+    modeEntry.getBoundingClientRect = () => ({ left: 140, top: 250, width: 272, height: 28, right: 412, bottom: 278, x: 140, y: 250 });
+    sidebar.getBoundingClientRect = () => ({ left: -250, top: 100, width: 270, height: 120, right: 20, bottom: 220, x: -250, y: 100 });
+    behaviorMenu.getBoundingClientRect = () => ({ left: 412, top: 165, width: 280, height: 205, right: 692, bottom: 370, x: 412, y: 165 });
+
+    const knownTitles = h.getKnownBehaviorModeTitles ? h.getKnownBehaviorModeTitles() : Object.values(h.BEHAVIOR_MODE_ALIASES);
+    expect(h.findBehaviorModeSurface(modeEntry)?.id).toBe("behaviorMenu");
+    expect(h.scoreBehaviorModeSurface(sidebar, modeEntry, knownTitles)).toBeLessThan(
+      h.scoreBehaviorModeSurface(behaviorMenu, modeEntry, knownTitles),
+    );
+  });
+
+  test("findGiveContextButton prefers in-viewport button near editor and submit", () => {
+    const dom = new JSDOM(
+      `<!DOCTYPE html><html><body>
+        <div id="composer">
+          <div contenteditable="true" role="textbox" id="editor"></div>
+          <button aria-label="Give context" id="ctxNear"></button>
+          <button aria-label="Submit AI message" id="submit"></button>
+        </div>
+        <button aria-label="Give context" id="ctxFar"></button>
+      </body></html>`,
+      { url: "https://app.notion.com/ai" },
+    );
+    globalThis.document = dom.window.document;
+    globalThis.window = dom.window;
+    Object.defineProperty(window, "innerWidth", { value: 800, configurable: true });
+    Object.defineProperty(window, "innerHeight", { value: 600, configurable: true });
+    const loadHelpers = new Function(`${helpersSource}\nreturn installNotionAiChatHelpers;`);
+    const h = loadHelpers()();
+
+    const editor = document.getElementById("editor");
+    const ctxNear = document.getElementById("ctxNear");
+    const ctxFar = document.getElementById("ctxFar");
+    const submit = document.getElementById("submit");
+    for (const el of [editor, ctxNear, ctxFar, submit]) {
+      Object.defineProperty(el, "offsetParent", { value: document.body, configurable: true });
+    }
+    editor.getBoundingClientRect = () => ({ left: 100, top: 300, width: 400, height: 40, right: 500, bottom: 340, x: 100, y: 300 });
+    submit.getBoundingClientRect = () => ({ left: 600, top: 319, width: 32, height: 32, right: 632, bottom: 351, x: 600, y: 319 });
+    ctxNear.getBoundingClientRect = () => ({ left: 108, top: 319, width: 28, height: 28, right: 136, bottom: 347, x: 108, y: 319 });
+    ctxFar.getBoundingClientRect = () => ({ left: 50, top: 50, width: 28, height: 28, right: 78, bottom: 78, x: 50, y: 50 });
+
+    expect(h.findGiveContextButton()?.id).toBe("ctxNear");
+    expect(h.scoreGiveContextButton(ctxFar, editor, submit)).toBeLessThan(
+      h.scoreGiveContextButton(ctxNear, editor, submit),
+    );
+  });
+
+  test("scoreGiveContextSurface ranks Give context menu above Settings menu", () => {
+    const dom = new JSDOM(
+      `<!DOCTYPE html><html><body>
+        <button id="anchor" aria-label="Give context"></button>
+        <div id="settingsMenu" role="dialog">
+          <div role="menuitem">Web access</div>
+          <div role="menuitem">My sources</div>
+          <div role="menuitem">Add sources</div>
+        </div>
+        <div id="giveMenu" role="dialog">
+          <div role="menuitem">Add photos and files</div>
+          <div role="menuitem">Mention pages or people</div>
+          <div role="menuitem">Create image</div>
+        </div>
+      </body></html>`,
+      { url: "https://app.notion.com/ai" },
+    );
+    globalThis.document = dom.window.document;
+    globalThis.window = dom.window;
+    Object.defineProperty(window, "innerWidth", { value: 800, configurable: true });
+    Object.defineProperty(window, "innerHeight", { value: 600, configurable: true });
+    const loadHelpers = new Function(`${helpersSource}\nreturn installNotionAiChatHelpers;`);
+    const h = loadHelpers()();
+
+    const anchor = document.getElementById("anchor");
+    const settingsMenu = document.getElementById("settingsMenu");
+    const giveMenu = document.getElementById("giveMenu");
+    for (const el of [anchor, settingsMenu, giveMenu]) {
+      Object.defineProperty(el, "offsetParent", { value: document.body, configurable: true });
+    }
+    anchor.getBoundingClientRect = () => ({ left: 108, top: 319, width: 28, height: 28, right: 136, bottom: 347, x: 108, y: 319 });
+    settingsMenu.getBoundingClientRect = () => ({ left: 136, top: 155, width: 280, height: 160, right: 416, bottom: 315, x: 136, y: 155 });
+    giveMenu.getBoundingClientRect = () => ({ left: 108, top: 222, width: 230, height: 120, right: 338, bottom: 342, x: 108, y: 222 });
+
+    expect(h.findGiveContextSurface(anchor)?.id).toBe("giveMenu");
+    expect(h.scoreGiveContextSurface(settingsMenu, anchor)).toBe(-1);
+    expect(h.scoreGiveContextSurface(giveMenu, anchor)).toBeGreaterThan(0);
+  });
+
+  test("scorePagePickerSurface prefers option list near Give context anchor", () => {
+    const dom = new JSDOM(
+      `<!DOCTYPE html><html><body>
+        <button id="anchor" aria-label="Give context"></button>
+        <div id="settingsMenu" role="dialog">
+          <div role="menuitem">Web access</div>
+        </div>
+        <div id="pagePicker" role="dialog">
+          <input placeholder="Search…" />
+          <div role="option">E2E Complete (Edited)</div>
+          <div role="option">My Notion AI</div>
+        </div>
+      </body></html>`,
+      { url: "https://app.notion.com/ai" },
+    );
+    globalThis.document = dom.window.document;
+    globalThis.window = dom.window;
+    Object.defineProperty(window, "innerWidth", { value: 800, configurable: true });
+    Object.defineProperty(window, "innerHeight", { value: 600, configurable: true });
+    const loadHelpers = new Function(`${helpersSource}\nreturn installNotionAiChatHelpers;`);
+    const h = loadHelpers()();
+
+    const anchor = document.getElementById("anchor");
+    const settingsMenu = document.getElementById("settingsMenu");
+    const pagePicker = document.getElementById("pagePicker");
+    for (const el of [anchor, settingsMenu, pagePicker]) {
+      Object.defineProperty(el, "offsetParent", { value: document.body, configurable: true });
+    }
+    anchor.getBoundingClientRect = () => ({ left: 108, top: 319, width: 28, height: 28, right: 136, bottom: 347, x: 108, y: 319 });
+    settingsMenu.getBoundingClientRect = () => ({ left: 140, top: 155, width: 280, height: 80, right: 420, bottom: 235, x: 140, y: 155 });
+    pagePicker.getBoundingClientRect = () => ({ left: 112, top: 180, width: 260, height: 200, right: 372, bottom: 380, x: 112, y: 180 });
+
+    expect(h.findPagePickerSurface(anchor)?.id).toBe("pagePicker");
+    expect(h.scorePagePickerSurface(settingsMenu, anchor)).toBe(-1);
+    expect(h.scorePagePickerSurface(pagePicker, anchor)).toBeGreaterThan(0);
+  });
+
+  test("parsePageReferences extracts search terms from URLs and comma lists", () => {
+    const h = installHelpers();
+    const refs = h.parsePageReferences("My Notion AI, E2E Complete (Edited)", "Quick Notes");
+    expect(refs.map((r) => r.title)).toEqual(["Quick Notes", "My Notion AI", "E2E Complete (Edited)"]);
+
+    const fromUrl = h.normalizePageReference(
+      "https://www.notion.so/My-Workspace/E2E-Complete-Edited-abc123def4567890abcdef1234567890",
+    );
+    expect(fromUrl.search.toLowerCase()).toContain("e2e");
+  });
+
+  test("prepareNotionAttachmentPlan merges context, files, and pages", () => {
+    const h = installHelpers();
+    const plan = h.prepareNotionAttachmentPlan({
+      query: "Summarize",
+      context: "Background info",
+      fileName: "notes.txt",
+      fileContent: "hello",
+      page: "My Notion AI",
+    });
+    expect(plan.hasAttachments).toBe(true);
+    expect(plan.hasFiles).toBe(true);
+    expect(plan.hasPages).toBe(true);
+    expect(plan.query).toContain("--- External context ---");
+    expect(plan.query).toContain("Summarize");
+    expect(plan.files[0].fileName).toBe("notes.txt");
+    expect(plan.pages[0].title).toBe("My Notion AI");
+  });
+
+  test("prepareNotionAttachmentPlan decodes base64 file bytes", () => {
+    const h = installHelpers();
+    const bytes = h.decodeNotionBase64("aGVsbG8=");
+    expect(Array.from(bytes)).toEqual([104, 101, 108, 108, 111]);
+    expect(h.guessNotionMimeType("doc.pdf")).toBe("application/pdf");
   });
 
   test("buildConversationUrl returns chat URL", () => {

@@ -1,45 +1,19 @@
 /* @meta
 {
-  "name": "notion/chat",
-  "description": "Ask Notion AI in sidebar chat (AI chat: answer, model, conversationId)",
+  "name": "notion/mode",
+  "description": "List or set Notion AI behavior mode from Settings (default, ask, plan, research)",
   "domain": "app.notion.com",
   "args": {
-    "query": {"required": false, "description": "Prompt to send to Notion AI (optional when selectOnly is true)"},
-    "model": {"required": false, "description": "Model name from notion/models (default Auto). Examples: auto, sonnet, opus, gemini, gpt-5.4"},
-    "newChat": {"required": false, "description": "Start a new chat thread (default true)"},
-    "selectOnly": {"required": false, "description": "Only open chat and select model; do not submit a prompt (default false)"},
-    "waitOnly": {"required": false, "description": "Skip new chat / submit; only poll for the in-flight assistant reply (default false)"},
-    "maxWaitMs": {"required": false, "description": "Override max wait in ms (default 15m)"},
-    "graceWaitMs": {"required": false, "description": "Optional extra wait in ms added on top of maxWaitMs"},
-    "context": {"required": false, "description": "Optional text prepended to the prompt"},
-    "fileName": {"required": false, "description": "Attachment file name when using fileContent or fileBase64"},
-    "fileContent": {"required": false, "description": "UTF-8 text file content to attach via Give context"},
-    "fileBase64": {"required": false, "description": "Base64-encoded file bytes to attach via Give context"},
-    "files": {"required": false, "description": "JSON array of {fileName, fileContent|fileBase64} for multiple files"},
-    "pages": {"required": false, "description": "Comma-separated Notion page titles or URLs to mention"},
-    "page": {"required": false, "description": "Single Notion page title or URL to mention"}
+    "mode": {"required": false, "description": "Behavior mode to select: default, ask, plan, research. Omit to list current and available modes."},
+    "selectOnly": {"required": false, "description": "Only select mode; skip listing extras when mode is provided (default false)"}
   },
   "capabilities": ["network"],
   "readOnly": true,
-  "example": "bun-browser site notion/chat \"Summarize this week in one paragraph\""
+  "example": "bun-browser site notion/mode --mode ask"
 }
 */
 
 async function(args) {
-  function parseBool(val, defaultVal) {
-    if (val === undefined || val === null || val === '') return defaultVal;
-    if (val === true || val === false) return val;
-    var s = String(val).toLowerCase();
-    if (s === 'true' || s === '1') return true;
-    if (s === 'false' || s === '0') return false;
-    return defaultVal;
-  }
-
-  var selectOnly = parseBool(args.selectOnly, false);
-  if (!args.query && !selectOnly) {
-    return { error: 'Missing argument: query', hint: 'Provide a prompt for Notion AI' };
-  }
-
   var loginBlock = (function() {
     function hasCookie(name) {
       return document.cookie.split(';').some(function(c) {
@@ -1987,92 +1961,25 @@ async function(args) {
   return api;
   })();
 
-  var waitOpts = h.buildWaitOpts(args);
-  var waitOnly = parseBool(args.waitOnly, false);
-  var newChat = parseBool(args.newChat, true);
-  var modeId = h.resolveNotionMode(args.model || 'auto');
-
-  var accessBlock = h.detectNotionPageAbnormal();
-  if (accessBlock) return accessBlock;
-
-  if (selectOnly) {
-    if (newChat) {
-      var selectNav = await h.ensureNewChatView();
-      if (!selectNav.ok) {
-        if (selectNav.needsRetry) {
-          return {
-            error: selectNav.error || 'Navigation required',
-            hint: selectNav.hint || 'Re-run the same command after Notion finishes loading.',
-            action: selectNav.action || 'retry same command'
-          };
-        }
-        return selectNav;
-      }
-    }
-    if (!h.getChatInput()) {
-      return {
-        error: 'Chat input not found',
-        hint: 'Notion AI chat view did not load. Open the sidebar Chat tab and retry.',
-        action: 'bun-browser open https://app.notion.com/ai'
-      };
-    }
-    var selectResult = await h.setNotionMode(modeId);
-    if (!selectResult.ok) {
-      return {
-        error: 'Mode selection failed',
-        hint: selectResult.hint || selectResult.error || ('Could not select model "' + modeId + '"'),
-        requestedMode: modeId,
-        action: 'bun-browser site notion/models'
-      };
-    }
-    return {
-      model: modeId,
-      modeTitle: selectResult.modeTitle || null,
-      modeLabel: selectResult.label || h.readNotionModeLabel(),
-      selected: true,
-      selectOnly: true,
-      conversationId: h.getConversationId()
-    };
+  function parseBool(val, defaultVal) {
+    if (val === undefined || val === null || val === '') return defaultVal;
+    if (val === true || val === false) return val;
+    var s = String(val).toLowerCase();
+    if (s === 'true' || s === '1') return true;
+    if (s === 'false' || s === '0') return false;
+    return defaultVal;
   }
 
-  if (waitOnly) {
-    var existing = h.getAssistantMessages();
-    var pollBeforeCount = Math.max(0, existing.length - 1);
-    var pollBeforeText = pollBeforeCount < existing.length ? h.getAssistantText(existing[pollBeforeCount]) : '';
-    var waitedAnswer = await h.waitForAssistantAnswer(pollBeforeCount, pollBeforeText, waitOpts);
-    if (!waitedAnswer) {
-      if (h.wasLastWaitPending()) {
-        return { error: 'Still generating', hint: 'Notion AI is still generating. Retry with waitOnly: true.', action: 'retry with waitOnly: true' };
-      }
-      var waitAbnormal = h.getLastWaitAbnormal();
-      if (waitAbnormal) return waitAbnormal;
-      return { error: 'Empty response', hint: 'Notion AI returned no content.', action: 'bun-browser open https://app.notion.com/' };
+  var nav = await h.ensureNewChatView();
+  if (!nav.ok) {
+    if (nav.needsRetry) {
+      return {
+        error: nav.error || 'Navigation required',
+        hint: nav.hint || 'Re-run the same command after Notion finishes loading.',
+        action: nav.action || 'retry same command'
+      };
     }
-    var waitOut = {
-      query: args.query,
-      model: modeId,
-      modeLabel: h.readNotionModeLabel(),
-      answer: waitedAnswer,
-      conversationId: h.getConversationId(),
-      waitOnly: true
-    };
-    var waitJson = h.parseAnswerJson(waitedAnswer);
-    if (waitJson) { waitOut.answerJson = waitJson; waitOut.answerFormat = 'json'; }
-    return waitOut;
-  }
-
-  if (newChat) {
-    var nav = await h.ensureNewChatView();
-    if (!nav.ok) {
-      if (nav.needsRetry) {
-        return {
-          error: nav.error || 'Navigation required',
-          hint: nav.hint || 'Re-run the same command after Notion finishes loading.',
-          action: nav.action || 'retry same command'
-        };
-      }
-      return nav;
-    }
+    return nav;
   }
 
   if (!h.getChatInput()) {
@@ -2083,72 +1990,38 @@ async function(args) {
     };
   }
 
-  var modeResult = await h.setNotionMode(modeId);
-  if (!modeResult.ok) {
-    return {
-      error: 'Mode selection failed',
-      hint: modeResult.hint || modeResult.error || ('Could not select model "' + modeId + '"'),
-      requestedMode: modeId,
-      action: 'bun-browser site notion/models'
-    };
-  }
-
-  var attachPlan = h.prepareNotionAttachmentPlan(args);
-  if (attachPlan.error) {
-    return { error: attachPlan.error, hint: attachPlan.hint || attachPlan.error };
-  }
-  var attachedItems = null;
-  if (attachPlan.hasAttachments) {
-    var attachResult = await h.attachNotionChatContext(attachPlan);
-    if (!attachResult.ok) {
+  var selectOnly = parseBool(args.selectOnly, false);
+  if (args.mode) {
+    var modeId = h.resolveNotionBehaviorMode(args.mode);
+    var selectResult = await h.setNotionBehaviorMode(modeId);
+    if (!selectResult.ok) {
       return {
-        error: 'Attachment failed',
-        hint: attachResult.hint || attachResult.error,
-        requestedAttachments: attachPlan
+        error: 'Behavior mode selection failed',
+        hint: selectResult.hint || selectResult.error || ('Could not select mode "' + modeId + '"'),
+        requestedMode: modeId,
+        action: 'bun-browser site notion/mode'
       };
     }
-    attachedItems = attachResult.attachments || null;
-  }
-  var queryText = attachPlan.query || args.query;
-
-
-  var beforeCount = h.getAssistantMessages().length;
-  var beforeText = h.getAssistantMessages().map(h.getAssistantText).join('\n');
-
-  if (!h.setChatInput(queryText)) {
-    return { error: 'Chat input not found', hint: 'Could not fill the Notion AI prompt box.', action: 'bun-browser open https://app.notion.com/ai' };
-  }
-  await h.sleep(400);
-
-  accessBlock = h.detectNotionPageAbnormal();
-  if (accessBlock) return accessBlock;
-
-  if (!h.clickSubmit()) {
-    accessBlock = h.detectNotionPageAbnormal();
-    if (accessBlock) return accessBlock;
-    return { error: 'Submit button not found', hint: 'Could not find the Notion AI send button.', action: 'bun-browser open https://app.notion.com/ai' };
-  }
-
-  var answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
-  if (!answer) {
-    var answerAbnormal = h.getLastWaitAbnormal();
-    if (answerAbnormal) return answerAbnormal;
-    if (h.wasLastWaitPending()) {
-      return { error: 'Still generating', hint: 'Notion AI is still generating. Retry with waitOnly: true.', action: 'retry with waitOnly: true' };
+    if (selectOnly) {
+      return {
+        mode: modeId,
+        modeTitle: selectResult.modeTitle || null,
+        modeLabel: selectResult.label || modeId,
+        selected: true,
+        selectOnly: true
+      };
     }
-    return { error: 'Empty response', hint: 'Notion AI returned no content.', action: 'bun-browser open https://app.notion.com/' };
   }
 
-  var out = {
-    query: queryText,
-    model: modeId,
-    modeTitle: modeResult.modeTitle || null,
-    modeLabel: modeResult.label || h.readNotionModeLabel(),
-    answer: answer,
-    conversationId: h.getConversationId()
+  var listed = await h.listNotionBehaviorModesFromUi();
+  var modes = listed.modes || [];
+  return {
+    defaultModeId: 'default',
+    current: listed.current || 'Default',
+    available: modes.map(function(m) { return m.id; }),
+    modes: modes,
+    warning: listed.warning || null,
+    selected: !!args.mode,
+    modeLabel: listed.current || 'Default'
   };
-  if (attachedItems) out.attachments = attachedItems;
-  var answerJson = h.parseAnswerJson(answer);
-  if (answerJson) { out.answerJson = answerJson; out.answerFormat = 'json'; }
-  return out;
 }

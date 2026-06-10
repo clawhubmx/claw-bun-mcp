@@ -39,6 +39,25 @@ const loginBlock = `  var loginBlock = (function() {
   if (loginBlock) return loginBlock;
 
 `;
+const attachBlock = `  var attachPlan = h.prepareNotionAttachmentPlan(args);
+  if (attachPlan.error) {
+    return { error: attachPlan.error, hint: attachPlan.hint || attachPlan.error };
+  }
+  var attachedItems = null;
+  if (attachPlan.hasAttachments) {
+    var attachResult = await h.attachNotionChatContext(attachPlan);
+    if (!attachResult.ok) {
+      return {
+        error: 'Attachment failed',
+        hint: attachResult.hint || attachResult.error,
+        requestedAttachments: attachPlan
+      };
+    }
+    attachedItems = attachResult.attachments || null;
+  }
+  var queryText = attachPlan.query || args.query;
+
+`;
 
 writeFileSync(
   join(root, "chat.js"),
@@ -55,14 +74,30 @@ writeFileSync(
     "selectOnly": {"required": false, "description": "Only open chat and select model; do not submit a prompt (default false)"},
     "waitOnly": {"required": false, "description": "Skip new chat / submit; only poll for the in-flight assistant reply (default false)"},
     "maxWaitMs": {"required": false, "description": "Override max wait in ms (default 15m)"},
-    "graceWaitMs": {"required": false, "description": "Optional extra wait in ms added on top of maxWaitMs"}
+    "graceWaitMs": {"required": false, "description": "Optional extra wait in ms added on top of maxWaitMs"},
+    "context": {"required": false, "description": "Optional text prepended to the prompt"},
+    "fileName": {"required": false, "description": "Attachment file name when using fileContent or fileBase64"},
+    "fileContent": {"required": false, "description": "UTF-8 text file content to attach via Give context"},
+    "fileBase64": {"required": false, "description": "Base64-encoded file bytes to attach via Give context"},
+    "files": {"required": false, "description": "JSON array of {fileName, fileContent|fileBase64} for multiple files"},
+    "pages": {"required": false, "description": "Comma-separated Notion page titles or URLs to mention"},
+    "page": {"required": false, "description": "Single Notion page title or URL to mention"}
   },
   "capabilities": ["network"],
   "readOnly": true,
   "example": "bun-browser site notion/chat \\"Summarize this week in one paragraph\\""
 }
 */`,
-    `  var selectOnly = args.selectOnly === true;
+    `  function parseBool(val, defaultVal) {
+    if (val === undefined || val === null || val === '') return defaultVal;
+    if (val === true || val === false) return val;
+    var s = String(val).toLowerCase();
+    if (s === 'true' || s === '1') return true;
+    if (s === 'false' || s === '0') return false;
+    return defaultVal;
+  }
+
+  var selectOnly = parseBool(args.selectOnly, false);
   if (!args.query && !selectOnly) {
     return { error: 'Missing argument: query', hint: 'Provide a prompt for Notion AI' };
   }
@@ -70,14 +105,15 @@ writeFileSync(
 ${loginBlock}
 ${installBlock}
   var waitOpts = h.buildWaitOpts(args);
-  var waitOnly = args.waitOnly === true;
+  var waitOnly = parseBool(args.waitOnly, false);
+  var newChat = parseBool(args.newChat, true);
   var modeId = h.resolveNotionMode(args.model || 'auto');
 
   var accessBlock = h.detectNotionPageAbnormal();
   if (accessBlock) return accessBlock;
 
   if (selectOnly) {
-    if (args.newChat !== false) {
+    if (newChat) {
       var selectNav = await h.ensureNewChatView();
       if (!selectNav.ok) {
         if (selectNav.needsRetry) {
@@ -101,7 +137,7 @@ ${installBlock}
     if (!selectResult.ok) {
       return {
         error: 'Mode selection failed',
-        hint: selectResult.error || selectResult.hint || ('Could not select model "' + modeId + '"'),
+        hint: selectResult.hint || selectResult.error || ('Could not select model "' + modeId + '"'),
         requestedMode: modeId,
         action: 'bun-browser site notion/models'
       };
@@ -142,7 +178,7 @@ ${installBlock}
     return waitOut;
   }
 
-  if (args.newChat !== false) {
+  if (newChat) {
     var nav = await h.ensureNewChatView();
     if (!nav.ok) {
       if (nav.needsRetry) {
@@ -168,16 +204,17 @@ ${installBlock}
   if (!modeResult.ok) {
     return {
       error: 'Mode selection failed',
-      hint: modeResult.error || modeResult.hint || ('Could not select model "' + modeId + '"'),
+      hint: modeResult.hint || modeResult.error || ('Could not select model "' + modeId + '"'),
       requestedMode: modeId,
       action: 'bun-browser site notion/models'
     };
   }
 
+${attachBlock}
   var beforeCount = h.getAssistantMessages().length;
   var beforeText = h.getAssistantMessages().map(h.getAssistantText).join('\\n');
 
-  if (!h.setChatInput(args.query)) {
+  if (!h.setChatInput(queryText)) {
     return { error: 'Chat input not found', hint: 'Could not fill the Notion AI prompt box.', action: 'bun-browser open https://app.notion.com/ai' };
   }
   await h.sleep(400);
@@ -202,13 +239,14 @@ ${installBlock}
   }
 
   var out = {
-    query: args.query,
+    query: queryText,
     model: modeId,
     modeTitle: modeResult.modeTitle || null,
     modeLabel: modeResult.label || h.readNotionModeLabel(),
     answer: answer,
     conversationId: h.getConversationId()
   };
+  if (attachedItems) out.attachments = attachedItems;
   var answerJson = h.parseAnswerJson(answer);
   if (answerJson) { out.answerJson = answerJson; out.answerFormat = 'json'; }
   return out;`
@@ -229,7 +267,14 @@ writeFileSync(
     "model": {"required": false, "description": "Model name from notion/models (default Auto)"},
     "waitOnly": {"required": false, "description": "Skip navigation/submit; only poll for the in-flight assistant reply (default false)"},
     "maxWaitMs": {"required": false, "description": "Override max wait in ms (default 15m)"},
-    "graceWaitMs": {"required": false, "description": "Optional extra wait in ms added on top of maxWaitMs"}
+    "graceWaitMs": {"required": false, "description": "Optional extra wait in ms added on top of maxWaitMs"},
+    "context": {"required": false, "description": "Optional text prepended to the prompt"},
+    "fileName": {"required": false, "description": "Attachment file name when using fileContent or fileBase64"},
+    "fileContent": {"required": false, "description": "UTF-8 text file content to attach via Give context"},
+    "fileBase64": {"required": false, "description": "Base64-encoded file bytes to attach via Give context"},
+    "files": {"required": false, "description": "JSON array of {fileName, fileContent|fileBase64} for multiple files"},
+    "pages": {"required": false, "description": "Comma-separated Notion page titles or URLs to mention"},
+    "page": {"required": false, "description": "Single Notion page title or URL to mention"}
   },
   "capabilities": ["network"],
   "readOnly": true,
@@ -245,13 +290,22 @@ writeFileSync(
 
 ${loginBlock}
 ${installBlock}
+  function parseBool(val, defaultVal) {
+    if (val === undefined || val === null || val === '') return defaultVal;
+    if (val === true || val === false) return val;
+    var s = String(val).toLowerCase();
+    if (s === 'true' || s === '1') return true;
+    if (s === 'false' || s === '0') return false;
+    return defaultVal;
+  }
+
   var conversationId = h.parseConversationId(args.conversation);
   if (!conversationId) {
     return { error: 'Invalid conversation id', hint: 'conversation must be a thread UUID or https://app.notion.com/chat?t={id} URL', action: 'bun-browser site notion/search \\"keyword\\"' };
   }
 
   var waitOpts = h.buildWaitOpts(args);
-  var waitOnly = args.waitOnly === true;
+  var waitOnly = parseBool(args.waitOnly, false);
   var modeId = h.resolveNotionMode(args.model || 'auto');
 
   var accessBlock = h.detectNotionPageAbnormal();
@@ -303,16 +357,17 @@ ${installBlock}
   if (!modeResult.ok) {
     return {
       error: 'Mode selection failed',
-      hint: modeResult.error || modeResult.hint || ('Could not select model "' + modeId + '"'),
+      hint: modeResult.hint || modeResult.error || ('Could not select model "' + modeId + '"'),
       requestedMode: modeId,
       action: 'bun-browser site notion/models'
     };
   }
 
+${attachBlock}
   var beforeCount = h.getAssistantMessages().length;
   var beforeText = h.getAssistantMessages().map(h.getAssistantText).join('\\n');
 
-  if (!h.setChatInput(args.query)) {
+  if (!h.setChatInput(queryText)) {
     return { error: 'Chat input not found', hint: 'Could not fill the Notion AI prompt box.', action: 'bun-browser open ' + h.buildConversationUrl(conversationId) };
   }
   await h.sleep(400);
@@ -337,7 +392,7 @@ ${installBlock}
   }
 
   var out = {
-    query: args.query,
+    query: queryText,
     conversationId: conversationId,
     model: modeId,
     modeTitle: modeResult.modeTitle || null,
@@ -346,6 +401,7 @@ ${installBlock}
     turn: h.getAssistantMessages().length,
     url: location.href
   };
+  if (attachedItems) out.attachments = attachedItems;
   var answerJson = h.parseAnswerJson(answer);
   if (answerJson) { out.answerJson = answerJson; out.answerFormat = 'json'; }
   return out;`
@@ -401,4 +457,89 @@ ${installBlock}
   )
 );
 
-console.log("Wrote chat.js, chatfollow.js, and models.js");
+writeFileSync(
+  join(root, "mode.js"),
+  makeFile(
+    `/* @meta
+{
+  "name": "notion/mode",
+  "description": "List or set Notion AI behavior mode from Settings (default, ask, plan, research)",
+  "domain": "app.notion.com",
+  "args": {
+    "mode": {"required": false, "description": "Behavior mode to select: default, ask, plan, research. Omit to list current and available modes."},
+    "selectOnly": {"required": false, "description": "Only select mode; skip listing extras when mode is provided (default false)"}
+  },
+  "capabilities": ["network"],
+  "readOnly": true,
+  "example": "bun-browser site notion/mode --mode ask"
+}
+*/`,
+    `${loginBlock}
+${installBlock}
+  function parseBool(val, defaultVal) {
+    if (val === undefined || val === null || val === '') return defaultVal;
+    if (val === true || val === false) return val;
+    var s = String(val).toLowerCase();
+    if (s === 'true' || s === '1') return true;
+    if (s === 'false' || s === '0') return false;
+    return defaultVal;
+  }
+
+  var nav = await h.ensureNewChatView();
+  if (!nav.ok) {
+    if (nav.needsRetry) {
+      return {
+        error: nav.error || 'Navigation required',
+        hint: nav.hint || 'Re-run the same command after Notion finishes loading.',
+        action: nav.action || 'retry same command'
+      };
+    }
+    return nav;
+  }
+
+  if (!h.getChatInput()) {
+    return {
+      error: 'Chat input not found',
+      hint: 'Notion AI chat view did not load. Open the sidebar Chat tab and retry.',
+      action: 'bun-browser open https://app.notion.com/ai'
+    };
+  }
+
+  var selectOnly = parseBool(args.selectOnly, false);
+  if (args.mode) {
+    var modeId = h.resolveNotionBehaviorMode(args.mode);
+    var selectResult = await h.setNotionBehaviorMode(modeId);
+    if (!selectResult.ok) {
+      return {
+        error: 'Behavior mode selection failed',
+        hint: selectResult.hint || selectResult.error || ('Could not select mode "' + modeId + '"'),
+        requestedMode: modeId,
+        action: 'bun-browser site notion/mode'
+      };
+    }
+    if (selectOnly) {
+      return {
+        mode: modeId,
+        modeTitle: selectResult.modeTitle || null,
+        modeLabel: selectResult.label || modeId,
+        selected: true,
+        selectOnly: true
+      };
+    }
+  }
+
+  var listed = await h.listNotionBehaviorModesFromUi();
+  var modes = listed.modes || [];
+  return {
+    defaultModeId: 'default',
+    current: listed.current || 'Default',
+    available: modes.map(function(m) { return m.id; }),
+    modes: modes,
+    warning: listed.warning || null,
+    selected: !!args.mode,
+    modeLabel: listed.current || 'Default'
+  };`
+  )
+);
+
+console.log("Wrote chat.js, chatfollow.js, models.js, and mode.js");
