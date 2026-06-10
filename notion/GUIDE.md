@@ -32,6 +32,7 @@ bun-browser open https://www.notion.so/ --tab new
 | `bun-browser site notion/chatfollow <id> "<prompt>"` | 在已有线程中继续提问 |
 | `bun-browser site notion/search "<keyword>"` | 搜索/列出 AI 聊天历史 |
 | `bun-browser site notion/create-article "<title>" "<content>"` | 在当前或指定父页面下新建文章页（标题 + 正文） |
+| `bun-browser site notion/edit-article "<page-url>" "<content>" --title "<title>"` | 编辑已有页面（更新标题和/或正文；`mode=append` 追加段落） |
 
 ## 典型流程
 
@@ -104,6 +105,29 @@ bun-browser site notion/create-article "Notes" "Body text" --parent "https://app
 ```
 
 若传入 `parent` 且标签页尚未打开该页面，第一次可能返回 `Navigation required` — 按提示 **重跑同一条命令** 即可。
+
+### 编辑已有文章页
+
+参数顺序：`page`、`content` 为位置参数；`--title`、`--mode`、`--step` 为可选 flag。**content 写在 flag 前面**：
+
+```bash
+bun-browser site notion/edit-article "https://app.notion.com/p/37b773dd10fd80288a68c2fda0897975" "Updated lead."$'\n\n'"New second paragraph." --title "Weekly Recap (Updated)"
+```
+
+流程：打开目标页（若返回 `Navigation required` 则重跑）→ 更新标题（若提供 `--title` 且与当前不同）→ 替换正文（`mode=replace`，默认）或追加段落（`mode=append`）。
+
+返回示例：
+
+```json
+{
+  "title": "Weekly Recap (Updated)",
+  "paragraphCount": 2,
+  "bodyPreview": ["Updated lead.", "New second paragraph."],
+  "pageId": "37b773dd10fd80288a68c2fda0897975",
+  "url": "https://app.notion.com/p/37b773dd10fd80288a68c2fda0897975",
+  "edited": true
+}
+```
 
 ### 搜索历史
 
@@ -212,6 +236,16 @@ bun-browser site notion/chat --model sonnet --selectOnly true
 | `content` | 必填 | 正文（纯文本；段落以空行分隔） |
 | `parent` | 当前打开页 | 父页面 URL 或 32 位 page id |
 | `step` | `auto` | `auto`：按当前页面自动选择 `open` / `title` / `body`；也可显式指定某一阶段 |
+
+### notion/edit-article
+
+| 参数 | 默认 | 说明 |
+|------|------|------|
+| `page` | 必填 | 要编辑的页面 URL 或 32 位 page id |
+| `content` | 必填 | 正文（纯文本；段落以空行分隔） |
+| `title` | 保持原标题 | 新标题（省略则不修改） |
+| `mode` | `replace` | `replace`：替换正文；`append`：在末尾追加段落 |
+| `step` | `auto` | `auto` / `navigate` / `title` / `body` |
 
 ### notion/chatfollow
 

@@ -1,0 +1,77 @@
+{
+  "promptFile": "/Users/hesdx/Documents/clawhost/claw-bun-mcp/grok/example/test2.txt",
+  "tabs": [
+    {
+      "shortId": "f897",
+      "model": "grok"
+    },
+    {
+      "shortId": "9240",
+      "model": "gemini"
+    },
+    {
+      "shortId": "6713",
+      "model": "deepseek"
+    }
+  ],
+  "runs": [
+    {
+      "tab": "f897",
+      "alias": "grok",
+      "title": "Grok 4.3",
+      "conversationId": "37b773dd-10fd-8097-be63-00a94d2105d8",
+      "conversationUrl": "https://app.notion.com/chat?t=37b773dd10fd8097be6300a94d2105d8&wfv=chat",
+      "answerLen": 695,
+      "answer": "{\"query\": \"Protesters block road to Mexican World Cup stadium\",\"time_period\": \"2026-06-07 to 2026-06-13\",\"unique_topics\": [\"Teachers and families of disappeared protest in Mexico City before World Cup\",\"Protests and construction work disrupt Mexico City ahead of World Cup\",\"Protesters topple World Cup player statues in Mexico City\",\"Celebrations clash with social tensions in Mexico ahead of World Cup\",\"Mexico prepares for World Cup opening match amid protests\",\"Teachers protest near fan zones and threaten to disrupt tournament\",\"Road blockades and traffic chaos from CNTE union protests in Mexico City\"\"sources\": \"apnews.com, cnbc.com, bbc.com, abcnews.com, aljazeera.com, cnn.com, dw.com\"",
+      "status": "partial",
+      "parseError": "Expecting ',' delimiter: line 1 column 609 (char 608)"
+    },
+    {
+      "tab": "9240",
+      "alias": "gemini",
+      "title": "Gemini 3.1 Pro",
+      "conversationId": "37b773dd-10fd-80cc-81a8-00a9e0bbbd0d",
+      "conversationUrl": "https://app.notion.com/chat?t=37b773dd10fd80cc81a800a9e0bbbd0d&wfv=chat",
+      "answerLen": 356,
+      "answer": "{\"query\": \"Protesters block road to Mexican World Cup stadium\",\"time_period\": \"2026-06-07 to 2026-06-13\",\"unique_topics\": [\"Protesters block road to Azteca Stadium in Mexico City ahead of World Cup\",\"Teachers demanding higher pay threaten to disrupt the tournament\",\"Protesters topple World Cup player statues in Mexico City\"\"sources\": \"bbc.com, yahoo.com\"",
+      "status": "partial",
+      "parseError": "Expecting ',' delimiter: line 1 column 326 (char 325)"
+    },
+    {
+      "tab": "6713",
+      "alias": "deepseek",
+      "title": "DeepSeek V4 Pro",
+      "conversationId": "37b773dd-10fd-8096-add4-00a920684100",
+      "conversationUrl": "https://app.notion.com/chat?t=37b773dd10fd8096add400a920684100&wfv=chat",
+      "answerLen": 2859,
+      "answer": "{\n  \"query\": \"Protesters block road to Mexican World Cup stadium\",\n  \"time_period\": \"2026-06-07 to 2026-06-13\",\n  \"unique_topics\": [\n    \"CNTE teachers' union protesters block major avenue leading to Mexico City's Azteca Stadium on June 9-10, days before World Cup opening match\",\n    \"Mexican police deploy thousands of officers and concrete barriers preventing demonstrators from reaching Azteca Stadium; police blockade blocks teachers' march\",\n    \"President Claudia Sheinbaum calls teacher protests a 'provocation' but rules out using police repression, saying opening match is 'guaranteed'\",\n    \"Protesting teachers topple FIFA World Cup player statues along Mexico City's Paseo de la Reforma avenue\",\n    \"CNTE teachers demand wage increases, pension reform, and repeal of 2007 ISSSTE public-sector pension law under slogan 'If there's no solution, the ball won't roll'\",\n    \"Families of Mexico's 130,000 disappeared persons stage protests at World Cup venues demanding government action on disappearances crisis\",\n    \"Mexico City steps up security at Zocalo fan zone expecting up to 100,000 attendees for opening match amid protest threats\",\n    \"Retired judges join teacher protests against government judicial and pension reforms in Mexico City\",\n    \"59 explosive devices discovered by police on a bus carrying demonstrators arriving for protests ahead of World Cup\",\n    \"Last-minute construction work compounds traffic chaos and road closures across Mexico City alongside ongoing mass demonstrations\",\n    \"Mexico City police deploy teargas against teachers attempting to occupy Education Ministry and march to Zocalo\",\n    \"FIFA cancels in-person fan fest worker training in Mexico City due to CNTE marches and blockades, moves sessions to virtual format\",\n    \"Iran's World Cup ticket allocation reportedly withdrawn by the US amid ongoing US-Iran military hostilities\",\n    \"Iran threatens to walk off pitch and abandon World Cup matches if protests occur in stadiums during its games\",\n    \"Sportsbooks post betting odds on protests, player defections, and Trump appearances during 2026 FIFA World Cup\",\n    \"Pro-Palestine demonstrations and animal rights groups also visible in Mexico City amid broader protest wave before World Cup\",\n    \"Strikes, protests and travel warnings issued as chaos grips Mexico City under 48 hours before opening match\",\n    \"World Cup 2026 geopolitical tensions escalate with travel restrictions, safety fears for first three-nation tournament\"\n  ],\n  \"sources\": \"apnews.com, reuters.com, bbc.com, theguardian.com, aljazeera.com, ndtv.com, dw.com, barrons.com, cnbc.com, courthousenews.com, wtop.com, ksl.com, ktla.com, npr.org, nytimes.com, washingtonpost.com, sports.yahoo.com, ca.news.yahoo.com, uk.sports.yahoo.com, finance.yahoo.com, bloomberg.com, economist.com, ynetnews.com, goal.com, usatoday.com\"\n}",
+      "status": "complete",
+      "answerJson": {
+        "query": "Protesters block road to Mexican World Cup stadium",
+        "time_period": "2026-06-07 to 2026-06-13",
+        "unique_topics": [
+          "CNTE teachers' union protesters block major avenue leading to Mexico City's Azteca Stadium on June 9-10, days before World Cup opening match",
+          "Mexican police deploy thousands of officers and concrete barriers preventing demonstrators from reaching Azteca Stadium; police blockade blocks teachers' march",
+          "President Claudia Sheinbaum calls teacher protests a 'provocation' but rules out using police repression, saying opening match is 'guaranteed'",
+          "Protesting teachers topple FIFA World Cup player statues along Mexico City's Paseo de la Reforma avenue",
+          "CNTE teachers demand wage increases, pension reform, and repeal of 2007 ISSSTE public-sector pension law under slogan 'If there's no solution, the ball won't roll'",
+          "Families of Mexico's 130,000 disappeared persons stage protests at World Cup venues demanding government action on disappearances crisis",
+          "Mexico City steps up security at Zocalo fan zone expecting up to 100,000 attendees for opening match amid protest threats",
+          "Retired judges join teacher protests against government judicial and pension reforms in Mexico City",
+          "59 explosive devices discovered by police on a bus carrying demonstrators arriving for protests ahead of World Cup",
+          "Last-minute construction work compounds traffic chaos and road closures across Mexico City alongside ongoing mass demonstrations",
+          "Mexico City police deploy teargas against teachers attempting to occupy Education Ministry and march to Zocalo",
+          "FIFA cancels in-person fan fest worker training in Mexico City due to CNTE marches and blockades, moves sessions to virtual format",
+          "Iran's World Cup ticket allocation reportedly withdrawn by the US amid ongoing US-Iran military hostilities",
+          "Iran threatens to walk off pitch and abandon World Cup matches if protests occur in stadiums during its games",
+          "Sportsbooks post betting odds on protests, player defections, and Trump appearances during 2026 FIFA World Cup",
+          "Pro-Palestine demonstrations and animal rights groups also visible in Mexico City amid broader protest wave before World Cup",
+          "Strikes, protests and travel warnings issued as chaos grips Mexico City under 48 hours before opening match",
+          "World Cup 2026 geopolitical tensions escalate with travel restrictions, safety fears for first three-nation tournament"
+        ],
+        "sources": "apnews.com, reuters.com, bbc.com, theguardian.com, aljazeera.com, ndtv.com, dw.com, barrons.com, cnbc.com, courthousenews.com, wtop.com, ksl.com, ktla.com, npr.org, nytimes.com, washingtonpost.com, sports.yahoo.com, ca.news.yahoo.com, uk.sports.yahoo.com, finance.yahoo.com, bloomberg.com, economist.com, ynetnews.com, goal.com, usatoday.com"
+      }
+    }
+  ],
+  "finishedAt": "2026-06-10T14:58:30Z"
+}

@@ -1,0 +1,14 @@
+Testing 1 models with /Users/hesdx/Documents/clawhost/claw-bun-mcp/grok/example/test1.txt
+
+
+=== deepseek (DeepSeek V4 Pro) ===
+select: {"ok":true,"modeTitle":"DeepSeek V4 Pro","label":"DeepSeek V4 Pro"}
+OK (684 chars)
+{
+  "is_event_from_prior_date": "yes",
+  "is_mostly_duplicate_content": "no",
+  "novelty_type": "rehash",
+  "event_date_estimate": "2026-05-17",
+  "primary_event": "CNN Sunday roundup compiling Trump'...
+
+Results written to /Users/hesdx/Documents/clawhost/claw-bun-mcp/notion/example/test1-results.json

@@ -4,3 +4,4 @@ bun-browser site notion/models
 bun-browser site notion/chat "Say hello in one sentence"
 bun-browser site notion/search "hello"
 bun-browser site notion/create-article "Weekly Recap" "Lead paragraph."$'\n\n'"Second paragraph."
+bun-browser site notion/edit-article "https://app.notion.com/p/37b773dd10fd80288a68c2fda0897975" "Updated lead."$'\n\n'"New second paragraph." --title "Weekly Recap (Updated)"

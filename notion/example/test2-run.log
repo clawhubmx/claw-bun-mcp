@@ -1,0 +1,15 @@
+Tabs (3): #0 f897 https://app.notion.com/ai
+  #1 9240 https://app.notion.com/ai
+  #2 6713 https://app.notion.com/ai
+
+Testing /Users/hesdx/Documents/clawhost/claw-bun-mcp/grok/example/test2.txt on 3 tabs in parallel
+
+[tab f897/#0] starting grok (Grok 4.3)
+[tab 9240/#1] starting gemini (Gemini 3.1 Pro)
+[tab 6713/#2] starting deepseek (DeepSeek V4 Pro)
+[tab 6713] OK (2859 chars)
+[tab 6713] {
+  "query": "Protesters block road to Mexican World Cup stadium",
+  "time_period": "2026-06-07 to 2026-06-13",
+  "unique_topics": [
+    "CNTE teachers' union protesters block majo...
