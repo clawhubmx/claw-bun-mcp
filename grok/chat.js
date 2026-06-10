@@ -39,7 +39,7 @@ async function(args) {
   }
 
                 var h = (function installGrokChatHelpers() {
-  var HELPERS_VERSION = 16;
+  var HELPERS_VERSION = 19;
 
   // Default wait when mode is unrecognized (fast/auto)
   var GROK_CHAT_WAIT_MS = 15 * 60 * 1000;
@@ -66,6 +66,44 @@ async function(args) {
 
   function sleep(ms) {
     return new Promise(function(resolve) { setTimeout(resolve, ms); });
+  }
+
+  function clickElement(el) {
+    if (!el) return;
+    try { el.focus(); } catch (e) {}
+    el.click();
+    var rect = el.getBoundingClientRect();
+    var x = rect.left + rect.width / 2;
+    var y = rect.top + rect.height / 2;
+    ['pointerdown', 'mousedown', 'mouseup', 'pointerup', 'click'].forEach(function(type) {
+      el.dispatchEvent(new MouseEvent(type, {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+        clientX: x,
+        clientY: y
+      }));
+    });
+  }
+
+  function isElementVisible(el) {
+    if (!el) return false;
+    if (el.getAttribute('aria-hidden') === 'true') return false;
+    var style = window.getComputedStyle(el);
+    if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) {
+      return false;
+    }
+    var rect = el.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) return false;
+    return el.offsetParent !== null || style.position === 'fixed' || style.position === 'sticky';
+  }
+
+  function findVisibleElement(candidates) {
+    if (!candidates || !candidates.length) return null;
+    for (var i = 0; i < candidates.length; i++) {
+      if (isElementVisible(candidates[i])) return candidates[i];
+    }
+    return candidates[0];
   }
 
   function getAssistantMessages() {
@@ -172,10 +210,19 @@ async function(args) {
     return lines.every(isProgressLine);
   }
 
+  function detectGrokUnableToReply(text) {
+    if (!text) return false;
+    var t = String(text);
+    if (/grok was unable to reply/i.test(t)) return true;
+    if (/unable to reply to your last message/i.test(t)) return true;
+    return false;
+  }
+
   function looksLikeFinalAnswer(text) {
     if (!text) return false;
     var t = String(text).trim();
     if (!t || isProgressText(t)) return false;
+    if (detectGrokUnableToReply(t)) return false;
     if (/^open page\b/i.test(t)) return false;
     var json = extractJsonBlock(t);
     if (json) {
@@ -373,9 +420,119 @@ async function(args) {
     if (/minutes?\s+before\s+limit\s+is\s+gone/i.test(text)) return true;
     if (/you can continue chatting once it resets/i.test(text)) return true;
     if (/message\s+limit\s+reached/i.test(text)) return true;
+    if (/supergrok\s+heavy\s+limit\s+reached/i.test(text)) return true;
+    if (/supergrok/i.test(text) && /your\s+limit\s+will\s+reset\s+soon/i.test(text)) return true;
     if (/rate\s+limit/i.test(text) && /reset|wait|try again|minutes?/i.test(text)) return true;
     if (/too many (messages|requests)/i.test(text)) return true;
     return false;
+  }
+
+  function isSuperGrokHeavyLimit(text) {
+    return /supergrok\s+heavy\s+limit\s+reached/i.test(text) ||
+      (/supergrok/i.test(text) && /your\s+limit\s+will\s+reset\s+soon/i.test(text));
+  }
+
+  function findGrokRetryButton(rootEl) {
+    var scopes = [];
+    if (rootEl) scopes.push(rootEl);
+    else {
+      scopes.push(document);
+      var latest = getAssistantMessages().slice(-1)[0];
+      if (latest) scopes.push(latest);
+    }
+    var candidates = [];
+    var seen = typeof WeakSet !== 'undefined' ? new WeakSet() : null;
+    for (var s = 0; s < scopes.length; s++) {
+      var nodes = Array.prototype.slice.call(scopes[s].querySelectorAll(
+        'button, [role="button"], a'
+      ));
+      for (var i = 0; i < nodes.length; i++) {
+        var el = nodes[i];
+        if (seen) {
+          if (seen.has(el)) continue;
+          seen.add(el);
+        }
+        var label = el.getAttribute('aria-label') || '';
+        var text = (el.innerText || el.textContent || '').trim();
+        if (/^retry$/i.test(text) || /^retry$/i.test(label) ||
+            /^try again$/i.test(text) || /^try again$/i.test(label)) {
+          candidates.push(el);
+        }
+      }
+    }
+    return findVisibleElement(candidates);
+  }
+
+  async function clickGrokRetry(rootEl) {
+    var btn = findGrokRetryButton(rootEl);
+    if (!btn) return { ok: false };
+    clickElement(btn);
+    await sleep(400);
+    return { ok: true };
+  }
+
+  function getLatestAssistantResponseText() {
+    var messages = getAssistantMessages();
+    var latest = messages[messages.length - 1];
+    if (!latest) return '';
+    return (latest.innerText || latest.textContent || '').trim();
+  }
+
+  function buildGrokTransientError(sourceText, rootEl) {
+    var message = '';
+    if (sourceText) {
+      var lines = String(sourceText).split('\n').map(function(line) {
+        return line.trim();
+      }).filter(Boolean);
+      for (var i = 0; i < lines.length; i++) {
+        if (detectGrokUnableToReply(lines[i])) {
+          message = lines[i];
+          break;
+        }
+      }
+      if (!message) message = lines.slice(0, 4).join(' ');
+    }
+    return {
+      error: 'Grok generation failed',
+      kind: 'transient_error',
+      message: message || 'Grok was unable to reply to your last message.',
+      hint: 'Transient Grok error. The adapter clicks Retry automatically; you can also retry the same command.',
+      action: 'retry same command',
+      canRetry: !!findGrokRetryButton(rootEl)
+    };
+  }
+
+  function detectGrokResponseBlock(text, rootEl) {
+    var sources = [];
+    if (text) sources.push(String(text));
+    if (rootEl) {
+      sources.push((rootEl.innerText || rootEl.textContent || '').trim());
+    }
+    for (var i = 0; i < sources.length; i++) {
+      if (detectGrokUnableToReply(sources[i])) {
+        return buildGrokTransientError(sources[i], rootEl);
+      }
+    }
+    if (rootEl && findGrokRetryButton(rootEl)) {
+      return buildGrokTransientError(text || getLatestAssistantResponseText(), rootEl);
+    }
+    return null;
+  }
+
+  function checkGrokAnswerBlocked(answer) {
+    var block = detectGrokResponseBlock(answer);
+    if (!block) block = detectGrokResponseBlock(getLatestAssistantResponseText());
+    if (!block) {
+      var latest = getAssistantMessages().slice(-1)[0];
+      if (latest) block = detectGrokResponseBlock('', latest);
+    }
+    if (!block) {
+      var pageText = getVisiblePageText(8000);
+      if (detectGrokUnableToReply(pageText) || findGrokRetryButton()) {
+        block = buildGrokTransientError(pageText, null);
+      }
+    }
+    return block;
   }
 
   function detectGrokPageAbnormal(opts) {
@@ -396,11 +553,14 @@ async function(args) {
 
     if (detectRateLimitText(pageText)) {
       rateDetail = extractRateLimitDetail(pageText);
-      var rateHint = rateDetail && rateDetail.minutesUntilReset
-        ? 'Rate limit active: about ' + rateDetail.minutesUntilReset + ' minutes until reset. You can continue chatting once it resets.'
-        : 'Rate limit or quota message detected on page. Wait for reset before retrying.';
+      var superGrokHeavy = isSuperGrokHeavyLimit(pageText);
+      var rateHint = superGrokHeavy
+        ? 'SuperGrok Heavy quota reached. Your limit will reset soon.'
+        : (rateDetail && rateDetail.minutesUntilReset
+          ? 'Rate limit active: about ' + rateDetail.minutesUntilReset + ' minutes until reset. You can continue chatting once it resets.'
+          : 'Rate limit or quota message detected on page. Wait for reset before retrying.');
       var rateOut = {
-        error: 'Chat rate limit reached',
+        error: superGrokHeavy ? 'SuperGrok Heavy limit reached' : 'Chat rate limit reached',
         kind: 'rate_limit',
         hint: rateHint,
         action: 'wait for limit reset, then retry'
@@ -429,9 +589,12 @@ async function(args) {
           : pageText;
         if (detectRateLimitText(contextText)) {
           rateDetail = extractRateLimitDetail(contextText);
-          var submitHint = rateDetail && rateDetail.minutesUntilReset
-            ? 'Submit disabled: ' + rateDetail.minutesUntilReset + ' minutes before limit resets.'
-            : 'Submit is disabled due to rate/quota limit.';
+          var superGrokHeavy = isSuperGrokHeavyLimit(contextText);
+          var submitHint = superGrokHeavy
+            ? 'Submit disabled: SuperGrok Heavy limit reached. Your limit will reset soon.'
+            : (rateDetail && rateDetail.minutesUntilReset
+              ? 'Submit disabled: ' + rateDetail.minutesUntilReset + ' minutes before limit resets.'
+              : 'Submit is disabled due to rate/quota limit.');
           var submitOut = {
             error: 'Chat submission blocked',
             kind: 'submit_disabled',
@@ -857,6 +1020,14 @@ async function(args) {
       if (generating || pending) sawInFlight = true;
       var rawText = latest ? getAssistantText(latest) : '';
       answer = rawText ? cleanAssistantText(rawText) : '';
+      if (latest && messages.length > beforeCount && !generating && !pending) {
+        var streamBlock = detectGrokResponseBlock(answer, latest);
+        if (streamBlock) {
+          lastWaitAbnormal = streamBlock;
+          lastWaitPending = false;
+          return '';
+        }
+      }
       var ready = looksLikeFinalAnswer(answer);
 
       var hasNewMessage = messages.length > beforeCount && ready;
@@ -888,10 +1059,22 @@ async function(args) {
       return parsedJson || answer;
     }
     if (!looksLikeFinalAnswer(answer) || isGrokGenerating() || isGrokReplyPending(beforeCount, beforeText)) {
+      var latestMsg = getAssistantMessages().slice(-1)[0];
+      var pendingBlock = latestMsg ? detectGrokResponseBlock(getLatestAssistantResponseText(), latestMsg) : null;
+      if (pendingBlock) {
+        lastWaitAbnormal = pendingBlock;
+        lastWaitPending = false;
+        return '';
+      }
       lastWaitPending = sawInFlight || isGrokReplyPending(beforeCount, beforeText) || isGrokGenerating();
       return '';
     }
     lastWaitPending = false;
+    var finalBlock = detectGrokResponseBlock(answer);
+    if (finalBlock) {
+      lastWaitAbnormal = finalBlock;
+      return '';
+    }
     var json = extractJsonBlock(answer);
     return json || answer;
   }
@@ -912,6 +1095,11 @@ async function(args) {
     wasLastWaitPending: wasLastWaitPending,
     getLastWaitAbnormal: getLastWaitAbnormal,
     detectGrokPageAbnormal: detectGrokPageAbnormal,
+    detectGrokUnableToReply: detectGrokUnableToReply,
+    findGrokRetryButton: findGrokRetryButton,
+    clickGrokRetry: clickGrokRetry,
+    detectGrokResponseBlock: detectGrokResponseBlock,
+    checkGrokAnswerBlocked: checkGrokAnswerBlocked,
     getSubmitButton: getSubmitButton,
     resolveGrokMode: resolveGrokMode,
     resolveGrokModeWaitMs: resolveGrokModeWaitMs,
@@ -927,6 +1115,7 @@ async function(args) {
     hasParsedJsonAnswer: hasParsedJsonAnswer
   };
 
+  return globalThis.__grokChatHelpers;
   return globalThis.__grokChatHelpers;})();
 
   function getConversationId() {
@@ -959,20 +1148,33 @@ async function(args) {
     var waitedAnswer = await h.waitForAssistantAnswer(pollBeforeCount, pollBeforeText, waitOpts);
     if (!waitedAnswer) {
       var waitAbnormal = h.getLastWaitAbnormal();
-      if (waitAbnormal) return waitAbnormal;
-      if (h.wasLastWaitPending()) {
+      if (waitAbnormal && waitAbnormal.kind === 'transient_error') {
+        var waitRetryClick = await h.clickGrokRetry();
+        if (waitRetryClick.ok) {
+          waitedAnswer = await h.waitForAssistantAnswer(pollBeforeCount, pollBeforeText, waitOpts);
+          if (!waitedAnswer) waitAbnormal = h.getLastWaitAbnormal();
+        }
+      }
+      if (!waitedAnswer) {
+        if (waitAbnormal) return waitAbnormal;
+        var waitReplyBlock = h.checkGrokAnswerBlocked('');
+        if (waitReplyBlock) return waitReplyBlock;
+        if (h.wasLastWaitPending()) {
+          return {
+            error: 'Still generating',
+            hint: 'Grok 仍在生成，请用 waitOnly 继续等待当前回复',
+            action: 'retry with waitOnly: true'
+          };
+        }
         return {
-          error: 'Still generating',
-          hint: 'Grok 仍在生成，请用 waitOnly 继续等待当前回复',
-          action: 'retry with waitOnly: true'
+          error: 'Empty response',
+          hint: 'Grok 未返回内容，可能页面结构已变化',
+          action: 'bun-browser open https://grok.com/'
         };
       }
-      return {
-        error: 'Empty response',
-        hint: 'Grok 未返回内容，可能页面结构已变化',
-        action: 'bun-browser open https://grok.com/'
-      };
     }
+    var waitReplyAnswerBlock = h.checkGrokAnswerBlocked(waitedAnswer);
+    if (waitReplyAnswerBlock) return waitReplyAnswerBlock;
     var waitOut = {
       query: args.query,
       model: modeId,
@@ -1056,20 +1258,34 @@ async function(args) {
 
   if (!answer) {
     var answerAbnormal = h.getLastWaitAbnormal();
-    if (answerAbnormal) return answerAbnormal;
-    if (h.wasLastWaitPending()) {
+    if (answerAbnormal && answerAbnormal.kind === 'transient_error') {
+      var retryClick = await h.clickGrokRetry();
+      if (retryClick.ok) {
+        answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
+        if (!answer) answerAbnormal = h.getLastWaitAbnormal();
+      }
+    }
+    if (!answer) {
+      if (answerAbnormal) return answerAbnormal;
+      var replyBlock = h.checkGrokAnswerBlocked('');
+      if (replyBlock) return replyBlock;
+      if (h.wasLastWaitPending()) {
+        return {
+          error: 'Still generating',
+          hint: 'Grok 仍在生成（搜索/工具调用/流式输出中），请用 waitOnly 继续等待',
+          action: 'retry with waitOnly: true'
+        };
+      }
       return {
-        error: 'Still generating',
-        hint: 'Grok 仍在生成（搜索/工具调用/流式输出中），请用 waitOnly 继续等待',
-        action: 'retry with waitOnly: true'
+        error: 'Empty response',
+        hint: 'Grok 未返回内容，可能页面结构已变化',
+        action: 'bun-browser open https://grok.com/'
       };
     }
-    return {
-      error: 'Empty response',
-      hint: 'Grok 未返回内容，可能页面结构已变化',
-      action: 'bun-browser open https://grok.com/'
-    };
   }
+
+  var replyAnswerBlock = h.checkGrokAnswerBlocked(answer);
+  if (replyAnswerBlock) return replyAnswerBlock;
 
   var out = {
     query: args.query,

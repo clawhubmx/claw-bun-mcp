@@ -140,4 +140,41 @@ describe("grok chat completion detection", () => {
     expect(answer).toBe(TOPIC_JSON);
     expect(h.wasLastWaitPending()).toBe(false);
   });
+
+  test("looksLikeFinalAnswer rejects Grok unable-to-reply error", () => {
+    const err = "Grok was unable to reply to your last message.";
+    expect(h.detectGrokUnableToReply(err)).toBe(true);
+    expect(h.looksLikeFinalAnswer(err)).toBe(false);
+  });
+
+  test("detectGrokResponseBlock catches unable-to-reply with Retry button", () => {
+    const el = assistantMessage({
+      innerHTML: "<p>Grok was unable to reply to your last message.</p>",
+      innerText: "Grok was unable to reply to your last message.",
+    });
+    const btn = document.createElement("button");
+    btn.textContent = "Retry";
+    el.appendChild(btn);
+
+    const block = h.detectGrokResponseBlock("Grok was unable to reply to your last message.", el);
+    expect(block).not.toBeNull();
+    expect(block.kind).toBe("transient_error");
+    expect(block.canRetry).toBe(true);
+  });
+
+  test("checkGrokAnswerBlocked detects unable-to-reply from page text without assistant-message", () => {
+    const banner = document.createElement("div");
+    banner.innerHTML = "<p>Grok was unable to reply to your last message.</p>";
+    const btn = document.createElement("button");
+    btn.textContent = "Retry";
+    banner.appendChild(btn);
+    document.body.appendChild(banner);
+
+    const block = h.checkGrokAnswerBlocked("");
+    banner.remove();
+
+    expect(block).not.toBeNull();
+    expect(block.kind).toBe("transient_error");
+    expect(block.canRetry).toBe(true);
+  });
 });
