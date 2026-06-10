@@ -40,7 +40,35 @@ const loginBlock = `  var loginBlock = (function() {
 
 `;
 const trustDrainBlock = "  await h.drainUrlTrustPrompts();\n";
-const busyTabGuardBlock = `  var allowBusyTab = parseBool(args.allowBusyTab, false);
+const parseArgHelpers = `  function parseBool(val, defaultVal) {
+    if (val === undefined || val === null || val === '') return defaultVal;
+    if (val === true || val === false) return val;
+    var s = String(val).toLowerCase();
+    if (s === 'true' || s === '1') return true;
+    if (s === 'false' || s === '0') return false;
+    return defaultVal;
+  }
+
+  function pickPositional(args, index) {
+    if (!args._positional || args._positional.length <= index) return undefined;
+    return args._positional[index];
+  }
+
+  function pickArg(args, name, index, defaultVal) {
+    if (args[name] !== undefined && args[name] !== null && args[name] !== '') return args[name];
+    if (index >= 0) {
+      var pos = pickPositional(args, index);
+      if (pos !== undefined && pos !== null && pos !== '') return pos;
+    }
+    return defaultVal;
+  }
+
+  function pickBoolArg(args, name, index, defaultVal) {
+    return parseBool(pickArg(args, name, index, undefined), defaultVal);
+  }
+
+`;
+const busyTabGuardBlock = `  var allowBusyTab = pickBoolArg(args, 'allowBusyTab', -1, false);
   if (newChat && !waitOnly && !allowBusyTab && h.isChatInProgress()) {
     return {
       error: 'Tab busy',
@@ -103,17 +131,9 @@ writeFileSync(
   "example": "bun-browser site notion/chat \\"Summarize this week in one paragraph\\""
 }
 */`,
-    `  function parseBool(val, defaultVal) {
-    if (val === undefined || val === null || val === '') return defaultVal;
-    if (val === true || val === false) return val;
-    var s = String(val).toLowerCase();
-    if (s === 'true' || s === '1') return true;
-    if (s === 'false' || s === '0') return false;
-    return defaultVal;
-  }
-
-  var selectOnly = parseBool(args.selectOnly, false);
-  if (!args.query && !selectOnly) {
+    `${parseArgHelpers}  var selectOnly = pickBoolArg(args, 'selectOnly', 3, false);
+  var queryTextArg = pickArg(args, 'query', 0, '');
+  if (!queryTextArg && !selectOnly) {
     return { error: 'Missing argument: query', hint: 'Provide a prompt for Notion AI' };
   }
 
@@ -121,9 +141,9 @@ ${loginBlock}
 ${installBlock}
   h.resetUrlTrustState();
   var waitOpts = h.buildWaitOpts(args);
-  var waitOnly = parseBool(args.waitOnly, false);
-  var newChat = parseBool(args.newChat, true);
-  var modeId = h.resolveNotionMode(args.model || 'auto');
+  var waitOnly = pickBoolArg(args, 'waitOnly', 4, false);
+  var newChat = pickBoolArg(args, 'newChat', 2, true);
+  var modeId = h.resolveNotionMode(pickArg(args, 'model', 1, 'auto') || 'auto');
 
   var accessBlock = h.detectNotionPageAbnormal();
   if (accessBlock) return accessBlock;
@@ -181,7 +201,7 @@ ${trustDrainBlock}    var existing = h.getAssistantMessages();
       return { error: 'Empty response', hint: 'Notion AI returned no content.', action: 'bun-browser open https://app.notion.com/' };
     }
     var waitOut = {
-      query: args.query,
+      query: queryTextArg || args.query,
       model: modeId,
       modeLabel: h.readNotionModeLabel(),
       answer: waitedAnswer,
@@ -345,7 +365,7 @@ ${trustDrainBlock}    var existing = h.getAssistantMessages();
       return { error: 'Empty response', hint: 'Notion AI returned no content.', action: 'bun-browser open https://app.notion.com/' };
     }
     var waitFollowOut = {
-      query: args.query,
+      query: queryTextArg || args.query,
       conversationId: conversationId,
       model: modeId,
       modeLabel: h.readNotionModeLabel(),

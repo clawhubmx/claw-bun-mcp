@@ -2316,7 +2316,7 @@ async function(args) {
       return { error: 'Empty response', hint: 'Notion AI returned no content.', action: 'bun-browser open https://app.notion.com/' };
     }
     var waitFollowOut = {
-      query: args.query,
+      query: queryTextArg || args.query,
       conversationId: conversationId,
       model: modeId,
       modeLabel: h.readNotionModeLabel(),

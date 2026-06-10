@@ -1,0 +1,34 @@
+{
+  "startedAt": "2026-06-10T17:55:50Z",
+  "finishedAt": "2026-06-10T17:58:38Z",
+  "promptFile": "grok/example/test2.txt",
+  "model": "DeepSeek V4 Pro",
+  "success": true,
+  "data": {
+    "query": "You are a news research assistant. Search the listed publisher domains for recent coverage. Return JSON only. Do not use markdown or bold formatting.\n \nbased on user \"Protesters block road to Mexican World Cup stadium\" as input, please go find out from the given publishers:\n- news.google.com\n- 247sports.com\n- 404media.co\n- 9to5google.com\n- 9to5mac.com\n- abcnews.com\n- abovethelaw.com\n- al.com\n- aljazeera.com\n- aol.com\n- apnews.com\n- asiatimes.com\n- autosport.com\n- axios.com\n- barrons.com\n- bbc.com\n- behindthesteelcurtain.com\n- benzinga.com\n- bleachernation.com\n- bleacherreport.com\n- bloomberg.com\n- boingboing.net\n- businessinsider.com\n- buzzfeed.com\n- ca.news.yahoo.com\n- cagesideseats.com\n- cbsnews.com\n- chicagotribune.com\n- cleveland.com\n- cnbc.com\n- cnn.com\n- coindesk.com\n- consequence.net\n- courthousenews.com\n- cowboystatedaily.com\n- cpr.org\n- creators.yahoo.com\n- csmonitor.com\n- deadline.com\n- digitalfoundry.net\n- dw.com\n- eatingwell.com\n- eatthis.com\n- economist.com\n- espn.com\n- eurogamer.net\n- euronews.com\n- eventhubs.com\n- ew.com\n- f4wonline.com\n- finance.yahoo.com\n- forbes.com\n- fortune.com\n- ft.com\n- futurism.com\n- gameinformer.com\n- gamesindustry.biz\n- gamespress.com\n- gematsu.com\n- gizmodo.com\n- goal.com\n- gothamist.com\n- hayspost.com\n- heathercoxrichardson.substack.com\n- hitc.com\n- hollywoodreporter.com\n- huffpost.com\n- ign.com\n- inc.com\n- inews.co.uk\n- insider-gaming.com\n- investing.com\n- investors.com\n- japantimes.co.jp\n- katu.com\n- kotaku.com\n- ksl.com\n- ktla.com\n- kvia.com\n- kyivindependent.com\n- latimes.com\n- liveandletsfly.com\n- livescience.com\n- markerzone.com\n- marketwatch.com\n- marktechpost.com\n- marthastewart.com\n- medicalnewstoday.com\n- medicalxpress.com\n- medium.com\n- mlb.com\n- mlbtraderumors.com\n- mmafighting.com\n- motorsport.com\n- nascar.com\n- nature.com\n- nba.com\n- nbcnews.com\n- nbcsports.com\n- nbcwashington.com\n- ncronline.org\n- ndtv.com\n- neurosciencenews.com\n- news.arizona.edu\n- news.xbox.com\n- newser.com\n- newsweek.com\n- nhl.com\n- nintendoeverything.com\n- nintendolife.com\n- npr.org\n- nypost.com\n- nytimes.com\n- nz.news.yahoo.com\n- onemileatatime.com\n- opb.org\n- pbs.org\n- pcmag.com\n- phys.org\n- pinstripealley.com\n- politico.com\n- politico.eu\n- prnewswire.com\n- pushsquare.com\n- quantamagazine.org\n- reuters.com\n- rollingstone.com\n- russianmachineneverbreaks.com\n- science.nasa.gov\n- sciencealert.com\n- sciencedaily.com\n- scitechdaily.com\n- scmp.com\n- screenrant.com\n- si.com\n- slate.com\n- space.com\n- spacedaily.com\n- sports.yahoo.com\n- sportscar365.com\n- statnews.com\n- stonex.com\n- tampabay.com\n- tastingtable.com\n- tech.yahoo.com\n- techcrunch.com\n- techradar.com\n- techspot.com\n- thebrighterside.news\n- theconversation.com\n- thedodo.com\n- theguardian.com\n- thehackernews.com\n- theringer.com\n- thestreet.com\n- theurbanist.org\n- theverge.com\n- timesofindia.indiatimes.com\n- timesofisrael.com\n- tmz.com\n- triblive.com\n- understandingwar.org\n- unherd.com\n- universetoday.com\n- ussoccer.com\n- utilitydive.com\n- vanityfair.com\n- variety.com\n- venturebeat.com\n- videocardz.com\n- vogue.com\n- vox.com\n- washingtonpost.com\n- wccftech.com\n- wdwnt.com\n- whitehouse.gov\n- wired.com\n- womenshealthmag.com\n- wsj.com\n- wtop.com\n- yahoo.com\n- ynetnews.com\n \nfor the latest topics ± 3 days for the most relevant news topics, and then deduplicate them and show me the unique topics in JSON format only. do not bold the response.\n \nformat in\n{\n  \"query\": <text>,\n  \"time_period\": <text>,\n  \"unique_topics\": <array of strings>,\n  \"sources\": <text>\n}\n \nUse coverage window roughly 2026-06-07 to 2026-06-13.",
+    "model": "DeepSeek V4 Pro",
+    "modeTitle": "DeepSeek V4 Pro",
+    "modeLabel": "DeepSeek V4 Pro",
+    "answer": "{\n\"query\": \"Protesters block road to Mexican World Cup stadium\",\n\"time_period\": \"2026-06-07 to 2026-06-13\",\n\"unique_topics\": [\n\"CNTE teachers block avenue leading to Mexico City Azteca Stadium two days before World Cup opener\",\n\"CNTE teachers demand wage increases and repeal of 2007 ISSSTE pension reform law\",\n\"Police deploy thousands of officers and concrete barriers to secure Azteca Stadium perimeter\",\n\"President Sheinbaum calls protests a provocation, guarantees opening match, favors dialogue over police repression\",\n\"Anti-FIFA protests with 'FIFA go home' banners and graffiti target Azteca Stadium\",\n\"Protesters topple, vandalize, and burn World Cup player statues along Paseo de la Reforma\",\n\"CNTE protest encampment occupies Zocalo plaza, threatening FIFA Fan Fest public viewing area\",\n\"Families of disappeared persons and multiple groups leverage World Cup spotlight for their causes\",\n\"Last-minute construction work and road closures compound Mexico City disruption\",\n\"Police teargas teachers during June 1 march toward Zocalo plaza ahead of World Cup\"\n],\n\"sources\": \"apnews.com, abcnews.com, aljazeera.com, bbc.com, bloomberg.com, cnbc.com, cnn.com, dw.com, economist.com, npr.org, reuters.com, theguardian.com, nytimes.com\"\n}",
+    "conversationId": "37b773dd-10fd-80a1-a5fe-00a958ff23a9",
+    "answerJson": {
+      "query": "Protesters block road to Mexican World Cup stadium",
+      "time_period": "2026-06-07 to 2026-06-13",
+      "unique_topics": [
+        "CNTE teachers block avenue leading to Mexico City Azteca Stadium two days before World Cup opener",
+        "CNTE teachers demand wage increases and repeal of 2007 ISSSTE pension reform law",
+        "Police deploy thousands of officers and concrete barriers to secure Azteca Stadium perimeter",
+        "President Sheinbaum calls protests a provocation, guarantees opening match, favors dialogue over police repression",
+        "Anti-FIFA protests with 'FIFA go home' banners and graffiti target Azteca Stadium",
+        "Protesters topple, vandalize, and burn World Cup player statues along Paseo de la Reforma",
+        "CNTE protest encampment occupies Zocalo plaza, threatening FIFA Fan Fest public viewing area",
+        "Families of disappeared persons and multiple groups leverage World Cup spotlight for their causes",
+        "Last-minute construction work and road closures compound Mexico City disruption",
+        "Police teargas teachers during June 1 march toward Zocalo plaza ahead of World Cup"
+      ],
+      "sources": "apnews.com, abcnews.com, aljazeera.com, bbc.com, bloomberg.com, cnbc.com, cnn.com, dw.com, economist.com, npr.org, reuters.com, theguardian.com, nytimes.com"
+    },
+    "answerFormat": "json"
+  },
+  "conversationUrl": "https://app.notion.com/chat?t=37b773dd10fd80a1a5fe00a958ff23a9&wfv=chat"
+}

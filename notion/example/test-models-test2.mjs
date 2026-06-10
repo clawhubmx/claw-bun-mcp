@@ -190,7 +190,7 @@ async function runChat(tabRef, modelAlias, title, maxAttempts = 3) {
 }
 
 function runChatWaitOnly(tabRef) {
-  const full = ["bun", CLI, "site", "notion/chat", "x", "--waitOnly", "true", "--tab", tabRef, "--json"];
+  const full = ["bun", CLI, "site", "notion/chat", "x", "auto", "true", "false", "true", "--tab", tabRef, "--json"];
   return new Promise((resolve) => {
     const child = spawn(full[0], full.slice(1), {
       encoding: "utf8",

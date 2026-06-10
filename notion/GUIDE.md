@@ -261,6 +261,96 @@ bun-browser site notion/chat --model sonnet --selectOnly true
 
 返回 `{ "selected": true, "modeLabel": "Sonnet 4.6", ... }`，不消耗 AI 额度发送提示词。E2E 流程 `run-api-flow.mjs` 对每个模型都走此路径做选择矩阵测试。
 
+## 多标签页与长时间生成
+
+Notion Agent 任务（搜索、多步推理）可能运行 **数分钟到 15 分钟**。每个进行中的提示词应**绑定一个浏览器标签页**：在该 tab 上只轮询，不要点 New chat 或重新导航。
+
+### 原则
+
+| Tab 状态 | 正确做法 |
+|----------|----------|
+| 仍在生成 | 留在原 tab，用 **waitOnly** 轮询 |
+| 新提示词 | 开 **新 tab**（`--tab new`），在新 tab 上 `notion/chat` |
+| 误在新 prompt 上跑默认 `newChat` | 若 tab 仍在生成 → 返回 **`Tab busy`**，不会打断进行中的回复 |
+
+```bash
+# 查看标签页
+bun-browser tab list --json
+
+# 新任务：新 tab
+bun-browser open https://app.notion.com/ai --tab new
+bun-browser site notion/chat "$(cat prompt.txt)" --model kimi --tab <TAB_ID> --json
+
+# 进行中的任务：只轮询，不 resubmit
+bun-browser site notion/chat "x" auto true false true --tab <TAB_ID> --json
+```
+
+**不要**在仍生成中的 tab 上执行 `open .../ai --tab <ID>` 或带 `newChat: true` 的 chat — 会中断 Agent。
+
+### 位置参数顺序（`notion/chat`）
+
+bun-browser 按 meta 顺序传位置参数。`waitOnly`、`newChat` 等 **CLI `--flag` 可能被全局解析器丢弃**，请用位置参数：
+
+```
+query → model → newChat → selectOnly → waitOnly → (空) → maxWaitMs
+```
+
+| 索引 | 参数 | 典型值 |
+|------|------|--------|
+| 0 | `query` | 提示词，或 waitOnly 时 `"x"` |
+| 1 | `model` | `auto`、`kimi`、`grok` 等 |
+| 2 | `newChat` | `true` / `false` |
+| 3 | `selectOnly` | `false` |
+| 4 | `waitOnly` | `true` 表示只轮询 |
+| 5 | （保留） | 传空或省略 |
+| 6 | `maxWaitMs` | 毫秒；也可用 `--maxWaitMs` |
+
+示例：
+
+```bash
+# 提交新对话（位置参数 newChat=true，waitOnly=false）
+bun-browser site notion/chat "Hello" auto true false false --tab f547 --json
+
+# 轮询进行中的回复（waitOnly=true）
+bun-browser site notion/chat "x" auto true false true --tab f547 --json
+
+# 快速探测是否还在生成（约 5 秒）
+bun-browser site notion/chat "x" auto true false true --maxWaitMs 5000 --tab f547 --json
+```
+
+`--model`、`--tab`、`--json` 等 bun-browser 全局选项仍可照常使用。
+
+### 判断回复是否完成
+
+**方式 1 — waitOnly 轮询（推荐）**
+
+| 返回 | 含义 |
+|------|------|
+| `{ "answer": "...", "waitOnly": true }` | 已完成 |
+| `{ "error": "Still generating" }` | 仍在生成，重跑同一条 waitOnly 命令 |
+| `{ "error": "Tab busy" }` | 误用了 `newChat` 而非 waitOnly；改用位置参数 `... true false true` |
+
+**方式 2 — 即时 DOM 快照（不等待）**
+
+```bash
+bun-browser eval "(function(){var h=globalThis.__notionAiChatHelpers;if(!h)return{error:'helpers not loaded'};var msgs=h.getAssistantMessages();var ans=msgs.length?h.getAssistantText(msgs[msgs.length-1]):'';return{generating:h.isGenerating(),inProgress:h.isChatInProgress(),answerLen:ans.length,preview:ans.slice(0,300),looksFinal:h.looksLikeFinalAnswer(ans),conversationId:h.getConversationId()};})()" --tab <TAB_ID> --json
+```
+
+- `generating: true` 或 `inProgress: true` → 仍在工作（Thinking、Searching、Computing 等）
+- `looksFinal: true` 且 `inProgress: false` → 大概率已完成，可用 waitOnly 收取最终文本
+
+`notion/health` **不**检测某条回复是否仍在生成。
+
+### 并行多任务
+
+每个并行 prompt 各占一个 tab（参见 `notion/example/test-models-test2.mjs`）：
+
+```bash
+bun-browser tab new https://app.notion.com/ai
+bun-browser tab new https://app.notion.com/ai
+# 分别对 tab A / tab B 提交，超时后用位置参数 waitOnly 轮询各自 tab
+```
+
 ## 参数
 
 ### notion/chat
@@ -271,7 +361,8 @@ bun-browser site notion/chat --model sonnet --selectOnly true
 | `model` | `auto` | 模型名称或别名 |
 | `newChat` | `true` | 是否先点 New chat |
 | `selectOnly` | `false` | 只选择模型，不发送提示词 |
-| `waitOnly` | `false` | 只轮询进行中的回复，不重新发送 |
+| `waitOnly` | `false` | 只轮询进行中的回复，不重新发送（**请用位置参数**，见上文） |
+| `allowBusyTab` | `false` | 允许在仍生成的 tab 上执行 `newChat`（默认拒绝并返回 `Tab busy`） |
 | `maxWaitMs` | 15 分钟 | 最长等待时间 |
 | `graceWaitMs` | — | 额外等待毫秒数 |
 
@@ -301,7 +392,7 @@ bun-browser site notion/chat --model sonnet --selectOnly true
 | `conversation` | 必填 | 线程 UUID 或 `https://app.notion.com/chat?t=...` URL |
 | `query` | 必填 | 跟进提示词 |
 | `model` | `auto` | 模型 |
-| `waitOnly` | `false` | 只轮询 |
+| `waitOnly` | `false` | 只轮询（**请用位置参数** `... true false true`，见「多标签页与长时间生成」） |
 
 ## 错误与处理
 
@@ -314,7 +405,8 @@ bun-browser site notion/chat --model sonnet --selectOnly true
 | 标题已写入、正文待填 | `partialSuccess` + `nextStep: body` | 重跑同一条命令 |
 | 无法设置标题/正文 | `Could not set page title` / `Could not set body text` | 等待页面加载完成后重跑 |
 | 找不到正文区 | `Body editor not found` | 确认页面已打开且为普通文章页，然后重跑 |
-| 仍在生成 | `Still generating` | 加 `--waitOnly true` 重试 |
+| 仍在生成 | `Still generating` | 用位置参数 waitOnly 重试：`notion/chat "x" auto true false true --tab <ID>` |
+| Tab 仍在生成、误开新对话 | `Tab busy`（`kind: chat_in_progress`） | `bun-browser open https://app.notion.com/ai --tab new`，在新 tab 提交；原 tab 用 waitOnly 轮询 |
 | 无回复 | `Empty response` | 刷新 Notion 标签页 |
 | 免费 AI 次数用尽 | `Run out of free AI responses` | 等待或升级计划 |
 | AI 额度用尽 | `AI credits exhausted` | 等待或升级计划 |
@@ -351,7 +443,8 @@ bun notion/scripts/inline-helpers.mjs
 - **历史 API**：`POST /api/v3/getInferenceTranscriptsForUser`
 - **模型列表**：DOM 抓取下拉菜单（`listNotionModelsFromUi`），非 Notion API
 - **模型选择器定位**：聊天输入框附近的 `aria-haspopup="menu"` 按钮，或 Submit 按钮同区域的可见按钮
-- **回复完整性**：轮询 DOM 直至 `looksLikeFinalAnswer` 通过且文本稳定；进度行（`Thinking`、`Searching`、`Notion AI finished` 等）会被过滤
+- **回复完整性**：轮询 DOM 直至 `looksLikeFinalAnswer` 通过且文本稳定；进度行（`Thinking`、`Searching`、`Notion AI finished` 等）会被过滤；短 intro stub（如 `I'll prioritize…`）由 `looksLikeInProgressAnswer` 视为未完成
+- **进行中检测**：`isChatInProgress()`（`isGenerating()` + 进行中 stub）；默认 `newChat` 前若 tab  busy 则返回 `Tab busy`，避免打断 Agent
 - **异常检测**：`detectNotionPageAbnormal` 识别 `credits_exhausted`（含 `Run out of free AI responses`）、`rate_limit`、`submit_disabled`
 
 ### 文章页（create-article / edit-article）

@@ -36,8 +36,27 @@ async function(args) {
     return defaultVal;
   }
 
-  var selectOnly = parseBool(args.selectOnly, false);
-  if (!args.query && !selectOnly) {
+  function pickPositional(args, index) {
+    if (!args._positional || args._positional.length <= index) return undefined;
+    return args._positional[index];
+  }
+
+  function pickArg(args, name, index, defaultVal) {
+    if (args[name] !== undefined && args[name] !== null && args[name] !== '') return args[name];
+    if (index >= 0) {
+      var pos = pickPositional(args, index);
+      if (pos !== undefined && pos !== null && pos !== '') return pos;
+    }
+    return defaultVal;
+  }
+
+  function pickBoolArg(args, name, index, defaultVal) {
+    return parseBool(pickArg(args, name, index, undefined), defaultVal);
+  }
+
+  var selectOnly = pickBoolArg(args, 'selectOnly', 3, false);
+  var queryTextArg = pickArg(args, 'query', 0, '');
+  if (!queryTextArg && !selectOnly) {
     return { error: 'Missing argument: query', hint: 'Provide a prompt for Notion AI' };
   }
 
@@ -2289,14 +2308,14 @@ async function(args) {
 
   h.resetUrlTrustState();
   var waitOpts = h.buildWaitOpts(args);
-  var waitOnly = parseBool(args.waitOnly, false);
-  var newChat = parseBool(args.newChat, true);
-  var modeId = h.resolveNotionMode(args.model || 'auto');
+  var waitOnly = pickBoolArg(args, 'waitOnly', 4, false);
+  var newChat = pickBoolArg(args, 'newChat', 2, true);
+  var modeId = h.resolveNotionMode(pickArg(args, 'model', 1, 'auto') || 'auto');
 
   var accessBlock = h.detectNotionPageAbnormal();
   if (accessBlock) return accessBlock;
   await h.drainUrlTrustPrompts();
-  var allowBusyTab = parseBool(args.allowBusyTab, false);
+  var allowBusyTab = pickBoolArg(args, 'allowBusyTab', -1, false);
   if (newChat && !waitOnly && !allowBusyTab && h.isChatInProgress()) {
     return {
       error: 'Tab busy',
@@ -2363,7 +2382,7 @@ async function(args) {
       return { error: 'Empty response', hint: 'Notion AI returned no content.', action: 'bun-browser open https://app.notion.com/' };
     }
     var waitOut = {
-      query: args.query,
+      query: queryTextArg || args.query,
       model: modeId,
       modeLabel: h.readNotionModeLabel(),
       answer: waitedAnswer,
