@@ -5,7 +5,7 @@
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-const ABNORMAL_KINDS = new Set(["credits_exhausted", "rate_limit", "submit_disabled"]);
+const ABNORMAL_KINDS = new Set(["credits_exhausted", "rate_limit", "submit_disabled", "prompt_rejected"]);
 
 const PROGRESS_LINE_RE =
   /^(Notion AI finished\.?|(Searching|Reading|Browsing|Fetching|Thinking|Running)\b|\d+s)$/i;
@@ -25,7 +25,7 @@ export function isUuidConversationId(value) {
 export function isAbnormalResponse(data) {
   if (!isObject(data) || !data.error) return false;
   if (data.kind && ABNORMAL_KINDS.has(data.kind)) return true;
-  return /credits exhausted|run out of free|rate limit|submission blocked/i.test(String(data.error));
+  return /credits exhausted|run out of free|rate limit|submission blocked|an error occurred.*please try again/i.test(String(data.error));
 }
 
 export function isProgressLine(text) {

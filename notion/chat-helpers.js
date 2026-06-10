@@ -3,7 +3,7 @@
  * Inlined by notion/chat.js and notion/chatfollow.js — keep in sync.
  */
 function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 11;
+  var HELPERS_VERSION = 12;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 500;
 
@@ -303,6 +303,20 @@ function installNotionAiChatHelpers() {
     return null;
   }
 
+  function matchPromptRejected(text) {
+    var t = String(text || '').trim();
+    if (!t) return null;
+    if (/^an error occurred,?\s*please try again\.?$/i.test(t)) {
+      return {
+        error: 'An error occurred, please try again.',
+        kind: 'prompt_rejected',
+        hint: 'Notion AI rejected the prompt. Retry with a shorter or simpler prompt.',
+        action: 'retry with a revised prompt'
+      };
+    }
+    return null;
+  }
+
   function detectNotionPageAbnormal(opts) {
     opts = opts || {};
     var text = getAbnormalDetectionText(4000);
@@ -310,6 +324,8 @@ function installNotionAiChatHelpers() {
     if (creditsBlock) return creditsBlock;
     var rateBlock = matchRateLimit(text);
     if (rateBlock) return rateBlock;
+    var rejectBlock = matchPromptRejected(text);
+    if (rejectBlock) return rejectBlock;
     if (!opts.skipSubmitCheck) {
       var submit = getSubmitButton();
       var editor = getChatInput();
@@ -534,6 +550,7 @@ function installNotionAiChatHelpers() {
     var t = String(text).trim();
     if (!t || isProgressLine(t)) return false;
     if (matchCreditsExhausted(t)) return false;
+    if (matchPromptRejected(t)) return false;
     if (t.length < 2) return false;
     if (/^Auto$/i.test(t)) return false;
     if (/[.!?]/.test(t) && /[A-Za-z]{2,}/.test(t)) return true;
@@ -598,6 +615,13 @@ function installNotionAiChatHelpers() {
       var answerCreditsBlock = matchCreditsExhausted(answer);
       if (answerCreditsBlock) {
         lastWaitAbnormal = answerCreditsBlock;
+        lastWaitPending = false;
+        return '';
+      }
+
+      var answerRejectBlock = matchPromptRejected(answer);
+      if (answerRejectBlock) {
+        lastWaitAbnormal = answerRejectBlock;
         lastWaitPending = false;
         return '';
       }
@@ -1938,6 +1962,7 @@ function installNotionAiChatHelpers() {
     dismissCookieBanner: dismissCookieBanner,
     matchCreditsExhausted: matchCreditsExhausted,
     matchRateLimit: matchRateLimit,
+    matchPromptRejected: matchPromptRejected,
     getAbnormalDetectionText: getAbnormalDetectionText,
     detectNotionPageAbnormal: detectNotionPageAbnormal,
     openAiChatSidebar: openAiChatSidebar,

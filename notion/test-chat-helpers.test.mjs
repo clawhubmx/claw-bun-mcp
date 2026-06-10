@@ -121,6 +121,34 @@ describe("notion chat helpers", () => {
     expect(h.matchRateLimit("If it fails, try again later.")).toBeNull();
   });
 
+  test("matchPromptRejected detects Notion prompt rejection message", () => {
+    const h = installHelpers();
+    expect(h.matchPromptRejected("An error occurred, please try again.")).toEqual({
+      error: "An error occurred, please try again.",
+      kind: "prompt_rejected",
+      hint: "Notion AI rejected the prompt. Retry with a shorter or simpler prompt.",
+      action: "retry with a revised prompt",
+    });
+    expect(h.matchPromptRejected("An error occurred please try again")).toEqual({
+      error: "An error occurred, please try again.",
+      kind: "prompt_rejected",
+      hint: "Notion AI rejected the prompt. Retry with a shorter or simpler prompt.",
+      action: "retry with a revised prompt",
+    });
+  });
+
+  test("matchPromptRejected ignores unrelated prose mentioning errors", () => {
+    const h = installHelpers();
+    expect(
+      h.matchPromptRejected("An error occurred in the pipeline. Please try again tomorrow."),
+    ).toBeNull();
+  });
+
+  test("looksLikeFinalAnswer rejects Notion prompt rejection message", () => {
+    const h = installHelpers();
+    expect(h.looksLikeFinalAnswer("An error occurred, please try again.")).toBe(false);
+  });
+
   test("detectNotionPageAbnormal ignores chat transcript mentioning rate limits", () => {
     const h = installHelpers();
     document.body.innerHTML = `
@@ -487,6 +515,15 @@ describe("notion api-schemas", () => {
       isAbnormalResponse({
         error: "Run out of free AI responses",
         kind: "credits_exhausted",
+      }),
+    ).toBe(true);
+  });
+
+  test("isAbnormalResponse recognizes prompt rejection error", () => {
+    expect(
+      isAbnormalResponse({
+        error: "An error occurred, please try again.",
+        kind: "prompt_rejected",
       }),
     ).toBe(true);
   });
