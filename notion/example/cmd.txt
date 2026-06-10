@@ -1,0 +1,5 @@
+bun-browser open https://www.notion.so/ --tab new
+bun-browser site notion/health
+bun-browser site notion/models
+bun-browser site notion/chat "Say hello in one sentence"
+bun-browser site notion/search "hello"
