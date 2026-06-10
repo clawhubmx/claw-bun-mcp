@@ -59,7 +59,7 @@ async function(args) {
 
 
   var h = (function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 10;
+  var HELPERS_VERSION = 11;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 500;
 
@@ -183,6 +183,52 @@ async function(args) {
     return text.length > maxLen ? text.slice(0, maxLen) : text;
   }
 
+  function getTextExcludingNodes(root, excludeSelectors, maxLen) {
+    if (!root) return '';
+    var clone = root.cloneNode(true);
+    var excludes = excludeSelectors || [];
+    for (var s = 0; s < excludes.length; s++) {
+      var nodes = clone.querySelectorAll(excludes[s]);
+      for (var i = 0; i < nodes.length; i++) nodes[i].remove();
+    }
+    var text = (clone.innerText || clone.textContent || '').trim();
+    maxLen = maxLen || 4000;
+    return text.length > maxLen ? text.slice(0, maxLen) : text;
+  }
+
+  var ABNORMAL_EXCLUDE_SELECTORS = [
+    '.content-editable-leaf-rtl:not([contenteditable="true"])',
+    '[contenteditable="true"][role="textbox"]',
+    '[contenteditable="true"].content-editable-leaf-rtl'
+  ];
+
+  function getAbnormalDetectionText(maxLen) {
+    maxLen = maxLen || 4000;
+    var chunks = [];
+    var alerts = document.querySelectorAll('[role="alert"], [role="status"], [role="dialog"]');
+    for (var i = 0; i < alerts.length; i++) {
+      var alertText = (alerts[i].innerText || alerts[i].textContent || '').trim();
+      if (alertText) chunks.push(alertText);
+    }
+    var chatRoot = document.querySelector('.layout-chat');
+    if (chatRoot) {
+      chunks.push(getTextExcludingNodes(chatRoot, ABNORMAL_EXCLUDE_SELECTORS, maxLen));
+    } else {
+      var editor = getChatInput();
+      if (editor) {
+        var host = editor;
+        for (var depth = 0; depth < 6 && host && host.parentElement && host.parentElement !== document.body; depth++) {
+          host = host.parentElement;
+        }
+        if (host && host !== document.body) {
+          chunks.push(getTextExcludingNodes(host, ABNORMAL_EXCLUDE_SELECTORS, 2000));
+        }
+      }
+    }
+    var combined = chunks.filter(Boolean).join('\n');
+    return combined.length > maxLen ? combined.slice(0, maxLen) : combined;
+  }
+
   function parseStoredJsonValue(raw) {
     if (!raw) return null;
     try {
@@ -291,12 +337,10 @@ async function(args) {
     return null;
   }
 
-  function detectNotionPageAbnormal(opts) {
-    opts = opts || {};
-    var text = getVisiblePageText(8000);
-    var creditsBlock = matchCreditsExhausted(text);
-    if (creditsBlock) return creditsBlock;
-    if (/rate limit|too many requests|try again later/i.test(text)) {
+  function matchRateLimit(text) {
+    var t = String(text || '').trim();
+    if (!t) return null;
+    if (/\btoo many requests\b/i.test(t)) {
       return {
         error: 'Rate limit reached',
         kind: 'rate_limit',
@@ -304,6 +348,24 @@ async function(args) {
         action: 'wait and retry'
       };
     }
+    if (/\brate limit\b/i.test(t)) {
+      return {
+        error: 'Rate limit reached',
+        kind: 'rate_limit',
+        hint: 'Notion AI rate limit detected. Wait before retrying.',
+        action: 'wait and retry'
+      };
+    }
+    return null;
+  }
+
+  function detectNotionPageAbnormal(opts) {
+    opts = opts || {};
+    var text = getAbnormalDetectionText(4000);
+    var creditsBlock = matchCreditsExhausted(text);
+    if (creditsBlock) return creditsBlock;
+    var rateBlock = matchRateLimit(text);
+    if (rateBlock) return rateBlock;
     if (!opts.skipSubmitCheck) {
       var submit = getSubmitButton();
       var editor = getChatInput();
@@ -597,6 +659,12 @@ async function(args) {
       }
 
       if (latest && messages.length > beforeCount && !generating) {
+        var answerRateBlock = matchRateLimit(answer);
+        if (answerRateBlock && !looksLikeFinalAnswer(answer)) {
+          lastWaitAbnormal = answerRateBlock;
+          lastWaitPending = false;
+          return '';
+        }
         if (looksLikeFinalAnswer(answer)) {
           if (answer === lastText) stableRounds++;
           else stableRounds = 0;
@@ -1925,6 +1993,8 @@ async function(args) {
     buildConversationUrl: buildConversationUrl,
     dismissCookieBanner: dismissCookieBanner,
     matchCreditsExhausted: matchCreditsExhausted,
+    matchRateLimit: matchRateLimit,
+    getAbnormalDetectionText: getAbnormalDetectionText,
     detectNotionPageAbnormal: detectNotionPageAbnormal,
     openAiChatSidebar: openAiChatSidebar,
     clickNewChat: clickNewChat,

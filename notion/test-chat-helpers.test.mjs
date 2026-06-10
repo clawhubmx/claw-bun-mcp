@@ -74,7 +74,8 @@ describe("notion chat helpers", () => {
 
   test("detectNotionPageAbnormal catches run out of free AI responses", () => {
     const h = installHelpers();
-    document.body.textContent = "You've run out of free AI responses.";
+    document.body.innerHTML =
+      '<div role="alert">You\'ve run out of free AI responses.</div>';
     expect(h.detectNotionPageAbnormal()).toEqual({
       error: "Run out of free AI responses",
       kind: "credits_exhausted",
@@ -95,6 +96,58 @@ describe("notion chat helpers", () => {
       kind: "credits_exhausted",
       hint: "This Notion workspace has used all free AI responses.",
       action: "wait and retry or upgrade plan",
+    });
+  });
+
+  test("matchRateLimit detects explicit Notion rate-limit errors", () => {
+    const h = installHelpers();
+    expect(h.matchRateLimit("Rate limit reached. Please wait.")).toEqual({
+      error: "Rate limit reached",
+      kind: "rate_limit",
+      hint: "Notion AI rate limit detected. Wait before retrying.",
+      action: "wait and retry",
+    });
+    expect(h.matchRateLimit("Too many requests. Slow down.")).toEqual({
+      error: "Rate limit reached",
+      kind: "rate_limit",
+      hint: "Notion AI rate limit detected. Wait before retrying.",
+      action: "wait and retry",
+    });
+  });
+
+  test("matchRateLimit ignores generic try again later wording", () => {
+    const h = installHelpers();
+    expect(h.matchRateLimit("Please try again later.")).toBeNull();
+    expect(h.matchRateLimit("If it fails, try again later.")).toBeNull();
+  });
+
+  test("detectNotionPageAbnormal ignores chat transcript mentioning rate limits", () => {
+    const h = installHelpers();
+    document.body.innerHTML = `
+      <div class="layout-chat">
+        <div class="content-editable-leaf-rtl">API rate limits are common. Try again later if needed.</div>
+        <div contenteditable="true" role="textbox" id="editor">draft prompt</div>
+        <button aria-label="Submit AI message">Send</button>
+      </div>
+    `;
+    expect(h.detectNotionPageAbnormal()).toBeNull();
+  });
+
+  test("detectNotionPageAbnormal catches rate-limit alerts outside transcript", () => {
+    const h = installHelpers();
+    document.body.innerHTML = `
+      <div class="layout-chat">
+        <div class="content-editable-leaf-rtl">Normal answer text.</div>
+        <div contenteditable="true" role="textbox" id="editor"></div>
+        <button aria-label="Submit AI message">Send</button>
+      </div>
+      <div role="alert">Rate limit reached. Please wait before retrying.</div>
+    `;
+    expect(h.detectNotionPageAbnormal()).toEqual({
+      error: "Rate limit reached",
+      kind: "rate_limit",
+      hint: "Notion AI rate limit detected. Wait before retrying.",
+      action: "wait and retry",
     });
   });
 
