@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 import { JSDOM } from "jsdom";
 import { describe, expect, test } from "bun:test";
 import {
+  isAbnormalResponse,
   looksLikeCompleteAnswer,
   modelTitleToId,
   NOTION_MODE_ALIASES,
@@ -71,6 +72,32 @@ describe("notion chat helpers", () => {
     expect(h.looksLikeFinalAnswer("OK-NOTION-FLOW")).toBe(true);
   });
 
+  test("detectNotionPageAbnormal catches run out of free AI responses", () => {
+    const h = installHelpers();
+    document.body.textContent = "You've run out of free AI responses.";
+    expect(h.detectNotionPageAbnormal()).toEqual({
+      error: "Run out of free AI responses",
+      kind: "credits_exhausted",
+      hint: "This Notion workspace has used all free AI responses.",
+      action: "wait and retry or upgrade plan",
+    });
+  });
+
+  test("looksLikeFinalAnswer rejects free AI quota message", () => {
+    const h = installHelpers();
+    expect(h.looksLikeFinalAnswer("You've run out of free AI responses.")).toBe(false);
+  });
+
+  test("matchCreditsExhausted detects free quota wording", () => {
+    const h = installHelpers();
+    expect(h.matchCreditsExhausted("run out of free AI responses.")).toEqual({
+      error: "Run out of free AI responses",
+      kind: "credits_exhausted",
+      hint: "This Notion workspace has used all free AI responses.",
+      action: "wait and retry or upgrade plan",
+    });
+  });
+
   test("resolveNotionMode maps aliases", () => {
     const h = installHelpers();
     expect(h.resolveNotionMode("sonnet")).toBe("Sonnet 4.6");
@@ -127,5 +154,14 @@ describe("notion api-schemas", () => {
     expect(Object.keys(NOTION_MODE_ALIASES).sort()).toEqual(
       Object.keys(h.MODE_ALIASES).sort(),
     );
+  });
+
+  test("isAbnormalResponse recognizes free AI quota error", () => {
+    expect(
+      isAbnormalResponse({
+        error: "Run out of free AI responses",
+        kind: "credits_exhausted",
+      }),
+    ).toBe(true);
   });
 });

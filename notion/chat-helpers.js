@@ -207,10 +207,17 @@ function installNotionAiChatHelpers() {
     return false;
   }
 
-  function detectNotionPageAbnormal(opts) {
-    opts = opts || {};
-    var text = getVisiblePageText(8000);
-    if (/ai (credits|quota).*(exhausted|used up|reached)/i.test(text)) {
+  function matchCreditsExhausted(text) {
+    var t = String(text || '');
+    if (/run out of free ai responses/i.test(t)) {
+      return {
+        error: 'Run out of free AI responses',
+        kind: 'credits_exhausted',
+        hint: 'This Notion workspace has used all free AI responses.',
+        action: 'wait and retry or upgrade plan'
+      };
+    }
+    if (/ai (credits|quota).*(exhausted|used up|reached)/i.test(t)) {
       return {
         error: 'AI credits exhausted',
         kind: 'credits_exhausted',
@@ -218,6 +225,14 @@ function installNotionAiChatHelpers() {
         action: 'wait and retry or upgrade plan'
       };
     }
+    return null;
+  }
+
+  function detectNotionPageAbnormal(opts) {
+    opts = opts || {};
+    var text = getVisiblePageText(8000);
+    var creditsBlock = matchCreditsExhausted(text);
+    if (creditsBlock) return creditsBlock;
     if (/rate limit|too many requests|try again later/i.test(text)) {
       return {
         error: 'Rate limit reached',
@@ -449,6 +464,7 @@ function installNotionAiChatHelpers() {
     if (!text) return false;
     var t = String(text).trim();
     if (!t || isProgressLine(t)) return false;
+    if (matchCreditsExhausted(t)) return false;
     if (t.length < 2) return false;
     if (/^Auto$/i.test(t)) return false;
     if (/[.!?]/.test(t) && /[A-Za-z]{2,}/.test(t)) return true;
@@ -509,6 +525,13 @@ function installNotionAiChatHelpers() {
 
       var rawText = latest ? getAssistantText(latest) : '';
       answer = rawText ? cleanAssistantText(rawText) : '';
+
+      var answerCreditsBlock = matchCreditsExhausted(answer);
+      if (answerCreditsBlock) {
+        lastWaitAbnormal = answerCreditsBlock;
+        lastWaitPending = false;
+        return '';
+      }
 
       if (latest && messages.length > beforeCount && !generating) {
         if (looksLikeFinalAnswer(answer)) {
@@ -824,6 +847,7 @@ function installNotionAiChatHelpers() {
     getConversationId: getConversationId,
     buildConversationUrl: buildConversationUrl,
     dismissCookieBanner: dismissCookieBanner,
+    matchCreditsExhausted: matchCreditsExhausted,
     detectNotionPageAbnormal: detectNotionPageAbnormal,
     openAiChatSidebar: openAiChatSidebar,
     clickNewChat: clickNewChat,

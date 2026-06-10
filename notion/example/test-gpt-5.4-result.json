@@ -1,0 +1,24 @@
+{
+  "model": "gpt-5.4",
+  "modeLabel": "GPT-5.4",
+  "tests": [
+    {
+      "name": "smoke_exact_token",
+      "newChat": false,
+      "query": "Reply with exactly the token GPT54-OK and nothing else.",
+      "answer": "GPT54-OK",
+      "conversationId": "37b773dd-10fd-80a5-9a9e-00a965b56f9b",
+      "status": "pass"
+    },
+    {
+      "name": "new_chat_three_words",
+      "newChat": true,
+      "query": "Say hello in exactly three words.",
+      "answer": "Hello there, Joseph.",
+      "conversationId": "37b773dd-10fd-80a0-82ad-00a9073cf5d7",
+      "status": "pass"
+    }
+  ],
+  "status": "working",
+  "testedAt": "2026-06-10"
+}

@@ -1,0 +1,67 @@
+# Notion test1 — remaining models retry
+# Prompt: grok/example/test1.txt
+# Tab: 9240
+# Command: bun notion/example/test-models-test1.mjs --tab 9240 --models opus,grok,gpt-5.4,kimi,deepseek
+# Started: 2026-06-10T11:53:41Z  Finished: 2026-06-10T12:24:50Z (~31 min)
+
+Testing 5 models with /Users/hesdx/Documents/clawhost/claw-bun-mcp/grok/example/test1.txt
+
+
+=== opus (Opus 4.7) ===
+select: {"ok":true,"modeTitle":"Opus 4.7","label":"Opus 4.7"}
+OK (13 chars)
+{"url": "http...
+STATUS: incomplete — truncated mid-JSON; adapter returned before stream finished
+conversationId: 37b773dd-10fd-808e-8d5c-00a9c51bb277
+
+=== grok (Grok 4.3) ===
+select: {"ok":true,"modeTitle":"Grok 4.3","label":"Grok 4.3"}
+OK (0 chars)
+STATUS: failed — 15 min CLI timeout, empty answer
+
+=== gpt-5.4 (GPT-5.4) ===
+select: {"ok":false,"error":"picker not found"}
+ERROR: picker not found
+STATUS: failed in batch run — page was not on /ai landing after prior chats
+NOTE: verified working separately (see follow-up below)
+
+=== kimi (Kimi K2.6) ===
+select: {"ok":true,"modeTitle":"Kimi K2.6","label":"Kimi K2.6"}
+OK (0 chars)
+STATUS: failed — 15 min CLI timeout, empty answer
+
+=== deepseek (DeepSeek V4 Pro) ===
+select: {"ok":true,"modeTitle":"DeepSeek V4 Pro","label":"DeepSeek V4 Pro"}
+OK (192 chars)
+I'll start by searching the web for prior coverage of the Trump-Iran deal events from strictly before the May 24, 2026 publication date to establish an evidence base for my novelty assessment....
+STATUS: incomplete — only thinking preamble; final JSON not captured
+conversationId: 37b773dd-10fd-8064-9044-00a98f32e46a
+
+Results written to /Users/hesdx/Documents/clawhost/claw-bun-mcp/notion/example/test1-results.json
+
+
+# --- Follow-up: GPT-5.4 smoke test (2026-06-10) ---
+# notion/chat from https://app.notion.com/ai — model selection works on /ai landing
+
+=== gpt-5.4 retest (smoke) ===
+query: Reply with exactly the token GPT54-OK and nothing else.
+model: GPT-5.4  modeLabel: GPT-5.4  newChat: false
+answer: GPT54-OK
+conversationId: 37b773dd-10fd-80a5-9a9e-00a965b56f9b
+STATUS: pass
+
+=== gpt-5.4 retest (new chat) ===
+query: Say hello in exactly three words.
+model: GPT-5.4  modeLabel: GPT-5.4  newChat: true
+answer: Hello there, Joseph.
+conversationId: 37b773dd-10fd-80a0-82ad-00a9073cf5d7
+STATUS: pass
+
+Full retest output: notion/example/test-gpt-5.4-result.json
+
+
+# --- Combined test1 summary (initial + retry) ---
+# ok:       sonnet, gemini
+# incomplete: opus, deepseek
+# failed:   grok, kimi (timeout)
+# retested ok: gpt-5.4 (separate smoke test; not re-run on test1.txt yet)

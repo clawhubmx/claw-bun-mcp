@@ -25,7 +25,7 @@ export function isUuidConversationId(value) {
 export function isAbnormalResponse(data) {
   if (!isObject(data) || !data.error) return false;
   if (data.kind && ABNORMAL_KINDS.has(data.kind)) return true;
-  return /credits exhausted|rate limit|submission blocked/i.test(String(data.error));
+  return /credits exhausted|run out of free|rate limit|submission blocked/i.test(String(data.error));
 }
 
 export function isProgressLine(text) {

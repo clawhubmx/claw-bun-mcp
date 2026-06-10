@@ -1,0 +1,44 @@
+Testing 7 models with /Users/hesdx/Documents/clawhost/claw-bun-mcp/grok/example/test1.txt
+
+
+=== sonnet (Sonnet 4.6) ===
+select: {"ok":true,"modeTitle":"Sonnet 4.6","label":"Sonnet 4.6"}
+OK (2500 chars)
+{
+  "is_event_from_prior_date": "yes",
+  "is_mostly_duplicate_content": "yes",
+  "novelty_type": "rehash",
+  "event_date_estimate": "2026-05-18",
+  "primary_event": "A CNN weekly recap article summari...
+
+=== opus (Opus 4.7) ===
+select: {"ok":false,"error":"picker not found"}
+ERROR: picker not found
+
+=== grok (Grok 4.3) ===
+select: {"ok":true,"modeTitle":"Grok 4.3","label":"Grok 4.3"}
+OK (0 chars)
+
+=== gemini (Gemini 3.1 Pro) ===
+select: {"ok":true,"modeTitle":"Gemini 3.1 Pro","label":"Gemini 3.1 Pro"}
+OK (1057 chars)
+{
+  "is_event_from_prior_date": "yes",
+  "is_mostly_duplicate_content": "no",
+  "novelty_type": "rehash",
+  "event_date_estimate": "2026-05-23",
+  "primary_event": "A chronological recap of President ...
+
+=== gpt-5.4 (GPT-5.4) ===
+select: {"ok":true,"modeTitle":"GPT-5.4","label":"GPT-5.4"}
+ERROR: Chat submission blocked
+
+=== kimi (Kimi K2.6) ===
+select: {"ok":true,"modeTitle":"Kimi K2.6","label":"Kimi K2.6"}
+ERROR: Chat submission blocked
+
+=== deepseek (DeepSeek V4 Pro) ===
+select: {"ok":true,"modeTitle":"DeepSeek V4 Pro","label":"DeepSeek V4 Pro"}
+ERROR: Chat submission blocked
+
+Results written to /Users/hesdx/Documents/clawhost/claw-bun-mcp/notion/example/test1-results.json

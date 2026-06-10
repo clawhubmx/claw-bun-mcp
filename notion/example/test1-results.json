@@ -1,0 +1,84 @@
+{
+  "promptFile": "/Users/hesdx/Documents/clawhost/claw-bun-mcp/grok/example/test1.txt",
+  "tab": "9240",
+  "finishedAt": "2026-06-10T12:24:50.479Z",
+  "models": [
+    {
+      "alias": "sonnet",
+      "title": "Sonnet 4.6",
+      "run": "initial",
+      "status": "ok",
+      "model": "Sonnet 4.6",
+      "conversationId": "37b746ce-978e-80a9-859b-00a96914b5fe",
+      "answerJson": {
+        "is_event_from_prior_date": "yes",
+        "is_mostly_duplicate_content": "yes",
+        "novelty_type": "rehash",
+        "event_date_estimate": "2026-05-18",
+        "confidence": 0.88,
+        "key_reason": "The article is a weekly narrative recap of events that individually occurred and were widely reported between May 18–23, 2026; it adds minor new details (Trump skipping son's wedding, two specific Tuesday quotes) but no substantive new factual claims about the deal itself."
+      }
+    },
+    {
+      "alias": "gemini",
+      "title": "Gemini 3.1 Pro",
+      "run": "initial",
+      "status": "ok",
+      "model": "Gemini 3.1 Pro",
+      "conversationId": "37b746ce-978e-80b7-99b7-00a9ff0ba9f6",
+      "answerJson": {
+        "is_event_from_prior_date": "yes",
+        "is_mostly_duplicate_content": "no",
+        "novelty_type": "rehash",
+        "event_date_estimate": "2026-05-23",
+        "confidence": 0.9,
+        "key_reason": "The text is a weekly recap summarizing the president's previously reported daily public statements from the prior Sunday through Saturday, without introducing new substantive developments."
+      }
+    },
+    {
+      "alias": "opus",
+      "title": "Opus 4.7",
+      "run": "retry",
+      "status": "incomplete",
+      "model": "Opus 4.7",
+      "conversationId": "37b773dd-10fd-808e-8d5c-00a9c51bb277",
+      "answer": "{\"url\": \"http",
+      "note": "Truncated mid-JSON; adapter returned before stream finished"
+    },
+    {
+      "alias": "grok",
+      "title": "Grok 4.3",
+      "run": "retry",
+      "status": "failed",
+      "error": "timeout",
+      "timedOut": true,
+      "note": "15 min CLI timeout with empty answer"
+    },
+    {
+      "alias": "gpt-5.4",
+      "title": "GPT-5.4",
+      "run": "retry",
+      "status": "failed",
+      "error": "picker not found"
+    },
+    {
+      "alias": "kimi",
+      "title": "Kimi K2.6",
+      "run": "retry",
+      "status": "failed",
+      "error": "timeout",
+      "timedOut": true,
+      "note": "15 min CLI timeout with empty answer"
+    },
+    {
+      "alias": "deepseek",
+      "title": "DeepSeek V4 Pro",
+      "run": "retry",
+      "status": "incomplete",
+      "model": "DeepSeek V4 Pro",
+      "conversationId": "37b773dd-10fd-8064-9044-00a98f32e46a",
+      "answer": "I'll start by searching the web for prior coverage of the Trump-Iran deal events from strictly before the May 24, 2026 publication date to establish an evidence base for my novelty assessment.",
+      "note": "Only thinking preamble; final JSON not captured before wait ended"
+    }
+  ]
+}

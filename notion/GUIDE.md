@@ -31,6 +31,7 @@ bun-browser open https://www.notion.so/ --tab new
 | `bun-browser site notion/chat "<prompt>"` | 新建对话并提问 |
 | `bun-browser site notion/chatfollow <id> "<prompt>"` | 在已有线程中继续提问 |
 | `bun-browser site notion/search "<keyword>"` | 搜索/列出 AI 聊天历史 |
+| `bun-browser site notion/create-article "<title>" "<content>"` | 在当前或指定父页面下新建文章页（标题 + 正文） |
 
 ## 典型流程
 
@@ -71,6 +72,38 @@ bun-browser site notion/chatfollow 37b746ce-978e-8038-a38a-00a992bdb5d5 "Make it
 ```
 
 若 Notion 需要跳转到对话页，第一次可能返回 `Navigation required` — 按提示 **重跑同一条命令** 即可。
+
+### 新建文章页
+
+在当前打开的 Notion 页面下创建子页面（或传入 `parent` 指定父页面）：
+
+```bash
+bun-browser site notion/create-article "Weekly Recap" "Lead paragraph.\n\nSecond paragraph."
+bun-browser site notion/create-article "Notes" "Body text" --parent "https://app.notion.com/p/Bibo-Dashboard-fad773dd10fd83cd81d8017c650ccc93"
+```
+
+流程（通常 **3 次**重跑同一条命令）：
+
+1. 在父页面运行 → 返回 `Navigation required`（已打开空白页）
+2. **等待约 10 秒** → 重跑 → 写入标题（`partialSuccess`，`nextStep: body`）
+3. 重跑 → 写入正文（`created: true`）
+
+`step` 可显式设为 `open`、`title`、`body`。Notion 编辑器在长时间 CDP 轮询期间会拒绝输入，因此每个填写阶段都是一次快速同步脚本。
+
+返回示例：
+
+```json
+{
+  "title": "Weekly Recap",
+  "paragraphCount": 2,
+  "bodyCharacterCount": 42,
+  "pageId": "37b773dd10fd80d2ba2ac32b34bacfbb",
+  "url": "https://app.notion.com/p/37b773dd10fd80d2ba2ac32b34bacfbb",
+  "created": true
+}
+```
+
+若传入 `parent` 且标签页尚未打开该页面，第一次可能返回 `Navigation required` — 按提示 **重跑同一条命令** 即可。
 
 ### 搜索历史
 
@@ -171,6 +204,15 @@ bun-browser site notion/chat --model sonnet --selectOnly true
 | `maxWaitMs` | 15 分钟 | 最长等待时间 |
 | `graceWaitMs` | — | 额外等待毫秒数 |
 
+### notion/create-article
+
+| 参数 | 默认 | 说明 |
+|------|------|------|
+| `title` | 必填 | 页面标题 |
+| `content` | 必填 | 正文（纯文本；段落以空行分隔） |
+| `parent` | 当前打开页 | 父页面 URL 或 32 位 page id |
+| `step` | `auto` | `auto`：按当前页面自动选择 `open` / `title` / `body`；也可显式指定某一阶段 |
+
 ### notion/chatfollow
 
 | 参数 | 默认 | 说明 |
@@ -190,6 +232,7 @@ bun-browser site notion/chat --model sonnet --selectOnly true
 | 需要页面跳转 | `Navigation required` | 重跑同一条命令 |
 | 仍在生成 | `Still generating` | 加 `--waitOnly true` 重试 |
 | 无回复 | `Empty response` | 刷新 Notion 标签页 |
+| 免费 AI 次数用尽 | `Run out of free AI responses` | 等待或升级计划 |
 | AI 额度用尽 | `AI credits exhausted` | 等待或升级计划 |
 | 模型选择失败 | `Mode selection failed` | `bun-browser site notion/models` 核对标题 |
 | 模型列表异常 | `warning` 含 picker not reachable | 先打开 `/ai` 聊天页再重试 |
@@ -223,4 +266,4 @@ bun notion/scripts/inline-helpers.mjs
 - **模型列表**：DOM 抓取下拉菜单（`listNotionModelsFromUi`），非 Notion API
 - **模型选择器定位**：聊天输入框附近的 `aria-haspopup="menu"` 按钮，或 Submit 按钮同区域的可见按钮
 - **回复完整性**：轮询 DOM 直至 `looksLikeFinalAnswer` 通过且文本稳定；进度行（`Thinking`、`Searching`、`Notion AI finished` 等）会被过滤
-- **异常检测**：`detectNotionPageAbnormal` 识别 `credits_exhausted`、`rate_limit`、`submit_disabled`
+- **异常检测**：`detectNotionPageAbnormal` 识别 `credits_exhausted`（含 `Run out of free AI responses`）、`rate_limit`、`submit_disabled`

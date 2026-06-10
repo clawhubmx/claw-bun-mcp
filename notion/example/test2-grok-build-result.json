@@ -1,0 +1,24 @@
+{
+  "promptFile": "/Users/hesdx/Documents/clawhost/claw-bun-mcp/grok/example/test2.txt",
+  "adapter": "notion/chat",
+  "model": "grok-build",
+  "modeLabel": "Grok Build 0.1",
+  "conversationId": "37b773dd-10fd-8012-89dd-00a9c043eb96",
+  "conversationUrl": "https://app.notion.com/chat?t=37b773dd10fd801289dd00a9c043eb96&wfv=chat",
+  "cliStatus": "daemon_request_timed_out_after_15m",
+  "browserStatus": "completed",
+  "answerJson": {
+    "query": "Protesters block road to Mexican World Cup stadium",
+    "time_period": "2026-06-07 to 2026-06-13",
+    "unique_topics": [
+      "CNTE teachers union blocks roads and avenues to Azteca Stadium in Mexico City days before 2026 World Cup opening",
+      "Protesters topple World Cup player statues and disrupt central areas demanding higher wages and pension reform reversal",
+      "Families of over 130,000 disappeared join protests to use World Cup spotlight on government failures",
+      "Police discover 59 explosive devices on bus carrying arriving demonstrators amid heightened security",
+      "Mexico City faces road blockades, tent camps, and social unrest with clashes and tear gas reported",
+      "President Claudia Sheinbaum downplays chaos while government deploys security and negotiates with unions",
+      "Protests and construction disrupt preparations as World Cup kicks off with Mexico vs South Africa at Azteca"
+    ],
+    "sources": "bbc.com, apnews.com, abcnews.com, aljazeera.com, barrons.com, aol.com, ca.news.yahoo.com"
+  }
+}

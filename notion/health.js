@@ -117,6 +117,48 @@ async function(args) {
     inputHasText = !!(editor && String(editor.innerText || editor.textContent || '').trim());
   }
 
+  if (h.detectNotionPageAbnormal) {
+    var accessBlock = h.detectNotionPageAbnormal();
+    if (accessBlock) {
+      return {
+        ok: false,
+        login: true,
+        chatInput: chatInput,
+        submitEnabled: submitEnabled,
+        error: accessBlock.error,
+        kind: accessBlock.kind,
+        hint: accessBlock.hint,
+        action: accessBlock.action
+      };
+    }
+  } else {
+    var pageText = ((document.body && (document.body.innerText || document.body.textContent)) || '').slice(0, 8000);
+    if (/run out of free ai responses/i.test(pageText)) {
+      return {
+        ok: false,
+        error: 'Run out of free AI responses',
+        kind: 'credits_exhausted',
+        hint: 'This Notion workspace has used all free AI responses.',
+        action: 'wait and retry or upgrade plan',
+        login: true,
+        chatInput: chatInput,
+        submitEnabled: submitEnabled
+      };
+    }
+    if (/ai (credits|quota).*(exhausted|used up|reached)/i.test(pageText)) {
+      return {
+        ok: false,
+        error: 'AI credits exhausted',
+        kind: 'credits_exhausted',
+        hint: 'This Notion workspace has no remaining AI credits.',
+        action: 'wait and retry or upgrade plan',
+        login: true,
+        chatInput: chatInput,
+        submitEnabled: submitEnabled
+      };
+    }
+  }
+
   if (submitBtn && !submitEnabled && inputHasText) {
     return {
       ok: false,
