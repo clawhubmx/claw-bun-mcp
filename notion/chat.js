@@ -79,7 +79,7 @@ async function(args) {
 
 
   var h = (function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 22;
+  var HELPERS_VERSION = 23;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 500;
 
@@ -515,11 +515,30 @@ async function(args) {
           error: 'Chat submission blocked',
           kind: 'submit_disabled',
           hint: 'Send button is disabled — often due to credits or rate limits.',
-          action: 'bun-browser open https://app.notion.com/'
+          action: 'bun-browser open https://app.notion.com/ai'
         };
       }
     }
     return null;
+  }
+
+  async function ensureAiLandingPage() {
+    dismissCookieBanner();
+    if (location.pathname.indexOf('/ai') === 0) {
+      return { ok: true, via: 'ai-landing' };
+    }
+    if (location.pathname.indexOf('/chat') === 0) {
+      return { ok: true, via: 'chat-view' };
+    }
+    try { sessionStorage.setItem('__notionAiPendingLanding', '1'); } catch (e) {}
+    location.href = 'https://app.notion.com/ai';
+    return {
+      ok: false,
+      needsRetry: true,
+      error: 'Navigation required',
+      hint: 'Re-run the same command after Notion opens the AI landing page.',
+      action: 'retry same command'
+    };
   }
 
   async function openAiChatSidebar() {
@@ -539,7 +558,7 @@ async function(args) {
         ok: false,
         error: 'AI chat sidebar not found',
         hint: 'Open a Notion workspace with AI enabled and ensure the sidebar Chat tab is visible.',
-        action: 'bun-browser open https://app.notion.com/'
+        action: 'bun-browser open https://app.notion.com/ai'
       };
     }
     clickElement(chatTab);
@@ -557,37 +576,26 @@ async function(args) {
   }
 
   async function ensureNewChatView() {
-    var sidebar = await openAiChatSidebar();
-    if (!sidebar.ok) return sidebar;
+    var landing = await ensureAiLandingPage();
+    if (!landing.ok) return landing;
 
-    if (location.pathname.indexOf('/ai') === 0 && getChatInput()) {
+    if (getChatInput()) {
       return { ok: true, via: 'ai-landing' };
     }
 
     var created = await clickNewChat();
     if (!created.ok) {
-      if (location.pathname.indexOf('/ai') === 0 && getChatInput()) {
+      if (getChatInput()) {
         return { ok: true, via: 'ai-landing' };
-      }
-      if (location.pathname.indexOf('/chat') === 0) {
-        try { sessionStorage.setItem('__notionAiPendingNewChat', '1'); } catch (e) {}
-        location.href = 'https://app.notion.com/ai';
-        return {
-          ok: false,
-          needsRetry: true,
-          error: 'Navigation required',
-          hint: 'Re-run the same command after Notion opens a new chat.',
-          action: 'retry same command'
-        };
       }
       return {
         ok: false,
         error: 'New chat button not found',
         hint: 'Open the sidebar Chat tab first, then retry.',
-        action: 'bun-browser site notion/health'
+        action: 'bun-browser open https://app.notion.com/ai'
       };
     }
-    if (!getChatInput() && location.pathname.indexOf('/ai') < 0) {
+    if (!getChatInput()) {
       try { sessionStorage.setItem('__notionAiPendingNewChat', '1'); } catch (e) {}
       location.href = 'https://app.notion.com/ai';
       return {
@@ -2170,7 +2178,7 @@ async function(args) {
     return {
       error: 'HTTP ' + resp.status,
       hint: errText ? errText.slice(0, 200) : 'Notion API request failed',
-      action: 'bun-browser open https://app.notion.com/'
+      action: 'bun-browser open https://app.notion.com/ai'
     };
   }
 
@@ -2295,6 +2303,7 @@ async function(args) {
     getAbnormalDetectionText: getAbnormalDetectionText,
     detectNotionPageAbnormal: detectNotionPageAbnormal,
     openAiChatSidebar: openAiChatSidebar,
+    ensureAiLandingPage: ensureAiLandingPage,
     clickNewChat: clickNewChat,
     ensureNewChatView: ensureNewChatView,
     getChatInput: getChatInput,

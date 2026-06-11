@@ -379,6 +379,19 @@ ${trustDrainBlock}    var existing = h.getAssistantMessages();
     return waitFollowOut;
   }
 
+  var landing = await h.ensureAiLandingPage();
+  if (!landing.ok) {
+    if (landing.needsRetry) {
+      return {
+        error: landing.error || 'Navigation required',
+        hint: landing.hint || 'Re-run the same command after Notion opens the AI landing page.',
+        action: landing.action || 'retry same command',
+        conversationId: conversationId
+      };
+    }
+    return landing;
+  }
+
   var nav = await h.navigateToConversation(conversationId);
   if (!nav.ok) {
     if (nav.needsRetry) {

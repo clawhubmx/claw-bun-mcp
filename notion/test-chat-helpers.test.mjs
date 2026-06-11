@@ -18,10 +18,8 @@ import {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const helpersSource = readFileSync(join(__dirname, "chat-helpers.js"), "utf8");
 
-function installHelpers() {
-  const dom = new JSDOM("<!DOCTYPE html><html><body></body></html>", {
-    url: "https://app.notion.com/ai",
-  });
+function installHelpersAt(url, opts = {}) {
+  const dom = new JSDOM("<!DOCTYPE html><html><body></body></html>", { url });
   globalThis.document = dom.window.document;
   globalThis.window = dom.window;
   globalThis.Node = dom.window.Node;
@@ -29,8 +27,35 @@ function installHelpers() {
   globalThis.KeyboardEvent = dom.window.KeyboardEvent;
   globalThis.InputEvent = dom.window.InputEvent;
   globalThis.localStorage = dom.window.localStorage;
+  globalThis.sessionStorage = dom.window.sessionStorage;
+
+  let hrefValue = url;
+  const navigationLog = [];
+  const locationMock = {
+    get href() {
+      return hrefValue;
+    },
+    set href(next) {
+      navigationLog.push(next);
+      hrefValue = next;
+    },
+    get pathname() {
+      return new URL(hrefValue).pathname;
+    },
+  };
+  globalThis.location = locationMock;
+  dom.window.location = locationMock;
+
   const loadHelpers = new Function(`${helpersSource}\nreturn installNotionAiChatHelpers;`);
-  return loadHelpers()();
+  const helpers = loadHelpers()();
+  if (opts.trackNavigation) {
+    helpers.__navigationLog = navigationLog;
+  }
+  return helpers;
+}
+
+function installHelpers() {
+  return installHelpersAt("https://app.notion.com/ai");
 }
 
 describe("notion chat helpers", () => {
@@ -679,6 +704,68 @@ Loaded web page: api.llama.fi/chains</div>
     expect(h.buildConversationUrl("37b746ce-978e-8096-8d54-00a96c21f6ad")).toBe(
       "https://app.notion.com/chat?t=37b746ce978e80968d5400a96c21f6ad&wfv=chat",
     );
+  });
+
+  test("ensureAiLandingPage returns ok on /ai", async () => {
+    const h = installHelpersAt("https://app.notion.com/ai");
+    await expect(h.ensureAiLandingPage()).resolves.toEqual({
+      ok: true,
+      via: "ai-landing",
+    });
+  });
+
+  test("ensureAiLandingPage returns ok on /chat", async () => {
+    const h = installHelpersAt(
+      "https://app.notion.com/chat?t=37b746ce978e80968d5400a96c21f6ad&wfv=chat",
+    );
+    await expect(h.ensureAiLandingPage()).resolves.toEqual({
+      ok: true,
+      via: "chat-view",
+    });
+  });
+
+  test("ensureAiLandingPage redirects workspace home to /ai", async () => {
+    const h = installHelpersAt("https://app.notion.com/", { trackNavigation: true });
+    const result = await h.ensureAiLandingPage();
+    expect(result).toEqual({
+      ok: false,
+      needsRetry: true,
+      error: "Navigation required",
+      hint: "Re-run the same command after Notion opens the AI landing page.",
+      action: "retry same command",
+    });
+    expect(h.__navigationLog).toEqual(["https://app.notion.com/ai"]);
+    expect(sessionStorage.getItem("__notionAiPendingLanding")).toBe("1");
+  });
+
+  test("ensureNewChatView redirects non-AI pages to /ai", async () => {
+    const h = installHelpersAt("https://app.notion.com/", { trackNavigation: true });
+    const result = await h.ensureNewChatView();
+    expect(result.ok).toBe(false);
+    expect(result.needsRetry).toBe(true);
+    expect(h.__navigationLog).toEqual(["https://app.notion.com/ai"]);
+  });
+
+  test("ensureNewChatView returns ok on /ai with chat input", async () => {
+    const h = installHelpersAt("https://app.notion.com/ai");
+    document.body.innerHTML =
+      '<div contenteditable="true" role="textbox" id="editor"></div>';
+    const editor = document.getElementById("editor");
+    Object.defineProperty(editor, "offsetParent", { value: document.body, configurable: true });
+    editor.getBoundingClientRect = () => ({
+      left: 100,
+      top: 300,
+      width: 400,
+      height: 40,
+      right: 500,
+      bottom: 340,
+      x: 100,
+      y: 300,
+    });
+    await expect(h.ensureNewChatView()).resolves.toEqual({
+      ok: true,
+      via: "ai-landing",
+    });
   });
 });
 
