@@ -664,6 +664,28 @@ function installNotionAiChatHelpers() {
     return parts.join('\n').trim();
   }
 
+  function getCurrentReplyAssistantStartCount() {
+    var root = document.querySelector('.layout-chat') || document;
+    var leaves = Array.prototype.slice.call(root.querySelectorAll('.content-editable-leaf-rtl'));
+    var lastUserLeafIdx = -1;
+    for (var i = 0; i < leaves.length; i++) {
+      var text = (leaves[i].innerText || leaves[i].textContent || '').trim();
+      if (!text || leaves[i].getAttribute('contenteditable') === 'true') continue;
+      if (!isAssistantLeaf(leaves[i])) lastUserLeafIdx = i;
+    }
+    if (lastUserLeafIdx < 0) {
+      var msgs = getAssistantMessages();
+      return Math.max(0, msgs.length - 1);
+    }
+    var assistantBefore = 0;
+    for (var j = 0; j <= lastUserLeafIdx; j++) {
+      var leafText = (leaves[j].innerText || leaves[j].textContent || '').trim();
+      if (!leafText || leaves[j].getAttribute('contenteditable') === 'true') continue;
+      if (isAssistantLeaf(leaves[j])) assistantBefore++;
+    }
+    return assistantBefore;
+  }
+
   function normalizeAnswerText(text) {
     return String(text || '')
       .replace(/[\u2018\u2019\u02BC\u0060\u00B4]/g, "'")
@@ -2206,6 +2228,7 @@ function installNotionAiChatHelpers() {
     getAssistantMessages: getAssistantMessages,
     getAssistantText: getAssistantText,
     getAssistantAnswerSince: getAssistantAnswerSince,
+    getCurrentReplyAssistantStartCount: getCurrentReplyAssistantStartCount,
     getChatActivityText: getChatActivityText,
     looksLikeInProgressAnswer: looksLikeInProgressAnswer,
     looksLikeThoughtBlock: looksLikeThoughtBlock,

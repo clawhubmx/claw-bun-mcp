@@ -189,7 +189,7 @@ ${trustDrainBlock}${busyTabGuardBlock}  if (selectOnly) {
 
   if (waitOnly) {
 ${trustDrainBlock}    var existing = h.getAssistantMessages();
-    var pollBeforeCount = Math.max(0, existing.length - 1);
+    var pollBeforeCount = h.getCurrentReplyAssistantStartCount();
     var pollBeforeText = pollBeforeCount < existing.length ? h.getAssistantText(existing[pollBeforeCount]) : '';
     var waitedAnswer = await h.waitForAssistantAnswer(pollBeforeCount, pollBeforeText, waitOpts);
     if (!waitedAnswer) {
@@ -353,7 +353,7 @@ ${installBlock}
 ${trustDrainBlock}
   if (waitOnly) {
 ${trustDrainBlock}    var existing = h.getAssistantMessages();
-    var pollBeforeCount = Math.max(0, existing.length - 1);
+    var pollBeforeCount = h.getCurrentReplyAssistantStartCount();
     var pollBeforeText = pollBeforeCount < existing.length ? h.getAssistantText(existing[pollBeforeCount]) : '';
     var waitedAnswer = await h.waitForAssistantAnswer(pollBeforeCount, pollBeforeText, waitOpts);
     if (!waitedAnswer) {

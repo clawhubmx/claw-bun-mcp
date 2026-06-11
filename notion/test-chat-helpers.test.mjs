@@ -303,6 +303,22 @@ Loaded web page: api.llama.fi/chains</div>
     expect(h.looksLikeFinalAnswer(completed)).toBe(true);
   });
 
+  test("getCurrentReplyAssistantStartCount finds turn after last user prompt", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">First user prompt</div>' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">First reply.</div></div>' +
+      '<div class="content-editable-leaf-rtl">Second user prompt</div>' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Second block A.</div></div>' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Second block B.</div></div>' +
+      "</div>";
+    expect(h.getCurrentReplyAssistantStartCount()).toBe(1);
+    expect(h.getAssistantAnswerSince(h.getAssistantMessages(), h.getCurrentReplyAssistantStartCount())).toBe(
+      "Second block A.\nSecond block B.",
+    );
+  });
+
   test("getAssistantAnswerSince joins all new assistant blocks", () => {
     const h = installHelpers();
     document.body.innerHTML = `
