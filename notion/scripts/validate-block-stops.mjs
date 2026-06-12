@@ -12,6 +12,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const helpersSource = readFileSync(join(__dirname, "../chat-helpers.js"), "utf8");
 const installChat = join(process.env.HOME || "", ".bun-browser/claw-bun-mcp/notion/chat.js");
 
+const REPLY_ACTION_BUTTONS =
+  '<button aria-label="Copy response"><svg></svg></button>' +
+  '<button aria-label="Save to private pages"><svg></svg></button>' +
+  '<button aria-label="Share positive feedback"><svg></svg></button>' +
+  '<button aria-label="Share negative feedback"><svg></svg></button>';
+
 function installHelpers() {
   const dom = new JSDOM("<!DOCTYPE html><html><body></body></html>", {
     url: "https://app.notion.com/ai",
@@ -106,9 +112,7 @@ const cases = [
       doc.body.innerHTML =
         '<div class="layout-chat">' +
         '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Old answer with enough detail here.</div>' +
-        '<button aria-label="Copy response"></button>' +
-        '<button aria-label="Share positive feedback"></button>' +
-        '<button aria-label="Share negative feedback"></button></div>' +
+        REPLY_ACTION_BUTTONS + '</div>' +
         '<div class="content-editable-leaf-rtl">New question here</div>' +
         "Brewing\nBrewing</div>";
     },
@@ -123,12 +127,23 @@ const cases = [
         '<div class="layout-chat">' +
         '<div class="content-editable-leaf-rtl">Summarize this in one sentence please.</div>' +
         '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Final report complete with enough detail for the user.</div>' +
-        '<button aria-label="Copy response"></button>' +
-        '<button aria-label="Share positive feedback"></button>' +
-        '<button aria-label="Share negative feedback"></button></div></div>';
+        REPLY_ACTION_BUTTONS + '</div></div>';
     },
     expect(h) {
       return h.isGenerating() === false && h.isChatInProgress() === false;
+    },
+  },
+  {
+    id: "completed_reply_toolbar_detected",
+    setup(doc) {
+      doc.body.innerHTML =
+        '<div class="layout-chat">' +
+        '<div class="content-editable-leaf-rtl">Summarize this in one sentence please.</div>' +
+        '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Final report complete with enough detail for the user.</div>' +
+        REPLY_ACTION_BUTTONS + '</div></div>';
+    },
+    expect(h) {
+      return h.hasCompletedReplyActions() === true;
     },
   },
   {

@@ -18,6 +18,12 @@ import {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const helpersSource = readFileSync(join(__dirname, "chat-helpers.js"), "utf8");
 
+const REPLY_ACTION_BUTTONS =
+  '<button aria-label="Copy response"><svg></svg></button>' +
+  '<button aria-label="Save to private pages"><svg></svg></button>' +
+  '<button aria-label="Share positive feedback"><svg></svg></button>' +
+  '<button aria-label="Share negative feedback"><svg></svg></button>';
+
 function installHelpersAt(url, opts = {}) {
   const dom = new JSDOM("<!DOCTYPE html><html><body></body></html>", { url });
   globalThis.document = dom.window.document;
@@ -260,12 +266,11 @@ describe("notion chat helpers", () => {
       '<div class="layout-chat">' +
       '<div class="content-editable-leaf-rtl">Summarize this in one sentence.</div>' +
       '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Final report complete with enough detail for the user.</div>' +
-      '<button aria-label="Copy response"></button>' +
-      '<button aria-label="Share positive feedback"></button>' +
-      '<button aria-label="Share negative feedback"></button>' +
+      REPLY_ACTION_BUTTONS +
       '</div></div>';
     expect(h.isGenerating()).toBe(false);
     expect(h.isChatInProgress()).toBe(false);
+    expect(h.hasCompletedReplyActions()).toBe(true);
   });
 
   test("isGenerating detects Brewing and Focusing status lines", () => {
@@ -287,9 +292,7 @@ describe("notion chat helpers", () => {
     document.body.innerHTML =
       '<div class="layout-chat">' +
       '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Old completed answer with enough detail.</div>' +
-      '<button aria-label="Copy response"></button>' +
-      '<button aria-label="Share positive feedback"></button>' +
-      '<button aria-label="Share negative feedback"></button>' +
+      REPLY_ACTION_BUTTONS +
       '</div>' +
       '<div class="content-editable-leaf-rtl">What is 17+25?</div>' +
       "Focusing\nFocusing</div>";
@@ -341,12 +344,92 @@ describe("notion chat helpers", () => {
     expect(h.isChatInProgress()).toBe(true);
   });
 
-  test("isChatInProgress is false when reply looks final", () => {
+  test("isChatInProgress is false when reply action toolbar is visible", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">Summarize this please.</div>' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Here is the completed answer with enough detail.</div>' +
+      REPLY_ACTION_BUTTONS +
+      '</div></div>';
+    expect(h.isChatInProgress()).toBe(false);
+    expect(h.hasCompletedReplyActions()).toBe(true);
+  });
+
+  test("isChatInProgress stays true when final-looking answer lacks reply toolbar", () => {
     const h = installHelpers();
     document.body.innerHTML =
       '<div class="layout-chat">Notion AI finished.</div>' +
+      '<div class="content-editable-leaf-rtl">Summarize this please.</div>' +
       '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Here is the completed answer with enough detail.</div></div>';
-    expect(h.isChatInProgress()).toBe(false);
+    expect(h.hasCompletedReplyActions()).toBe(false);
+    expect(h.isChatInProgress()).toBe(true);
+  });
+
+  test("hasCompletedReplyActions requires all four labeled buttons with svg", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">Question here.</div>' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Answer with enough detail here.</div>' +
+      REPLY_ACTION_BUTTONS +
+      '</div></div>';
+    expect(h.hasCompletedReplyActions()).toBe(true);
+
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">Question here.</div>' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Answer with enough detail here.</div>' +
+      '<button aria-label="Copy response"><svg></svg></button>' +
+      '<button aria-label="Share positive feedback"><svg></svg></button>' +
+      '<button aria-label="Share negative feedback"><svg></svg></button>' +
+      '</div></div>';
+    expect(h.hasCompletedReplyActions()).toBe(false);
+  });
+
+  test("hasCompletedReplyActions rejects buttons without svg children", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">Question here.</div>' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Answer with enough detail here.</div>' +
+      '<button aria-label="Copy response"></button>' +
+      '<button aria-label="Save to private pages"></button>' +
+      '<button aria-label="Share positive feedback"></button>' +
+      '<button aria-label="Share negative feedback"></button>' +
+      '</div></div>';
+    expect(h.hasCompletedReplyActions()).toBe(false);
+  });
+
+  test("hasCompletedReplyActions finds sibling toolbar outside text block", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">Question here.</div>' +
+      '<div class="assistant-turn">' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Answer with enough detail here.</div></div>' +
+      '<div class="reply-toolbar">' + REPLY_ACTION_BUTTONS + '</div>' +
+      '</div></div>';
+    expect(h.hasCompletedReplyActions()).toBe(true);
+  });
+
+  test("waitForAssistantAnswer returns once reply toolbar appears", async () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">Summarize this please.</div>' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Final report complete with enough detail for the user.</div></div>' +
+      '</div>';
+    const pending = h.waitForAssistantAnswer(0, "", { pollMs: 20, maxWaitMs: 300, stableNeeded: 2 });
+    await new Promise((resolve) => setTimeout(resolve, 40));
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">Summarize this please.</div>' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Final report complete with enough detail for the user.</div>' +
+      REPLY_ACTION_BUTTONS +
+      '</div></div>';
+    const answer = await pending;
+    expect(answer).toBe("Final report complete with enough detail for the user.");
   });
 
   test("getChatActivityText keeps tail where agent status appears", () => {

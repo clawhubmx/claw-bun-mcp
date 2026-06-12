@@ -443,8 +443,8 @@ bun notion/scripts/inline-helpers.mjs
 - **历史 API**：`POST /api/v3/getInferenceTranscriptsForUser`
 - **模型列表**：DOM 抓取下拉菜单（`listNotionModelsFromUi`），非 Notion API
 - **模型选择器定位**：聊天输入框附近的 `aria-haspopup="menu"` 按钮，或 Submit 按钮同区域的可见按钮
-- **回复完整性**：轮询 DOM 直至 `looksLikeFinalAnswer` 通过且文本稳定；进度行（`Thinking`、`Searching`、`Notion AI finished` 等）会被过滤；短 intro stub（如 `I'll prioritize…`）由 `looksLikeInProgressAnswer` 视为未完成
-- **进行中检测**：`isChatInProgress()`（`isGenerating()` + 进行中 stub）；默认 `newChat` 前若 tab  busy 则返回 `Tab busy`，避免打断 Agent
+- **回复完整性**：轮询 DOM 直至最新 assistant 回复上出现 4 个 reply action 按钮（`Copy response`、`Save to private pages`、`Share positive feedback`、`Share negative feedback`，各带 `svg` 子元素），且 `looksLikeFinalAnswer` 通过、文本稳定；不依赖 `"Notion AI finished"` 文案；进度行（`Thinking`、`Searching` 等）会被过滤；短 intro stub（如 `I'll prioritize…`）由 `looksLikeInProgressAnswer` 视为未完成；调试 eval 可用 `hasCompletedReplyActions()`
+- **进行中检测**：`isChatInProgress()`（`hasCompletedReplyActions()` + `isGenerating()` + 进行中 stub）；默认 `newChat` 前若 tab busy 则返回 `Tab busy`，避免打断 Agent
 - **异常检测**：`detectNotionPageAbnormal` 识别 `credits_exhausted`（含 `Run out of free AI responses`）、`rate_limit`、`submit_disabled`
 
 ### 文章页（create-article / edit-article）

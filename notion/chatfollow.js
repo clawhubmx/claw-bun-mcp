@@ -51,7 +51,7 @@ async function(args) {
 
 
   var h = (function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 27;
+  var HELPERS_VERSION = 28;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 500;
 
@@ -790,35 +790,78 @@ async function(args) {
     return false;
   }
 
-  function hasAssistantReplyActions() {
-    var msgs = getAssistantMessagesSinceLastUser();
-    if (!msgs.length) return false;
-    var latest = msgs[msgs.length - 1];
-    var block = latest.closest('.notion-text-block, .notion-selectable') || latest.parentElement;
-    if (!block) return false;
-    var nodes = block.querySelectorAll('[aria-label]');
-    var hasCopyResponse = false;
-    var hasFeedback = false;
+  var REPLY_ACTION_LABELS = [
+    'copy response',
+    'save to private pages',
+    'share positive feedback',
+    'share negative feedback'
+  ];
+
+  function normalizeReplyActionLabel(label) {
+    return String(label || '').trim().toLowerCase();
+  }
+
+  function isReplyActionElement(el) {
+    if (!el || !el.querySelector('svg')) return false;
+    var tag = (el.tagName || '').toLowerCase();
+    if (tag === 'button') return true;
+    var role = (el.getAttribute('role') || '').toLowerCase();
+    return role === 'button';
+  }
+
+  function findReplyActionButton(scope, label) {
+    if (!scope) return null;
+    var want = normalizeReplyActionLabel(label);
+    var nodes = scope.querySelectorAll('[aria-label]');
+    var fallback = null;
     for (var i = 0; i < nodes.length; i++) {
-      var label = (nodes[i].getAttribute('aria-label') || '').trim().toLowerCase();
-      if (label === 'copy response') hasCopyResponse = true;
-      if (label === 'share positive feedback' || label === 'share negative feedback') hasFeedback = true;
+      var node = nodes[i];
+      if (normalizeReplyActionLabel(node.getAttribute('aria-label')) !== want) continue;
+      if (!node.querySelector('svg')) continue;
+      if (isReplyActionElement(node)) return node;
+      if (!fallback) fallback = node;
     }
-    return hasCopyResponse && hasFeedback;
+    return fallback;
+  }
+
+  function getLatestAssistantReplyScope() {
+    var msgs = getAssistantMessagesSinceLastUser();
+    if (!msgs.length) return null;
+    var latest = msgs[msgs.length - 1];
+    var block = latest.closest('.notion-text-block, .notion-selectable');
+    if (block) {
+      var parent = block.parentElement;
+      if (parent && parent !== document.body) return parent;
+      return block;
+    }
+    var parentEl = latest.parentElement;
+    if (parentEl && parentEl !== document.body) return parentEl;
+    return latest;
+  }
+
+  function hasCompletedReplyActions() {
+    var scope = getLatestAssistantReplyScope();
+    if (!scope) return false;
+    for (var i = 0; i < REPLY_ACTION_LABELS.length; i++) {
+      if (!findReplyActionButton(scope, REPLY_ACTION_LABELS[i])) return false;
+    }
+    return true;
+  }
+
+  function hasAssistantReplyActions() {
+    return hasCompletedReplyActions();
   }
 
   function isGenerating() {
     if (isUrlTrustPromptVisible()) return true;
-    var text = getChatActivityText(12000);
-    if (/Notion AI finished/i.test(text)) return false;
+    if (hasCompletedReplyActions()) return false;
     if (hasActiveAgentStatusLines()) return true;
-    if (hasAssistantReplyActions()) return false;
     return false;
   }
 
   function isChatInProgress() {
+    if (hasCompletedReplyActions()) return false;
     if (isGenerating()) return true;
-    if (hasAssistantReplyActions()) return false;
     var msgs = getAssistantMessages();
     if (!msgs.length) return false;
     var latest = getAssistantText(msgs[msgs.length - 1]);
@@ -983,27 +1026,23 @@ async function(args) {
           return '';
         }
         var expectsJson = waitExpectsJson(opts);
-        var ready = looksLikeFinalAnswer(answer);
+        var hasReplyActions = hasCompletedReplyActions();
+        var ready = !!answer && looksLikeFinalAnswer(answer);
         if (expectsJson && looksLikeJsonAnswerAttempt(answer) && !hasParsedJsonAnswer(answer)) {
           ready = false;
           stableRounds = 0;
         }
         if (ready) {
-          var jsonStableNeeded = expectsJson && hasParsedJsonAnswer(answer) ? 1 : stableNeeded;
+          var effectiveStableNeeded = hasReplyActions
+            ? 1
+            : (expectsJson && hasParsedJsonAnswer(answer) ? 1 : stableNeeded);
           if (answer === lastText) stableRounds++;
           else stableRounds = 0;
           lastText = answer;
-          if (stableRounds >= jsonStableNeeded - 1) {
+          if (stableRounds >= effectiveStableNeeded - 1) {
             lastWaitPending = false;
             return answer;
           }
-        }
-      }
-
-      if (/Notion AI finished/i.test(getChatActivityText(6000)) && looksLikeFinalAnswer(answer)) {
-        if (!(waitExpectsJson(opts) && looksLikeJsonAnswerAttempt(answer) && !hasParsedJsonAnswer(answer))) {
-          lastWaitPending = false;
-          return answer;
         }
       }
     }
@@ -2430,6 +2469,10 @@ async function(args) {
     getChatActivityText: getChatActivityText,
     looksLikeInProgressAnswer: looksLikeInProgressAnswer,
     looksLikeThoughtBlock: looksLikeThoughtBlock,
+    REPLY_ACTION_LABELS: REPLY_ACTION_LABELS,
+    findReplyActionButton: findReplyActionButton,
+    hasCompletedReplyActions: hasCompletedReplyActions,
+    hasAssistantReplyActions: hasAssistantReplyActions,
     isGenerating: isGenerating,
     isChatInProgress: isChatInProgress,
     looksLikeFinalAnswer: looksLikeFinalAnswer,

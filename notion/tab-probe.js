@@ -16,6 +16,48 @@ async function(args) {
     });
   }
 
+  var REPLY_ACTION_LABELS = [
+    'copy response',
+    'save to private pages',
+    'share positive feedback',
+    'share negative feedback'
+  ];
+
+  function normalizeReplyActionLabel(label) {
+    return String(label || '').trim().toLowerCase();
+  }
+
+  function isReplyActionElement(el) {
+    if (!el || !el.querySelector('svg')) return false;
+    var tag = (el.tagName || '').toLowerCase();
+    if (tag === 'button') return true;
+    var role = (el.getAttribute('role') || '').toLowerCase();
+    return role === 'button';
+  }
+
+  function findReplyActionButton(scope, label) {
+    if (!scope) return null;
+    var want = normalizeReplyActionLabel(label);
+    var nodes = scope.querySelectorAll('[aria-label]');
+    var fallback = null;
+    for (var i = 0; i < nodes.length; i++) {
+      var node = nodes[i];
+      if (normalizeReplyActionLabel(node.getAttribute('aria-label')) !== want) continue;
+      if (!node.querySelector('svg')) continue;
+      if (isReplyActionElement(node)) return node;
+      if (!fallback) fallback = node;
+    }
+    return fallback;
+  }
+
+  function hasCompletedReplyActions(scope) {
+    if (!scope) return false;
+    for (var k = 0; k < REPLY_ACTION_LABELS.length; k++) {
+      if (!findReplyActionButton(scope, REPLY_ACTION_LABELS[k])) return false;
+    }
+    return true;
+  }
+
   if (!hasCookie('notion_user_id') || !hasCookie('notion_users')) {
     return { busy: false, loggedIn: false, url: location.href };
   }
@@ -33,22 +75,11 @@ async function(args) {
   }
 
   var root = document.querySelector('.layout-chat') || document.body || document;
-  var labels = root.querySelectorAll('[aria-label]');
-  var hasCopyResponse = false;
-  var hasFeedback = false;
-  for (var i = 0; i < labels.length; i++) {
-    var label = (labels[i].getAttribute('aria-label') || '').trim().toLowerCase();
-    if (label === 'copy response') hasCopyResponse = true;
-    if (label === 'share positive feedback' || label === 'share negative feedback') hasFeedback = true;
-  }
-  if (hasCopyResponse && hasFeedback) {
+  if (hasCompletedReplyActions(root)) {
     return { busy: false, loggedIn: true, helpersLoaded: false, url: location.href };
   }
 
   var text = (root.innerText || root.textContent || '').slice(-5000);
-  if (/Notion AI finished/i.test(text)) {
-    return { busy: false, loggedIn: true, helpersLoaded: false, url: location.href };
-  }
   var lines = text.split('\n').slice(-30);
   var busy = false;
   for (var j = 0; j < lines.length; j++) {
