@@ -1,0 +1,111 @@
+{
+  "startedAt": "2026-06-12T16:46:32.749Z",
+  "finishedAt": "2026-06-12T16:46:33.967Z",
+  "poolSize": 4,
+  "promptTemplate": "grok/example/test2.txt",
+  "passCount": 4,
+  "tabs": [
+    {
+      "label": "A",
+      "shortId": "35ff",
+      "topic": "Protesters block road to Mexican World Cup stadium",
+      "conversationId": "37d773dd-10fd-8093-a258-00a93c9d24a6",
+      "helpersVersion": 36,
+      "hasCompleted": true,
+      "isGen": false,
+      "answerJson": {
+        "query": "Protesters block road to Mexican World Cup stadium",
+        "time_period": "2026-06-07 to 2026-06-13",
+        "unique_topics": [
+          "Protesters block roads/avenues leading to Mexico City’s Azteca Stadium ahead of the 2026 World Cup",
+          "World Cup opening events in Mexico City overshadowed by protests and heightened security",
+          "Clashes between police and protesters around World Cup venues, including reports of tear gas and temporary transit disruptions",
+          "Broader social tensions and protest movements (including teacher labor actions) using the World Cup spotlight to amplify demands"
+        ],
+        "sources": "aljazeera.com; apnews.com; bbc.com; barrons.com; aol.com",
+        "parseMode": "loose"
+      },
+      "pass": true,
+      "parseMode": "loose",
+      "topicCount": 4
+    },
+    {
+      "label": "B",
+      "shortId": "7550",
+      "topic": "Fed interest rate decision June 2026",
+      "conversationId": "37d773dd-10fd-8060-bbdb-00a945a762e8",
+      "helpersVersion": 36,
+      "hasCompleted": true,
+      "isGen": false,
+      "answerJson": {
+        "query": "Fed interest rate decision June 2026",
+        "time_period": "2026-06-07 to 2026-06-13 (±3 days around most relevant items)",
+        "unique_topics": [
+          "Markets increasingly price in a possible Fed rate hike later in 2026 (October/December odds rise)",
+          "December 2026 Fed rate cut looks less likely ahead of the mid-June Fed meeting",
+          "Strong U.S. jobs data pushes Treasury yields higher and shifts expectations toward tighter Fed policy",
+          "CPI/inflation prints vs oil-price pressure: bond traders keep hike bets despite softer core inflation",
+          "Major banks revise rate-path forecasts (e.g., Goldman delays expected rate cuts into 2027)"
+        ],
+        "sources": "bloomberg.com, axios.com, businessinsider.com",
+        "parseMode": "loose"
+      },
+      "pass": true,
+      "parseMode": "loose",
+      "topicCount": 5
+    },
+    {
+      "label": "C",
+      "shortId": "b57a",
+      "topic": "Apple WWDC announcements 2026",
+      "conversationId": "37d773dd-10fd-80d3-a3bd-00a977a18309",
+      "helpersVersion": 36,
+      "hasCompleted": true,
+      "isGen": false,
+      "answerJson": {
+        "query": "Apple WWDC announcements 2026",
+        "time_period": "2026-06-07 to 2026-06-13",
+        "unique_topics": [
+          "Siri AI overhaul / major Siri upgrade",
+          "iOS 27 announced and iPhone feature updates",
+          "Apple Intelligence updates and positioning in the AI race",
+          "Apple AI partnership with Google (Gemini) powering Siri / Apple Intelligence",
+          "Liquid Glass UI changes and fixes in iOS 27",
+          "WWDC 2026 roundup: everything announced (multi-platform updates across iPhone/iPad/Mac/Watch)",
+          "Leadership transition context mentioned in WWDC coverage (Tim Cook stepping down; John Ternus named successor)"
+        ],
+        "sources": "techcrunch.com, pcmag.com, 9to5mac.com, gizmodo.com, theverge.com, cnbc.com, wired.com, forbes.com",
+        "parseMode": "loose"
+      },
+      "pass": true,
+      "parseMode": "loose",
+      "topicCount": 7
+    },
+    {
+      "label": "D",
+      "shortId": "d92d",
+      "topic": "SpaceX IPO oversubscribed",
+      "conversationId": "37d773dd-10fd-8086-a0cf-00a96f0da876",
+      "helpersVersion": 36,
+      "hasCompleted": true,
+      "isGen": false,
+      "answerJson": {
+        "query": "SpaceX IPO oversubscribed",
+        "time_period": "2026-06-07 to 2026-06-13",
+        "unique_topics": [
+          "SpaceX IPO demand well oversubscribed / multiple $10B institutional orders; order books nearing close",
+          "Oversubscription magnitude updates (about 2x, 3x+, and 4x+ oversubscribed reported across outlets)",
+          "SpaceX sets/fixes IPO price at $135 per share; targets roughly $75B raise and ~$1.75–$1.8T valuation",
+          "Retail participation surge: retail orders reported >$100B; unusually large retail allocation (reported ~20%–30%)",
+          "IPO mechanics/timing: institutional order cutoff and allocation process ahead of first trading (pricing June 11, debut around June 12)",
+          "Post-IPO risk/market impact commentary: mega-IPO volatility and potential crowding-out/rotation effects on other stocks"
+        ],
+        "sources": "reuters.com; bloomberg.com; barrons.com; cnbc.com; finance.yahoo.com; forbes.com; nbcnews.com",
+        "parseMode": "loose"
+      },
+      "pass": true,
+      "parseMode": "loose",
+      "topicCount": 6
+    }
+  ]
+}

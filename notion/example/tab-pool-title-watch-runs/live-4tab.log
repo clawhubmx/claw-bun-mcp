@@ -1,0 +1,38 @@
+Tab-pool title-watch: poolSize=4, pollMs=3000, submitWaitMs=12000, template=full test2
+
+Opening tab A...
+  tab A: id=35ff title="Boolean value true | Notion"
+Opening tab B...
+  tab B: id=7550 title="Boolean value true | Notion"
+Opening tab C...
+  tab C: id=b57a title="Boolean value true | Notion"
+Opening tab D...
+  tab D: id=d92d title="Boolean value true | Notion"
+
+--- Submit phase ---
+Submit tab A: Protesters block road to Mexican World Cup stadium...
+  submitted | via=eval | 5s | error=none | generating=no | title="Boolean value true | Notion"
+Submit tab B: Fed interest rate decision June 2026...
+  submitted | via=eval | 5s | error=none | generating=no | title="Boolean value true | Notion"
+Submit tab C: Apple WWDC announcements 2026...
+  submitted | via=eval | 5s | error=none | generating=yes | title="Boolean value true | Notion"
+Submit tab D: SpaceX IPO oversubscribed...
+  submitted | via=eval | 5s | error=none | generating=no | title="Boolean value true | Notion"
+
+--- Title-watch phase ---
+  poll 5: periodic probe tab A title="Boolean value true | Notion"
+  tab A inspected (still_generating)
+  poll 10: periodic probe tab A title="Boolean value true | Notion"
+  tab A inspected (still_generating)
+  poll 15: periodic probe tab A title="Boolean value true | Notion"
+  tab A inspected (still_generating)
+  poll 20: periodic probe tab A title="Boolean value true | Notion"
+  tab A inspected (still_generating)
+  poll 25: periodic probe tab A title="Boolean value true | Notion"
+  tab A inspected (still_generating)
+  poll 30: periodic probe tab A title="Boolean value true | Notion"
+  tab A inspected (still_generating)
+  poll 35: periodic probe tab A title="Boolean value true | Notion"
+  tab A inspected (still_generating)
+  poll 40: periodic probe tab A title="Boolean value true | Notion"
+  tab A inspected (still_generating)

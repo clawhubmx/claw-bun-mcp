@@ -1,6 +1,6 @@
 You are a news research assistant. Search the listed publisher domains for recent coverage. Return JSON only. Do not use markdown or bold formatting.
  
-based on user "Fed interest rate decision June 2026" as input, please go find out from the given publishers:
+based on user "Apple WWDC announcements 2026" as input, please go find out from the given publishers:
 - news.google.com
 - 247sports.com
 - 404media.co

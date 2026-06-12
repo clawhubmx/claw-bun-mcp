@@ -1,0 +1,61 @@
+# 4-tab pool test2 results
+Started: 2026-06-12T16:46:32.749Z
+Finished: 2026-06-12T16:46:33.967Z
+Template: grok/example/test2.txt (full)
+Passed: 4/4
+
+| Tab | Tab ID | Topic | Topics | Parse | Status | Sources (preview) |
+| --- | --- | --- | ---: | --- | --- | --- |
+| A | 35ff | Protesters block road to Mexican World Cu… | 4 | loose | PASS | aljazeera.com; apnews.com; bbc.com; barrons.com; aol.co |
+| B | 7550 | Fed interest rate decision June 2026 | 5 | loose | PASS | bloomberg.com, axios.com, businessinsider.com |
+| C | b57a | Apple WWDC announcements 2026 | 7 | loose | PASS | techcrunch.com, pcmag.com, 9to5mac.com, gizmodo.com, th |
+| D | d92d | SpaceX IPO oversubscribed | 6 | loose | PASS | reuters.com; bloomberg.com; barrons.com; cnbc.com; fina |
+
+## Unique topics by tab
+
+### Tab A — Protesters block road to Mexican World Cup stadium
+Status: PASS | tab=35ff | topics=4 | parse=loose
+Time period: 2026-06-07 to 2026-06-13
+Sources: aljazeera.com; apnews.com; bbc.com; barrons.com; aol.com
+
+1. Protesters block roads/avenues leading to Mexico City’s Azteca Stadium ahead of the 2026 World Cup
+2. World Cup opening events in Mexico City overshadowed by protests and heightened security
+3. Clashes between police and protesters around World Cup venues, including reports of tear gas and temporary transit disruptions
+4. Broader social tensions and protest movements (including teacher labor actions) using the World Cup spotlight to amplify demands
+
+### Tab B — Fed interest rate decision June 2026
+Status: PASS | tab=7550 | topics=5 | parse=loose
+Time period: 2026-06-07 to 2026-06-13 (±3 days around most relevant items)
+Sources: bloomberg.com, axios.com, businessinsider.com
+
+1. Markets increasingly price in a possible Fed rate hike later in 2026 (October/December odds rise)
+2. December 2026 Fed rate cut looks less likely ahead of the mid-June Fed meeting
+3. Strong U.S. jobs data pushes Treasury yields higher and shifts expectations toward tighter Fed policy
+4. CPI/inflation prints vs oil-price pressure: bond traders keep hike bets despite softer core inflation
+5. Major banks revise rate-path forecasts (e.g., Goldman delays expected rate cuts into 2027)
+
+### Tab C — Apple WWDC announcements 2026
+Status: PASS | tab=b57a | topics=7 | parse=loose
+Time period: 2026-06-07 to 2026-06-13
+Sources: techcrunch.com, pcmag.com, 9to5mac.com, gizmodo.com, theverge.com, cnbc.com, wired.com, forbes.com
+
+1. Siri AI overhaul / major Siri upgrade
+2. iOS 27 announced and iPhone feature updates
+3. Apple Intelligence updates and positioning in the AI race
+4. Apple AI partnership with Google (Gemini) powering Siri / Apple Intelligence
+5. Liquid Glass UI changes and fixes in iOS 27
+6. WWDC 2026 roundup: everything announced (multi-platform updates across iPhone/iPad/Mac/Watch)
+7. Leadership transition context mentioned in WWDC coverage (Tim Cook stepping down; John Ternus named successor)
+
+### Tab D — SpaceX IPO oversubscribed
+Status: PASS | tab=d92d | topics=6 | parse=loose
+Time period: 2026-06-07 to 2026-06-13
+Sources: reuters.com; bloomberg.com; barrons.com; cnbc.com; finance.yahoo.com; forbes.com; nbcnews.com
+
+1. SpaceX IPO demand well oversubscribed / multiple $10B institutional orders; order books nearing close
+2. Oversubscription magnitude updates (about 2x, 3x+, and 4x+ oversubscribed reported across outlets)
+3. SpaceX sets/fixes IPO price at $135 per share; targets roughly $75B raise and ~$1.75–$1.8T valuation
+4. Retail participation surge: retail orders reported >$100B; unusually large retail allocation (reported ~20%–30%)
+5. IPO mechanics/timing: institutional order cutoff and allocation process ahead of first trading (pricing June 11, debut around June 12)
+6. Post-IPO risk/market impact commentary: mega-IPO volatility and potential crowding-out/rotation effects on other stocks
+
