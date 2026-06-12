@@ -38,3 +38,9 @@ prime: undefined
   probe: undefined
 
 --- Run 12/25 | sonnet | short ---
+  probe: undefined
+
+--- Run 13/25 | opus | short ---
+  probe: undefined
+
+--- Run 14/25 | opus-4.7 | short ---

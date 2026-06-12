@@ -85,6 +85,7 @@ describe("notion chat helpers", () => {
     expect(h.looksLikeFinalAnswer("7")).toBe(true);
     expect(h.looksLikeFinalAnswer("42")).toBe(true);
     expect(h.looksLikeFinalAnswer("Mars")).toBe(true);
+    expect(h.looksLikeFinalAnswer("OK")).toBe(true);
   });
 
   test("looksLikeFinalAnswer rejects progress lines", () => {
@@ -240,8 +241,17 @@ describe("notion chat helpers", () => {
   test("isGenerating detects Computing agent status", () => {
     const h = installHelpers();
     document.body.innerHTML =
-      '<div class="layout-chat">' + "prompt ".repeat(1200) + "Computing\nThought</div>";
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">What is 2+2?</div>' +
+      "Computing\nComputing</div>";
     expect(h.isGenerating()).toBe(true);
+  });
+
+  test("isGenerating ignores Thought section header without live status", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' + "prompt ".repeat(1200) + "Computing\nThought</div>";
+    expect(h.isGenerating()).toBe(false);
   });
 
   test("isGenerating is false when reply actions are visible", () => {
@@ -298,6 +308,17 @@ describe("notion chat helpers", () => {
     expect(h.getAssistantMessages().length).toBe(1);
     expect(h.getAssistantMessagesSinceLastUser().length).toBe(1);
     expect(h.getAssistantText(h.getAssistantMessagesSinceLastUser()[0])).toBe("42");
+  });
+
+  test("isGenerating is false when Thought header remains after short answer", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">Reply with only: OK</div>' +
+      "4:08 PM\nThought\nOK\nSonnet 4.6</div>";
+    expect(h.isGenerating()).toBe(false);
+    expect(h.isChatInProgress()).toBe(false);
+    expect(h.looksLikeFinalAnswer("OK")).toBe(true);
   });
 
   test("isGenerating ignores stale agent progress outside recent lines", () => {

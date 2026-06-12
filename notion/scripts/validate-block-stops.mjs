@@ -147,6 +147,36 @@ const cases = [
       );
     },
   },
+  {
+    id: "thought_header_not_in_flight",
+    setup(doc) {
+      doc.body.innerHTML =
+        '<div class="layout-chat">' +
+        '<div class="content-editable-leaf-rtl">Reply with only: OK</div>' +
+        "4:08 PM\nThought\nOK\nSonnet 4.6</div>";
+    },
+    expect(h) {
+      return h.isGenerating() === false && h.isChatInProgress() === false;
+    },
+  },
+  {
+    id: "short_answer_ok_is_final",
+    setup(doc) {
+      return { answer: "OK" };
+    },
+    expect(h, ctx) {
+      return h.looksLikeFinalAnswer(ctx.answer) === true;
+    },
+  },
+  {
+    id: "short_answer_numeric_is_final",
+    setup(doc) {
+      return { answer: "11" };
+    },
+    expect(h, ctx) {
+      return h.looksLikeFinalAnswer(ctx.answer) === true;
+    },
+  },
 ];
 
 let installVersion = "unknown";
@@ -161,8 +191,8 @@ console.log(`Workspace helpers: ${helpersSource.match(/HELPERS_VERSION = (\d+)/)
 const results = [];
 for (const c of cases) {
   const h = installHelpers();
-  c.setup(document);
-  const ok = !!c.expect(h);
+  const ctx = c.setup(document) || {};
+  const ok = !!c.expect(h, ctx);
   results.push({ id: c.id, ok });
   console.log(`${ok ? "PASS" : "FAIL"}  ${c.id}`);
 }

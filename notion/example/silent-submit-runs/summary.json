@@ -157,6 +157,34 @@
         "timelineSummary": [],
         "full": null
       }
+    },
+    {
+      "run": 12,
+      "kind": "short",
+      "model": {
+        "alias": "sonnet",
+        "title": "Sonnet 4.6"
+      },
+      "promptPreview": "What is 17+25? Reply with just the number.",
+      "probe": {
+        "timedOut": true,
+        "timelineSummary": [],
+        "full": null
+      }
+    },
+    {
+      "run": 13,
+      "kind": "short",
+      "model": {
+        "alias": "opus",
+        "title": "Opus 4.7"
+      },
+      "promptPreview": "Return JSON only: {\"color\":\"blue\",\"count\":3}. json format only",
+      "probe": {
+        "timedOut": true,
+        "timelineSummary": [],
+        "full": null
+      }
     }
   ]
 }

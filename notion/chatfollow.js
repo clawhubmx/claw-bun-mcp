@@ -51,7 +51,7 @@ async function(args) {
 
 
   var h = (function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 26;
+  var HELPERS_VERSION = 27;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 500;
 
@@ -722,7 +722,7 @@ async function(args) {
     var t = String(line || '').trim();
     if (!t) return false;
     if (isProgressLine(t)) return true;
-    if (/^(Exploring|Computing|Thought|Thinking|Brewing|Focusing|Searching the web|Reading files|Running tool|Generating|Writing file|Loading web page|Loaded web page|Called function|Searched the web|Browsing|Fetching top|Fetching recent)\b/i.test(t)) {
+    if (/^(Exploring|Computing|Thinking|Brewing|Focusing|Searching the web|Reading files|Running tool|Generating|Writing file|Loading web page|Loaded web page|Called function|Searched the web|Browsing|Fetching top|Fetching recent)\b/i.test(t)) {
       return true;
     }
     return false;
