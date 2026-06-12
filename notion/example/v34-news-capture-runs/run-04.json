@@ -1,0 +1,56 @@
+{
+  "run": 4,
+  "topic": "SpaceX IPO oversubscribed",
+  "command": "chatfollow",
+  "elapsedMs": 23540,
+  "timedOut": false,
+  "chatError": null,
+  "chatKind": null,
+  "chatAction": null,
+  "answerFormat": "json",
+  "answerJson": {
+    "query": "SpaceX IPO oversubscribed",
+    "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+    "unique_topics": [
+      "SpaceX IPO demand reported as more than four times oversubscribed as order books close ahead of listing",
+      "Record-setting SpaceX IPO terms and scale: ~$75B raised at $135/share implying ~ $1.75–$1.8T valuation; biggest IPO on record",
+      "Retail-investor demand surge and large retail allocation narrative (huge retail order totals reported) as a driver of oversubscription",
+      "Debate over IPO valuation and suitability for certain investors/pension funds; some institutions decline direct participation while expecting index exposure",
+      "Post-IPO trading expectations and risks: potential first-day pop, volatility concerns, and ‘flip’ behavior warnings around an oversubscribed deal"
+    ],
+    "sources": "bloomberg.com;cnbc.com;aljazeera.com;barrons.com;bbc.com;apnews.com;abcnews.com;cbsnews.com;aol.com;businessinsider.com"
+  },
+  "capturedAnswer": "{\"query\":\"SpaceX IPO oversubscribed\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"SpaceX IPO demand reported as more than four times oversubscribed as order books close ahead of listing\",\"Record-setting SpaceX IPO terms and scale: ~$75B raised at $135/share implying ~ $1.75–$1.8T valuation; biggest IPO on record\",\"Retail-investor demand surge and large retail allocation narrative (huge retail order totals reported) as a driver of oversubscription\",\"Debate over IPO valuation and suitability for certain investors/pension funds; some institutions decline direct participation while expecting index exposure\",\"Post-IPO trading expectations and risks: potential first-day pop, volatility concerns, and ‘flip’ behavior warnings around an oversubscribed deal\"],\"sources\":\"bloomberg.com;cnbc.com;aljazeera.com;barrons.com;bbc.com;apnews.com;abcnews.com;cbsnews.com;aol.com;businessinsider.com\"}",
+  "captureSource": "chat",
+  "recovered": false,
+  "validation": {
+    "ok": true,
+    "parsed": {
+      "query": "SpaceX IPO oversubscribed",
+      "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+      "unique_topics": [
+        "SpaceX IPO demand reported as more than four times oversubscribed as order books close ahead of listing",
+        "Record-setting SpaceX IPO terms and scale: ~$75B raised at $135/share implying ~ $1.75–$1.8T valuation; biggest IPO on record",
+        "Retail-investor demand surge and large retail allocation narrative (huge retail order totals reported) as a driver of oversubscription",
+        "Debate over IPO valuation and suitability for certain investors/pension funds; some institutions decline direct participation while expecting index exposure",
+        "Post-IPO trading expectations and risks: potential first-day pop, volatility concerns, and ‘flip’ behavior warnings around an oversubscribed deal"
+      ],
+      "sources": "bloomberg.com;cnbc.com;aljazeera.com;barrons.com;bbc.com;apnews.com;abcnews.com;cbsnews.com;aol.com;businessinsider.com"
+    }
+  },
+  "helpersVersion": 35,
+  "probe": {
+    "helpersVersion": 35,
+    "tabHidden": false,
+    "hasCompletedReplyActions": true,
+    "isGenerating": false,
+    "isChatInProgress": false,
+    "answerLen": 1847,
+    "looksFinal": true,
+    "answerPreview": "{\"query\":\"SpaceX IPO oversubscribed\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"SpaceX IPO demand reported as more than four times oversubscribed as order books close ahead of listing\",\"Record-setting SpaceX IPO terms and scale: ~$75B raised at $135/share implying ~ $1.75–$1.8T valuation; biggest IPO on record\",\"Retail-investor demand surge and large retail allocat",
+    "answerFull": "{\"query\":\"SpaceX IPO oversubscribed\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"SpaceX IPO demand reported as more than four times oversubscribed as order books close ahead of listing\",\"Record-setting SpaceX IPO terms and scale: ~$75B raised at $135/share implying ~ $1.75–$1.8T valuation; biggest IPO on record\",\"Retail-investor demand surge and large retail allocation narrative (huge retail order totals reported) as a driver of oversubscription\",\"Debate over IPO valuation and suitability for certain investors/pension funds; some institutions decline direct participation while expecting index exposure\",\"Post-IPO trading expectations and risks: potential first-day pop, volatility concerns, and ‘flip’ behavior warnings around an oversubscribed deal\"],\"sources\":\"bloomberg.com;cnbc.com;aljazeera.com;barrons.com;bbc.com;apnews.com;abcnews.com;cbsnews.com;aol.com;businessinsider.com\"}\n{\"query\":\"SpaceX IPO oversubscribed\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"SpaceX IPO demand reported as more than four times oversubscribed as order books close ahead of listing\",\"Record-setting SpaceX IPO terms and scale: ~$75B raised at $135/share implying ~ $1.75–$1.8T valuation; biggest IPO on record\",\"Retail-investor demand surge and large retail allocation narrative (huge retail order totals reported) as a driver of oversubscription\",\"Debate over IPO valuation and suitability for certain investors/pension funds; some institutions decline direct participation while expecting index exposure\",\"Post-IPO trading expectations and risks: potential first-day pop, volatility concerns, and ‘flip’ behavior warnings around an oversubscribed deal\"],\"sources\":\"bloomberg.com;cnbc.com;aljazeera.com;barrons.com;bbc.com;apnews.com;abcnews.com;cbsnews.com;aol.com;businessinsider.com\"}",
+    "conversationId": "37d773dd-10fd-80b9-83cf-00a91110c205"
+  },
+  "pass": true,
+  "directCapture": true
+}

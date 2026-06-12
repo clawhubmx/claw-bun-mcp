@@ -465,17 +465,21 @@ describe("notion chat helpers", () => {
     document.body.innerHTML =
       '<div class="layout-chat">' +
       '<div contenteditable="true" role="textbox">draft</div>' +
-      '<div class="assistant-turn">' +
+      '<div class="assistant-turn" id="stale-turn">' +
       '<div class="notion-text-block"><div class="content-editable-leaf-rtl">stale answer</div></div>' +
       '<div class="reply-toolbar">' + REPLY_ACTION_BUTTONS + '</div>' +
       '</div>' +
       '<button aria-label="New chat">New chat</button>' +
       '</div>';
+    const editor = document.querySelector('[role="textbox"]');
     const newBtn = document.querySelector('[aria-label="New chat"]');
-    newBtn.getBoundingClientRect = () => ({ width: 80, height: 32, top: 10, left: 10, bottom: 42, right: 90 });
-    Object.defineProperty(newBtn, "offsetParent", { configurable: true, value: document.body });
+    for (const el of [editor, newBtn]) {
+      el.getBoundingClientRect = () => ({ width: 80, height: 32, top: 10, left: 10, bottom: 42, right: 90 });
+      Object.defineProperty(el, "offsetParent", { configurable: true, value: document.body });
+    }
+    const staleTurn = document.getElementById("stale-turn");
     newBtn.addEventListener("click", () => {
-      document.querySelector(".assistant-turn").remove();
+      staleTurn.remove();
     });
     const result = await h.ensureNewChatView();
     expect(result.ok).toBe(true);

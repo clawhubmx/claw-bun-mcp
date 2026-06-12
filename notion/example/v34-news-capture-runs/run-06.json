@@ -1,0 +1,56 @@
+{
+  "run": 6,
+  "topic": "OpenAI model release",
+  "command": "chatfollow",
+  "elapsedMs": 41523,
+  "timedOut": false,
+  "chatError": null,
+  "chatKind": null,
+  "chatAction": null,
+  "answerFormat": "json",
+  "answerJson": {
+    "query": "OpenAI model release",
+    "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+    "unique_topics": [
+      "No confirmed OpenAI flagship model release surfaced in the 2026-06-09 to 2026-06-15 window from the specified publisher pool; coverage in-range focused more on IPO/regulation and upcoming upgrades than an actual model launch",
+      "Reports/claims that OpenAI is preparing a notable model upgrade (described as a new model codenamed 5.6) expected to launch in June as an upgrade beyond GPT-5.5 (pre-release/rumor framing)",
+      "OpenAI’s CEO Sam Altman lobbying against proposals requiring government approval before public release of new AI models (model-release regulation debate)",
+      "OpenAI’s “trusted/controlled access” approach for sensitive, cyber-capable model variants (tiered access + verification focus, rather than broad public release)",
+      "AI competitive context during the same week: peers (not OpenAI) releasing or expanding access to frontier models (used in coverage to frame OpenAI’s release cadence and market race)"
+    ],
+    "sources": "finance.yahoo.com;reuters.com;axios.com;cnbc.com;bloomberg.com;fortune.com;apnews.com;9to5mac.com;businessinsider.com;wsj.com"
+  },
+  "capturedAnswer": "{\"query\":\"OpenAI model release\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"No confirmed OpenAI flagship model release surfaced in the 2026-06-09 to 2026-06-15 window from the specified publisher pool; coverage in-range focused more on IPO/regulation and upcoming upgrades than an actual model launch\",\"Reports/claims that OpenAI is preparing a notable model upgrade (described as a new model codenamed 5.6) expected to launch in June as an upgrade beyond GPT-5.5 (pre-release/rumor framing)\",\"OpenAI’s CEO Sam Altman lobbying against proposals requiring government approval before public release of new AI models (model-release regulation debate)\",\"OpenAI’s “trusted/controlled access” approach for sensitive, cyber-capable model variants (tiered access + verification focus, rather than broad public release)\",\"AI competitive context during the same week: peers (not OpenAI) releasing or expanding access to frontier models (used in coverage to frame OpenAI’s release cadence and market race)\"],\"sources\":\"finance.yahoo.com;reuters.com;axios.com;cnbc.com;bloomberg.com;fortune.com;apnews.com;9to5mac.com;businessinsider.com;wsj.com\"}",
+  "captureSource": "chat",
+  "recovered": false,
+  "validation": {
+    "ok": true,
+    "parsed": {
+      "query": "OpenAI model release",
+      "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+      "unique_topics": [
+        "No confirmed OpenAI flagship model release surfaced in the 2026-06-09 to 2026-06-15 window from the specified publisher pool; coverage in-range focused more on IPO/regulation and upcoming upgrades than an actual model launch",
+        "Reports/claims that OpenAI is preparing a notable model upgrade (described as a new model codenamed 5.6) expected to launch in June as an upgrade beyond GPT-5.5 (pre-release/rumor framing)",
+        "OpenAI’s CEO Sam Altman lobbying against proposals requiring government approval before public release of new AI models (model-release regulation debate)",
+        "OpenAI’s “trusted/controlled access” approach for sensitive, cyber-capable model variants (tiered access + verification focus, rather than broad public release)",
+        "AI competitive context during the same week: peers (not OpenAI) releasing or expanding access to frontier models (used in coverage to frame OpenAI’s release cadence and market race)"
+      ],
+      "sources": "finance.yahoo.com;reuters.com;axios.com;cnbc.com;bloomberg.com;fortune.com;apnews.com;9to5mac.com;businessinsider.com;wsj.com"
+    }
+  },
+  "helpersVersion": 35,
+  "probe": {
+    "helpersVersion": 35,
+    "tabHidden": false,
+    "hasCompletedReplyActions": true,
+    "isGenerating": false,
+    "isChatInProgress": false,
+    "answerLen": 2335,
+    "looksFinal": true,
+    "answerPreview": "{\"query\":\"OpenAI model release\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"No confirmed OpenAI flagship model release surfaced in the 2026-06-09 to 2026-06-15 window from the specified publisher pool; coverage in-range focused more on IPO/regulation and upcoming upgrades than an actual model launch\",\"Reports/claims that OpenAI is preparing a notable model upgrade (",
+    "answerFull": "{\"query\":\"OpenAI model release\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"No confirmed OpenAI flagship model release surfaced in the 2026-06-09 to 2026-06-15 window from the specified publisher pool; coverage in-range focused more on IPO/regulation and upcoming upgrades than an actual model launch\",\"Reports/claims that OpenAI is preparing a notable model upgrade (described as a new model codenamed 5.6) expected to launch in June as an upgrade beyond GPT-5.5 (pre-release/rumor framing)\",\"OpenAI’s CEO Sam Altman lobbying against proposals requiring government approval before public release of new AI models (model-release regulation debate)\",\"OpenAI’s “trusted/controlled access” approach for sensitive, cyber-capable model variants (tiered access + verification focus, rather than broad public release)\",\"AI competitive context during the same week: peers (not OpenAI) releasing or expanding access to frontier models (used in coverage to frame OpenAI’s release cadence and market race)\"],\"sources\":\"finance.yahoo.com;reuters.com;axios.com;cnbc.com;bloomberg.com;fortune.com;apnews.com;9to5mac.com;businessinsider.com;wsj.com\"}\n{\"query\":\"OpenAI model release\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"No confirmed OpenAI flagship model release surfaced in the 2026-06-09 to 2026-06-15 window from the specified publisher pool; coverage in-range focused more on IPO/regulation and upcoming upgrades than an actual model launch\",\"Reports/claims that OpenAI is preparing a notable model upgrade (described as a new model codenamed 5.6) expected to launch in June as an upgrade beyond GPT-5.5 (pre-release/rumor framing)\",\"OpenAI’s CEO Sam Altman lobbying against proposals requiring government approval before public release of new AI models (model-release regulation debate)\",\"OpenAI’s “trusted/controlled access” approach for sensitive, cyber-capable model variants (tiered access + verification focus, rather than broad public release)\",\"AI competitive context during the same week: peers (not OpenAI) releasing or expanding access to frontier models (used in coverage to frame OpenAI’s release cadence and market race)\"],\"sources\":\"finance.yahoo.com;reuters.com;axios.com;cnbc.com;bloomberg.com;fortune.com;apnews.com;9to5mac.com;businessinsider.com;wsj.com\"}",
+    "conversationId": "37d773dd-10fd-80b9-83cf-00a91110c205"
+  },
+  "pass": true,
+  "directCapture": true
+}

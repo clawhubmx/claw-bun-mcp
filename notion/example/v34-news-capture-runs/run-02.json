@@ -2,7 +2,7 @@
   "run": 2,
   "topic": "Fed interest rate decision June 2026",
   "command": "chatfollow",
-  "elapsedMs": 18926,
+  "elapsedMs": 33618,
   "timedOut": false,
   "chatError": null,
   "chatKind": null,
@@ -10,30 +10,46 @@
   "answerFormat": "json",
   "answerJson": {
     "query": "Fed interest rate decision June 2026",
-    "time_period": "2026-06-07 to 2026-06-13",
+    "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
     "unique_topics": [
-      "Reuters poll: economists expect the Fed to hold interest rates for the rest of 2026 amid persistent inflation pressures",
-      "Market pricing shifts: discussion of removing Fed “easing bias” language and rising odds of one or more rate hikes later in 2026 (CME FedWatch referenced)",
-      "Personal finance implications of potentially higher-for-longer rates (impact on borrowing, savings, consumer finances)",
-      "Upcoming June 16–17, 2026 FOMC meeting schedule and decision timing (Federal Reserve calendar references widely republished)"
+      "Preview/expectations ahead of the June 16–17, 2026 FOMC meeting: markets and economists largely expect the Fed to hold rates steady; guidance and language changes watched closely",
+      "War-driven energy-price inflation and elevated uncertainty reduce likelihood of rate cuts in 2026; some coverage frames risk of hikes returning later in 2026",
+      "Strong jobs data and sticky inflation shift market pricing toward potential Fed hikes by late 2026 (e.g., October/December) rather than cuts",
+      "Fed communication focus for June 2026: whether the new chair/leadership (Kevin Warsh) shifts tone away from easing bias and how that affects the expected path for 2026–2027",
+      "Consumer impact angles tied to the June decision window: mortgage-rate lock/borrowing-cost guidance ahead of the June Fed meeting"
     ],
-    "sources": "reuters.com, forbes.com, cnbc.com, federalreserve.gov, finance.yahoo.com"
+    "sources": "reuters.com;cnbc.com;axios.com;forbes.com;cbsnews.com;bloomberg.com;businessinsider.com;finance.yahoo.com;investing.com"
   },
-  "capturedAnswer": "{\"query\":\"Fed interest rate decision June 2026\",\"time_period\":\"2026-06-07 to 2026-06-13\",\"unique_topics\":[\"Reuters poll: economists expect the Fed to hold interest rates for the rest of 2026 amid persistent inflation pressures\",\"Market pricing shifts: discussion of removing Fed “easing bias” language and rising odds of one or more rate hikes later in 2026 (CME FedWatch referenced)\",\"Personal finance implications of potentially higher-for-longer rates (impact on borrowing, savings, consumer finances)\",\"Upcoming June 16–17, 2026 FOMC meeting schedule and decision timing (Federal Reserve calendar references widely republished)\"],\"sources\":\"reuters.com, forbes.com, cnbc.com, federalreserve.gov, finance.yahoo.com\"}",
+  "capturedAnswer": "{\"query\":\"Fed interest rate decision June 2026\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Preview/expectations ahead of the June 16–17, 2026 FOMC meeting: markets and economists largely expect the Fed to hold rates steady; guidance and language changes watched closely\",\"War-driven energy-price inflation and elevated uncertainty reduce likelihood of rate cuts in 2026; some coverage frames risk of hikes returning later in 2026\",\"Strong jobs data and sticky inflation shift market pricing toward potential Fed hikes by late 2026 (e.g., October/December) rather than cuts\",\"Fed communication focus for June 2026: whether the new chair/leadership (Kevin Warsh) shifts tone away from easing bias and how that affects the expected path for 2026–2027\",\"Consumer impact angles tied to the June decision window: mortgage-rate lock/borrowing-cost guidance ahead of the June Fed meeting\"],\"sources\":\"reuters.com;cnbc.com;axios.com;forbes.com;cbsnews.com;bloomberg.com;businessinsider.com;finance.yahoo.com;investing.com\"}",
   "captureSource": "chat",
   "recovered": false,
-  "helpersVersion": 34,
+  "validation": {
+    "ok": true,
+    "parsed": {
+      "query": "Fed interest rate decision June 2026",
+      "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+      "unique_topics": [
+        "Preview/expectations ahead of the June 16–17, 2026 FOMC meeting: markets and economists largely expect the Fed to hold rates steady; guidance and language changes watched closely",
+        "War-driven energy-price inflation and elevated uncertainty reduce likelihood of rate cuts in 2026; some coverage frames risk of hikes returning later in 2026",
+        "Strong jobs data and sticky inflation shift market pricing toward potential Fed hikes by late 2026 (e.g., October/December) rather than cuts",
+        "Fed communication focus for June 2026: whether the new chair/leadership (Kevin Warsh) shifts tone away from easing bias and how that affects the expected path for 2026–2027",
+        "Consumer impact angles tied to the June decision window: mortgage-rate lock/borrowing-cost guidance ahead of the June Fed meeting"
+      ],
+      "sources": "reuters.com;cnbc.com;axios.com;forbes.com;cbsnews.com;bloomberg.com;businessinsider.com;finance.yahoo.com;investing.com"
+    }
+  },
+  "helpersVersion": 35,
   "probe": {
-    "helpersVersion": 34,
+    "helpersVersion": 35,
     "tabHidden": false,
     "hasCompletedReplyActions": true,
     "isGenerating": false,
     "isChatInProgress": false,
-    "answerLen": 733,
+    "answerLen": 2095,
     "looksFinal": true,
-    "answerPreview": "{\n\"query\": \"Fed interest rate decision June 2026\",\n\"time_period\": \"2026-06-07 to 2026-06-13\",\n\"unique_topics\": [\n\"Reuters poll: economists expect the Fed to hold interest rates for the rest of 2026 amid persistent inflation pressures\",\n\"Market pricing shifts: discussion of removing Fed “easing bias” language and rising odds of one or more rate hikes later in 2026 (CME FedWatch referenced)\",\n\"Perso",
-    "answerFull": "{\n\"query\": \"Fed interest rate decision June 2026\",\n\"time_period\": \"2026-06-07 to 2026-06-13\",\n\"unique_topics\": [\n\"Reuters poll: economists expect the Fed to hold interest rates for the rest of 2026 amid persistent inflation pressures\",\n\"Market pricing shifts: discussion of removing Fed “easing bias” language and rising odds of one or more rate hikes later in 2026 (CME FedWatch referenced)\",\n\"Personal finance implications of potentially higher-for-longer rates (impact on borrowing, savings, consumer finances)\",\n\"Upcoming June 16–17, 2026 FOMC meeting schedule and decision timing (Federal Reserve calendar references widely republished)\"\n],\n\"sources\": \"reuters.com, forbes.com, cnbc.com, federalreserve.gov, finance.yahoo.com\"\n}",
-    "conversationId": "37d773dd-10fd-8089-bcac-00a9abcb4bd6"
+    "answerPreview": "{\"query\":\"Fed interest rate decision June 2026\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Preview/expectations ahead of the June 16–17, 2026 FOMC meeting: markets and economists largely expect the Fed to hold rates steady; guidance and language changes watched closely\",\"War-driven energy-price inflation and elevated uncertainty reduce likelihood of rate cuts in 20",
+    "answerFull": "{\"query\":\"Fed interest rate decision June 2026\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Preview/expectations ahead of the June 16–17, 2026 FOMC meeting: markets and economists largely expect the Fed to hold rates steady; guidance and language changes watched closely\",\"War-driven energy-price inflation and elevated uncertainty reduce likelihood of rate cuts in 2026; some coverage frames risk of hikes returning later in 2026\",\"Strong jobs data and sticky inflation shift market pricing toward potential Fed hikes by late 2026 (e.g., October/December) rather than cuts\",\"Fed communication focus for June 2026: whether the new chair/leadership (Kevin Warsh) shifts tone away from easing bias and how that affects the expected path for 2026–2027\",\"Consumer impact angles tied to the June decision window: mortgage-rate lock/borrowing-cost guidance ahead of the June Fed meeting\"],\"sources\":\"reuters.com;cnbc.com;axios.com;forbes.com;cbsnews.com;bloomberg.com;businessinsider.com;finance.yahoo.com;investing.com\"}\n{\"query\":\"Fed interest rate decision June 2026\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Preview/expectations ahead of the June 16–17, 2026 FOMC meeting: markets and economists largely expect the Fed to hold rates steady; guidance and language changes watched closely\",\"War-driven energy-price inflation and elevated uncertainty reduce likelihood of rate cuts in 2026; some coverage frames risk of hikes returning later in 2026\",\"Strong jobs data and sticky inflation shift market pricing toward potential Fed hikes by late 2026 (e.g., October/December) rather than cuts\",\"Fed communication focus for June 2026: whether the new chair/leadership (Kevin Warsh) shifts tone away from easing bias and how that affects the expected path for 2026–2027\",\"Consumer impact angles tied to the June decision window: mortgage-rate lock/borrowing-cost guidance ahead of the June Fed meeting\"],\"sources\":\"reuters.com;cnbc.com;axios.com;forbes.com;cbsnews.com;bloomberg.com;businessinsider.com;finance.yahoo.com;investing.com\"}",
+    "conversationId": "37d773dd-10fd-80b9-83cf-00a91110c205"
   },
   "pass": true,
   "directCapture": true

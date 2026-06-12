@@ -1,38 +1,64 @@
 {
-  "startedAt": "2026-06-12T15:30:43.790Z",
-  "helpersTarget": 34,
-  "maxWaitMs": 120000,
-  "spawnTimeoutMs": 240000,
+  "startedAt": "2026-06-12T15:51:25.261Z",
+  "helpersTarget": 35,
+  "maxWaitMs": 90000,
+  "spawnTimeoutMs": 180000,
   "model": "auto",
-  "tab": "A5105089E53C10289D51FCBFFF7D7CB4",
-  "promptTemplate": "grok/example/test2.txt",
+  "tab": "4CFE4A4720A00389D2B0C800591A24FC",
+  "promptTemplate": "notion/example/prompt21.txt (compact)",
   "runs": [
     {
       "run": 1,
       "topic": "Protesters block road to Mexican World Cup stadium",
       "command": "chat",
-      "elapsedMs": 1696,
+      "elapsedMs": 21835,
       "timedOut": false,
       "chatError": null,
       "chatKind": null,
       "chatAction": null,
-      "answerFormat": null,
-      "answerJson": null,
-      "capturedAnswer": "If you tell me what you’re trying to accomplish (e.g., “search for X”, “create a page for Y”, “summarize Z”), I’ll proceed.",
+      "answerFormat": "json",
+      "answerJson": {
+        "query": "Protesters block road to Mexican World Cup stadium",
+        "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+        "unique_topics": [
+          "Protesters block/close Calzada de Tlalpan road access to Mexico City’s Estadio Azteca ahead of the 2026 World Cup",
+          "Teachers’ protests and encampments in Mexico City disrupt movement near World Cup fan zones and event areas",
+          "World Cup opening in Mexico City proceeds amid broader social tensions and public demonstrations",
+          "Clashes between protesters and riot police outside/near Azteca Stadium during pre-World Cup demonstrations",
+          "Disappearance crisis and human-rights campaigners use World Cup global attention to spotlight missing persons in Mexico"
+        ],
+        "sources": "apnews.com;aljazeera.com;aol.com;bbc.com;barrons.com;abcnews.com"
+      },
+      "capturedAnswer": "{\"query\":\"Protesters block road to Mexican World Cup stadium\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Protesters block/close Calzada de Tlalpan road access to Mexico City’s Estadio Azteca ahead of the 2026 World Cup\",\"Teachers’ protests and encampments in Mexico City disrupt movement near World Cup fan zones and event areas\",\"World Cup opening in Mexico City proceeds amid broader social tensions and public demonstrations\",\"Clashes between protesters and riot police outside/near Azteca Stadium during pre-World Cup demonstrations\",\"Disappearance crisis and human-rights campaigners use World Cup global attention to spotlight missing persons in Mexico\"],\"sources\":\"apnews.com;aljazeera.com;aol.com;bbc.com;barrons.com;abcnews.com\"}",
       "captureSource": "chat",
       "recovered": false,
-      "helpersVersion": 34,
+      "validation": {
+        "ok": true,
+        "parsed": {
+          "query": "Protesters block road to Mexican World Cup stadium",
+          "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+          "unique_topics": [
+            "Protesters block/close Calzada de Tlalpan road access to Mexico City’s Estadio Azteca ahead of the 2026 World Cup",
+            "Teachers’ protests and encampments in Mexico City disrupt movement near World Cup fan zones and event areas",
+            "World Cup opening in Mexico City proceeds amid broader social tensions and public demonstrations",
+            "Clashes between protesters and riot police outside/near Azteca Stadium during pre-World Cup demonstrations",
+            "Disappearance crisis and human-rights campaigners use World Cup global attention to spotlight missing persons in Mexico"
+          ],
+          "sources": "apnews.com;aljazeera.com;aol.com;bbc.com;barrons.com;abcnews.com"
+        }
+      },
+      "helpersVersion": 35,
       "probe": {
-        "helpersVersion": 34,
+        "helpersVersion": 35,
         "tabHidden": false,
         "hasCompletedReplyActions": true,
         "isGenerating": false,
         "isChatInProgress": false,
-        "answerLen": 236,
+        "answerLen": 1543,
         "looksFinal": true,
-        "answerPreview": "What does “true” refer to here—are you confirming something I asked earlier, or did you want me to do an action?\nIf you tell me what you’re trying to accomplish (e.g., “search for X”, “create a page for Y”, “summarize Z”), I’ll proceed.",
-        "answerFull": "What does “true” refer to here—are you confirming something I asked earlier, or did you want me to do an action?\nIf you tell me what you’re trying to accomplish (e.g., “search for X”, “create a page for Y”, “summarize Z”), I’ll proceed.",
-        "conversationId": "37d773dd-10fd-8089-bcac-00a9abcb4bd6"
+        "answerPreview": "{\"query\":\"Protesters block road to Mexican World Cup stadium\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Protesters block/close Calzada de Tlalpan road access to Mexico City’s Estadio Azteca ahead of the 2026 World Cup\",\"Teachers’ protests and encampments in Mexico City disrupt movement near World Cup fan zones and event areas\",\"World Cup opening in Mexico City pro",
+        "answerFull": "{\"query\":\"Protesters block road to Mexican World Cup stadium\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Protesters block/close Calzada de Tlalpan road access to Mexico City’s Estadio Azteca ahead of the 2026 World Cup\",\"Teachers’ protests and encampments in Mexico City disrupt movement near World Cup fan zones and event areas\",\"World Cup opening in Mexico City proceeds amid broader social tensions and public demonstrations\",\"Clashes between protesters and riot police outside/near Azteca Stadium during pre-World Cup demonstrations\",\"Disappearance crisis and human-rights campaigners use World Cup global attention to spotlight missing persons in Mexico\"],\"sources\":\"apnews.com;aljazeera.com;aol.com;bbc.com;barrons.com;abcnews.com\"}\n{\"query\":\"Protesters block road to Mexican World Cup stadium\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Protesters block/close Calzada de Tlalpan road access to Mexico City’s Estadio Azteca ahead of the 2026 World Cup\",\"Teachers’ protests and encampments in Mexico City disrupt movement near World Cup fan zones and event areas\",\"World Cup opening in Mexico City proceeds amid broader social tensions and public demonstrations\",\"Clashes between protesters and riot police outside/near Azteca Stadium during pre-World Cup demonstrations\",\"Disappearance crisis and human-rights campaigners use World Cup global attention to spotlight missing persons in Mexico\"],\"sources\":\"apnews.com;aljazeera.com;aol.com;bbc.com;barrons.com;abcnews.com\"}",
+        "conversationId": "37d773dd-10fd-80b9-83cf-00a91110c205"
       },
       "pass": true,
       "directCapture": true
@@ -41,7 +67,7 @@
       "run": 2,
       "topic": "Fed interest rate decision June 2026",
       "command": "chatfollow",
-      "elapsedMs": 18926,
+      "elapsedMs": 33618,
       "timedOut": false,
       "chatError": null,
       "chatKind": null,
@@ -49,30 +75,46 @@
       "answerFormat": "json",
       "answerJson": {
         "query": "Fed interest rate decision June 2026",
-        "time_period": "2026-06-07 to 2026-06-13",
+        "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
         "unique_topics": [
-          "Reuters poll: economists expect the Fed to hold interest rates for the rest of 2026 amid persistent inflation pressures",
-          "Market pricing shifts: discussion of removing Fed “easing bias” language and rising odds of one or more rate hikes later in 2026 (CME FedWatch referenced)",
-          "Personal finance implications of potentially higher-for-longer rates (impact on borrowing, savings, consumer finances)",
-          "Upcoming June 16–17, 2026 FOMC meeting schedule and decision timing (Federal Reserve calendar references widely republished)"
+          "Preview/expectations ahead of the June 16–17, 2026 FOMC meeting: markets and economists largely expect the Fed to hold rates steady; guidance and language changes watched closely",
+          "War-driven energy-price inflation and elevated uncertainty reduce likelihood of rate cuts in 2026; some coverage frames risk of hikes returning later in 2026",
+          "Strong jobs data and sticky inflation shift market pricing toward potential Fed hikes by late 2026 (e.g., October/December) rather than cuts",
+          "Fed communication focus for June 2026: whether the new chair/leadership (Kevin Warsh) shifts tone away from easing bias and how that affects the expected path for 2026–2027",
+          "Consumer impact angles tied to the June decision window: mortgage-rate lock/borrowing-cost guidance ahead of the June Fed meeting"
         ],
-        "sources": "reuters.com, forbes.com, cnbc.com, federalreserve.gov, finance.yahoo.com"
+        "sources": "reuters.com;cnbc.com;axios.com;forbes.com;cbsnews.com;bloomberg.com;businessinsider.com;finance.yahoo.com;investing.com"
       },
-      "capturedAnswer": "{\"query\":\"Fed interest rate decision June 2026\",\"time_period\":\"2026-06-07 to 2026-06-13\",\"unique_topics\":[\"Reuters poll: economists expect the Fed to hold interest rates for the rest of 2026 amid persistent inflation pressures\",\"Market pricing shifts: discussion of removing Fed “easing bias” language and rising odds of one or more rate hikes later in 2026 (CME FedWatch referenced)\",\"Personal finance implications of potentially higher-for-longer rates (impact on borrowing, savings, consumer finances)\",\"Upcoming June 16–17, 2026 FOMC meeting schedule and decision timing (Federal Reserve calendar references widely republished)\"],\"sources\":\"reuters.com, forbes.com, cnbc.com, federalreserve.gov, finance.yahoo.com\"}",
+      "capturedAnswer": "{\"query\":\"Fed interest rate decision June 2026\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Preview/expectations ahead of the June 16–17, 2026 FOMC meeting: markets and economists largely expect the Fed to hold rates steady; guidance and language changes watched closely\",\"War-driven energy-price inflation and elevated uncertainty reduce likelihood of rate cuts in 2026; some coverage frames risk of hikes returning later in 2026\",\"Strong jobs data and sticky inflation shift market pricing toward potential Fed hikes by late 2026 (e.g., October/December) rather than cuts\",\"Fed communication focus for June 2026: whether the new chair/leadership (Kevin Warsh) shifts tone away from easing bias and how that affects the expected path for 2026–2027\",\"Consumer impact angles tied to the June decision window: mortgage-rate lock/borrowing-cost guidance ahead of the June Fed meeting\"],\"sources\":\"reuters.com;cnbc.com;axios.com;forbes.com;cbsnews.com;bloomberg.com;businessinsider.com;finance.yahoo.com;investing.com\"}",
       "captureSource": "chat",
       "recovered": false,
-      "helpersVersion": 34,
+      "validation": {
+        "ok": true,
+        "parsed": {
+          "query": "Fed interest rate decision June 2026",
+          "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+          "unique_topics": [
+            "Preview/expectations ahead of the June 16–17, 2026 FOMC meeting: markets and economists largely expect the Fed to hold rates steady; guidance and language changes watched closely",
+            "War-driven energy-price inflation and elevated uncertainty reduce likelihood of rate cuts in 2026; some coverage frames risk of hikes returning later in 2026",
+            "Strong jobs data and sticky inflation shift market pricing toward potential Fed hikes by late 2026 (e.g., October/December) rather than cuts",
+            "Fed communication focus for June 2026: whether the new chair/leadership (Kevin Warsh) shifts tone away from easing bias and how that affects the expected path for 2026–2027",
+            "Consumer impact angles tied to the June decision window: mortgage-rate lock/borrowing-cost guidance ahead of the June Fed meeting"
+          ],
+          "sources": "reuters.com;cnbc.com;axios.com;forbes.com;cbsnews.com;bloomberg.com;businessinsider.com;finance.yahoo.com;investing.com"
+        }
+      },
+      "helpersVersion": 35,
       "probe": {
-        "helpersVersion": 34,
+        "helpersVersion": 35,
         "tabHidden": false,
         "hasCompletedReplyActions": true,
         "isGenerating": false,
         "isChatInProgress": false,
-        "answerLen": 733,
+        "answerLen": 2095,
         "looksFinal": true,
-        "answerPreview": "{\n\"query\": \"Fed interest rate decision June 2026\",\n\"time_period\": \"2026-06-07 to 2026-06-13\",\n\"unique_topics\": [\n\"Reuters poll: economists expect the Fed to hold interest rates for the rest of 2026 amid persistent inflation pressures\",\n\"Market pricing shifts: discussion of removing Fed “easing bias” language and rising odds of one or more rate hikes later in 2026 (CME FedWatch referenced)\",\n\"Perso",
-        "answerFull": "{\n\"query\": \"Fed interest rate decision June 2026\",\n\"time_period\": \"2026-06-07 to 2026-06-13\",\n\"unique_topics\": [\n\"Reuters poll: economists expect the Fed to hold interest rates for the rest of 2026 amid persistent inflation pressures\",\n\"Market pricing shifts: discussion of removing Fed “easing bias” language and rising odds of one or more rate hikes later in 2026 (CME FedWatch referenced)\",\n\"Personal finance implications of potentially higher-for-longer rates (impact on borrowing, savings, consumer finances)\",\n\"Upcoming June 16–17, 2026 FOMC meeting schedule and decision timing (Federal Reserve calendar references widely republished)\"\n],\n\"sources\": \"reuters.com, forbes.com, cnbc.com, federalreserve.gov, finance.yahoo.com\"\n}",
-        "conversationId": "37d773dd-10fd-8089-bcac-00a9abcb4bd6"
+        "answerPreview": "{\"query\":\"Fed interest rate decision June 2026\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Preview/expectations ahead of the June 16–17, 2026 FOMC meeting: markets and economists largely expect the Fed to hold rates steady; guidance and language changes watched closely\",\"War-driven energy-price inflation and elevated uncertainty reduce likelihood of rate cuts in 20",
+        "answerFull": "{\"query\":\"Fed interest rate decision June 2026\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Preview/expectations ahead of the June 16–17, 2026 FOMC meeting: markets and economists largely expect the Fed to hold rates steady; guidance and language changes watched closely\",\"War-driven energy-price inflation and elevated uncertainty reduce likelihood of rate cuts in 2026; some coverage frames risk of hikes returning later in 2026\",\"Strong jobs data and sticky inflation shift market pricing toward potential Fed hikes by late 2026 (e.g., October/December) rather than cuts\",\"Fed communication focus for June 2026: whether the new chair/leadership (Kevin Warsh) shifts tone away from easing bias and how that affects the expected path for 2026–2027\",\"Consumer impact angles tied to the June decision window: mortgage-rate lock/borrowing-cost guidance ahead of the June Fed meeting\"],\"sources\":\"reuters.com;cnbc.com;axios.com;forbes.com;cbsnews.com;bloomberg.com;businessinsider.com;finance.yahoo.com;investing.com\"}\n{\"query\":\"Fed interest rate decision June 2026\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Preview/expectations ahead of the June 16–17, 2026 FOMC meeting: markets and economists largely expect the Fed to hold rates steady; guidance and language changes watched closely\",\"War-driven energy-price inflation and elevated uncertainty reduce likelihood of rate cuts in 2026; some coverage frames risk of hikes returning later in 2026\",\"Strong jobs data and sticky inflation shift market pricing toward potential Fed hikes by late 2026 (e.g., October/December) rather than cuts\",\"Fed communication focus for June 2026: whether the new chair/leadership (Kevin Warsh) shifts tone away from easing bias and how that affects the expected path for 2026–2027\",\"Consumer impact angles tied to the June decision window: mortgage-rate lock/borrowing-cost guidance ahead of the June Fed meeting\"],\"sources\":\"reuters.com;cnbc.com;axios.com;forbes.com;cbsnews.com;bloomberg.com;businessinsider.com;finance.yahoo.com;investing.com\"}",
+        "conversationId": "37d773dd-10fd-80b9-83cf-00a91110c205"
       },
       "pass": true,
       "directCapture": true
@@ -81,35 +123,447 @@
       "run": 3,
       "topic": "Apple WWDC announcements 2026",
       "command": "chatfollow",
-      "elapsedMs": 29835,
+      "elapsedMs": 22695,
       "timedOut": false,
       "chatError": null,
       "chatKind": null,
       "chatAction": null,
-      "answerFormat": null,
-      "answerJson": null,
-      "capturedAnswer": "\"sources\": \"techcrunch.com, pcmag.com, apple.com, engadget.com, cnet.com\"\n}",
+      "answerFormat": "json",
+      "answerJson": {
+        "query": "Apple WWDC announcements 2026",
+        "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+        "unique_topics": [
+          "Apple unveils Siri AI overhaul and broader Apple Intelligence updates across iOS 27 and other platforms",
+          "Apple introduces iOS 27, iPadOS 27, macOS “Golden Gate”, watchOS 27, tvOS 27 and visionOS 27 updates at WWDC 2026",
+          "Apple emphasizes expanded child-safety features, teen protections, and updated parental controls as a major WWDC 2026 theme",
+          "Apple details on-device vs cloud AI model tiers, including a high-end cloud model running on Nvidia GPUs via Google cloud partnership coverage",
+          "Hardware implications and compatibility notes from WWDC 2026: iOS 27 support extending back to iPhone 11 and feature gating of the most powerful on-device AI to newer iPhones",
+          "Post-keynote analysis: Apple’s WWDC keynote format/structure changes and investor reaction to the AI strategy"
+        ],
+        "sources": "9to5mac.com;apnews.com;aol.com;businessinsider.com;cnbc.com;bloomberg.com"
+      },
+      "capturedAnswer": "{\"query\":\"Apple WWDC announcements 2026\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Apple unveils Siri AI overhaul and broader Apple Intelligence updates across iOS 27 and other platforms\",\"Apple introduces iOS 27, iPadOS 27, macOS “Golden Gate”, watchOS 27, tvOS 27 and visionOS 27 updates at WWDC 2026\",\"Apple emphasizes expanded child-safety features, teen protections, and updated parental controls as a major WWDC 2026 theme\",\"Apple details on-device vs cloud AI model tiers, including a high-end cloud model running on Nvidia GPUs via Google cloud partnership coverage\",\"Hardware implications and compatibility notes from WWDC 2026: iOS 27 support extending back to iPhone 11 and feature gating of the most powerful on-device AI to newer iPhones\",\"Post-keynote analysis: Apple’s WWDC keynote format/structure changes and investor reaction to the AI strategy\"],\"sources\":\"9to5mac.com;apnews.com;aol.com;businessinsider.com;cnbc.com;bloomberg.com\"}",
       "captureSource": "chat",
       "recovered": false,
-      "helpersVersion": 34,
+      "validation": {
+        "ok": true,
+        "parsed": {
+          "query": "Apple WWDC announcements 2026",
+          "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+          "unique_topics": [
+            "Apple unveils Siri AI overhaul and broader Apple Intelligence updates across iOS 27 and other platforms",
+            "Apple introduces iOS 27, iPadOS 27, macOS “Golden Gate”, watchOS 27, tvOS 27 and visionOS 27 updates at WWDC 2026",
+            "Apple emphasizes expanded child-safety features, teen protections, and updated parental controls as a major WWDC 2026 theme",
+            "Apple details on-device vs cloud AI model tiers, including a high-end cloud model running on Nvidia GPUs via Google cloud partnership coverage",
+            "Hardware implications and compatibility notes from WWDC 2026: iOS 27 support extending back to iPhone 11 and feature gating of the most powerful on-device AI to newer iPhones",
+            "Post-keynote analysis: Apple’s WWDC keynote format/structure changes and investor reaction to the AI strategy"
+          ],
+          "sources": "9to5mac.com;apnews.com;aol.com;businessinsider.com;cnbc.com;bloomberg.com"
+        }
+      },
+      "helpersVersion": 35,
       "probe": {
-        "helpersVersion": 34,
+        "helpersVersion": 35,
         "tabHidden": false,
         "hasCompletedReplyActions": true,
         "isGenerating": false,
         "isChatInProgress": false,
-        "answerLen": 1043,
+        "answerLen": 1971,
         "looksFinal": true,
-        "answerPreview": "{\n\"query\": \"Apple WWDC announcements 2026\",\n\"time_period\": \"2026-06-07 to 2026-06-13\",\n\"unique_topics\": [\n\"Apple unveils next generation of Apple Intelligence and introduces a revamped Siri AI (more personal, conversational, systemwide integration)\",\n\"Major OS releases announced across Apple platforms (iOS 27, iPadOS 27, macOS 27, watchOS 27, visionOS 27, tvOS 27) with broad performance and featur",
-        "answerFull": "{\n\"query\": \"Apple WWDC announcements 2026\",\n\"time_period\": \"2026-06-07 to 2026-06-13\",\n\"unique_topics\": [\n\"Apple unveils next generation of Apple Intelligence and introduces a revamped Siri AI (more personal, conversational, systemwide integration)\",\n\"Major OS releases announced across Apple platforms (iOS 27, iPadOS 27, macOS 27, watchOS 27, visionOS 27, tvOS 27) with broad performance and feature updates\",\n\"New AI-powered writing and communication features (smart replies, writing tools across Messages/Mail, system assistance features highlighted in recaps)\",\n\"Security and privacy-focused AI features, including Passwords app enhancements (e.g., detecting weak/compromised credentials and helping update them)\",\n\"Expanded parental controls and child safety/trust-and-safety features highlighted as a key WWDC26 theme\",\n\"Developer rollout: WWDC26 sessions + developer testing availability and beta timeline for new Siri AI / Apple Intelligence capabilities\"\n],\n\"sources\": \"techcrunch.com, pcmag.com, apple.com, engadget.com, cnet.com\"\n}",
-        "conversationId": "37d773dd-10fd-8089-bcac-00a9abcb4bd6"
+        "answerPreview": "{\"query\":\"Apple WWDC announcements 2026\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Apple unveils Siri AI overhaul and broader Apple Intelligence updates across iOS 27 and other platforms\",\"Apple introduces iOS 27, iPadOS 27, macOS “Golden Gate”, watchOS 27, tvOS 27 and visionOS 27 updates at WWDC 2026\",\"Apple emphasizes expanded child-safety features, teen protect",
+        "answerFull": "{\"query\":\"Apple WWDC announcements 2026\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Apple unveils Siri AI overhaul and broader Apple Intelligence updates across iOS 27 and other platforms\",\"Apple introduces iOS 27, iPadOS 27, macOS “Golden Gate”, watchOS 27, tvOS 27 and visionOS 27 updates at WWDC 2026\",\"Apple emphasizes expanded child-safety features, teen protections, and updated parental controls as a major WWDC 2026 theme\",\"Apple details on-device vs cloud AI model tiers, including a high-end cloud model running on Nvidia GPUs via Google cloud partnership coverage\",\"Hardware implications and compatibility notes from WWDC 2026: iOS 27 support extending back to iPhone 11 and feature gating of the most powerful on-device AI to newer iPhones\",\"Post-keynote analysis: Apple’s WWDC keynote format/structure changes and investor reaction to the AI strategy\"],\"sources\":\"9to5mac.com;apnews.com;aol.com;businessinsider.com;cnbc.com;bloomberg.com\"}\n{\"query\":\"Apple WWDC announcements 2026\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Apple unveils Siri AI overhaul and broader Apple Intelligence updates across iOS 27 and other platforms\",\"Apple introduces iOS 27, iPadOS 27, macOS “Golden Gate”, watchOS 27, tvOS 27 and visionOS 27 updates at WWDC 2026\",\"Apple emphasizes expanded child-safety features, teen protections, and updated parental controls as a major WWDC 2026 theme\",\"Apple details on-device vs cloud AI model tiers, including a high-end cloud model running on Nvidia GPUs via Google cloud partnership coverage\",\"Hardware implications and compatibility notes from WWDC 2026: iOS 27 support extending back to iPhone 11 and feature gating of the most powerful on-device AI to newer iPhones\",\"Post-keynote analysis: Apple’s WWDC keynote format/structure changes and investor reaction to the AI strategy\"],\"sources\":\"9to5mac.com;apnews.com;aol.com;businessinsider.com;cnbc.com;bloomberg.com\"}",
+        "conversationId": "37d773dd-10fd-80b9-83cf-00a91110c205"
+      },
+      "pass": true,
+      "directCapture": true
+    },
+    {
+      "run": 4,
+      "topic": "SpaceX IPO oversubscribed",
+      "command": "chatfollow",
+      "elapsedMs": 23540,
+      "timedOut": false,
+      "chatError": null,
+      "chatKind": null,
+      "chatAction": null,
+      "answerFormat": "json",
+      "answerJson": {
+        "query": "SpaceX IPO oversubscribed",
+        "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+        "unique_topics": [
+          "SpaceX IPO demand reported as more than four times oversubscribed as order books close ahead of listing",
+          "Record-setting SpaceX IPO terms and scale: ~$75B raised at $135/share implying ~ $1.75–$1.8T valuation; biggest IPO on record",
+          "Retail-investor demand surge and large retail allocation narrative (huge retail order totals reported) as a driver of oversubscription",
+          "Debate over IPO valuation and suitability for certain investors/pension funds; some institutions decline direct participation while expecting index exposure",
+          "Post-IPO trading expectations and risks: potential first-day pop, volatility concerns, and ‘flip’ behavior warnings around an oversubscribed deal"
+        ],
+        "sources": "bloomberg.com;cnbc.com;aljazeera.com;barrons.com;bbc.com;apnews.com;abcnews.com;cbsnews.com;aol.com;businessinsider.com"
+      },
+      "capturedAnswer": "{\"query\":\"SpaceX IPO oversubscribed\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"SpaceX IPO demand reported as more than four times oversubscribed as order books close ahead of listing\",\"Record-setting SpaceX IPO terms and scale: ~$75B raised at $135/share implying ~ $1.75–$1.8T valuation; biggest IPO on record\",\"Retail-investor demand surge and large retail allocation narrative (huge retail order totals reported) as a driver of oversubscription\",\"Debate over IPO valuation and suitability for certain investors/pension funds; some institutions decline direct participation while expecting index exposure\",\"Post-IPO trading expectations and risks: potential first-day pop, volatility concerns, and ‘flip’ behavior warnings around an oversubscribed deal\"],\"sources\":\"bloomberg.com;cnbc.com;aljazeera.com;barrons.com;bbc.com;apnews.com;abcnews.com;cbsnews.com;aol.com;businessinsider.com\"}",
+      "captureSource": "chat",
+      "recovered": false,
+      "validation": {
+        "ok": true,
+        "parsed": {
+          "query": "SpaceX IPO oversubscribed",
+          "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+          "unique_topics": [
+            "SpaceX IPO demand reported as more than four times oversubscribed as order books close ahead of listing",
+            "Record-setting SpaceX IPO terms and scale: ~$75B raised at $135/share implying ~ $1.75–$1.8T valuation; biggest IPO on record",
+            "Retail-investor demand surge and large retail allocation narrative (huge retail order totals reported) as a driver of oversubscription",
+            "Debate over IPO valuation and suitability for certain investors/pension funds; some institutions decline direct participation while expecting index exposure",
+            "Post-IPO trading expectations and risks: potential first-day pop, volatility concerns, and ‘flip’ behavior warnings around an oversubscribed deal"
+          ],
+          "sources": "bloomberg.com;cnbc.com;aljazeera.com;barrons.com;bbc.com;apnews.com;abcnews.com;cbsnews.com;aol.com;businessinsider.com"
+        }
+      },
+      "helpersVersion": 35,
+      "probe": {
+        "helpersVersion": 35,
+        "tabHidden": false,
+        "hasCompletedReplyActions": true,
+        "isGenerating": false,
+        "isChatInProgress": false,
+        "answerLen": 1847,
+        "looksFinal": true,
+        "answerPreview": "{\"query\":\"SpaceX IPO oversubscribed\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"SpaceX IPO demand reported as more than four times oversubscribed as order books close ahead of listing\",\"Record-setting SpaceX IPO terms and scale: ~$75B raised at $135/share implying ~ $1.75–$1.8T valuation; biggest IPO on record\",\"Retail-investor demand surge and large retail allocat",
+        "answerFull": "{\"query\":\"SpaceX IPO oversubscribed\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"SpaceX IPO demand reported as more than four times oversubscribed as order books close ahead of listing\",\"Record-setting SpaceX IPO terms and scale: ~$75B raised at $135/share implying ~ $1.75–$1.8T valuation; biggest IPO on record\",\"Retail-investor demand surge and large retail allocation narrative (huge retail order totals reported) as a driver of oversubscription\",\"Debate over IPO valuation and suitability for certain investors/pension funds; some institutions decline direct participation while expecting index exposure\",\"Post-IPO trading expectations and risks: potential first-day pop, volatility concerns, and ‘flip’ behavior warnings around an oversubscribed deal\"],\"sources\":\"bloomberg.com;cnbc.com;aljazeera.com;barrons.com;bbc.com;apnews.com;abcnews.com;cbsnews.com;aol.com;businessinsider.com\"}\n{\"query\":\"SpaceX IPO oversubscribed\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"SpaceX IPO demand reported as more than four times oversubscribed as order books close ahead of listing\",\"Record-setting SpaceX IPO terms and scale: ~$75B raised at $135/share implying ~ $1.75–$1.8T valuation; biggest IPO on record\",\"Retail-investor demand surge and large retail allocation narrative (huge retail order totals reported) as a driver of oversubscription\",\"Debate over IPO valuation and suitability for certain investors/pension funds; some institutions decline direct participation while expecting index exposure\",\"Post-IPO trading expectations and risks: potential first-day pop, volatility concerns, and ‘flip’ behavior warnings around an oversubscribed deal\"],\"sources\":\"bloomberg.com;cnbc.com;aljazeera.com;barrons.com;bbc.com;apnews.com;abcnews.com;cbsnews.com;aol.com;businessinsider.com\"}",
+        "conversationId": "37d773dd-10fd-80b9-83cf-00a91110c205"
+      },
+      "pass": true,
+      "directCapture": true
+    },
+    {
+      "run": 5,
+      "topic": "Ethereum ETF inflows",
+      "command": "chatfollow",
+      "elapsedMs": 38928,
+      "timedOut": false,
+      "chatError": null,
+      "chatKind": null,
+      "chatAction": null,
+      "answerFormat": "json",
+      "answerJson": {
+        "query": "Ethereum ETF inflows",
+        "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+        "unique_topics": [
+          "No directly matching Ethereum-ETF-inflows story found within 2026-06-09 to 2026-06-15 from the specified publisher pool (results in this crawl skew earlier)",
+          "Crypto-market narrative referencing ETF flows: discussions of whether stronger spot Bitcoin/Ether ETF inflows are needed to sustain/confirm a crypto rebound (macro + flows framing)",
+          "Context/out-of-window but relevant: U.S. spot Ether ETFs ended a prolonged outflow streak with a net inflow day (reported as ~$19.3M, driven by BlackRock’s ETHA)",
+          "Context/out-of-window but relevant: spot Ether ETF outflow streak coverage and on-chain demand decline tied to sustained ETF redemptions (17-session outflow streak framing)",
+          "Context/out-of-window but relevant: spot Ethereum ETFs hit multi-day net inflow streaks earlier in 2026 (e.g., 9–10 day streaks) with ETHA and Fidelity’s FETH frequently cited as leading daily inflows"
+        ],
+        "sources": "coindesk.com;finance.yahoo.com;investing.com;aol.com;benzinga.com;businessinsider.com"
+      },
+      "capturedAnswer": "{\"query\":\"Ethereum ETF inflows\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"No directly matching Ethereum-ETF-inflows story found within 2026-06-09 to 2026-06-15 from the specified publisher pool (results in this crawl skew earlier)\",\"Crypto-market narrative referencing ETF flows: discussions of whether stronger spot Bitcoin/Ether ETF inflows are needed to sustain/confirm a crypto rebound (macro + flows framing)\",\"Context/out-of-window but relevant: U.S. spot Ether ETFs ended a prolonged outflow streak with a net inflow day (reported as ~$19.3M, driven by BlackRock’s ETHA)\",\"Context/out-of-window but relevant: spot Ether ETF outflow streak coverage and on-chain demand decline tied to sustained ETF redemptions (17-session outflow streak framing)\",\"Context/out-of-window but relevant: spot Ethereum ETFs hit multi-day net inflow streaks earlier in 2026 (e.g., 9–10 day streaks) with ETHA and Fidelity’s FETH frequently cited as leading daily inflows\"],\"sources\":\"coindesk.com;finance.yahoo.com;investing.com;aol.com;benzinga.com;businessinsider.com\"}",
+      "captureSource": "chat",
+      "recovered": false,
+      "validation": {
+        "ok": true,
+        "parsed": {
+          "query": "Ethereum ETF inflows",
+          "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+          "unique_topics": [
+            "No directly matching Ethereum-ETF-inflows story found within 2026-06-09 to 2026-06-15 from the specified publisher pool (results in this crawl skew earlier)",
+            "Crypto-market narrative referencing ETF flows: discussions of whether stronger spot Bitcoin/Ether ETF inflows are needed to sustain/confirm a crypto rebound (macro + flows framing)",
+            "Context/out-of-window but relevant: U.S. spot Ether ETFs ended a prolonged outflow streak with a net inflow day (reported as ~$19.3M, driven by BlackRock’s ETHA)",
+            "Context/out-of-window but relevant: spot Ether ETF outflow streak coverage and on-chain demand decline tied to sustained ETF redemptions (17-session outflow streak framing)",
+            "Context/out-of-window but relevant: spot Ethereum ETFs hit multi-day net inflow streaks earlier in 2026 (e.g., 9–10 day streaks) with ETHA and Fidelity’s FETH frequently cited as leading daily inflows"
+          ],
+          "sources": "coindesk.com;finance.yahoo.com;investing.com;aol.com;benzinga.com;businessinsider.com"
+        }
+      },
+      "helpersVersion": 35,
+      "probe": {
+        "helpersVersion": 35,
+        "tabHidden": false,
+        "hasCompletedReplyActions": true,
+        "isGenerating": false,
+        "isChatInProgress": false,
+        "answerLen": 2181,
+        "looksFinal": true,
+        "answerPreview": "{\"query\":\"Ethereum ETF inflows\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"No directly matching Ethereum-ETF-inflows story found within 2026-06-09 to 2026-06-15 from the specified publisher pool (results in this crawl skew earlier)\",\"Crypto-market narrative referencing ETF flows: discussions of whether stronger spot Bitcoin/Ether ETF inflows are needed to sustain/c",
+        "answerFull": "{\"query\":\"Ethereum ETF inflows\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"No directly matching Ethereum-ETF-inflows story found within 2026-06-09 to 2026-06-15 from the specified publisher pool (results in this crawl skew earlier)\",\"Crypto-market narrative referencing ETF flows: discussions of whether stronger spot Bitcoin/Ether ETF inflows are needed to sustain/confirm a crypto rebound (macro + flows framing)\",\"Context/out-of-window but relevant: U.S. spot Ether ETFs ended a prolonged outflow streak with a net inflow day (reported as ~$19.3M, driven by BlackRock’s ETHA)\",\"Context/out-of-window but relevant: spot Ether ETF outflow streak coverage and on-chain demand decline tied to sustained ETF redemptions (17-session outflow streak framing)\",\"Context/out-of-window but relevant: spot Ethereum ETFs hit multi-day net inflow streaks earlier in 2026 (e.g., 9–10 day streaks) with ETHA and Fidelity’s FETH frequently cited as leading daily inflows\"],\"sources\":\"coindesk.com;finance.yahoo.com;investing.com;aol.com;benzinga.com;businessinsider.com\"}\n{\"query\":\"Ethereum ETF inflows\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"No directly matching Ethereum-ETF-inflows story found within 2026-06-09 to 2026-06-15 from the specified publisher pool (results in this crawl skew earlier)\",\"Crypto-market narrative referencing ETF flows: discussions of whether stronger spot Bitcoin/Ether ETF inflows are needed to sustain/confirm a crypto rebound (macro + flows framing)\",\"Context/out-of-window but relevant: U.S. spot Ether ETFs ended a prolonged outflow streak with a net inflow day (reported as ~$19.3M, driven by BlackRock’s ETHA)\",\"Context/out-of-window but relevant: spot Ether ETF outflow streak coverage and on-chain demand decline tied to sustained ETF redemptions (17-session outflow streak framing)\",\"Context/out-of-window but relevant: spot Ethereum ETFs hit multi-day net inflow streaks earlier in 2026 (e.g., 9–10 day streaks) with ETHA and Fidelity’s FETH frequently cited as leading daily inflows\"],\"sources\":\"coindesk.com;finance.yahoo.com;investing.com;aol.com;benzinga.com;businessinsider.com\"}",
+        "conversationId": "37d773dd-10fd-80b9-83cf-00a91110c205"
+      },
+      "pass": true,
+      "directCapture": true
+    },
+    {
+      "run": 6,
+      "topic": "OpenAI model release",
+      "command": "chatfollow",
+      "elapsedMs": 41523,
+      "timedOut": false,
+      "chatError": null,
+      "chatKind": null,
+      "chatAction": null,
+      "answerFormat": "json",
+      "answerJson": {
+        "query": "OpenAI model release",
+        "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+        "unique_topics": [
+          "No confirmed OpenAI flagship model release surfaced in the 2026-06-09 to 2026-06-15 window from the specified publisher pool; coverage in-range focused more on IPO/regulation and upcoming upgrades than an actual model launch",
+          "Reports/claims that OpenAI is preparing a notable model upgrade (described as a new model codenamed 5.6) expected to launch in June as an upgrade beyond GPT-5.5 (pre-release/rumor framing)",
+          "OpenAI’s CEO Sam Altman lobbying against proposals requiring government approval before public release of new AI models (model-release regulation debate)",
+          "OpenAI’s “trusted/controlled access” approach for sensitive, cyber-capable model variants (tiered access + verification focus, rather than broad public release)",
+          "AI competitive context during the same week: peers (not OpenAI) releasing or expanding access to frontier models (used in coverage to frame OpenAI’s release cadence and market race)"
+        ],
+        "sources": "finance.yahoo.com;reuters.com;axios.com;cnbc.com;bloomberg.com;fortune.com;apnews.com;9to5mac.com;businessinsider.com;wsj.com"
+      },
+      "capturedAnswer": "{\"query\":\"OpenAI model release\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"No confirmed OpenAI flagship model release surfaced in the 2026-06-09 to 2026-06-15 window from the specified publisher pool; coverage in-range focused more on IPO/regulation and upcoming upgrades than an actual model launch\",\"Reports/claims that OpenAI is preparing a notable model upgrade (described as a new model codenamed 5.6) expected to launch in June as an upgrade beyond GPT-5.5 (pre-release/rumor framing)\",\"OpenAI’s CEO Sam Altman lobbying against proposals requiring government approval before public release of new AI models (model-release regulation debate)\",\"OpenAI’s “trusted/controlled access” approach for sensitive, cyber-capable model variants (tiered access + verification focus, rather than broad public release)\",\"AI competitive context during the same week: peers (not OpenAI) releasing or expanding access to frontier models (used in coverage to frame OpenAI’s release cadence and market race)\"],\"sources\":\"finance.yahoo.com;reuters.com;axios.com;cnbc.com;bloomberg.com;fortune.com;apnews.com;9to5mac.com;businessinsider.com;wsj.com\"}",
+      "captureSource": "chat",
+      "recovered": false,
+      "validation": {
+        "ok": true,
+        "parsed": {
+          "query": "OpenAI model release",
+          "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+          "unique_topics": [
+            "No confirmed OpenAI flagship model release surfaced in the 2026-06-09 to 2026-06-15 window from the specified publisher pool; coverage in-range focused more on IPO/regulation and upcoming upgrades than an actual model launch",
+            "Reports/claims that OpenAI is preparing a notable model upgrade (described as a new model codenamed 5.6) expected to launch in June as an upgrade beyond GPT-5.5 (pre-release/rumor framing)",
+            "OpenAI’s CEO Sam Altman lobbying against proposals requiring government approval before public release of new AI models (model-release regulation debate)",
+            "OpenAI’s “trusted/controlled access” approach for sensitive, cyber-capable model variants (tiered access + verification focus, rather than broad public release)",
+            "AI competitive context during the same week: peers (not OpenAI) releasing or expanding access to frontier models (used in coverage to frame OpenAI’s release cadence and market race)"
+          ],
+          "sources": "finance.yahoo.com;reuters.com;axios.com;cnbc.com;bloomberg.com;fortune.com;apnews.com;9to5mac.com;businessinsider.com;wsj.com"
+        }
+      },
+      "helpersVersion": 35,
+      "probe": {
+        "helpersVersion": 35,
+        "tabHidden": false,
+        "hasCompletedReplyActions": true,
+        "isGenerating": false,
+        "isChatInProgress": false,
+        "answerLen": 2335,
+        "looksFinal": true,
+        "answerPreview": "{\"query\":\"OpenAI model release\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"No confirmed OpenAI flagship model release surfaced in the 2026-06-09 to 2026-06-15 window from the specified publisher pool; coverage in-range focused more on IPO/regulation and upcoming upgrades than an actual model launch\",\"Reports/claims that OpenAI is preparing a notable model upgrade (",
+        "answerFull": "{\"query\":\"OpenAI model release\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"No confirmed OpenAI flagship model release surfaced in the 2026-06-09 to 2026-06-15 window from the specified publisher pool; coverage in-range focused more on IPO/regulation and upcoming upgrades than an actual model launch\",\"Reports/claims that OpenAI is preparing a notable model upgrade (described as a new model codenamed 5.6) expected to launch in June as an upgrade beyond GPT-5.5 (pre-release/rumor framing)\",\"OpenAI’s CEO Sam Altman lobbying against proposals requiring government approval before public release of new AI models (model-release regulation debate)\",\"OpenAI’s “trusted/controlled access” approach for sensitive, cyber-capable model variants (tiered access + verification focus, rather than broad public release)\",\"AI competitive context during the same week: peers (not OpenAI) releasing or expanding access to frontier models (used in coverage to frame OpenAI’s release cadence and market race)\"],\"sources\":\"finance.yahoo.com;reuters.com;axios.com;cnbc.com;bloomberg.com;fortune.com;apnews.com;9to5mac.com;businessinsider.com;wsj.com\"}\n{\"query\":\"OpenAI model release\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"No confirmed OpenAI flagship model release surfaced in the 2026-06-09 to 2026-06-15 window from the specified publisher pool; coverage in-range focused more on IPO/regulation and upcoming upgrades than an actual model launch\",\"Reports/claims that OpenAI is preparing a notable model upgrade (described as a new model codenamed 5.6) expected to launch in June as an upgrade beyond GPT-5.5 (pre-release/rumor framing)\",\"OpenAI’s CEO Sam Altman lobbying against proposals requiring government approval before public release of new AI models (model-release regulation debate)\",\"OpenAI’s “trusted/controlled access” approach for sensitive, cyber-capable model variants (tiered access + verification focus, rather than broad public release)\",\"AI competitive context during the same week: peers (not OpenAI) releasing or expanding access to frontier models (used in coverage to frame OpenAI’s release cadence and market race)\"],\"sources\":\"finance.yahoo.com;reuters.com;axios.com;cnbc.com;bloomberg.com;fortune.com;apnews.com;9to5mac.com;businessinsider.com;wsj.com\"}",
+        "conversationId": "37d773dd-10fd-80b9-83cf-00a91110c205"
+      },
+      "pass": true,
+      "directCapture": true
+    },
+    {
+      "run": 7,
+      "topic": "Ukraine peace talks",
+      "command": "chatfollow",
+      "elapsedMs": 29549,
+      "timedOut": false,
+      "chatError": null,
+      "chatKind": null,
+      "chatAction": null,
+      "answerFormat": "json",
+      "answerJson": {
+        "query": "Ukraine peace talks",
+        "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+        "unique_topics": [
+          "Zelensky renews push for direct peace talks with Putin, including proposal for face-to-face meeting and ceasefire during negotiations (open-letter/diplomacy push)",
+          "Putin rejects near-term meeting with Zelensky, saying there is ‘no point’ for now (Russia stance on direct talks)",
+          "UK-France-Germany back Zelensky’s call for direct talks and set out conditions for a ‘just and lasting’ peace deal, including ceasefire and security guarantees",
+          "Continued cross-border strikes and drone attacks as diplomacy discussions continue, underscoring gap between battlefield escalation and negotiation efforts",
+          "Europe/EU discussion of taking a larger mediation role or finding an interlocutor to engage Russia as US-led mediation is described as stalled/limited"
+        ],
+        "sources": "bbc.com;aljazeera.com;bloomberg.com;abcnews.com"
+      },
+      "capturedAnswer": "{\"query\":\"Ukraine peace talks\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Zelensky renews push for direct peace talks with Putin, including proposal for face-to-face meeting and ceasefire during negotiations (open-letter/diplomacy push)\",\"Putin rejects near-term meeting with Zelensky, saying there is ‘no point’ for now (Russia stance on direct talks)\",\"UK-France-Germany back Zelensky’s call for direct talks and set out conditions for a ‘just and lasting’ peace deal, including ceasefire and security guarantees\",\"Continued cross-border strikes and drone attacks as diplomacy discussions continue, underscoring gap between battlefield escalation and negotiation efforts\",\"Europe/EU discussion of taking a larger mediation role or finding an interlocutor to engage Russia as US-led mediation is described as stalled/limited\"],\"sources\":\"bbc.com;aljazeera.com;bloomberg.com;abcnews.com\"}",
+      "captureSource": "chat",
+      "recovered": false,
+      "validation": {
+        "ok": true,
+        "parsed": {
+          "query": "Ukraine peace talks",
+          "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+          "unique_topics": [
+            "Zelensky renews push for direct peace talks with Putin, including proposal for face-to-face meeting and ceasefire during negotiations (open-letter/diplomacy push)",
+            "Putin rejects near-term meeting with Zelensky, saying there is ‘no point’ for now (Russia stance on direct talks)",
+            "UK-France-Germany back Zelensky’s call for direct talks and set out conditions for a ‘just and lasting’ peace deal, including ceasefire and security guarantees",
+            "Continued cross-border strikes and drone attacks as diplomacy discussions continue, underscoring gap between battlefield escalation and negotiation efforts",
+            "Europe/EU discussion of taking a larger mediation role or finding an interlocutor to engage Russia as US-led mediation is described as stalled/limited"
+          ],
+          "sources": "bbc.com;aljazeera.com;bloomberg.com;abcnews.com"
+        }
+      },
+      "helpersVersion": 35,
+      "probe": {
+        "helpersVersion": 35,
+        "tabHidden": false,
+        "hasCompletedReplyActions": true,
+        "isGenerating": false,
+        "isChatInProgress": false,
+        "answerLen": 1843,
+        "looksFinal": true,
+        "answerPreview": "{\"query\":\"Ukraine peace talks\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Zelensky renews push for direct peace talks with Putin, including proposal for face-to-face meeting and ceasefire during negotiations (open-letter/diplomacy push)\",\"Putin rejects near-term meeting with Zelensky, saying there is ‘no point’ for now (Russia stance on direct talks)\",\"UK-France-Ge",
+        "answerFull": "{\"query\":\"Ukraine peace talks\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Zelensky renews push for direct peace talks with Putin, including proposal for face-to-face meeting and ceasefire during negotiations (open-letter/diplomacy push)\",\"Putin rejects near-term meeting with Zelensky, saying there is ‘no point’ for now (Russia stance on direct talks)\",\"UK-France-Germany back Zelensky’s call for direct talks and set out conditions for a ‘just and lasting’ peace deal, including ceasefire and security guarantees\",\"Continued cross-border strikes and drone attacks as diplomacy discussions continue, underscoring gap between battlefield escalation and negotiation efforts\",\"Europe/EU discussion of taking a larger mediation role or finding an interlocutor to engage Russia as US-led mediation is described as stalled/limited\"],\"sources\":\"bbc.com;aljazeera.com;bloomberg.com;abcnews.com\"}\n{\"query\":\"Ukraine peace talks\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Zelensky renews push for direct peace talks with Putin, including proposal for face-to-face meeting and ceasefire during negotiations (open-letter/diplomacy push)\",\"Putin rejects near-term meeting with Zelensky, saying there is ‘no point’ for now (Russia stance on direct talks)\",\"UK-France-Germany back Zelensky’s call for direct talks and set out conditions for a ‘just and lasting’ peace deal, including ceasefire and security guarantees\",\"Continued cross-border strikes and drone attacks as diplomacy discussions continue, underscoring gap between battlefield escalation and negotiation efforts\",\"Europe/EU discussion of taking a larger mediation role or finding an interlocutor to engage Russia as US-led mediation is described as stalled/limited\"],\"sources\":\"bbc.com;aljazeera.com;bloomberg.com;abcnews.com\"}",
+        "conversationId": "37d773dd-10fd-80b9-83cf-00a91110c205"
+      },
+      "pass": true,
+      "directCapture": true
+    },
+    {
+      "run": 8,
+      "topic": "NVIDIA chip export rules",
+      "command": "chatfollow",
+      "elapsedMs": 22882,
+      "timedOut": false,
+      "chatError": null,
+      "chatKind": null,
+      "chatAction": null,
+      "answerFormat": "json",
+      "answerJson": {
+        "query": "NVIDIA chip export rules",
+        "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+        "unique_topics": [
+          "Taiwan weighs tighter AI-chip export controls targeting China to align with US rules and address diversion/smuggling of AI servers using Nvidia chips",
+          "US export-control clarification closes loophole: advanced AI chip shipment bans/licensing requirements apply to China-headquartered firms even when subsidiaries are outside China (affecting overseas purchases routed through Southeast Asia)",
+          "Policy uncertainty around broader US global AI-chip export licensing proposals: reports that a sweeping worldwide permitting/licensing framework was floated/drafted and then withdrawn/shelved, while core China-focused restrictions remain",
+          "China-side reactions and compliance pressure on Nvidia’s China-market chips amid export-control tension (including reports of Chinese regulator/industry pressure to reduce reliance on Nvidia)"
+        ],
+        "sources": "bloomberg.com;asiatimes.com;aljazeera.com;aol.com;bbc.com;apnews.com;businessinsider.com"
+      },
+      "capturedAnswer": "{\"query\":\"NVIDIA chip export rules\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Taiwan weighs tighter AI-chip export controls targeting China to align with US rules and address diversion/smuggling of AI servers using Nvidia chips\",\"US export-control clarification closes loophole: advanced AI chip shipment bans/licensing requirements apply to China-headquartered firms even when subsidiaries are outside China (affecting overseas purchases routed through Southeast Asia)\",\"Policy uncertainty around broader US global AI-chip export licensing proposals: reports that a sweeping worldwide permitting/licensing framework was floated/drafted and then withdrawn/shelved, while core China-focused restrictions remain\",\"China-side reactions and compliance pressure on Nvidia’s China-market chips amid export-control tension (including reports of Chinese regulator/industry pressure to reduce reliance on Nvidia)\"],\"sources\":\"bloomberg.com;asiatimes.com;aljazeera.com;aol.com;bbc.com;apnews.com;businessinsider.com\"}",
+      "captureSource": "chat",
+      "recovered": false,
+      "validation": {
+        "ok": true,
+        "parsed": {
+          "query": "NVIDIA chip export rules",
+          "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+          "unique_topics": [
+            "Taiwan weighs tighter AI-chip export controls targeting China to align with US rules and address diversion/smuggling of AI servers using Nvidia chips",
+            "US export-control clarification closes loophole: advanced AI chip shipment bans/licensing requirements apply to China-headquartered firms even when subsidiaries are outside China (affecting overseas purchases routed through Southeast Asia)",
+            "Policy uncertainty around broader US global AI-chip export licensing proposals: reports that a sweeping worldwide permitting/licensing framework was floated/drafted and then withdrawn/shelved, while core China-focused restrictions remain",
+            "China-side reactions and compliance pressure on Nvidia’s China-market chips amid export-control tension (including reports of Chinese regulator/industry pressure to reduce reliance on Nvidia)"
+          ],
+          "sources": "bloomberg.com;asiatimes.com;aljazeera.com;aol.com;bbc.com;apnews.com;businessinsider.com"
+        }
+      },
+      "helpersVersion": 35,
+      "probe": {
+        "helpersVersion": 35,
+        "tabHidden": false,
+        "hasCompletedReplyActions": true,
+        "isGenerating": false,
+        "isChatInProgress": false,
+        "answerLen": 2083,
+        "looksFinal": true,
+        "answerPreview": "{\"query\":\"NVIDIA chip export rules\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Taiwan weighs tighter AI-chip export controls targeting China to align with US rules and address diversion/smuggling of AI servers using Nvidia chips\",\"US export-control clarification closes loophole: advanced AI chip shipment bans/licensing requirements apply to China-headquartered firm",
+        "answerFull": "{\"query\":\"NVIDIA chip export rules\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Taiwan weighs tighter AI-chip export controls targeting China to align with US rules and address diversion/smuggling of AI servers using Nvidia chips\",\"US export-control clarification closes loophole: advanced AI chip shipment bans/licensing requirements apply to China-headquartered firms even when subsidiaries are outside China (affecting overseas purchases routed through Southeast Asia)\",\"Policy uncertainty around broader US global AI-chip export licensing proposals: reports that a sweeping worldwide permitting/licensing framework was floated/drafted and then withdrawn/shelved, while core China-focused restrictions remain\",\"China-side reactions and compliance pressure on Nvidia’s China-market chips amid export-control tension (including reports of Chinese regulator/industry pressure to reduce reliance on Nvidia)\"],\"sources\":\"bloomberg.com;asiatimes.com;aljazeera.com;aol.com;bbc.com;apnews.com;businessinsider.com\"}\n{\"query\":\"NVIDIA chip export rules\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Taiwan weighs tighter AI-chip export controls targeting China to align with US rules and address diversion/smuggling of AI servers using Nvidia chips\",\"US export-control clarification closes loophole: advanced AI chip shipment bans/licensing requirements apply to China-headquartered firms even when subsidiaries are outside China (affecting overseas purchases routed through Southeast Asia)\",\"Policy uncertainty around broader US global AI-chip export licensing proposals: reports that a sweeping worldwide permitting/licensing framework was floated/drafted and then withdrawn/shelved, while core China-focused restrictions remain\",\"China-side reactions and compliance pressure on Nvidia’s China-market chips amid export-control tension (including reports of Chinese regulator/industry pressure to reduce reliance on Nvidia)\"],\"sources\":\"bloomberg.com;asiatimes.com;aljazeera.com;aol.com;bbc.com;apnews.com;businessinsider.com\"}",
+        "conversationId": "37d773dd-10fd-80b9-83cf-00a91110c205"
+      },
+      "pass": true,
+      "directCapture": true
+    },
+    {
+      "run": 9,
+      "topic": "Bitcoin halving aftermath",
+      "command": "chatfollow",
+      "elapsedMs": 38905,
+      "timedOut": false,
+      "chatError": null,
+      "chatKind": null,
+      "chatAction": null,
+      "answerFormat": "json",
+      "answerJson": {
+        "query": "Bitcoin halving aftermath",
+        "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+        "unique_topics": [
+          "Post-halving cycle framing resurfaces amid 2026 downturn: analysis argues Bitcoin’s 2026 drawdown fits historical halving-cycle timing (peak ~12–18 months after halving, then prolonged correction)",
+          "Bitcoin miner profitability squeeze continues in the post-2024-halving era: “hash price”/revenue per unit of compute discussed as nearing break-even for smaller operators, increasing shutdown/industry shakeout risk",
+          "Post-halving mining sector pivots accelerate: miners and related infrastructure players increasingly pursue AI/HPC hosting to diversify revenue away from block rewards",
+          "Market commentary tests whether the traditional 4-year halving cycle still explains price action in 2026, versus newer drivers like ETF flows and macro risk appetite"
+        ],
+        "sources": "finance.yahoo.com;investing.com;coindesk.com;bloomberg.com;aol.com;benzinga.com;businessinsider.com;bbc.com"
+      },
+      "capturedAnswer": "{\"query\":\"Bitcoin halving aftermath\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Post-halving cycle framing resurfaces amid 2026 downturn: analysis argues Bitcoin’s 2026 drawdown fits historical halving-cycle timing (peak ~12–18 months after halving, then prolonged correction)\",\"Bitcoin miner profitability squeeze continues in the post-2024-halving era: “hash price”/revenue per unit of compute discussed as nearing break-even for smaller operators, increasing shutdown/industry shakeout risk\",\"Post-halving mining sector pivots accelerate: miners and related infrastructure players increasingly pursue AI/HPC hosting to diversify revenue away from block rewards\",\"Market commentary tests whether the traditional 4-year halving cycle still explains price action in 2026, versus newer drivers like ETF flows and macro risk appetite\"],\"sources\":\"finance.yahoo.com;investing.com;coindesk.com;bloomberg.com;aol.com;benzinga.com;businessinsider.com;bbc.com\"}",
+      "captureSource": "chat",
+      "recovered": false,
+      "validation": {
+        "ok": true,
+        "parsed": {
+          "query": "Bitcoin halving aftermath",
+          "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+          "unique_topics": [
+            "Post-halving cycle framing resurfaces amid 2026 downturn: analysis argues Bitcoin’s 2026 drawdown fits historical halving-cycle timing (peak ~12–18 months after halving, then prolonged correction)",
+            "Bitcoin miner profitability squeeze continues in the post-2024-halving era: “hash price”/revenue per unit of compute discussed as nearing break-even for smaller operators, increasing shutdown/industry shakeout risk",
+            "Post-halving mining sector pivots accelerate: miners and related infrastructure players increasingly pursue AI/HPC hosting to diversify revenue away from block rewards",
+            "Market commentary tests whether the traditional 4-year halving cycle still explains price action in 2026, versus newer drivers like ETF flows and macro risk appetite"
+          ],
+          "sources": "finance.yahoo.com;investing.com;coindesk.com;bloomberg.com;aol.com;benzinga.com;businessinsider.com;bbc.com"
+        }
+      },
+      "helpersVersion": 35,
+      "probe": {
+        "helpersVersion": 35,
+        "tabHidden": false,
+        "hasCompletedReplyActions": true,
+        "isGenerating": false,
+        "isChatInProgress": false,
+        "answerLen": 1975,
+        "looksFinal": true,
+        "answerPreview": "{\"query\":\"Bitcoin halving aftermath\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Post-halving cycle framing resurfaces amid 2026 downturn: analysis argues Bitcoin’s 2026 drawdown fits historical halving-cycle timing (peak ~12–18 months after halving, then prolonged correction)\",\"Bitcoin miner profitability squeeze continues in the post-2024-halving era: “hash price”",
+        "answerFull": "{\"query\":\"Bitcoin halving aftermath\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Post-halving cycle framing resurfaces amid 2026 downturn: analysis argues Bitcoin’s 2026 drawdown fits historical halving-cycle timing (peak ~12–18 months after halving, then prolonged correction)\",\"Bitcoin miner profitability squeeze continues in the post-2024-halving era: “hash price”/revenue per unit of compute discussed as nearing break-even for smaller operators, increasing shutdown/industry shakeout risk\",\"Post-halving mining sector pivots accelerate: miners and related infrastructure players increasingly pursue AI/HPC hosting to diversify revenue away from block rewards\",\"Market commentary tests whether the traditional 4-year halving cycle still explains price action in 2026, versus newer drivers like ETF flows and macro risk appetite\"],\"sources\":\"finance.yahoo.com;investing.com;coindesk.com;bloomberg.com;aol.com;benzinga.com;businessinsider.com;bbc.com\"}\n{\"query\":\"Bitcoin halving aftermath\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Post-halving cycle framing resurfaces amid 2026 downturn: analysis argues Bitcoin’s 2026 drawdown fits historical halving-cycle timing (peak ~12–18 months after halving, then prolonged correction)\",\"Bitcoin miner profitability squeeze continues in the post-2024-halving era: “hash price”/revenue per unit of compute discussed as nearing break-even for smaller operators, increasing shutdown/industry shakeout risk\",\"Post-halving mining sector pivots accelerate: miners and related infrastructure players increasingly pursue AI/HPC hosting to diversify revenue away from block rewards\",\"Market commentary tests whether the traditional 4-year halving cycle still explains price action in 2026, versus newer drivers like ETF flows and macro risk appetite\"],\"sources\":\"finance.yahoo.com;investing.com;coindesk.com;bloomberg.com;aol.com;benzinga.com;businessinsider.com;bbc.com\"}",
+        "conversationId": "37d773dd-10fd-80b9-83cf-00a91110c205"
+      },
+      "pass": true,
+      "directCapture": true
+    },
+    {
+      "run": 10,
+      "topic": "Tesla robotaxi launch",
+      "command": "chatfollow",
+      "elapsedMs": 23818,
+      "timedOut": false,
+      "chatError": null,
+      "chatKind": null,
+      "chatAction": null,
+      "answerFormat": "json",
+      "answerJson": {
+        "query": "Tesla robotaxi launch",
+        "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+        "unique_topics": [
+          "Post-launch reality check: Tesla robotaxi service remains small in scale with long waits/stalled rides; fleet reported around 59 vehicles and limited to a few Texas cities, far short of earlier expansion promises",
+          "Operational constraints for early robotaxi rollout: limited service area(s), small fleet utilization, and early-stage reliability/dispatch issues highlighted in post-launch coverage",
+          "Expansion roadmap vs. regulation: ongoing tension between Musk’s aggressive coverage claims and practical/regulatory hurdles for scaling robotaxis beyond current geofenced areas"
+        ],
+        "sources": "bloomberg.com"
+      },
+      "capturedAnswer": "{\"query\":\"Tesla robotaxi launch\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Post-launch reality check: Tesla robotaxi service remains small in scale with long waits/stalled rides; fleet reported around 59 vehicles and limited to a few Texas cities, far short of earlier expansion promises\",\"Operational constraints for early robotaxi rollout: limited service area(s), small fleet utilization, and early-stage reliability/dispatch issues highlighted in post-launch coverage\",\"Expansion roadmap vs. regulation: ongoing tension between Musk’s aggressive coverage claims and practical/regulatory hurdles for scaling robotaxis beyond current geofenced areas\"],\"sources\":\"bloomberg.com\"}",
+      "captureSource": "chat",
+      "recovered": false,
+      "validation": {
+        "ok": true,
+        "parsed": {
+          "query": "Tesla robotaxi launch",
+          "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+          "unique_topics": [
+            "Post-launch reality check: Tesla robotaxi service remains small in scale with long waits/stalled rides; fleet reported around 59 vehicles and limited to a few Texas cities, far short of earlier expansion promises",
+            "Operational constraints for early robotaxi rollout: limited service area(s), small fleet utilization, and early-stage reliability/dispatch issues highlighted in post-launch coverage",
+            "Expansion roadmap vs. regulation: ongoing tension between Musk’s aggressive coverage claims and practical/regulatory hurdles for scaling robotaxis beyond current geofenced areas"
+          ],
+          "sources": "bloomberg.com"
+        }
+      },
+      "helpersVersion": 35,
+      "probe": {
+        "helpersVersion": 35,
+        "tabHidden": false,
+        "hasCompletedReplyActions": true,
+        "isGenerating": false,
+        "isChatInProgress": false,
+        "answerLen": 1429,
+        "looksFinal": true,
+        "answerPreview": "{\"query\":\"Tesla robotaxi launch\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Post-launch reality check: Tesla robotaxi service remains small in scale with long waits/stalled rides; fleet reported around 59 vehicles and limited to a few Texas cities, far short of earlier expansion promises\",\"Operational constraints for early robotaxi rollout: limited service area(s),",
+        "answerFull": "{\"query\":\"Tesla robotaxi launch\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Post-launch reality check: Tesla robotaxi service remains small in scale with long waits/stalled rides; fleet reported around 59 vehicles and limited to a few Texas cities, far short of earlier expansion promises\",\"Operational constraints for early robotaxi rollout: limited service area(s), small fleet utilization, and early-stage reliability/dispatch issues highlighted in post-launch coverage\",\"Expansion roadmap vs. regulation: ongoing tension between Musk’s aggressive coverage claims and practical/regulatory hurdles for scaling robotaxis beyond current geofenced areas\"],\"sources\":\"bloomberg.com\"}\n{\"query\":\"Tesla robotaxi launch\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Post-launch reality check: Tesla robotaxi service remains small in scale with long waits/stalled rides; fleet reported around 59 vehicles and limited to a few Texas cities, far short of earlier expansion promises\",\"Operational constraints for early robotaxi rollout: limited service area(s), small fleet utilization, and early-stage reliability/dispatch issues highlighted in post-launch coverage\",\"Expansion roadmap vs. regulation: ongoing tension between Musk’s aggressive coverage claims and practical/regulatory hurdles for scaling robotaxis beyond current geofenced areas\"],\"sources\":\"bloomberg.com\"}",
+        "conversationId": "37d773dd-10fd-80b9-83cf-00a91110c205"
       },
       "pass": true,
       "directCapture": true
     }
   ],
-  "finishedAt": "2026-06-12T15:31:58.003Z",
-  "passCount": 3,
-  "directCaptureCount": 3,
-  "conversationId": "37d773dd-10fd-8089-bcac-00a9abcb4bd6"
+  "finishedAt": "2026-06-12T15:56:48.181Z",
+  "passCount": 10,
+  "directCaptureCount": 10,
+  "conversationId": "37d773dd-10fd-80b9-83cf-00a91110c205"
 }

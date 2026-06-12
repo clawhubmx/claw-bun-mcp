@@ -1,0 +1,76 @@
+# v35 news capture responses
+Started: 2026-06-12T15:51:25.261Z
+Finished: 2026-06-12T15:56:48.181Z
+Template: notion/example/prompt21.txt (compact)
+Passed: 10/10
+
+================================================================================
+Run 1/10
+Topic: Protesters block road to Mexican World Cup stadium
+Status: PASS | 22s | source=chat
+--------------------------------------------------------------------------------
+{"query":"Protesters block road to Mexican World Cup stadium","time_period":"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z","unique_topics":["Protesters block/close Calzada de Tlalpan road access to Mexico City’s Estadio Azteca ahead of the 2026 World Cup","Teachers’ protests and encampments in Mexico City disrupt movement near World Cup fan zones and event areas","World Cup opening in Mexico City proceeds amid broader social tensions and public demonstrations","Clashes between protesters and riot police outside/near Azteca Stadium during pre-World Cup demonstrations","Disappearance crisis and human-rights campaigners use World Cup global attention to spotlight missing persons in Mexico"],"sources":"apnews.com;aljazeera.com;aol.com;bbc.com;barrons.com;abcnews.com"}
+
+================================================================================
+Run 2/10
+Topic: Fed interest rate decision June 2026
+Status: PASS | 34s | source=chat
+--------------------------------------------------------------------------------
+{"query":"Fed interest rate decision June 2026","time_period":"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z","unique_topics":["Preview/expectations ahead of the June 16–17, 2026 FOMC meeting: markets and economists largely expect the Fed to hold rates steady; guidance and language changes watched closely","War-driven energy-price inflation and elevated uncertainty reduce likelihood of rate cuts in 2026; some coverage frames risk of hikes returning later in 2026","Strong jobs data and sticky inflation shift market pricing toward potential Fed hikes by late 2026 (e.g., October/December) rather than cuts","Fed communication focus for June 2026: whether the new chair/leadership (Kevin Warsh) shifts tone away from easing bias and how that affects the expected path for 2026–2027","Consumer impact angles tied to the June decision window: mortgage-rate lock/borrowing-cost guidance ahead of the June Fed meeting"],"sources":"reuters.com;cnbc.com;axios.com;forbes.com;cbsnews.com;bloomberg.com;businessinsider.com;finance.yahoo.com;investing.com"}
+
+================================================================================
+Run 3/10
+Topic: Apple WWDC announcements 2026
+Status: PASS | 23s | source=chat
+--------------------------------------------------------------------------------
+{"query":"Apple WWDC announcements 2026","time_period":"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z","unique_topics":["Apple unveils Siri AI overhaul and broader Apple Intelligence updates across iOS 27 and other platforms","Apple introduces iOS 27, iPadOS 27, macOS “Golden Gate”, watchOS 27, tvOS 27 and visionOS 27 updates at WWDC 2026","Apple emphasizes expanded child-safety features, teen protections, and updated parental controls as a major WWDC 2026 theme","Apple details on-device vs cloud AI model tiers, including a high-end cloud model running on Nvidia GPUs via Google cloud partnership coverage","Hardware implications and compatibility notes from WWDC 2026: iOS 27 support extending back to iPhone 11 and feature gating of the most powerful on-device AI to newer iPhones","Post-keynote analysis: Apple’s WWDC keynote format/structure changes and investor reaction to the AI strategy"],"sources":"9to5mac.com;apnews.com;aol.com;businessinsider.com;cnbc.com;bloomberg.com"}
+
+================================================================================
+Run 4/10
+Topic: SpaceX IPO oversubscribed
+Status: PASS | 24s | source=chat
+--------------------------------------------------------------------------------
+{"query":"SpaceX IPO oversubscribed","time_period":"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z","unique_topics":["SpaceX IPO demand reported as more than four times oversubscribed as order books close ahead of listing","Record-setting SpaceX IPO terms and scale: ~$75B raised at $135/share implying ~ $1.75–$1.8T valuation; biggest IPO on record","Retail-investor demand surge and large retail allocation narrative (huge retail order totals reported) as a driver of oversubscription","Debate over IPO valuation and suitability for certain investors/pension funds; some institutions decline direct participation while expecting index exposure","Post-IPO trading expectations and risks: potential first-day pop, volatility concerns, and ‘flip’ behavior warnings around an oversubscribed deal"],"sources":"bloomberg.com;cnbc.com;aljazeera.com;barrons.com;bbc.com;apnews.com;abcnews.com;cbsnews.com;aol.com;businessinsider.com"}
+
+================================================================================
+Run 5/10
+Topic: Ethereum ETF inflows
+Status: PASS | 39s | source=chat
+--------------------------------------------------------------------------------
+{"query":"Ethereum ETF inflows","time_period":"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z","unique_topics":["No directly matching Ethereum-ETF-inflows story found within 2026-06-09 to 2026-06-15 from the specified publisher pool (results in this crawl skew earlier)","Crypto-market narrative referencing ETF flows: discussions of whether stronger spot Bitcoin/Ether ETF inflows are needed to sustain/confirm a crypto rebound (macro + flows framing)","Context/out-of-window but relevant: U.S. spot Ether ETFs ended a prolonged outflow streak with a net inflow day (reported as ~$19.3M, driven by BlackRock’s ETHA)","Context/out-of-window but relevant: spot Ether ETF outflow streak coverage and on-chain demand decline tied to sustained ETF redemptions (17-session outflow streak framing)","Context/out-of-window but relevant: spot Ethereum ETFs hit multi-day net inflow streaks earlier in 2026 (e.g., 9–10 day streaks) with ETHA and Fidelity’s FETH frequently cited as leading daily inflows"],"sources":"coindesk.com;finance.yahoo.com;investing.com;aol.com;benzinga.com;businessinsider.com"}
+
+================================================================================
+Run 6/10
+Topic: OpenAI model release
+Status: PASS | 42s | source=chat
+--------------------------------------------------------------------------------
+{"query":"OpenAI model release","time_period":"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z","unique_topics":["No confirmed OpenAI flagship model release surfaced in the 2026-06-09 to 2026-06-15 window from the specified publisher pool; coverage in-range focused more on IPO/regulation and upcoming upgrades than an actual model launch","Reports/claims that OpenAI is preparing a notable model upgrade (described as a new model codenamed 5.6) expected to launch in June as an upgrade beyond GPT-5.5 (pre-release/rumor framing)","OpenAI’s CEO Sam Altman lobbying against proposals requiring government approval before public release of new AI models (model-release regulation debate)","OpenAI’s “trusted/controlled access” approach for sensitive, cyber-capable model variants (tiered access + verification focus, rather than broad public release)","AI competitive context during the same week: peers (not OpenAI) releasing or expanding access to frontier models (used in coverage to frame OpenAI’s release cadence and market race)"],"sources":"finance.yahoo.com;reuters.com;axios.com;cnbc.com;bloomberg.com;fortune.com;apnews.com;9to5mac.com;businessinsider.com;wsj.com"}
+
+================================================================================
+Run 7/10
+Topic: Ukraine peace talks
+Status: PASS | 30s | source=chat
+--------------------------------------------------------------------------------
+{"query":"Ukraine peace talks","time_period":"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z","unique_topics":["Zelensky renews push for direct peace talks with Putin, including proposal for face-to-face meeting and ceasefire during negotiations (open-letter/diplomacy push)","Putin rejects near-term meeting with Zelensky, saying there is ‘no point’ for now (Russia stance on direct talks)","UK-France-Germany back Zelensky’s call for direct talks and set out conditions for a ‘just and lasting’ peace deal, including ceasefire and security guarantees","Continued cross-border strikes and drone attacks as diplomacy discussions continue, underscoring gap between battlefield escalation and negotiation efforts","Europe/EU discussion of taking a larger mediation role or finding an interlocutor to engage Russia as US-led mediation is described as stalled/limited"],"sources":"bbc.com;aljazeera.com;bloomberg.com;abcnews.com"}
+
+================================================================================
+Run 8/10
+Topic: NVIDIA chip export rules
+Status: PASS | 23s | source=chat
+--------------------------------------------------------------------------------
+{"query":"NVIDIA chip export rules","time_period":"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z","unique_topics":["Taiwan weighs tighter AI-chip export controls targeting China to align with US rules and address diversion/smuggling of AI servers using Nvidia chips","US export-control clarification closes loophole: advanced AI chip shipment bans/licensing requirements apply to China-headquartered firms even when subsidiaries are outside China (affecting overseas purchases routed through Southeast Asia)","Policy uncertainty around broader US global AI-chip export licensing proposals: reports that a sweeping worldwide permitting/licensing framework was floated/drafted and then withdrawn/shelved, while core China-focused restrictions remain","China-side reactions and compliance pressure on Nvidia’s China-market chips amid export-control tension (including reports of Chinese regulator/industry pressure to reduce reliance on Nvidia)"],"sources":"bloomberg.com;asiatimes.com;aljazeera.com;aol.com;bbc.com;apnews.com;businessinsider.com"}
+
+================================================================================
+Run 9/10
+Topic: Bitcoin halving aftermath
+Status: PASS | 39s | source=chat
+--------------------------------------------------------------------------------
+{"query":"Bitcoin halving aftermath","time_period":"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z","unique_topics":["Post-halving cycle framing resurfaces amid 2026 downturn: analysis argues Bitcoin’s 2026 drawdown fits historical halving-cycle timing (peak ~12–18 months after halving, then prolonged correction)","Bitcoin miner profitability squeeze continues in the post-2024-halving era: “hash price”/revenue per unit of compute discussed as nearing break-even for smaller operators, increasing shutdown/industry shakeout risk","Post-halving mining sector pivots accelerate: miners and related infrastructure players increasingly pursue AI/HPC hosting to diversify revenue away from block rewards","Market commentary tests whether the traditional 4-year halving cycle still explains price action in 2026, versus newer drivers like ETF flows and macro risk appetite"],"sources":"finance.yahoo.com;investing.com;coindesk.com;bloomberg.com;aol.com;benzinga.com;businessinsider.com;bbc.com"}
+
+================================================================================
+Run 10/10
+Topic: Tesla robotaxi launch
+Status: PASS | 24s | source=chat
+--------------------------------------------------------------------------------
+{"query":"Tesla robotaxi launch","time_period":"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z","unique_topics":["Post-launch reality check: Tesla robotaxi service remains small in scale with long waits/stalled rides; fleet reported around 59 vehicles and limited to a few Texas cities, far short of earlier expansion promises","Operational constraints for early robotaxi rollout: limited service area(s), small fleet utilization, and early-stage reliability/dispatch issues highlighted in post-launch coverage","Expansion roadmap vs. regulation: ongoing tension between Musk’s aggressive coverage claims and practical/regulatory hurdles for scaling robotaxis beyond current geofenced areas"],"sources":"bloomberg.com"}
+

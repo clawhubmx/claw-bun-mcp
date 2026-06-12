@@ -1,0 +1,19 @@
+Dual-tab title-watch: topics=2, pollMs=3000, submitWaitMs=12000, template=compact prompt21
+
+Opening tab A...
+  tab A: id=7140 title="Meaning of true | Notion"
+Opening tab B...
+  tab B: id=f256 title="Single word query | Notion"
+
+--- Submit phase ---
+Submit tab A: Protesters block road to Mexican World Cup stadium...
+  submitted | via=eval | 4s | error=none | generating=no | title="Meaning of true | Notion"
+Submit tab B: Fed interest rate decision June 2026...
+  submitted | via=eval | 4s | error=none | generating=yes | title="Single word query | Notion"
+
+--- Title-watch phase ---
+  poll 5: periodic probe tab A title="Meaning of true | Notion"
+  tab A inspected (still_generating)
+  poll 5: periodic probe tab B title="Single word query | Notion"
+  tab B inspected (still_generating)
+  poll 10: periodic probe tab A title="Meaning of true | Notion"

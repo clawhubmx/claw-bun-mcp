@@ -1,18 +1,18 @@
-v34 news capture test: 3 prompts, maxWaitMs=120000, startRun=1
+v35 news capture test: 3 prompts, maxWaitMs=90000, template=compact prompt21, startRun=1
 
-Opened tab: A5105089E53C10289D51FCBFFF7D7CB4
+Opened tab: undefined
 
 --- Run 1/3 ---
-  topic: Protesters block road to Mexican World Cup stadium
-  PASS | src=chat | 2s | error=none | kind=none | answerLen=123
+  topic: Protesters block road to Mexican World Cup stadium | promptLen=3488
+  PASS | src=chat | 30s (total 30s) | error=none | kind=none | topics=5
 
 --- Run 2/3 ---
-  topic: Fed interest rate decision June 2026
-  PASS | src=chat | 19s | error=none | kind=none | answerLen=719
+  topic: Fed interest rate decision June 2026 | promptLen=3474
+  PASS | src=chat | 15s (total 15s) | error=none | kind=none | topics=5
 
 --- Run 3/3 ---
-  topic: Apple WWDC announcements 2026
-  PASS | src=chat | 30s | error=none | kind=none | answerLen=75
+  topic: Apple WWDC announcements 2026 | promptLen=3467
+  PASS | src=chat | 20s (total 20s) | error=none | kind=none | topics=5
 
 === Summary ===
 Passed: 3/3

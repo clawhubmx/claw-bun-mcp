@@ -1,0 +1,54 @@
+{
+  "run": 8,
+  "topic": "NVIDIA chip export rules",
+  "command": "chatfollow",
+  "elapsedMs": 22882,
+  "timedOut": false,
+  "chatError": null,
+  "chatKind": null,
+  "chatAction": null,
+  "answerFormat": "json",
+  "answerJson": {
+    "query": "NVIDIA chip export rules",
+    "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+    "unique_topics": [
+      "Taiwan weighs tighter AI-chip export controls targeting China to align with US rules and address diversion/smuggling of AI servers using Nvidia chips",
+      "US export-control clarification closes loophole: advanced AI chip shipment bans/licensing requirements apply to China-headquartered firms even when subsidiaries are outside China (affecting overseas purchases routed through Southeast Asia)",
+      "Policy uncertainty around broader US global AI-chip export licensing proposals: reports that a sweeping worldwide permitting/licensing framework was floated/drafted and then withdrawn/shelved, while core China-focused restrictions remain",
+      "China-side reactions and compliance pressure on Nvidia’s China-market chips amid export-control tension (including reports of Chinese regulator/industry pressure to reduce reliance on Nvidia)"
+    ],
+    "sources": "bloomberg.com;asiatimes.com;aljazeera.com;aol.com;bbc.com;apnews.com;businessinsider.com"
+  },
+  "capturedAnswer": "{\"query\":\"NVIDIA chip export rules\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Taiwan weighs tighter AI-chip export controls targeting China to align with US rules and address diversion/smuggling of AI servers using Nvidia chips\",\"US export-control clarification closes loophole: advanced AI chip shipment bans/licensing requirements apply to China-headquartered firms even when subsidiaries are outside China (affecting overseas purchases routed through Southeast Asia)\",\"Policy uncertainty around broader US global AI-chip export licensing proposals: reports that a sweeping worldwide permitting/licensing framework was floated/drafted and then withdrawn/shelved, while core China-focused restrictions remain\",\"China-side reactions and compliance pressure on Nvidia’s China-market chips amid export-control tension (including reports of Chinese regulator/industry pressure to reduce reliance on Nvidia)\"],\"sources\":\"bloomberg.com;asiatimes.com;aljazeera.com;aol.com;bbc.com;apnews.com;businessinsider.com\"}",
+  "captureSource": "chat",
+  "recovered": false,
+  "validation": {
+    "ok": true,
+    "parsed": {
+      "query": "NVIDIA chip export rules",
+      "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+      "unique_topics": [
+        "Taiwan weighs tighter AI-chip export controls targeting China to align with US rules and address diversion/smuggling of AI servers using Nvidia chips",
+        "US export-control clarification closes loophole: advanced AI chip shipment bans/licensing requirements apply to China-headquartered firms even when subsidiaries are outside China (affecting overseas purchases routed through Southeast Asia)",
+        "Policy uncertainty around broader US global AI-chip export licensing proposals: reports that a sweeping worldwide permitting/licensing framework was floated/drafted and then withdrawn/shelved, while core China-focused restrictions remain",
+        "China-side reactions and compliance pressure on Nvidia’s China-market chips amid export-control tension (including reports of Chinese regulator/industry pressure to reduce reliance on Nvidia)"
+      ],
+      "sources": "bloomberg.com;asiatimes.com;aljazeera.com;aol.com;bbc.com;apnews.com;businessinsider.com"
+    }
+  },
+  "helpersVersion": 35,
+  "probe": {
+    "helpersVersion": 35,
+    "tabHidden": false,
+    "hasCompletedReplyActions": true,
+    "isGenerating": false,
+    "isChatInProgress": false,
+    "answerLen": 2083,
+    "looksFinal": true,
+    "answerPreview": "{\"query\":\"NVIDIA chip export rules\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Taiwan weighs tighter AI-chip export controls targeting China to align with US rules and address diversion/smuggling of AI servers using Nvidia chips\",\"US export-control clarification closes loophole: advanced AI chip shipment bans/licensing requirements apply to China-headquartered firm",
+    "answerFull": "{\"query\":\"NVIDIA chip export rules\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Taiwan weighs tighter AI-chip export controls targeting China to align with US rules and address diversion/smuggling of AI servers using Nvidia chips\",\"US export-control clarification closes loophole: advanced AI chip shipment bans/licensing requirements apply to China-headquartered firms even when subsidiaries are outside China (affecting overseas purchases routed through Southeast Asia)\",\"Policy uncertainty around broader US global AI-chip export licensing proposals: reports that a sweeping worldwide permitting/licensing framework was floated/drafted and then withdrawn/shelved, while core China-focused restrictions remain\",\"China-side reactions and compliance pressure on Nvidia’s China-market chips amid export-control tension (including reports of Chinese regulator/industry pressure to reduce reliance on Nvidia)\"],\"sources\":\"bloomberg.com;asiatimes.com;aljazeera.com;aol.com;bbc.com;apnews.com;businessinsider.com\"}\n{\"query\":\"NVIDIA chip export rules\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Taiwan weighs tighter AI-chip export controls targeting China to align with US rules and address diversion/smuggling of AI servers using Nvidia chips\",\"US export-control clarification closes loophole: advanced AI chip shipment bans/licensing requirements apply to China-headquartered firms even when subsidiaries are outside China (affecting overseas purchases routed through Southeast Asia)\",\"Policy uncertainty around broader US global AI-chip export licensing proposals: reports that a sweeping worldwide permitting/licensing framework was floated/drafted and then withdrawn/shelved, while core China-focused restrictions remain\",\"China-side reactions and compliance pressure on Nvidia’s China-market chips amid export-control tension (including reports of Chinese regulator/industry pressure to reduce reliance on Nvidia)\"],\"sources\":\"bloomberg.com;asiatimes.com;aljazeera.com;aol.com;bbc.com;apnews.com;businessinsider.com\"}",
+    "conversationId": "37d773dd-10fd-80b9-83cf-00a91110c205"
+  },
+  "pass": true,
+  "directCapture": true
+}

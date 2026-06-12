@@ -17,26 +17,54 @@ const CLI = "/Users/hesdx/Documents/toolings/bun-browser/dist/cli.js";
 const TEST2 = join(ROOT, "grok/example/test2.txt");
 const OUT_DIR = join(ROOT, "notion/example/v34-news-capture-runs");
 
-const TOPICS = [
+const ALL_TOPICS = [
   "Protesters block road to Mexican World Cup stadium",
   "Fed interest rate decision June 2026",
   "Apple WWDC announcements 2026",
+  "SpaceX IPO oversubscribed",
+  "Ethereum ETF inflows",
+  "OpenAI model release",
+  "Ukraine peace talks",
+  "NVIDIA chip export rules",
+  "Bitcoin halving aftermath",
+  "Tesla robotaxi launch",
 ];
+
+const PROMPT21 = join(ROOT, "notion/example/prompt21.txt");
 
 const args = process.argv.slice(2);
 let activeTab = args.includes("--tab") ? args[args.indexOf("--tab") + 1] : null;
 let conversationId = args.includes("--conversation") ? args[args.indexOf("--conversation") + 1] : null;
 const startRun = args.includes("--startRun") ? Number(args[args.indexOf("--startRun") + 1]) : 1;
-const maxWaitMs = args.includes("--maxWaitMs") ? Number(args[args.indexOf("--maxWaitMs") + 1]) : 120000;
-const pauseMs = args.includes("--pauseMs") ? Number(args[args.indexOf("--pauseMs") + 1]) : 3000;
+const runCount = args.includes("--runs") ? Number(args[args.indexOf("--runs") + 1]) : 3;
+const useFullTest2 = args.includes("--full");
+const responsesTxtPath = args.includes("--responsesTxt")
+  ? args[args.indexOf("--responsesTxt") + 1]
+  : join(OUT_DIR, "responses.txt");
+const maxWaitMs = args.includes("--maxWaitMs") ? Number(args[args.indexOf("--maxWaitMs") + 1]) : 90000;
+const pauseMs = args.includes("--pauseMs") ? Number(args[args.indexOf("--pauseMs") + 1]) : 2000;
 const model = args.includes("--model") ? args[args.indexOf("--model") + 1] : "auto";
-const spawnTimeoutMs = maxWaitMs + 120000;
+const openWaitSec = args.includes("--openWaitSec") ? Number(args[args.indexOf("--openWaitSec") + 1]) : 5;
+const spawnTimeoutMs = maxWaitMs + 90000;
 
 mkdirSync(OUT_DIR, { recursive: true });
 
+let compactTemplate = null;
+function loadCompactTemplate() {
+  if (compactTemplate) return compactTemplate;
+  compactTemplate = readFileSync(PROMPT21, "utf8");
+  return compactTemplate;
+}
+
 function buildPrompt(topic) {
-  const template = readFileSync(TEST2, "utf8");
-  return template.replace(/based on user "[^"]+"/i, `based on user "${topic}"`);
+  if (useFullTest2) {
+    const template = readFileSync(TEST2, "utf8");
+    return template.replace(/based on user "[^"]+"/i, `based on user "${topic}"`);
+  }
+  return loadCompactTemplate().replace(
+    /Based on user query: "[^"]+"/i,
+    `Based on user query: "${topic}"`,
+  );
 }
 
 function run(argv, timeoutMs = spawnTimeoutMs) {
@@ -205,6 +233,37 @@ function runPrompt(prompt, conversationId, command) {
   return { chatRun, chatData, elapsedMs: Date.now() - t0, command };
 }
 
+const TOPICS = ALL_TOPICS.slice(0, Math.max(1, Math.min(runCount, ALL_TOPICS.length)));
+
+function buildResponsesTxt(summary) {
+  const lines = [
+    "# v35 news capture responses",
+    `Started: ${summary.startedAt}`,
+    `Finished: ${summary.finishedAt}`,
+    `Template: ${summary.promptTemplate}`,
+    `Passed: ${summary.passCount}/${summary.runs.length}`,
+    "",
+  ];
+  for (const run of summary.runs) {
+    lines.push("=".repeat(80));
+    lines.push(`Run ${run.run}/${summary.runs.length}`);
+    lines.push(`Topic: ${run.topic}`);
+    lines.push(
+      `Status: ${run.pass ? "PASS" : "FAIL"} | ${Math.round(run.elapsedMs / 1000)}s | source=${run.captureSource || "none"}${run.validation?.ok ? "" : ` | why=${run.validation?.reason}`}`,
+    );
+    lines.push("-".repeat(80));
+    const answer =
+      run.capturedAnswer ||
+      (run.answerJson ? JSON.stringify(run.answerJson) : "") ||
+      run.probe?.answerFull ||
+      run.probe?.answerPreview ||
+      "(no answer)";
+    lines.push(answer);
+    lines.push("");
+  }
+  return `${lines.join("\n")}\n`;
+}
+
 const plan = TOPICS.map((topic, i) => ({
   run: i + 1,
   topic,
@@ -218,23 +277,34 @@ const results = {
   spawnTimeoutMs,
   model,
   tab: activeTab,
-  promptTemplate: "grok/example/test2.txt",
+  promptTemplate: useFullTest2 ? "grok/example/test2.txt" : "notion/example/prompt21.txt (compact)",
   runs: [],
 };
 
-console.log(`v34 news capture test: ${plan.length} prompts, maxWaitMs=${maxWaitMs}, startRun=${startRun}\n`);
+console.log(
+  `v35 news capture test: ${plan.length} prompts, maxWaitMs=${maxWaitMs}, template=${useFullTest2 ? "full test2" : "compact prompt21"}, startRun=${startRun}\n`,
+);
+
+function unwrapCliData(stdout) {
+  const parsed = parseJson(stdout);
+  if (parsed && typeof parsed === "object" && "success" in parsed) {
+    return parsed.success ? parsed.data : parsed;
+  }
+  return parsed;
+}
 
 if (!activeTab) {
-  const opened = parseJson(run(["open", "https://app.notion.com/ai"], 60000).stdout);
-  activeTab = opened?.tabId || opened?.id;
+  const opened = unwrapCliData(run(["tab", "new", "https://app.notion.com/ai"], 60000).stdout);
+  activeTab = opened?.tabId || opened?.tab;
   results.tab = activeTab;
   console.log(`Opened tab: ${activeTab}`);
-  spawnSync("sleep", ["10"]);
+  if (openWaitSec > 0) spawnSync("sleep", [String(openWaitSec)]);
 }
 
 for (const item of plan.filter((p) => p.run >= startRun)) {
   console.log(`\n--- Run ${item.run}/${plan.length} ---`);
-  console.log(`  topic: ${item.topic}`);
+  console.log(`  topic: ${item.topic} | promptLen=${item.prompt.length}`);
+  const tRun = Date.now();
 
   writeFileSync(join(OUT_DIR, `run-${String(item.run).padStart(2, "0")}-prompt.txt`), item.prompt);
 
@@ -296,7 +366,7 @@ for (const item of plan.filter((p) => p.run >= startRun)) {
   writeFileSync(join(OUT_DIR, `run-${String(item.run).padStart(2, "0")}.json`), JSON.stringify(entry, null, 2));
 
   console.log(
-    `  ${entry.pass ? "PASS" : "FAIL"} | src=${entry.captureSource || "none"} | ${Math.round(entry.elapsedMs / 1000)}s | error=${entry.chatError || "none"} | kind=${entry.chatKind || "none"} | topics=${entry.answerJson?.unique_topics?.length || 0}${entry.validation.ok ? "" : ` | why=${entry.validation.reason}`}`,
+    `  ${entry.pass ? "PASS" : "FAIL"} | src=${entry.captureSource || "none"} | ${Math.round(entry.elapsedMs / 1000)}s (total ${Math.round((Date.now() - tRun) / 1000)}s) | error=${entry.chatError || "none"} | kind=${entry.chatKind || "none"} | topics=${entry.answerJson?.unique_topics?.length || 0}${entry.validation.ok ? "" : ` | why=${entry.validation.reason}`}`,
   );
   if (entry.chatKind === "silent_submit") console.log(`  note: silent submit — v34 should have retried submit`);
   if (entry.timedOut) console.log(`  note: spawn timed out`);
@@ -309,9 +379,11 @@ results.passCount = results.runs.filter((r) => r.pass).length;
 results.directCaptureCount = results.runs.filter((r) => r.directCapture).length;
 results.conversationId = conversationId;
 writeFileSync(join(OUT_DIR, "summary.json"), JSON.stringify(results, null, 2));
+writeFileSync(responsesTxtPath, buildResponsesTxt(results));
 
 console.log("\n=== Summary ===");
 console.log(`Passed: ${results.passCount}/${results.runs.length}`);
 console.log(`Direct capture: ${results.directCaptureCount}/${results.runs.length}`);
 console.log(`Results: ${join(OUT_DIR, "summary.json")}`);
+console.log(`Responses: ${responsesTxtPath}`);
 process.exit(results.passCount === results.runs.length ? 0 : 1);

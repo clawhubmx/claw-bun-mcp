@@ -1,0 +1,56 @@
+{
+  "run": 5,
+  "topic": "Ethereum ETF inflows",
+  "command": "chatfollow",
+  "elapsedMs": 38928,
+  "timedOut": false,
+  "chatError": null,
+  "chatKind": null,
+  "chatAction": null,
+  "answerFormat": "json",
+  "answerJson": {
+    "query": "Ethereum ETF inflows",
+    "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+    "unique_topics": [
+      "No directly matching Ethereum-ETF-inflows story found within 2026-06-09 to 2026-06-15 from the specified publisher pool (results in this crawl skew earlier)",
+      "Crypto-market narrative referencing ETF flows: discussions of whether stronger spot Bitcoin/Ether ETF inflows are needed to sustain/confirm a crypto rebound (macro + flows framing)",
+      "Context/out-of-window but relevant: U.S. spot Ether ETFs ended a prolonged outflow streak with a net inflow day (reported as ~$19.3M, driven by BlackRock’s ETHA)",
+      "Context/out-of-window but relevant: spot Ether ETF outflow streak coverage and on-chain demand decline tied to sustained ETF redemptions (17-session outflow streak framing)",
+      "Context/out-of-window but relevant: spot Ethereum ETFs hit multi-day net inflow streaks earlier in 2026 (e.g., 9–10 day streaks) with ETHA and Fidelity’s FETH frequently cited as leading daily inflows"
+    ],
+    "sources": "coindesk.com;finance.yahoo.com;investing.com;aol.com;benzinga.com;businessinsider.com"
+  },
+  "capturedAnswer": "{\"query\":\"Ethereum ETF inflows\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"No directly matching Ethereum-ETF-inflows story found within 2026-06-09 to 2026-06-15 from the specified publisher pool (results in this crawl skew earlier)\",\"Crypto-market narrative referencing ETF flows: discussions of whether stronger spot Bitcoin/Ether ETF inflows are needed to sustain/confirm a crypto rebound (macro + flows framing)\",\"Context/out-of-window but relevant: U.S. spot Ether ETFs ended a prolonged outflow streak with a net inflow day (reported as ~$19.3M, driven by BlackRock’s ETHA)\",\"Context/out-of-window but relevant: spot Ether ETF outflow streak coverage and on-chain demand decline tied to sustained ETF redemptions (17-session outflow streak framing)\",\"Context/out-of-window but relevant: spot Ethereum ETFs hit multi-day net inflow streaks earlier in 2026 (e.g., 9–10 day streaks) with ETHA and Fidelity’s FETH frequently cited as leading daily inflows\"],\"sources\":\"coindesk.com;finance.yahoo.com;investing.com;aol.com;benzinga.com;businessinsider.com\"}",
+  "captureSource": "chat",
+  "recovered": false,
+  "validation": {
+    "ok": true,
+    "parsed": {
+      "query": "Ethereum ETF inflows",
+      "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+      "unique_topics": [
+        "No directly matching Ethereum-ETF-inflows story found within 2026-06-09 to 2026-06-15 from the specified publisher pool (results in this crawl skew earlier)",
+        "Crypto-market narrative referencing ETF flows: discussions of whether stronger spot Bitcoin/Ether ETF inflows are needed to sustain/confirm a crypto rebound (macro + flows framing)",
+        "Context/out-of-window but relevant: U.S. spot Ether ETFs ended a prolonged outflow streak with a net inflow day (reported as ~$19.3M, driven by BlackRock’s ETHA)",
+        "Context/out-of-window but relevant: spot Ether ETF outflow streak coverage and on-chain demand decline tied to sustained ETF redemptions (17-session outflow streak framing)",
+        "Context/out-of-window but relevant: spot Ethereum ETFs hit multi-day net inflow streaks earlier in 2026 (e.g., 9–10 day streaks) with ETHA and Fidelity’s FETH frequently cited as leading daily inflows"
+      ],
+      "sources": "coindesk.com;finance.yahoo.com;investing.com;aol.com;benzinga.com;businessinsider.com"
+    }
+  },
+  "helpersVersion": 35,
+  "probe": {
+    "helpersVersion": 35,
+    "tabHidden": false,
+    "hasCompletedReplyActions": true,
+    "isGenerating": false,
+    "isChatInProgress": false,
+    "answerLen": 2181,
+    "looksFinal": true,
+    "answerPreview": "{\"query\":\"Ethereum ETF inflows\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"No directly matching Ethereum-ETF-inflows story found within 2026-06-09 to 2026-06-15 from the specified publisher pool (results in this crawl skew earlier)\",\"Crypto-market narrative referencing ETF flows: discussions of whether stronger spot Bitcoin/Ether ETF inflows are needed to sustain/c",
+    "answerFull": "{\"query\":\"Ethereum ETF inflows\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"No directly matching Ethereum-ETF-inflows story found within 2026-06-09 to 2026-06-15 from the specified publisher pool (results in this crawl skew earlier)\",\"Crypto-market narrative referencing ETF flows: discussions of whether stronger spot Bitcoin/Ether ETF inflows are needed to sustain/confirm a crypto rebound (macro + flows framing)\",\"Context/out-of-window but relevant: U.S. spot Ether ETFs ended a prolonged outflow streak with a net inflow day (reported as ~$19.3M, driven by BlackRock’s ETHA)\",\"Context/out-of-window but relevant: spot Ether ETF outflow streak coverage and on-chain demand decline tied to sustained ETF redemptions (17-session outflow streak framing)\",\"Context/out-of-window but relevant: spot Ethereum ETFs hit multi-day net inflow streaks earlier in 2026 (e.g., 9–10 day streaks) with ETHA and Fidelity’s FETH frequently cited as leading daily inflows\"],\"sources\":\"coindesk.com;finance.yahoo.com;investing.com;aol.com;benzinga.com;businessinsider.com\"}\n{\"query\":\"Ethereum ETF inflows\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"No directly matching Ethereum-ETF-inflows story found within 2026-06-09 to 2026-06-15 from the specified publisher pool (results in this crawl skew earlier)\",\"Crypto-market narrative referencing ETF flows: discussions of whether stronger spot Bitcoin/Ether ETF inflows are needed to sustain/confirm a crypto rebound (macro + flows framing)\",\"Context/out-of-window but relevant: U.S. spot Ether ETFs ended a prolonged outflow streak with a net inflow day (reported as ~$19.3M, driven by BlackRock’s ETHA)\",\"Context/out-of-window but relevant: spot Ether ETF outflow streak coverage and on-chain demand decline tied to sustained ETF redemptions (17-session outflow streak framing)\",\"Context/out-of-window but relevant: spot Ethereum ETFs hit multi-day net inflow streaks earlier in 2026 (e.g., 9–10 day streaks) with ETHA and Fidelity’s FETH frequently cited as leading daily inflows\"],\"sources\":\"coindesk.com;finance.yahoo.com;investing.com;aol.com;benzinga.com;businessinsider.com\"}",
+    "conversationId": "37d773dd-10fd-80b9-83cf-00a91110c205"
+  },
+  "pass": true,
+  "directCapture": true
+}

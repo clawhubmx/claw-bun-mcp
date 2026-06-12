@@ -878,7 +878,12 @@ async function(args) {
     var result = parts.join('\n').trim();
     if (hasCompletedReplyActions()) {
       var scopeText = getAssistantTextFromReplyScope();
-      if (scopeText && scopeText.length > result.length) result = scopeText;
+      if (scopeText && scopeText.length > result.length) {
+        var extraLen = scopeText.replace(result, '').trim().length;
+        if (extraLen > 8 || (hasParsedJsonAnswer(scopeText) && !hasParsedJsonAnswer(result))) {
+          result = scopeText;
+        }
+      }
     }
     if (!result && hasCompletedReplyActions()) {
       var scopeFallback = getAssistantTextFromReplyScope();

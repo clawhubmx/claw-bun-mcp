@@ -2,28 +2,54 @@
   "run": 1,
   "topic": "Protesters block road to Mexican World Cup stadium",
   "command": "chat",
-  "elapsedMs": 1696,
+  "elapsedMs": 21835,
   "timedOut": false,
   "chatError": null,
   "chatKind": null,
   "chatAction": null,
-  "answerFormat": null,
-  "answerJson": null,
-  "capturedAnswer": "If you tell me what you’re trying to accomplish (e.g., “search for X”, “create a page for Y”, “summarize Z”), I’ll proceed.",
+  "answerFormat": "json",
+  "answerJson": {
+    "query": "Protesters block road to Mexican World Cup stadium",
+    "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+    "unique_topics": [
+      "Protesters block/close Calzada de Tlalpan road access to Mexico City’s Estadio Azteca ahead of the 2026 World Cup",
+      "Teachers’ protests and encampments in Mexico City disrupt movement near World Cup fan zones and event areas",
+      "World Cup opening in Mexico City proceeds amid broader social tensions and public demonstrations",
+      "Clashes between protesters and riot police outside/near Azteca Stadium during pre-World Cup demonstrations",
+      "Disappearance crisis and human-rights campaigners use World Cup global attention to spotlight missing persons in Mexico"
+    ],
+    "sources": "apnews.com;aljazeera.com;aol.com;bbc.com;barrons.com;abcnews.com"
+  },
+  "capturedAnswer": "{\"query\":\"Protesters block road to Mexican World Cup stadium\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Protesters block/close Calzada de Tlalpan road access to Mexico City’s Estadio Azteca ahead of the 2026 World Cup\",\"Teachers’ protests and encampments in Mexico City disrupt movement near World Cup fan zones and event areas\",\"World Cup opening in Mexico City proceeds amid broader social tensions and public demonstrations\",\"Clashes between protesters and riot police outside/near Azteca Stadium during pre-World Cup demonstrations\",\"Disappearance crisis and human-rights campaigners use World Cup global attention to spotlight missing persons in Mexico\"],\"sources\":\"apnews.com;aljazeera.com;aol.com;bbc.com;barrons.com;abcnews.com\"}",
   "captureSource": "chat",
   "recovered": false,
-  "helpersVersion": 34,
+  "validation": {
+    "ok": true,
+    "parsed": {
+      "query": "Protesters block road to Mexican World Cup stadium",
+      "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+      "unique_topics": [
+        "Protesters block/close Calzada de Tlalpan road access to Mexico City’s Estadio Azteca ahead of the 2026 World Cup",
+        "Teachers’ protests and encampments in Mexico City disrupt movement near World Cup fan zones and event areas",
+        "World Cup opening in Mexico City proceeds amid broader social tensions and public demonstrations",
+        "Clashes between protesters and riot police outside/near Azteca Stadium during pre-World Cup demonstrations",
+        "Disappearance crisis and human-rights campaigners use World Cup global attention to spotlight missing persons in Mexico"
+      ],
+      "sources": "apnews.com;aljazeera.com;aol.com;bbc.com;barrons.com;abcnews.com"
+    }
+  },
+  "helpersVersion": 35,
   "probe": {
-    "helpersVersion": 34,
+    "helpersVersion": 35,
     "tabHidden": false,
     "hasCompletedReplyActions": true,
     "isGenerating": false,
     "isChatInProgress": false,
-    "answerLen": 236,
+    "answerLen": 1543,
     "looksFinal": true,
-    "answerPreview": "What does “true” refer to here—are you confirming something I asked earlier, or did you want me to do an action?\nIf you tell me what you’re trying to accomplish (e.g., “search for X”, “create a page for Y”, “summarize Z”), I’ll proceed.",
-    "answerFull": "What does “true” refer to here—are you confirming something I asked earlier, or did you want me to do an action?\nIf you tell me what you’re trying to accomplish (e.g., “search for X”, “create a page for Y”, “summarize Z”), I’ll proceed.",
-    "conversationId": "37d773dd-10fd-8089-bcac-00a9abcb4bd6"
+    "answerPreview": "{\"query\":\"Protesters block road to Mexican World Cup stadium\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Protesters block/close Calzada de Tlalpan road access to Mexico City’s Estadio Azteca ahead of the 2026 World Cup\",\"Teachers’ protests and encampments in Mexico City disrupt movement near World Cup fan zones and event areas\",\"World Cup opening in Mexico City pro",
+    "answerFull": "{\"query\":\"Protesters block road to Mexican World Cup stadium\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Protesters block/close Calzada de Tlalpan road access to Mexico City’s Estadio Azteca ahead of the 2026 World Cup\",\"Teachers’ protests and encampments in Mexico City disrupt movement near World Cup fan zones and event areas\",\"World Cup opening in Mexico City proceeds amid broader social tensions and public demonstrations\",\"Clashes between protesters and riot police outside/near Azteca Stadium during pre-World Cup demonstrations\",\"Disappearance crisis and human-rights campaigners use World Cup global attention to spotlight missing persons in Mexico\"],\"sources\":\"apnews.com;aljazeera.com;aol.com;bbc.com;barrons.com;abcnews.com\"}\n{\"query\":\"Protesters block road to Mexican World Cup stadium\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Protesters block/close Calzada de Tlalpan road access to Mexico City’s Estadio Azteca ahead of the 2026 World Cup\",\"Teachers’ protests and encampments in Mexico City disrupt movement near World Cup fan zones and event areas\",\"World Cup opening in Mexico City proceeds amid broader social tensions and public demonstrations\",\"Clashes between protesters and riot police outside/near Azteca Stadium during pre-World Cup demonstrations\",\"Disappearance crisis and human-rights campaigners use World Cup global attention to spotlight missing persons in Mexico\"],\"sources\":\"apnews.com;aljazeera.com;aol.com;bbc.com;barrons.com;abcnews.com\"}",
+    "conversationId": "37d773dd-10fd-80b9-83cf-00a91110c205"
   },
   "pass": true,
   "directCapture": true

@@ -1,0 +1,49 @@
+v35 news capture test: 10 prompts, maxWaitMs=90000, template=compact prompt21, startRun=1
+
+Opened tab: 4CFE4A4720A00389D2B0C800591A24FC
+
+--- Run 1/10 ---
+  topic: Protesters block road to Mexican World Cup stadium | promptLen=3488
+  PASS | src=chat | 22s (total 22s) | error=none | kind=none | topics=5
+
+--- Run 2/10 ---
+  topic: Fed interest rate decision June 2026 | promptLen=3474
+  PASS | src=chat | 34s (total 34s) | error=none | kind=none | topics=5
+
+--- Run 3/10 ---
+  topic: Apple WWDC announcements 2026 | promptLen=3467
+  PASS | src=chat | 23s (total 23s) | error=none | kind=none | topics=6
+
+--- Run 4/10 ---
+  topic: SpaceX IPO oversubscribed | promptLen=3463
+  PASS | src=chat | 24s (total 24s) | error=none | kind=none | topics=5
+
+--- Run 5/10 ---
+  topic: Ethereum ETF inflows | promptLen=3458
+  PASS | src=chat | 39s (total 39s) | error=none | kind=none | topics=5
+
+--- Run 6/10 ---
+  topic: OpenAI model release | promptLen=3458
+  PASS | src=chat | 42s (total 42s) | error=none | kind=none | topics=5
+
+--- Run 7/10 ---
+  topic: Ukraine peace talks | promptLen=3457
+  PASS | src=chat | 30s (total 30s) | error=none | kind=none | topics=5
+
+--- Run 8/10 ---
+  topic: NVIDIA chip export rules | promptLen=3462
+  PASS | src=chat | 23s (total 23s) | error=none | kind=none | topics=4
+
+--- Run 9/10 ---
+  topic: Bitcoin halving aftermath | promptLen=3463
+  PASS | src=chat | 39s (total 39s) | error=none | kind=none | topics=4
+
+--- Run 10/10 ---
+  topic: Tesla robotaxi launch | promptLen=3459
+  PASS | src=chat | 24s (total 24s) | error=none | kind=none | topics=3
+
+=== Summary ===
+Passed: 10/10
+Direct capture: 10/10
+Results: /Users/hesdx/Documents/clawhost/claw-bun-mcp/notion/example/v34-news-capture-runs/summary.json
+Responses: /Users/hesdx/Documents/clawhost/claw-bun-mcp/notion/example/v34-news-capture-runs/responses.txt

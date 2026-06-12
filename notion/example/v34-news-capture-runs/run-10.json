@@ -1,0 +1,52 @@
+{
+  "run": 10,
+  "topic": "Tesla robotaxi launch",
+  "command": "chatfollow",
+  "elapsedMs": 23818,
+  "timedOut": false,
+  "chatError": null,
+  "chatKind": null,
+  "chatAction": null,
+  "answerFormat": "json",
+  "answerJson": {
+    "query": "Tesla robotaxi launch",
+    "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+    "unique_topics": [
+      "Post-launch reality check: Tesla robotaxi service remains small in scale with long waits/stalled rides; fleet reported around 59 vehicles and limited to a few Texas cities, far short of earlier expansion promises",
+      "Operational constraints for early robotaxi rollout: limited service area(s), small fleet utilization, and early-stage reliability/dispatch issues highlighted in post-launch coverage",
+      "Expansion roadmap vs. regulation: ongoing tension between Musk’s aggressive coverage claims and practical/regulatory hurdles for scaling robotaxis beyond current geofenced areas"
+    ],
+    "sources": "bloomberg.com"
+  },
+  "capturedAnswer": "{\"query\":\"Tesla robotaxi launch\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Post-launch reality check: Tesla robotaxi service remains small in scale with long waits/stalled rides; fleet reported around 59 vehicles and limited to a few Texas cities, far short of earlier expansion promises\",\"Operational constraints for early robotaxi rollout: limited service area(s), small fleet utilization, and early-stage reliability/dispatch issues highlighted in post-launch coverage\",\"Expansion roadmap vs. regulation: ongoing tension between Musk’s aggressive coverage claims and practical/regulatory hurdles for scaling robotaxis beyond current geofenced areas\"],\"sources\":\"bloomberg.com\"}",
+  "captureSource": "chat",
+  "recovered": false,
+  "validation": {
+    "ok": true,
+    "parsed": {
+      "query": "Tesla robotaxi launch",
+      "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+      "unique_topics": [
+        "Post-launch reality check: Tesla robotaxi service remains small in scale with long waits/stalled rides; fleet reported around 59 vehicles and limited to a few Texas cities, far short of earlier expansion promises",
+        "Operational constraints for early robotaxi rollout: limited service area(s), small fleet utilization, and early-stage reliability/dispatch issues highlighted in post-launch coverage",
+        "Expansion roadmap vs. regulation: ongoing tension between Musk’s aggressive coverage claims and practical/regulatory hurdles for scaling robotaxis beyond current geofenced areas"
+      ],
+      "sources": "bloomberg.com"
+    }
+  },
+  "helpersVersion": 35,
+  "probe": {
+    "helpersVersion": 35,
+    "tabHidden": false,
+    "hasCompletedReplyActions": true,
+    "isGenerating": false,
+    "isChatInProgress": false,
+    "answerLen": 1429,
+    "looksFinal": true,
+    "answerPreview": "{\"query\":\"Tesla robotaxi launch\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Post-launch reality check: Tesla robotaxi service remains small in scale with long waits/stalled rides; fleet reported around 59 vehicles and limited to a few Texas cities, far short of earlier expansion promises\",\"Operational constraints for early robotaxi rollout: limited service area(s),",
+    "answerFull": "{\"query\":\"Tesla robotaxi launch\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Post-launch reality check: Tesla robotaxi service remains small in scale with long waits/stalled rides; fleet reported around 59 vehicles and limited to a few Texas cities, far short of earlier expansion promises\",\"Operational constraints for early robotaxi rollout: limited service area(s), small fleet utilization, and early-stage reliability/dispatch issues highlighted in post-launch coverage\",\"Expansion roadmap vs. regulation: ongoing tension between Musk’s aggressive coverage claims and practical/regulatory hurdles for scaling robotaxis beyond current geofenced areas\"],\"sources\":\"bloomberg.com\"}\n{\"query\":\"Tesla robotaxi launch\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Post-launch reality check: Tesla robotaxi service remains small in scale with long waits/stalled rides; fleet reported around 59 vehicles and limited to a few Texas cities, far short of earlier expansion promises\",\"Operational constraints for early robotaxi rollout: limited service area(s), small fleet utilization, and early-stage reliability/dispatch issues highlighted in post-launch coverage\",\"Expansion roadmap vs. regulation: ongoing tension between Musk’s aggressive coverage claims and practical/regulatory hurdles for scaling robotaxis beyond current geofenced areas\"],\"sources\":\"bloomberg.com\"}",
+    "conversationId": "37d773dd-10fd-80b9-83cf-00a91110c205"
+  },
+  "pass": true,
+  "directCapture": true
+}
