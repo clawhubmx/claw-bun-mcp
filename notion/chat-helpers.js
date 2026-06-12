@@ -3,7 +3,7 @@
  * Inlined by notion/chat.js and notion/chatfollow.js — keep in sync.
  */
 function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 35;
+  var HELPERS_VERSION = 36;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 200;
   var NOTION_SUBMIT_ACK_MS = 8000;
@@ -812,7 +812,136 @@ function installNotionAiChatHelpers() {
     return cleanAssistantText(el.innerText || el.textContent || '');
   }
 
+  function isScrollToBottomLabel(label) {
+    return /scroll.*bottom|jump.*bottom|see.*latest|scroll.*down|latest.*message/i.test(String(label || ''));
+  }
+
+  function isDownArrowSvg(svg) {
+    if (!svg) return false;
+    var paths = svg.querySelectorAll('path, polygon, polyline');
+    for (var i = 0; i < paths.length; i++) {
+      var d = (paths[i].getAttribute('d') || paths[i].getAttribute('points') || '').toLowerCase();
+      if (!d) continue;
+      if (/v\s*\d|m\d.*l.*\d|down|chevron/i.test(d)) return true;
+    }
+    return false;
+  }
+
+  function isReplyToolbarButton(el) {
+    if (!el) return false;
+    var label = normalizeReplyActionLabel(el.getAttribute('aria-label') || '');
+    for (var i = 0; i < REPLY_ACTION_REQUIRED.length; i++) {
+      if (label === normalizeReplyActionLabel(REPLY_ACTION_REQUIRED[i])) return true;
+    }
+    if (/^(share positive feedback|share negative feedback)$/.test(label)) return true;
+    return false;
+  }
+
+  function findScrollToBottomButton() {
+    var root = document.querySelector('.layout-chat') || document.body;
+    if (!root) return null;
+    var candidates = Array.prototype.slice.call(root.querySelectorAll('button, [role=button]'));
+    var best = null;
+    var bestScore = -1;
+    for (var i = 0; i < candidates.length; i++) {
+      var el = candidates[i];
+      if (!isElementVisible(el)) continue;
+      if (isReplyToolbarButton(el)) continue;
+      var label = el.getAttribute('aria-label') || '';
+      var score = 0;
+      if (isScrollToBottomLabel(label)) score += 100;
+      var svg = el.querySelector('svg');
+      if (svg && isDownArrowSvg(svg)) score += 50;
+      var style = window.getComputedStyle ? window.getComputedStyle(el) : null;
+      if (style && (style.position === 'fixed' || style.position === 'sticky' || style.position === 'absolute')) {
+        score += 20;
+      }
+      var rect = el.getBoundingClientRect();
+      if (rect.width >= 24 && rect.width <= 88 && rect.height >= 24 && rect.height <= 88) score += 15;
+      if (rect.top > window.innerHeight * 0.45) score += 25;
+      if (score < 40) continue;
+      if (score > bestScore) {
+        bestScore = score;
+        best = el;
+      }
+    }
+    return best;
+  }
+
+  function clickScrollToBottomButton() {
+    var btn = findScrollToBottomButton();
+    if (!btn) return { clicked: false, gone: true, found: false };
+    clickElement(btn);
+    return { clicked: true, gone: !findScrollToBottomButton(), found: true };
+  }
+
+  function findChatScrollContainer() {
+    var root = document.querySelector('.layout-chat');
+    if (!root) return null;
+    var nodes = [root].concat(Array.prototype.slice.call(root.querySelectorAll('*')));
+    var best = null;
+    var bestScroll = 0;
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      if (!el || el.scrollHeight <= el.clientHeight + 8) continue;
+      var style = window.getComputedStyle ? window.getComputedStyle(el) : null;
+      if (!style) continue;
+      var overflowY = style.overflowY || '';
+      if (overflowY !== 'auto' && overflowY !== 'scroll' && overflowY !== 'overlay') continue;
+      var scrollRoom = el.scrollHeight - el.clientHeight;
+      if (scrollRoom > bestScroll) {
+        bestScroll = scrollRoom;
+        best = el;
+      }
+    }
+    return best;
+  }
+
+  function scrollChatContainerToBottom() {
+    var container = findChatScrollContainer();
+    if (!container) return false;
+    container.scrollTop = container.scrollHeight;
+    return true;
+  }
+
+  function revealLatestReplyInView() {
+    var clicks = 0;
+    var scrolled = false;
+    for (var i = 0; i < 3; i++) {
+      if (!findScrollToBottomButton()) break;
+      var clickResult = clickScrollToBottomButton();
+      if (clickResult.clicked) {
+        clicks++;
+        scrolled = true;
+      }
+      if (clickResult.gone) break;
+    }
+    if (scrollChatContainerToBottom()) scrolled = true;
+    return { scrolled: scrolled, clicks: clicks };
+  }
+
+  async function scrollToLatestReply(opts) {
+    opts = opts || {};
+    var maxClicks = Math.max(1, Number(opts.maxClicks) || 3);
+    var pauseMs = Number(opts.pauseMs) || 180;
+    var clicks = 0;
+    var scrolled = false;
+    for (var i = 0; i < maxClicks; i++) {
+      if (!findScrollToBottomButton()) break;
+      var clickResult = clickScrollToBottomButton();
+      if (clickResult.clicked) {
+        clicks++;
+        scrolled = true;
+      }
+      if (pauseMs > 0) await sleep(pauseMs);
+      if (clickResult.gone) break;
+    }
+    if (scrollChatContainerToBottom()) scrolled = true;
+    return { scrolled: scrolled, clicks: clicks };
+  }
+
   function getAssistantTextFromReplyScope() {
+    if (hasCompletedReplyActions()) revealLatestReplyInView();
     var scope = getLatestAssistantReplyScope();
     if (!scope) {
       var chatRoot = document.querySelector('.layout-chat');
@@ -1157,7 +1286,13 @@ function installNotionAiChatHelpers() {
     if (direct) return direct;
     if (!hasCompletedReplyActions()) return '';
     if (!hasNewTurnContent(messages, beforeCount, beforeText)) return '';
+    revealLatestReplyInView();
     var full = getAssistantAnswerSince(messages, 0);
+    if (!full) full = getAssistantTextFromReplyScope();
+    var validated = validateExtractedAnswer(full, opts, false);
+    if (validated) return validated;
+    revealLatestReplyInView();
+    full = getAssistantAnswerSince(messages, beforeCount);
     if (!full) full = getAssistantTextFromReplyScope();
     return validateExtractedAnswer(full, opts, false) || '';
   }
@@ -1254,6 +1389,14 @@ function installNotionAiChatHelpers() {
       if (turnUpdated && !generating && !looksLikeInProgressAnswer(answer)) {
         var expectsJson = waitExpectsJson(opts);
         if (expectsJson && answer && !hasParsedJsonAnswer(answer)) {
+          if (hasCompletedReplyActionsForTurn(beforeCount, beforeText)) {
+            await scrollToLatestReply({ maxClicks: 2, pauseMs: 120 });
+            answer = getAssistantAnswerSince(messages, beforeCount);
+            if (hasParsedJsonAnswer(answer)) {
+              lastWaitPending = false;
+              return answer;
+            }
+          }
           sawInFlight = true;
         } else if (!!answer && looksLikeFinalAnswer(answer)) {
           if (answer === lastText) stableRounds++;
@@ -2693,6 +2836,12 @@ function installNotionAiChatHelpers() {
     getAssistantMessages: getAssistantMessages,
     getAssistantMessagesSinceLastUser: getAssistantMessagesSinceLastUser,
     getAssistantText: getAssistantText,
+    findScrollToBottomButton: findScrollToBottomButton,
+    clickScrollToBottomButton: clickScrollToBottomButton,
+    findChatScrollContainer: findChatScrollContainer,
+    scrollChatContainerToBottom: scrollChatContainerToBottom,
+    revealLatestReplyInView: revealLatestReplyInView,
+    scrollToLatestReply: scrollToLatestReply,
     getAssistantTextFromReplyScope: getAssistantTextFromReplyScope,
     getAssistantAnswerSince: getAssistantAnswerSince,
     getCurrentReplyAssistantStartCount: getCurrentReplyAssistantStartCount,

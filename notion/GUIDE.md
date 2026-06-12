@@ -351,6 +351,20 @@ bun-browser tab new https://app.notion.com/ai
 # 分别对 tab A / tab B 提交，超时后用位置参数 waitOnly 轮询各自 tab
 ```
 
+### N-tab pool title-watch test (helpers v36+)
+
+For batch capture across many tabs without blocking on one reply, use the tab-pool orchestrator script. It polls `bun-browser tab list` for title changes, activates each tab, calls **`scrollToLatestReply()`** (clicks the floating scroll-to-bottom FAB when long replies are off-screen), then captures JSON via waitOnly / recover.
+
+```bash
+bun notion/scripts/test-tab-pool-title-watch.mjs --poolSize 2
+bun notion/scripts/test-tab-pool-title-watch.mjs --poolSize 5
+bun notion/scripts/test-dual-tab-title-watch.mjs   # wrapper for --poolSize 2
+```
+
+Output: `notion/example/tab-pool-title-watch-runs/responses.txt` and `summary.json` (per-tab title events, scroll stats, validation).
+
+Flags: `--poolSize N`, `--topics "A,B,..."`, `--full` (full test2 template), `--pollMs`, `--globalTimeoutMs`.
+
 ## 参数
 
 ### notion/chat

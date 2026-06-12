@@ -681,6 +681,82 @@ Loaded web page: api.llama.fi/chains</div>
     );
   });
 
+  test("clickScrollToBottomButton clicks floating down-arrow FAB", () => {
+    const h = installHelpers();
+    let clicked = false;
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<button aria-label="Scroll to bottom" style="position:fixed;bottom:20px;right:20px;width:40px;height:40px;border-radius:50%">' +
+      '<svg><path d="M6 10 L12 16 L18 10"></path></svg></button>' +
+      "</div>";
+    const fab = document.querySelector('button[aria-label="Scroll to bottom"]');
+    fab.getBoundingClientRect = () => ({
+      left: 900,
+      top: 700,
+      width: 40,
+      height: 40,
+      right: 940,
+      bottom: 740,
+      x: 900,
+      y: 700,
+    });
+    Object.defineProperty(window, "innerHeight", { configurable: true, value: 800 });
+    fab.addEventListener("click", () => {
+      clicked = true;
+      fab.remove();
+    });
+    const result = h.clickScrollToBottomButton();
+    expect(result.clicked).toBe(true);
+    expect(result.found).toBe(true);
+    expect(clicked).toBe(true);
+  });
+
+  test("getAssistantTextFromReplyScope reads reply scope after revealLatestReplyInView", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="assistant-turn">' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Prefix line</div></div>' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Tail JSON block</div></div>' +
+      REPLY_ACTION_BUTTONS +
+      "</div>" +
+      '<button aria-label="Scroll to bottom" style="position:fixed;bottom:20px;right:20px;width:40px;height:40px">' +
+      '<svg><path d="M6 10 L12 16"></path></svg></button>' +
+      "</div>";
+    const text = h.getAssistantTextFromReplyScope();
+    expect(text).toContain("Tail JSON block");
+  });
+
+  test("scrollToLatestReply returns click stats", async () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<button aria-label="Jump to bottom" style="position:fixed;bottom:24px;right:24px;width:36px;height:36px">' +
+      '<svg><path d="M4 8 L12 16"></path></svg></button>' +
+      "</div>";
+    const fab = document.querySelector("button");
+    fab.getBoundingClientRect = () => ({
+      left: 900,
+      top: 720,
+      width: 36,
+      height: 36,
+      right: 936,
+      bottom: 756,
+      x: 900,
+      y: 720,
+    });
+    Object.defineProperty(window, "innerHeight", { configurable: true, value: 800 });
+    fab.addEventListener("click", () => fab.remove());
+    const result = await h.scrollToLatestReply({ maxClicks: 2, pauseMs: 0 });
+    expect(result.clicks).toBeGreaterThan(0);
+    expect(result.scrolled).toBe(true);
+  });
+
+  test("helpers version is 36", () => {
+    const h = installHelpers();
+    expect(h.version).toBe(36);
+  });
+
   test("isUrlTrustPromptVisible finds dialog below long page prefix", () => {
     const h = installHelpers();
     const prefix = "sidebar ".repeat(2000);

@@ -1,0 +1,17 @@
+Tab-pool title-watch: poolSize=2, pollMs=3000, submitWaitMs=12000, template=compact prompt21
+
+Opening tab A...
+  tab A: id=9974 title="Boolean value true | Notion"
+Opening tab B...
+  tab B: id=d6cd title="Single word query: true | Notion"
+
+--- Submit phase ---
+Submit tab A: Protesters block road to Mexican World Cup stadium...
+  submitted | via=eval | 5s | error=none | generating=no | title="Boolean value true | Notion"
+Submit tab B: Fed interest rate decision June 2026...
+  submitted | via=eval | 5s | error=none | generating=no | title="Single word query: true | Notion"
+
+--- Title-watch phase ---
+  poll 5: periodic probe tab A title="Boolean value true | Notion"
+  tab A CAPTURED | source=probe | topics=5
+  poll 10: periodic probe tab B title="Single word query: true | Notion"
