@@ -79,7 +79,7 @@ async function(args) {
 
 
   var h = (function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 23;
+  var HELPERS_VERSION = 25;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 500;
 
@@ -862,6 +862,25 @@ async function(args) {
     return false;
   }
 
+  function looksLikeJsonAnswerAttempt(text) {
+    var t = String(text || '').trim();
+    if (!t) return false;
+    if (/^\{/.test(t)) return true;
+    if (/```(?:json)?/i.test(t)) return true;
+    if (/\{[\s\S]*"/.test(t)) return true;
+    return false;
+  }
+
+  function hasParsedJsonAnswer(text) {
+    return parseAnswerJson(text) != null;
+  }
+
+  function waitExpectsJson(opts) {
+    opts = opts || {};
+    if (opts.expectJson) return true;
+    return queryExpectsJson(opts.query);
+  }
+
   function looksLikeFinalAnswer(text) {
     if (!text) return false;
     var t = String(text).trim();
@@ -869,6 +888,7 @@ async function(args) {
     if (matchCreditsExhausted(t)) return false;
     if (matchPromptRejected(t)) return false;
     if (looksLikeInProgressAnswer(t)) return false;
+    if (looksLikeJsonAnswerAttempt(t)) return hasParsedJsonAnswer(t);
     if (t.length < 2) return false;
     if (/^Auto$/i.test(t)) return false;
     if (/[.!?]/.test(t) && /[A-Za-z]{2,}/.test(t)) return true;
@@ -890,12 +910,15 @@ async function(args) {
     if (args.graceWaitMs != null && args.graceWaitMs !== '') {
       maxWaitMs += Math.max(0, Number(args.graceWaitMs));
     }
-    return {
+    var opts = {
       pollMs: NOTION_CHAT_POLL_MS,
       maxWaitMs: maxWaitMs,
       graceWaitMs: args.graceWaitMs,
       stableNeeded: 2
     };
+    if (args.query != null && String(args.query).trim()) opts.query = String(args.query);
+    if (args.expectJson) opts.expectJson = true;
+    return opts;
   }
 
   async function waitForAssistantAnswer(beforeCount, beforeText, opts) {
@@ -963,11 +986,18 @@ async function(args) {
           lastWaitPending = false;
           return '';
         }
-        if (looksLikeFinalAnswer(answer)) {
+        var expectsJson = waitExpectsJson(opts);
+        var ready = looksLikeFinalAnswer(answer);
+        if (expectsJson && looksLikeJsonAnswerAttempt(answer) && !hasParsedJsonAnswer(answer)) {
+          ready = false;
+          stableRounds = 0;
+        }
+        if (ready) {
+          var jsonStableNeeded = expectsJson && hasParsedJsonAnswer(answer) ? 1 : stableNeeded;
           if (answer === lastText) stableRounds++;
           else stableRounds = 0;
           lastText = answer;
-          if (stableRounds >= stableNeeded - 1) {
+          if (stableRounds >= jsonStableNeeded - 1) {
             lastWaitPending = false;
             return answer;
           }
@@ -975,12 +1005,16 @@ async function(args) {
       }
 
       if (/Notion AI finished/i.test(getChatActivityText(6000)) && looksLikeFinalAnswer(answer)) {
-        lastWaitPending = false;
-        return answer;
+        if (!(waitExpectsJson(opts) && looksLikeJsonAnswerAttempt(answer) && !hasParsedJsonAnswer(answer))) {
+          lastWaitPending = false;
+          return answer;
+        }
       }
     }
 
-    lastWaitPending = sawInFlight;
+    var incompleteJson = waitExpectsJson(opts) && looksLikeJsonAnswerAttempt(answer) && !hasParsedJsonAnswer(answer);
+    lastWaitPending = sawInFlight || incompleteJson;
+    if (incompleteJson) return '';
     return answer && looksLikeFinalAnswer(answer) ? answer : '';
   }
 
@@ -2263,20 +2297,102 @@ async function(args) {
     };
   }
 
+  function extractBalancedObject(text, startChar, endChar) {
+    if (!text) return '';
+    var t = String(text);
+    var searchFrom = 0;
+    while (searchFrom < t.length) {
+      var start = t.indexOf(startChar, searchFrom);
+      if (start < 0) return '';
+      var slice = t.slice(start);
+      try {
+        JSON.parse(slice);
+        return slice;
+      } catch (e) {}
+      var depth = 0;
+      var inString = false;
+      var escape = false;
+      var found = '';
+      for (var i = 0; i < slice.length; i++) {
+        var ch = slice[i];
+        if (inString) {
+          if (escape) escape = false;
+          else if (ch === '\\') escape = true;
+          else if (ch === '"') inString = false;
+          continue;
+        }
+        if (ch === '"') inString = true;
+        else if (ch === startChar) depth++;
+        else if (ch === endChar) {
+          depth--;
+          if (depth === 0) {
+            var candidate = slice.slice(0, i + 1);
+            try {
+              JSON.parse(candidate);
+              found = candidate;
+              break;
+            } catch (e2) {}
+          }
+        }
+      }
+      if (found) return found;
+      searchFrom = start + 1;
+    }
+    return '';
+  }
+
   function extractJsonBlock(text) {
     if (!text) return '';
-    var fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
-    if (fenced) return fenced[1].trim();
-    var start = text.indexOf('{');
-    var end = text.lastIndexOf('}');
-    if (start >= 0 && end > start) return text.slice(start, end + 1);
-    return '';
+    var t = String(text).trim();
+    var fenceRe = /```(?:json)?\s*\n?([\s\S]*?)\n?```/gi;
+    var fenceMatch;
+    while ((fenceMatch = fenceRe.exec(t)) !== null) {
+      var fromFence = extractBalancedObject(fenceMatch[1].trim(), '{', '}');
+      if (fromFence) return fromFence;
+    }
+    return extractBalancedObject(t, '{', '}');
   }
 
   function parseAnswerJson(answer) {
     var block = extractJsonBlock(answer);
     if (!block) return null;
-    try { return JSON.parse(block); } catch (e) { return null; }
+    try {
+      var parsed = JSON.parse(block);
+      if (parsed != null && typeof parsed === 'object' && !Array.isArray(parsed)) return parsed;
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function queryExpectsJson(query) {
+    var q = String(query || '').toLowerCase();
+    if (!q) return false;
+    if (/return\s+only\s+(?:valid\s+)?json\b/.test(q)) return true;
+    if (/return\s+json\s+only\b/.test(q)) return true;
+    if (/respond\s+with\s+only\s+(?:valid\s+)?json\b/.test(q)) return true;
+    if (/output\s+only\s+(?:valid\s+)?json\b/.test(q)) return true;
+    if (/\breply\s+with\s+only\s+(?:valid\s+)?json\b/.test(q)) return true;
+    if (/\bjson\s+format\s+only\b/.test(q)) return true;
+    if (/\bin\s+json\s+format\s+only\b/.test(q)) return true;
+    if (/\bonly\s+(?:valid\s+)?json\b/.test(q) && /\b(?:return|respond|output|reply)\b/.test(q)) return true;
+    if (/\bjson\s+object\b/.test(q) && /\b(?:return|respond|output|reply|valid\s+json)\b/.test(q)) return true;
+    return false;
+  }
+
+  function buildJsonAnswerFields(answer, query) {
+    if (!queryExpectsJson(query)) return null;
+    var parsed = parseAnswerJson(answer);
+    if (!parsed) return null;
+    var compact = JSON.stringify(parsed);
+    var raw = String(answer || '').trim();
+    var out = {
+      answer: compact,
+      answerJson: parsed,
+      answerFormat: 'json'
+    };
+    if (raw !== compact) out.jsonRecovered = true;
+    return out;
   }
 
   var api = {
@@ -2362,7 +2478,12 @@ async function(args) {
     fetchInferenceTranscripts: fetchInferenceTranscripts,
     scrapeSidebarChats: scrapeSidebarChats,
     navigateToConversation: navigateToConversation,
+    extractJsonBlock: extractJsonBlock,
     parseAnswerJson: parseAnswerJson,
+    looksLikeJsonAnswerAttempt: looksLikeJsonAnswerAttempt,
+    hasParsedJsonAnswer: hasParsedJsonAnswer,
+    queryExpectsJson: queryExpectsJson,
+    buildJsonAnswerFields: buildJsonAnswerFields,
     readResponseError: readResponseError
   };
 
@@ -2432,6 +2553,7 @@ async function(args) {
   }
 
   if (waitOnly) {
+    waitOpts.query = queryTextArg || args.query;
   await h.drainUrlTrustPrompts();
     var existing = h.getAssistantMessages();
     var pollBeforeCount = h.getCurrentReplyAssistantStartCount();
@@ -2455,8 +2577,17 @@ async function(args) {
     };
     var waitTrust = h.getLastUrlTrustAccepts();
     if (waitTrust.length) waitOut.urlTrustAccepted = waitTrust;
-    var waitJson = h.parseAnswerJson(waitedAnswer);
-    if (waitJson) { waitOut.answerJson = waitJson; waitOut.answerFormat = 'json'; }
+    var waitQuery = queryTextArg || args.query;
+    var waitJsonFields = h.buildJsonAnswerFields(waitedAnswer, waitQuery);
+    if (waitJsonFields) {
+      if (waitJsonFields.answer != null) waitOut.answer = waitJsonFields.answer;
+      waitOut.answerJson = waitJsonFields.answerJson;
+      waitOut.answerFormat = waitJsonFields.answerFormat;
+      if (waitJsonFields.jsonRecovered) waitOut.jsonRecovered = true;
+    } else {
+      var waitJson = h.parseAnswerJson(waitedAnswer);
+      if (waitJson) { waitOut.answerJson = waitJson; waitOut.answerFormat = 'json'; }
+    }
     return waitOut;
   }
 
@@ -2532,6 +2663,7 @@ async function(args) {
   }
   await h.drainUrlTrustPrompts();
 
+  waitOpts.query = queryText;
   var answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
   if (!answer) {
     var answerAbnormal = h.getLastWaitAbnormal();
@@ -2553,7 +2685,15 @@ async function(args) {
   if (attachedItems) out.attachments = attachedItems;
   var trustAccepted = h.getLastUrlTrustAccepts();
   if (trustAccepted.length) out.urlTrustAccepted = trustAccepted;
-  var answerJson = h.parseAnswerJson(answer);
-  if (answerJson) { out.answerJson = answerJson; out.answerFormat = 'json'; }
+  var jsonFields = h.buildJsonAnswerFields(answer, queryText);
+  if (jsonFields) {
+    if (jsonFields.answer != null) out.answer = jsonFields.answer;
+    out.answerJson = jsonFields.answerJson;
+    out.answerFormat = jsonFields.answerFormat;
+    if (jsonFields.jsonRecovered) out.jsonRecovered = true;
+  } else {
+    var answerJson = h.parseAnswerJson(answer);
+    if (answerJson) { out.answerJson = answerJson; out.answerFormat = 'json'; }
+  }
   return out;
 }

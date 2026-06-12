@@ -746,6 +746,90 @@ Loaded web page: api.llama.fi/chains</div>
     expect(h.__navigationLog).toEqual(["https://app.notion.com/ai"]);
   });
 
+  test("queryExpectsJson detects JSON-only prompt instructions", () => {
+    const h = installHelpers();
+    expect(h.queryExpectsJson("Return ONLY valid JSON with this structure")).toBe(true);
+    expect(h.queryExpectsJson("Respond with only JSON: {\"ok\":true}")).toBe(true);
+    expect(h.queryExpectsJson("Return JSON only. json format only")).toBe(true);
+    expect(h.queryExpectsJson("show me the unique topics in JSON format only")).toBe(true);
+    expect(h.queryExpectsJson("Say hello in three words")).toBe(false);
+  });
+
+  test("looksLikeFinalAnswer rejects incomplete streaming JSON", () => {
+    const h = installHelpers();
+    const partial =
+      '{"query": "moving the all of 4T USD into onchain", "time_period": "from: 2026-06-10T14:30:00Z", "unique_topics": ["Stand';
+    expect(h.looksLikeJsonAnswerAttempt(partial)).toBe(true);
+    expect(h.hasParsedJsonAnswer(partial)).toBe(false);
+    expect(h.looksLikeFinalAnswer(partial)).toBe(false);
+  });
+
+  test("looksLikeFinalAnswer accepts complete JSON object", () => {
+    const h = installHelpers();
+    const complete =
+      '{"query":"moving the all of 4T USD into onchain","time_period":"from: 2026-06-10T14:30:00Z","unique_topics":["Stablecoin"],"sources":"reuters.com"}';
+    expect(h.looksLikeFinalAnswer(complete)).toBe(true);
+    expect(h.hasParsedJsonAnswer(complete)).toBe(true);
+  });
+
+  test("extractJsonBlock uses balanced braces with preamble", () => {
+    const h = installHelpers();
+    const answer =
+      'Note: use {braces} carefully.\n{"status":"ok","code":"PING-1"}';
+    expect(h.extractJsonBlock(answer)).toBe('{"status":"ok","code":"PING-1"}');
+    expect(h.parseAnswerJson(answer)).toEqual({ status: "ok", code: "PING-1" });
+  });
+
+  test("extractJsonBlock parses fenced json blocks", () => {
+    const h = installHelpers();
+    const answer = 'Here you go:\n```json\n{"topic_times":[]}\n```';
+    expect(h.parseAnswerJson(answer)).toEqual({ topic_times: [] });
+  });
+
+  test("buildJsonAnswerFields recovers compact JSON from Opus-style preamble", () => {
+    const h = installHelpers();
+    const query = "Return ONLY valid JSON with topic_times.";
+    const answer =
+      "I researched each topic across the publisher set.\n" +
+      '{\n"topic_times": [\n{"topic": "SpaceX IPO", "most_recent_occurred_at": "2026-06-09T00:00:00Z"}\n]\n}';
+    const fields = h.buildJsonAnswerFields(answer, query);
+    expect(fields).not.toBeNull();
+    expect(fields.answerFormat).toBe("json");
+    expect(fields.jsonRecovered).toBe(true);
+    expect(fields.answer).toBe(
+      JSON.stringify({
+        topic_times: [{ topic: "SpaceX IPO", most_recent_occurred_at: "2026-06-09T00:00:00Z" }],
+      }),
+    );
+    expect(fields.answerJson).toEqual({
+      topic_times: [{ topic: "SpaceX IPO", most_recent_occurred_at: "2026-06-09T00:00:00Z" }],
+    });
+  });
+
+  test("buildJsonAnswerFields returns null when query does not expect JSON", () => {
+    const h = installHelpers();
+    const answer = '{"status":"ok"}';
+    expect(h.buildJsonAnswerFields(answer, "Summarize this article")).toBeNull();
+    expect(h.parseAnswerJson(answer)).toEqual({ status: "ok" });
+  });
+
+  test("buildJsonAnswerFields returns null for invalid JSON", () => {
+    const h = installHelpers();
+    const query = "Return ONLY valid JSON.";
+    expect(h.buildJsonAnswerFields('{"status":', query)).toBeNull();
+    expect(h.buildJsonAnswerFields("Still generating...", query)).toBeNull();
+  });
+
+  test("buildJsonAnswerFields omits jsonRecovered when answer already compact", () => {
+    const h = installHelpers();
+    const query = "Return ONLY valid JSON.";
+    const compact = '{"status":"ok"}';
+    const fields = h.buildJsonAnswerFields(compact, query);
+    expect(fields).not.toBeNull();
+    expect(fields.answer).toBe(compact);
+    expect(fields.jsonRecovered).toBeUndefined();
+  });
+
   test("ensureNewChatView returns ok on /ai with chat input", async () => {
     const h = installHelpersAt("https://app.notion.com/ai");
     document.body.innerHTML =

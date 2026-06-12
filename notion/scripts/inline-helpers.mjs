@@ -188,6 +188,7 @@ ${trustDrainBlock}${busyTabGuardBlock}  if (selectOnly) {
   }
 
   if (waitOnly) {
+    waitOpts.query = queryTextArg || args.query;
 ${trustDrainBlock}    var existing = h.getAssistantMessages();
     var pollBeforeCount = h.getCurrentReplyAssistantStartCount();
     var pollBeforeText = pollBeforeCount < existing.length ? h.getAssistantText(existing[pollBeforeCount]) : '';
@@ -210,8 +211,17 @@ ${trustDrainBlock}    var existing = h.getAssistantMessages();
     };
     var waitTrust = h.getLastUrlTrustAccepts();
     if (waitTrust.length) waitOut.urlTrustAccepted = waitTrust;
-    var waitJson = h.parseAnswerJson(waitedAnswer);
-    if (waitJson) { waitOut.answerJson = waitJson; waitOut.answerFormat = 'json'; }
+    var waitQuery = queryTextArg || args.query;
+    var waitJsonFields = h.buildJsonAnswerFields(waitedAnswer, waitQuery);
+    if (waitJsonFields) {
+      if (waitJsonFields.answer != null) waitOut.answer = waitJsonFields.answer;
+      waitOut.answerJson = waitJsonFields.answerJson;
+      waitOut.answerFormat = waitJsonFields.answerFormat;
+      if (waitJsonFields.jsonRecovered) waitOut.jsonRecovered = true;
+    } else {
+      var waitJson = h.parseAnswerJson(waitedAnswer);
+      if (waitJson) { waitOut.answerJson = waitJson; waitOut.answerFormat = 'json'; }
+    }
     return waitOut;
   }
 
@@ -265,6 +275,7 @@ ${trustDrainBlock}
     return { error: 'Submit button not found', hint: 'Could not find the Notion AI send button.', action: 'bun-browser open https://app.notion.com/ai' };
   }
 ${trustDrainBlock}
+  waitOpts.query = queryText;
   var answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
   if (!answer) {
     var answerAbnormal = h.getLastWaitAbnormal();
@@ -286,8 +297,16 @@ ${trustDrainBlock}
   if (attachedItems) out.attachments = attachedItems;
   var trustAccepted = h.getLastUrlTrustAccepts();
   if (trustAccepted.length) out.urlTrustAccepted = trustAccepted;
-  var answerJson = h.parseAnswerJson(answer);
-  if (answerJson) { out.answerJson = answerJson; out.answerFormat = 'json'; }
+  var jsonFields = h.buildJsonAnswerFields(answer, queryText);
+  if (jsonFields) {
+    if (jsonFields.answer != null) out.answer = jsonFields.answer;
+    out.answerJson = jsonFields.answerJson;
+    out.answerFormat = jsonFields.answerFormat;
+    if (jsonFields.jsonRecovered) out.jsonRecovered = true;
+  } else {
+    var answerJson = h.parseAnswerJson(answer);
+    if (answerJson) { out.answerJson = answerJson; out.answerFormat = 'json'; }
+  }
   return out;`
   )
 );
@@ -352,6 +371,7 @@ ${installBlock}
   if (accessBlock) return accessBlock;
 ${trustDrainBlock}
   if (waitOnly) {
+    waitOpts.query = args.query;
 ${trustDrainBlock}    var existing = h.getAssistantMessages();
     var pollBeforeCount = h.getCurrentReplyAssistantStartCount();
     var pollBeforeText = pollBeforeCount < existing.length ? h.getAssistantText(existing[pollBeforeCount]) : '';
@@ -365,7 +385,7 @@ ${trustDrainBlock}    var existing = h.getAssistantMessages();
       return { error: 'Empty response', hint: 'Notion AI returned no content.', action: 'bun-browser open https://app.notion.com/' };
     }
     var waitFollowOut = {
-      query: queryTextArg || args.query,
+      query: args.query,
       conversationId: conversationId,
       model: modeId,
       modeLabel: h.readNotionModeLabel(),
@@ -437,6 +457,7 @@ ${trustDrainBlock}
     return { error: 'Submit button not found', hint: 'Could not find the Notion AI send button.', action: 'bun-browser open ' + h.buildConversationUrl(conversationId) };
   }
 ${trustDrainBlock}
+  waitOpts.query = queryText;
   var answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
   if (!answer) {
     var answerAbnormal = h.getLastWaitAbnormal();
@@ -460,8 +481,16 @@ ${trustDrainBlock}
   if (attachedItems) out.attachments = attachedItems;
   var followTrustAccepted = h.getLastUrlTrustAccepts();
   if (followTrustAccepted.length) out.urlTrustAccepted = followTrustAccepted;
-  var answerJson = h.parseAnswerJson(answer);
-  if (answerJson) { out.answerJson = answerJson; out.answerFormat = 'json'; }
+  var jsonFields = h.buildJsonAnswerFields(answer, queryText);
+  if (jsonFields) {
+    if (jsonFields.answer != null) out.answer = jsonFields.answer;
+    out.answerJson = jsonFields.answerJson;
+    out.answerFormat = jsonFields.answerFormat;
+    if (jsonFields.jsonRecovered) out.jsonRecovered = true;
+  } else {
+    var answerJson = h.parseAnswerJson(answer);
+    if (answerJson) { out.answerJson = answerJson; out.answerFormat = 'json'; }
+  }
   return out;`
   )
 );
