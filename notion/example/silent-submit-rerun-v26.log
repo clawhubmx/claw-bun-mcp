@@ -50,3 +50,38 @@ prime: undefined
   probe: undefined
 
 --- Run 16/25 | sonnet | short ---
+  probe: model
+
+--- Run 17/25 | opus | short ---
+  probe: Daemon HTTP 400: {"success":false,"error":"Tab not found: f3e8"}
+
+--- Run 18/25 | opus-4.7 | short ---
+  probe: Daemon HTTP 400: {"success":false,"error":"Tab not found: f3e8"}
+
+--- Run 19/25 | opus-4.8 | short ---
+  probe: Daemon HTTP 400: {"success":false,"error":"Tab not found: f3e8"}
+
+--- Run 20/25 | sonnet | short ---
+  probe: Daemon HTTP 400: {"success":false,"error":"Tab not found: f3e8"}
+
+--- Run 21/25 | opus | short ---
+  probe: Daemon HTTP 400: {"success":false,"error":"Tab not found: f3e8"}
+
+--- Run 22/25 | opus-4.7 | news-json ---
+  probe: Daemon HTTP 400: {"success":false,"error":"Tab not found: f3e8"}
+
+--- Run 23/25 | opus-4.8 | short ---
+  probe: Daemon HTTP 400: {"success":false,"error":"Tab not found: f3e8"}
+
+--- Run 24/25 | sonnet | short ---
+  probe: Daemon HTTP 400: {"success":false,"error":"Tab not found: f3e8"}
+
+--- Run 25/25 | opus | short ---
+  probe: Daemon HTTP 400: {"success":false,"error":"Tab not found: f3e8"}
+
+=== Classification counts ===
+  unknown: 15
+  model: 1
+  Daemon HTTP 400: {"success":false,"error":"Tab not found: f3e8"}: 9
+
+Results: /Users/hesdx/Documents/clawhost/claw-bun-mcp/notion/example/silent-submit-runs/summary.json

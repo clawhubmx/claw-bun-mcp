@@ -8,10 +8,10 @@
   "promptPreview": "Reply with only valid JSON: {\"status\":\"ok\",\"n\":1}. json format only; NO markdown",
   "probe": {
     "timedOut": false,
-    "classification": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 2144\"}",
+    "classification": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: f3e8\"}",
     "timelineSummary": [],
     "full": {
-      "error": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 2144\"}"
+      "error": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: f3e8\"}"
     }
   }
 }

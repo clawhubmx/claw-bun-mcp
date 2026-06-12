@@ -8,10 +8,10 @@
   "promptPreview": "Is water wet? yes or no only.",
   "probe": {
     "timedOut": false,
-    "classification": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 2144\"}",
+    "classification": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: f3e8\"}",
     "timelineSummary": [],
     "full": {
-      "error": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 2144\"}"
+      "error": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: f3e8\"}"
     }
   }
 }

@@ -8,10 +8,16 @@
   "promptPreview": "List two prime numbers under 20. Comma separated, no explanation.",
   "probe": {
     "timedOut": false,
-    "classification": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 2144\"}",
+    "classification": "model",
     "timelineSummary": [],
     "full": {
-      "error": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 2144\"}"
+      "ok": false,
+      "phase": "model",
+      "mode": {
+        "ok": false,
+        "error": "Model picker menu not found",
+        "hint": "Open a Notion AI chat view and retry."
+      }
     }
   }
 }
