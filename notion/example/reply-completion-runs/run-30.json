@@ -1,0 +1,35 @@
+{
+  "run": 30,
+  "kind": "short",
+  "promptPreview": "What is 2 to the power of 5? Number only.",
+  "command": "chatfollow",
+  "elapsedMs": 105011,
+  "timedOut": true,
+  "chatStatus": null,
+  "chatRaw": "",
+  "chatError": null,
+  "chatKind": null,
+  "conversationId": "37d773dd-10fd-8057-97d4-00a9b0466ee9",
+  "capturedAnswer": "32",
+  "recovered": true,
+  "captureSource": "probe",
+  "answerLen": 2,
+  "answerPreview": "32",
+  "answerFormat": null,
+  "probe": {
+    "helpersVersion": 31,
+    "hasCompletedReplyActions": true,
+    "isGenerating": false,
+    "isChatInProgress": false,
+    "answerLen": 2,
+    "looksFinal": true,
+    "answerPreview": "32",
+    "replyChecks": {
+      "copy response": true,
+      "save to private pages": true
+    },
+    "conversationId": "37d773dd-10fd-8057-97d4-00a9b0466ee9"
+  },
+  "pass": true,
+  "failureBucket": null
+}

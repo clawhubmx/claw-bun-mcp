@@ -1,0 +1,16 @@
+Reply-completion test: 3 prompts, maxWaitMs=60000, spawnTimeout=105000, model=auto
+
+Opened dedicated tab: 409b
+
+--- Run 1/3 | short ---
+  PASS | captured=2 | toolbar=true | recovered=true | 105012ms | error=none
+--- Run 2/3 | short ---
+  PASS | captured=4 | toolbar=true | recovered=true | 105010ms | error=none
+--- Run 3/3 | short ---
+  PASS | captured=5 | toolbar=true | recovered=false | 2670ms | error=none
+
+=== Results: 3/3 passed ===
+Captured: 3/3 | Recovered from probe: 2
+Failure buckets: {"tabBusy":0,"stillGenerating":0,"timeout":0,"uiError":0,"empty":0,"other":0}
+Summary: /Users/hesdx/Documents/clawhost/claw-bun-mcp/notion/example/reply-completion-runs/summary.json
+EXIT:0

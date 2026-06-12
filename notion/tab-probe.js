@@ -16,12 +16,24 @@ async function(args) {
     });
   }
 
-  var REPLY_ACTION_LABELS = [
-    'copy response',
-    'save to private pages',
-    'share positive feedback',
-    'share negative feedback'
-  ];
+  if (!hasCookie('notion_user_id') || !hasCookie('notion_users')) {
+    return { busy: false, loggedIn: false, url: location.href };
+  }
+
+  var h = globalThis.__notionAiChatHelpers;
+  if (h && h.isChatInProgress) {
+    return {
+      busy: h.isChatInProgress(),
+      generating: h.isGenerating ? h.isGenerating() : false,
+      conversationId: h.getConversationId ? h.getConversationId() : null,
+      loggedIn: true,
+      helpersLoaded: true,
+      url: location.href
+    };
+  }
+
+  var root = document.querySelector('.layout-chat') || document.body || document;
+  var REPLY_ACTION_REQUIRED = ['copy response', 'save to private pages'];
 
   function normalizeReplyActionLabel(label) {
     return String(label || '').trim().toLowerCase();
@@ -50,32 +62,19 @@ async function(args) {
     return fallback;
   }
 
-  function hasCompletedReplyActions(scope) {
-    if (!scope) return false;
-    for (var k = 0; k < REPLY_ACTION_LABELS.length; k++) {
-      if (!findReplyActionButton(scope, REPLY_ACTION_LABELS[k])) return false;
+  function isReplyFinishBlocked() {
+    return false;
+  }
+
+  function hasCompletedReplyActions() {
+    if (isReplyFinishBlocked()) return false;
+    for (var k = 0; k < REPLY_ACTION_REQUIRED.length; k++) {
+      if (!findReplyActionButton(root, REPLY_ACTION_REQUIRED[k])) return false;
     }
     return true;
   }
 
-  if (!hasCookie('notion_user_id') || !hasCookie('notion_users')) {
-    return { busy: false, loggedIn: false, url: location.href };
-  }
-
-  var h = globalThis.__notionAiChatHelpers;
-  if (h && h.isChatInProgress) {
-    return {
-      busy: h.isChatInProgress(),
-      generating: h.isGenerating ? h.isGenerating() : false,
-      conversationId: h.getConversationId ? h.getConversationId() : null,
-      loggedIn: true,
-      helpersLoaded: true,
-      url: location.href
-    };
-  }
-
-  var root = document.querySelector('.layout-chat') || document.body || document;
-  if (hasCompletedReplyActions(root)) {
+  if (hasCompletedReplyActions()) {
     return { busy: false, loggedIn: true, helpersLoaded: false, url: location.href };
   }
 

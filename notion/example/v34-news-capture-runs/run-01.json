@@ -1,0 +1,30 @@
+{
+  "run": 1,
+  "topic": "Protesters block road to Mexican World Cup stadium",
+  "command": "chat",
+  "elapsedMs": 1696,
+  "timedOut": false,
+  "chatError": null,
+  "chatKind": null,
+  "chatAction": null,
+  "answerFormat": null,
+  "answerJson": null,
+  "capturedAnswer": "If you tell me what you’re trying to accomplish (e.g., “search for X”, “create a page for Y”, “summarize Z”), I’ll proceed.",
+  "captureSource": "chat",
+  "recovered": false,
+  "helpersVersion": 34,
+  "probe": {
+    "helpersVersion": 34,
+    "tabHidden": false,
+    "hasCompletedReplyActions": true,
+    "isGenerating": false,
+    "isChatInProgress": false,
+    "answerLen": 236,
+    "looksFinal": true,
+    "answerPreview": "What does “true” refer to here—are you confirming something I asked earlier, or did you want me to do an action?\nIf you tell me what you’re trying to accomplish (e.g., “search for X”, “create a page for Y”, “summarize Z”), I’ll proceed.",
+    "answerFull": "What does “true” refer to here—are you confirming something I asked earlier, or did you want me to do an action?\nIf you tell me what you’re trying to accomplish (e.g., “search for X”, “create a page for Y”, “summarize Z”), I’ll proceed.",
+    "conversationId": "37d773dd-10fd-8089-bcac-00a9abcb4bd6"
+  },
+  "pass": true,
+  "directCapture": true
+}

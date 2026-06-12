@@ -1,0 +1,38 @@
+{
+  "run": 1,
+  "kind": "short",
+  "promptPreview": "What is 17+25? Reply with just the number.",
+  "command": "chat",
+  "elapsedMs": 105012,
+  "timedOut": true,
+  "chatStatus": null,
+  "chatRaw": "",
+  "chatError": null,
+  "chatKind": null,
+  "conversationId": "37d773dd-10fd-803e-87fa-00a92f3226ed",
+  "capturedAnswer": "42",
+  "recovered": true,
+  "captureSource": "probe",
+  "answerLen": 2,
+  "answerPreview": "42",
+  "answerFormat": null,
+  "probe": {
+    "helpersVersion": 32,
+    "tabHidden": true,
+    "tabVisibility": "hidden",
+    "hasCompletedReplyActions": true,
+    "isGenerating": false,
+    "isChatInProgress": false,
+    "answerLen": 2,
+    "looksFinal": true,
+    "answerPreview": "42",
+    "answerFull": "42",
+    "replyChecks": {
+      "copy response": true,
+      "save to private pages": true
+    },
+    "conversationId": "37d773dd-10fd-803e-87fa-00a92f3226ed"
+  },
+  "pass": true,
+  "failureBucket": null
+}

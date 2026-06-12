@@ -1,0 +1,80 @@
+{
+  "startedAt": "2026-06-12T14:44:54.613Z",
+  "scenarios": [
+    {
+      "scenario": "A-hidden-new-tab",
+      "tabId": "F020E8F429445FDB6B6EAFAC6F25CC12",
+      "prompt": "What is 17+25? Reply with just the number.",
+      "elapsedMs": 8648,
+      "timedOut": false,
+      "chatStatus": 0,
+      "chatError": null,
+      "chatHint": null,
+      "captureWarning": "Tab is hidden; focus this Chrome tab for reliable capture.",
+      "chatAnswer": "Set a Notion property to true (tell me the page/database and property name)",
+      "chatSource": "chat",
+      "probeAfter": {
+        "hidden": true,
+        "visibility": "hidden",
+        "helpersVersion": 33,
+        "msgCount": 6,
+        "answerLen": 303,
+        "answer": "What should I do with “true”?\nA few common possibilities:\nConfirm a yes/no question you answered earlier\nEnable/turn on something (tell me what feature/workflow)\nValidate a condition in code/logs (pas",
+        "hasToolbar": true,
+        "hasToolbarForTurn": true,
+        "isGenerating": false,
+        "isGeneratingForTurn": false,
+        "looksFinal": true,
+        "captureWarning": "Tab is hidden; focus this Chrome tab for reliable capture."
+      },
+      "recoveredViaProbe": false,
+      "capturedAnswer": "Set a Notion property to true (tell me the page/database and property name)",
+      "pass": true,
+      "beforeTab": {
+        "hidden": true,
+        "visibility": "hidden",
+        "hasFocus": false,
+        "helpersVersion": null,
+        "url": "https://app.notion.com/ai"
+      }
+    },
+    {
+      "scenario": "B-visible-active-tab",
+      "tabId": "A410716581ED52B2F8D6D463FE345E19",
+      "prompt": "Capital of Japan? One word.",
+      "elapsedMs": 57478,
+      "timedOut": false,
+      "chatStatus": 0,
+      "chatError": null,
+      "chatHint": null,
+      "captureWarning": null,
+      "chatAnswer": "You want me to set something to true in Notion (which page/database/property?)",
+      "chatSource": "chat",
+      "probeAfter": {
+        "hidden": false,
+        "visibility": "visible",
+        "helpersVersion": 33,
+        "msgCount": 0,
+        "answerLen": 0,
+        "answer": "",
+        "hasToolbar": false,
+        "hasToolbarForTurn": false,
+        "isGenerating": false,
+        "isGeneratingForTurn": false,
+        "looksFinal": false,
+        "captureWarning": null
+      },
+      "recoveredViaProbe": false,
+      "capturedAnswer": "You want me to set something to true in Notion (which page/database/property?)",
+      "pass": true,
+      "beforeTab": {
+        "hidden": true,
+        "visibility": "hidden",
+        "hasFocus": false,
+        "helpersVersion": 33,
+        "url": "https://app.notion.com/chat?t=37d773dd10fd807189ad00a96badc588&wfv=chat"
+      }
+    }
+  ],
+  "finishedAt": "2026-06-12T14:46:14.126Z"
+}

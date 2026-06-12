@@ -407,11 +407,24 @@ bun-browser tab new https://app.notion.com/ai
 | 找不到正文区 | `Body editor not found` | 确认页面已打开且为普通文章页，然后重跑 |
 | 仍在生成 | `Still generating` | 用位置参数 waitOnly 重试：`notion/chat "x" auto true false true --tab <ID>` |
 | Tab 仍在生成、误开新对话 | `Tab busy`（`kind: chat_in_progress`） | `bun-browser open https://app.notion.com/ai --tab new`，在新 tab 提交；原 tab 用 waitOnly 轮询 |
-| 无回复 | `Empty response` | 刷新 Notion 标签页 |
+| 无回复 | `Empty response` | 刷新 Notion 标签页；确认 Chrome 中该 tab **处于前台可见**（见下方「回复已完成但未捕获」） |
+| 回复已完成但未捕获 | `Empty response` / `Still generating`，或成功但带 `captureWarning` | 见下方专节 |
 | 免费 AI 次数用尽 | `Run out of free AI responses` | 等待或升级计划 |
 | AI 额度用尽 | `AI credits exhausted` | 等待或升级计划 |
 | 模型选择失败 | `Mode selection failed` | `bun-browser site notion/models` 核对标题 |
 | 模型列表异常 | `warning` 含 picker not reachable | 先打开 `/ai` 聊天页再重试 |
+
+### 回复已完成但未捕获
+
+若你在 Chrome 里已看到 Copy/Save 工具栏和完整回复，但 `notion/chat` 返回 `Empty response` 或 `Still generating`：
+
+1. **Tab 必须可见**：`bun-browser` 新开 tab 默认在后台（`document.hidden === true`），Chrome 会节流页面定时器，Notion 也可能延迟渲染。执行前检查：
+   ```bash
+   bun-browser eval "({hidden:document.hidden,visibility:document.visibilityState})" --tab <TAB_ID> --json
+   ```
+   需要 `"hidden": false`。请把 Chrome 切到前台并选中该 Notion tab。
+2. **waitOnly 重试**：`notion/chat "x" auto true false true --tab <ID>`
+3. **v32 恢复路径**：helpers 在 wait 结束时会用 `recoverCompletedAnswer` 再扫一遍 DOM；若 tab 隐藏，响应可能带 `captureWarning` 提示聚焦 tab。
 
 ## 开发同步
 
@@ -444,7 +457,7 @@ bun notion/scripts/inline-helpers.mjs
 - **模型列表**：DOM 抓取下拉菜单（`listNotionModelsFromUi`），非 Notion API
 - **模型选择器定位**：聊天输入框附近的 `aria-haspopup="menu"` 按钮，或 Submit 按钮同区域的可见按钮
 - **回复完整性**：轮询 DOM 直至最新 assistant 回复上出现 4 个 reply action 按钮（`Copy response`、`Save to private pages`、`Share positive feedback`、`Share negative feedback`，各带 `svg` 子元素），且 `looksLikeFinalAnswer` 通过、文本稳定；不依赖 `"Notion AI finished"` 文案；进度行（`Thinking`、`Searching` 等）会被过滤；短 intro stub（如 `I'll prioritize…`）由 `looksLikeInProgressAnswer` 视为未完成；调试 eval 可用 `hasCompletedReplyActions()`
-- **进行中检测**：`isChatInProgress()`（`hasCompletedReplyActions()` + `isGenerating()` + 进行中 stub）；默认 `newChat` 前若 tab busy 则返回 `Tab busy`，避免打断 Agent
+- **完成检测（v33）**：`hasCompletedReplyActionsForTurn(beforeCount, beforeText)` — 工具栏 + 本轮新内容；`getAssistantAnswerSince` 支持同一条 assistant 消息原地更新（`messages.length === beforeCount`）；wait 结束前 `recoverCompletedAnswer` 兜底
 - **异常检测**：`detectNotionPageAbnormal` 识别 `credits_exhausted`（含 `Run out of free AI responses`）、`rate_limit`、`submit_disabled`
 
 ### 文章页（create-article / edit-article）

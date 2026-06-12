@@ -100,6 +100,20 @@ const attachBlock = `  var attachPlan = h.prepareNotionAttachmentPlan(args);
   var queryText = attachPlan.query || args.query;
 
 `;
+const captureWarningHelper = `  function attachCaptureWarning(obj, isFailure) {
+    var capWarn = h.getLastCaptureWarning();
+    if (!capWarn || !obj) return obj;
+    if (isFailure) {
+      obj.hint = obj.hint ? (obj.hint + ' ' + capWarn) : capWarn;
+    } else {
+      obj.captureWarning = capWarn;
+    }
+    return obj;
+  }
+
+`;
+const emptyAnswerRecoveryBlock = `    answer = h.recoverCompletedAnswer(beforeCount, beforeText, waitOpts);
+`;
 
 writeFileSync(
   join(root, "chat.js"),
@@ -139,7 +153,7 @@ writeFileSync(
 
 ${loginBlock}
 ${installBlock}
-  h.resetUrlTrustState();
+${captureWarningHelper}  h.resetUrlTrustState();
   var waitOpts = h.buildWaitOpts(args);
   var waitOnly = pickBoolArg(args, 'waitOnly', 4, false);
   var newChat = pickBoolArg(args, 'newChat', 2, true);
@@ -194,12 +208,15 @@ ${trustDrainBlock}    var existing = h.getAssistantMessages();
     var pollBeforeText = pollBeforeCount < existing.length ? h.getAssistantText(existing[pollBeforeCount]) : '';
     var waitedAnswer = await h.waitForAssistantAnswer(pollBeforeCount, pollBeforeText, waitOpts);
     if (!waitedAnswer) {
+      waitedAnswer = h.recoverCompletedAnswer(pollBeforeCount, pollBeforeText, waitOpts);
+    }
+    if (!waitedAnswer) {
       if (h.wasLastWaitPending()) {
-        return { error: 'Still generating', hint: 'Notion AI is still generating. Retry with waitOnly: true.', action: 'retry with waitOnly: true' };
+        return attachCaptureWarning({ error: 'Still generating', hint: 'Notion AI is still generating. Retry with waitOnly: true.', action: 'retry with waitOnly: true' }, true);
       }
       var waitAbnormal = h.getLastWaitAbnormal();
       if (waitAbnormal) return waitAbnormal;
-      return { error: 'Empty response', hint: 'Notion AI returned no content.', action: 'bun-browser open https://app.notion.com/' };
+      return attachCaptureWarning({ error: 'Empty response', hint: 'Notion AI returned no content.', action: 'bun-browser open https://app.notion.com/' }, true);
     }
     var waitOut = {
       query: queryTextArg || args.query,
@@ -222,7 +239,7 @@ ${trustDrainBlock}    var existing = h.getAssistantMessages();
       var waitJson = h.parseAnswerJson(waitedAnswer);
       if (waitJson) { waitOut.answerJson = waitJson; waitOut.answerFormat = 'json'; }
     }
-    return waitOut;
+    return attachCaptureWarning(waitOut, false);
   }
 
   if (newChat) {
@@ -238,6 +255,15 @@ ${trustDrainBlock}    var existing = h.getAssistantMessages();
       return nav;
     }
 ${trustDrainBlock}  }
+
+  if (newChat && h.getAssistantMessagesSinceLastUser().length > 0) {
+    return {
+      error: 'Stale chat thread still visible',
+      kind: 'stale_thread',
+      hint: 'Notion did not clear the prior reply before submit. Open a new tab and retry.',
+      action: 'bun-browser open https://app.notion.com/ai --tab new'
+    };
+  }
 
   if (!h.getChatInput()) {
     return {
@@ -261,29 +287,27 @@ ${attachBlock}
   var beforeCount = h.getAssistantMessagesSinceLastUser().length;
   var beforeText = h.getAssistantMessagesSinceLastUser().map(h.getAssistantText).join('\\n');
 
-  if (!h.setChatInput(queryText)) {
-    return { error: 'Chat input not found', hint: 'Could not fill the Notion AI prompt box.', action: 'bun-browser open https://app.notion.com/ai' };
-  }
-  await h.sleep(400);
-${trustDrainBlock}
-  accessBlock = h.detectNotionPageAbnormal();
-  if (accessBlock) return accessBlock;
-
-  if (!h.clickSubmit()) {
-    accessBlock = h.detectNotionPageAbnormal();
-    if (accessBlock) return accessBlock;
-    return { error: 'Submit button not found', hint: 'Could not find the Notion AI send button.', action: 'bun-browser open https://app.notion.com/ai' };
+  var submitResult = await h.submitChatPrompt(queryText, beforeCount, beforeText, waitOpts);
+  if (!submitResult.ok) {
+    if (submitResult.kind) return submitResult;
+    return {
+      error: submitResult.error || 'Submit failed',
+      hint: submitResult.hint || 'Could not submit the Notion AI prompt.',
+      action: submitResult.action || 'bun-browser open https://app.notion.com/ai'
+    };
   }
 ${trustDrainBlock}
   waitOpts.query = queryText;
   var answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
   if (!answer) {
+${emptyAnswerRecoveryBlock}  }
+  if (!answer) {
     var answerAbnormal = h.getLastWaitAbnormal();
     if (answerAbnormal) return answerAbnormal;
     if (h.wasLastWaitPending()) {
-      return { error: 'Still generating', hint: 'Notion AI is still generating. Retry with waitOnly: true.', action: 'retry with waitOnly: true' };
+      return attachCaptureWarning({ error: 'Still generating', hint: 'Notion AI is still generating. Retry with waitOnly: true.', action: 'retry with waitOnly: true' }, true);
     }
-    return { error: 'Empty response', hint: 'Notion AI returned no content.', action: 'bun-browser open https://app.notion.com/' };
+    return attachCaptureWarning({ error: 'Empty response', hint: 'Notion AI returned no content.', action: 'bun-browser open https://app.notion.com/' }, true);
   }
 
   var out = {
@@ -307,7 +331,7 @@ ${trustDrainBlock}
     var answerJson = h.parseAnswerJson(answer);
     if (answerJson) { out.answerJson = answerJson; out.answerFormat = 'json'; }
   }
-  return out;`
+  return attachCaptureWarning(out, false);`
   )
 );
 
@@ -348,7 +372,7 @@ writeFileSync(
 
 ${loginBlock}
 ${installBlock}
-  h.resetUrlTrustState();
+${captureWarningHelper}  h.resetUrlTrustState();
   function parseBool(val, defaultVal) {
     if (val === undefined || val === null || val === '') return defaultVal;
     if (val === true || val === false) return val;
@@ -377,12 +401,15 @@ ${trustDrainBlock}    var existing = h.getAssistantMessages();
     var pollBeforeText = pollBeforeCount < existing.length ? h.getAssistantText(existing[pollBeforeCount]) : '';
     var waitedAnswer = await h.waitForAssistantAnswer(pollBeforeCount, pollBeforeText, waitOpts);
     if (!waitedAnswer) {
+      waitedAnswer = h.recoverCompletedAnswer(pollBeforeCount, pollBeforeText, waitOpts);
+    }
+    if (!waitedAnswer) {
       if (h.wasLastWaitPending()) {
-        return { error: 'Still generating', hint: 'Notion AI is still generating. Retry with waitOnly: true.', action: 'retry with waitOnly: true' };
+        return attachCaptureWarning({ error: 'Still generating', hint: 'Notion AI is still generating. Retry with waitOnly: true.', action: 'retry with waitOnly: true' }, true);
       }
       var waitAbnormal = h.getLastWaitAbnormal();
       if (waitAbnormal) return waitAbnormal;
-      return { error: 'Empty response', hint: 'Notion AI returned no content.', action: 'bun-browser open https://app.notion.com/' };
+      return attachCaptureWarning({ error: 'Empty response', hint: 'Notion AI returned no content.', action: 'bun-browser open https://app.notion.com/' }, true);
     }
     var waitFollowOut = {
       query: args.query,
@@ -396,7 +423,7 @@ ${trustDrainBlock}    var existing = h.getAssistantMessages();
     };
     var waitFollowTrust = h.getLastUrlTrustAccepts();
     if (waitFollowTrust.length) waitFollowOut.urlTrustAccepted = waitFollowTrust;
-    return waitFollowOut;
+    return attachCaptureWarning(waitFollowOut, false);
   }
 
   var landing = await h.ensureAiLandingPage();
@@ -429,6 +456,17 @@ ${trustDrainBlock}
     return { error: 'Chat input not found', hint: 'Conversation page did not expose the Notion AI input.', action: nav.action || ('bun-browser open ' + h.buildConversationUrl(conversationId)) };
   }
 
+  if (!waitOnly && h.isChatInProgress()) {
+    return {
+      error: 'Tab busy',
+      kind: 'chat_in_progress',
+      hint: 'This thread is still generating a reply. Retry with waitOnly: true instead of sending a new prompt.',
+      action: 'retry with waitOnly: true',
+      conversationId: conversationId,
+      generating: true
+    };
+  }
+
   var modeResult = await h.setNotionMode(modeId);
   if (!modeResult.ok) {
     return {
@@ -443,29 +481,27 @@ ${attachBlock}
   var beforeCount = h.getAssistantMessagesSinceLastUser().length;
   var beforeText = h.getAssistantMessagesSinceLastUser().map(h.getAssistantText).join('\\n');
 
-  if (!h.setChatInput(queryText)) {
-    return { error: 'Chat input not found', hint: 'Could not fill the Notion AI prompt box.', action: 'bun-browser open ' + h.buildConversationUrl(conversationId) };
-  }
-  await h.sleep(400);
-${trustDrainBlock}
-  accessBlock = h.detectNotionPageAbnormal();
-  if (accessBlock) return accessBlock;
-
-  if (!h.clickSubmit()) {
-    accessBlock = h.detectNotionPageAbnormal();
-    if (accessBlock) return accessBlock;
-    return { error: 'Submit button not found', hint: 'Could not find the Notion AI send button.', action: 'bun-browser open ' + h.buildConversationUrl(conversationId) };
+  var submitResult = await h.submitChatPrompt(queryText, beforeCount, beforeText, waitOpts);
+  if (!submitResult.ok) {
+    if (submitResult.kind) return submitResult;
+    return {
+      error: submitResult.error || 'Submit failed',
+      hint: submitResult.hint || 'Could not submit the Notion AI prompt.',
+      action: submitResult.action || ('bun-browser open ' + h.buildConversationUrl(conversationId))
+    };
   }
 ${trustDrainBlock}
   waitOpts.query = queryText;
   var answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
   if (!answer) {
+${emptyAnswerRecoveryBlock}  }
+  if (!answer) {
     var answerAbnormal = h.getLastWaitAbnormal();
     if (answerAbnormal) return answerAbnormal;
     if (h.wasLastWaitPending()) {
-      return { error: 'Still generating', hint: 'Notion AI is still generating. Retry with waitOnly: true.', action: 'retry with waitOnly: true' };
+      return attachCaptureWarning({ error: 'Still generating', hint: 'Notion AI is still generating. Retry with waitOnly: true.', action: 'retry with waitOnly: true' }, true);
     }
-    return { error: 'Empty response', hint: 'Notion AI returned no content.', action: 'bun-browser open ' + h.buildConversationUrl(conversationId) };
+    return attachCaptureWarning({ error: 'Empty response', hint: 'Notion AI returned no content.', action: 'bun-browser open ' + h.buildConversationUrl(conversationId) }, true);
   }
 
   var out = {
@@ -491,7 +527,7 @@ ${trustDrainBlock}
     var answerJson = h.parseAnswerJson(answer);
     if (answerJson) { out.answerJson = answerJson; out.answerFormat = 'json'; }
   }
-  return out;`
+  return attachCaptureWarning(out, false);`
   )
 );
 

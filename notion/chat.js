@@ -79,9 +79,11 @@ async function(args) {
 
 
   var h = (function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 28;
+  var HELPERS_VERSION = 35;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
-  var NOTION_CHAT_POLL_MS = 500;
+  var NOTION_CHAT_POLL_MS = 200;
+  var NOTION_SUBMIT_ACK_MS = 8000;
+  var NOTION_SUBMIT_MAX_ATTEMPTS = 3;
 
   if (globalThis.__notionAiChatHelpers && globalThis.__notionAiChatHelpers.version === HELPERS_VERSION) {
     return globalThis.__notionAiChatHelpers;
@@ -119,6 +121,7 @@ async function(args) {
 
   var lastWaitPending = false;
   var lastWaitAbnormal = null;
+  var lastCaptureWarning = null;
   var lastUrlTrustAccepts = [];
 
   function sleep(ms) {
@@ -579,14 +582,24 @@ async function(args) {
     var landing = await ensureAiLandingPage();
     if (!landing.ok) return landing;
 
-    if (getChatInput()) {
+    var staleReply =
+      getAssistantMessagesSinceLastUser().length > 0 || hasCompletedReplyActions();
+    if (getChatInput() && !staleReply) {
       return { ok: true, via: 'ai-landing' };
     }
 
     var created = await clickNewChat();
     if (!created.ok) {
-      if (getChatInput()) {
+      if (getChatInput() && !staleReply) {
         return { ok: true, via: 'ai-landing' };
+      }
+      if (getChatInput() && staleReply) {
+        return {
+          ok: false,
+          error: 'Stale chat thread still visible',
+          hint: 'Could not start a fresh Notion AI chat. Retry or open a new tab.',
+          action: 'bun-browser open https://app.notion.com/ai --tab new'
+        };
       }
       return {
         ok: false,
@@ -605,6 +618,10 @@ async function(args) {
         hint: 'Re-run the same command after Notion opens a new chat.',
         action: 'retry same command'
       };
+    }
+    var clearDeadline = Date.now() + 5000;
+    while (Date.now() < clearDeadline && getAssistantMessagesSinceLastUser().length > 0) {
+      await sleep(200);
     }
     return { ok: true };
   }
@@ -681,6 +698,105 @@ async function(args) {
       }
     }
     return false;
+  }
+
+  function getComposerEditor() {
+    var editor = getChatInput();
+    if (editor) return editor;
+    return document.querySelector('[contenteditable="true"][role="textbox"], [contenteditable="true"].content-editable-leaf-rtl');
+  }
+
+  function getComposerText() {
+    var editor = getComposerEditor();
+    if (!editor) return '';
+    return String(editor.innerText || editor.textContent || '').trim();
+  }
+
+  function isComposerCleared(queryText) {
+    var editor = getComposerEditor();
+    if (!editor) return false;
+    var composer = getComposerText();
+    var q = String(queryText || '').trim();
+    if (!composer) return true;
+    if (!q) return composer.length < 5;
+    if (composer.length <= 2) return true;
+    if (composer.length >= Math.min(q.length, 24) * 0.65) return false;
+    return composer.length < q.length * 0.35;
+  }
+
+  function hasSubmitFlightSignals(beforeCount, beforeText, queryText) {
+    if (isGeneratingForTurn(beforeCount, beforeText)) return true;
+    if (hasActiveAgentStatusLines()) return true;
+    var messages = getAssistantMessagesSinceLastUser();
+    if (messages.length > beforeCount) return true;
+    if (hasNewTurnContent(messages, beforeCount, beforeText)) return true;
+    if (queryText && isComposerCleared(queryText)) return true;
+    return false;
+  }
+
+  async function waitForSubmitAck(beforeCount, beforeText, queryText, opts) {
+    opts = opts || {};
+    var ackWaitMs = Math.max(1500, Number(opts.ackWaitMs) || NOTION_SUBMIT_ACK_MS);
+    var pollMs = Math.max(150, Number(opts.submitAckPollMs) || 400);
+    var deadline = Date.now() + ackWaitMs;
+    while (Date.now() < deadline) {
+      await sleep(pollMs);
+      if (hasSubmitFlightSignals(beforeCount, beforeText, queryText)) {
+        return { ok: true };
+      }
+      var abnormal = detectNotionPageAbnormal({ skipSubmitCheck: true });
+      if (abnormal) return { ok: false, abnormal: abnormal };
+    }
+    return {
+      ok: false,
+      reason: 'silent_no_signals',
+      composerText: getComposerText()
+    };
+  }
+
+  async function submitChatPrompt(queryText, beforeCount, beforeText, opts) {
+    opts = opts || {};
+    beforeText = beforeText != null ? String(beforeText) : '';
+    var maxAttempts = Math.max(1, Number(opts.submitAttempts) || NOTION_SUBMIT_MAX_ATTEMPTS);
+    var lastAck = null;
+    for (var attempt = 1; attempt <= maxAttempts; attempt++) {
+      if (!setChatInput(queryText)) {
+        return {
+          ok: false,
+          error: 'Chat input not found',
+          hint: 'Could not fill the Notion AI prompt box.'
+        };
+      }
+      await sleep(400);
+      var accessBlock = detectNotionPageAbnormal();
+      if (accessBlock) return Object.assign({ ok: false }, accessBlock);
+      if (!clickSubmit()) {
+        accessBlock = detectNotionPageAbnormal();
+        if (accessBlock) return Object.assign({ ok: false }, accessBlock);
+        return {
+          ok: false,
+          error: 'Submit button not found',
+          hint: 'Could not find the Notion AI send button.'
+        };
+      }
+      lastAck = await waitForSubmitAck(beforeCount, beforeText, queryText, opts);
+      if (lastAck.ok) {
+        return { ok: true, attempts: attempt };
+      }
+      if (lastAck.abnormal) return Object.assign({ ok: false }, lastAck.abnormal);
+      if (attempt < maxAttempts) {
+        await sleep(600);
+      }
+    }
+    return {
+      ok: false,
+      error: 'Silent submit',
+      kind: 'silent_submit',
+      hint: 'Notion accepted the prompt but showed no progress. Re-run the same command to retry submit.',
+      action: 'retry same command',
+      attempts: maxAttempts,
+      lastAck: lastAck
+    };
   }
 
   function isAssistantLeaf(el) {
@@ -772,15 +888,52 @@ async function(args) {
     return cleanAssistantText(el.innerText || el.textContent || '');
   }
 
-  function getAssistantAnswerSince(messages, beforeCount) {
-    if (!messages || messages.length <= beforeCount) return '';
+  function getAssistantTextFromReplyScope() {
+    var scope = getLatestAssistantReplyScope();
+    if (!scope) {
+      var chatRoot = document.querySelector('.layout-chat');
+      var copyBtn = chatRoot ? chatRoot.querySelector('[aria-label="Copy response"]') : null;
+      if (copyBtn) {
+        scope = copyBtn.closest('.assistant-turn') || copyBtn.parentElement;
+      }
+    }
+    if (!scope) return '';
+    var nodes = scope.querySelectorAll('.content-editable-leaf-rtl, .notion-text-block');
     var parts = [];
-    for (var i = beforeCount; i < messages.length; i++) {
-      var part = getAssistantText(messages[i]);
-      if (!part || looksLikeThoughtBlock(part)) continue;
-      parts.push(part);
+    for (var i = 0; i < nodes.length; i++) {
+      var node = nodes[i];
+      if (node.getAttribute('contenteditable') === 'true') continue;
+      var text = cleanAssistantText(node.innerText || node.textContent || '');
+      if (!text || isAssistantMetadataText(text) || looksLikeThoughtBlock(text)) continue;
+      parts.push(text);
     }
     return parts.join('\n').trim();
+  }
+
+  function getAssistantAnswerSince(messages, beforeCount) {
+    if (!messages || messages.length < beforeCount) return '';
+    beforeCount = Math.max(0, Number(beforeCount) || 0);
+    var parts = [];
+    if (messages.length > beforeCount) {
+      for (var i = beforeCount; i < messages.length; i++) {
+        var part = getAssistantText(messages[i]);
+        if (!part || looksLikeThoughtBlock(part)) continue;
+        parts.push(part);
+      }
+    } else if (messages.length === beforeCount && beforeCount > 0) {
+      var inPlace = getAssistantText(messages[messages.length - 1]);
+      if (inPlace && !looksLikeThoughtBlock(inPlace)) parts.push(inPlace);
+    }
+    var result = parts.join('\n').trim();
+    if (hasCompletedReplyActions()) {
+      var scopeText = getAssistantTextFromReplyScope();
+      if (scopeText && scopeText.length > result.length) result = scopeText;
+    }
+    if (!result && hasCompletedReplyActions()) {
+      var scopeFallback = getAssistantTextFromReplyScope();
+      if (scopeFallback) return scopeFallback;
+    }
+    return result;
   }
 
   function getCurrentReplyAssistantStartCount() {
@@ -824,6 +977,21 @@ async function(args) {
     'share positive feedback',
     'share negative feedback'
   ];
+  var REPLY_ACTION_REQUIRED = [
+    'copy response',
+    'save to private pages'
+  ];
+  var REPLY_ACTION_FEEDBACK = [
+    'share positive feedback',
+    'share negative feedback'
+  ];
+
+  var REPLY_ACTION_ATTR = {
+    'copy response': 'Copy response',
+    'save to private pages': 'Save to private pages',
+    'share positive feedback': 'Share positive feedback',
+    'share negative feedback': 'Share negative feedback'
+  };
 
   function normalizeReplyActionLabel(label) {
     return String(label || '').trim().toLowerCase();
@@ -839,12 +1007,12 @@ async function(args) {
 
   function findReplyActionButton(scope, label) {
     if (!scope) return null;
-    var want = normalizeReplyActionLabel(label);
-    var nodes = scope.querySelectorAll('[aria-label]');
+    var attr = REPLY_ACTION_ATTR[normalizeReplyActionLabel(label)];
+    if (!attr) return null;
+    var nodes = scope.querySelectorAll('[aria-label="' + attr + '"]');
     var fallback = null;
     for (var i = 0; i < nodes.length; i++) {
       var node = nodes[i];
-      if (normalizeReplyActionLabel(node.getAttribute('aria-label')) !== want) continue;
       if (!node.querySelector('svg')) continue;
       if (isReplyActionElement(node)) return node;
       if (!fallback) fallback = node;
@@ -856,6 +1024,11 @@ async function(args) {
     var msgs = getAssistantMessagesSinceLastUser();
     if (!msgs.length) return null;
     var latest = msgs[msgs.length - 1];
+    var el = latest;
+    while (el && el !== document.body) {
+      if (findReplyActionButton(el, 'copy response')) return el;
+      el = el.parentElement;
+    }
     var block = latest.closest('.notion-text-block, .notion-selectable');
     if (block) {
       var parent = block.parentElement;
@@ -867,17 +1040,45 @@ async function(args) {
     return latest;
   }
 
+  function isReplyFinishBlocked() {
+    return false;
+  }
+
   function hasCompletedReplyActions() {
     var scope = getLatestAssistantReplyScope();
     if (!scope) return false;
-    for (var i = 0; i < REPLY_ACTION_LABELS.length; i++) {
-      if (!findReplyActionButton(scope, REPLY_ACTION_LABELS[i])) return false;
+    for (var i = 0; i < REPLY_ACTION_REQUIRED.length; i++) {
+      if (!findReplyActionButton(scope, REPLY_ACTION_REQUIRED[i])) return false;
     }
+    var hasPositive = !!findReplyActionButton(scope, REPLY_ACTION_FEEDBACK[0]);
+    var hasNegative = !!findReplyActionButton(scope, REPLY_ACTION_FEEDBACK[1]);
+    if (hasPositive || hasNegative) return hasPositive && hasNegative;
     return true;
   }
 
   function hasAssistantReplyActions() {
     return hasCompletedReplyActions();
+  }
+
+  function hasNewTurnContent(messages, beforeCount, beforeText) {
+    if (!messages) messages = getAssistantMessagesSinceLastUser();
+    if (messages.length > beforeCount) return true;
+    var answer = getAssistantAnswerSince(messages, beforeCount);
+    var prior = String(beforeText || '').trim();
+    return !!answer && answer !== prior;
+  }
+
+  function hasCompletedReplyActionsForTurn(beforeCount, beforeText) {
+    if (!hasCompletedReplyActions()) return false;
+    return hasNewTurnContent(getAssistantMessagesSinceLastUser(), beforeCount, beforeText);
+  }
+
+  function isGeneratingForTurn(beforeCount, beforeText) {
+    if (isUrlTrustPromptVisible()) return true;
+    if (hasCompletedReplyActionsForTurn(beforeCount, beforeText)) return false;
+    if (hasCompletedReplyActions()) return true;
+    if (hasActiveAgentStatusLines()) return true;
+    return false;
   }
 
   function isGenerating() {
@@ -971,6 +1172,67 @@ async function(args) {
     return lastWaitAbnormal;
   }
 
+  function getTabCaptureState() {
+    return {
+      hidden: document.hidden,
+      visibility: document.visibilityState,
+      captureReliable: !document.hidden && document.visibilityState === 'visible'
+    };
+  }
+
+  function getLastCaptureWarning() {
+    return lastCaptureWarning;
+  }
+
+  function validateExtractedAnswer(answer, opts, requireFinal) {
+    if (!answer || looksLikeInProgressAnswer(answer)) return null;
+    var answerCreditsBlock = matchCreditsExhausted(answer);
+    if (answerCreditsBlock) {
+      lastWaitAbnormal = answerCreditsBlock;
+      return '';
+    }
+    var answerRejectBlock = matchPromptRejected(answer);
+    if (answerRejectBlock) {
+      lastWaitAbnormal = answerRejectBlock;
+      return '';
+    }
+    var answerRateBlock = matchRateLimit(answer);
+    if (answerRateBlock) {
+      lastWaitAbnormal = answerRateBlock;
+      return '';
+    }
+    var expectsJson = waitExpectsJson(opts);
+    if (expectsJson && !hasParsedJsonAnswer(answer)) return null;
+    if (requireFinal && !looksLikeFinalAnswer(answer)) return null;
+    return answer;
+  }
+
+  function tryExtractCompletedAnswer(messages, beforeCount, beforeText, opts) {
+    if (typeof beforeText === 'object' && beforeText !== null && !Array.isArray(beforeText)) {
+      opts = beforeText;
+      beforeText = '';
+    }
+    opts = opts || {};
+    beforeText = beforeText != null ? String(beforeText) : '';
+    if (!hasNewTurnContent(messages, beforeCount, beforeText)) return null;
+    if (!hasCompletedReplyActionsForTurn(beforeCount, beforeText)) return null;
+    var answer = getAssistantAnswerSince(messages, beforeCount);
+    return validateExtractedAnswer(answer, opts, false);
+  }
+
+  function recoverCompletedAnswer(beforeCount, beforeText, opts) {
+    opts = opts || {};
+    beforeText = beforeText != null ? String(beforeText) : '';
+    var messages = getAssistantMessagesSinceLastUser();
+    var direct = tryExtractCompletedAnswer(messages, beforeCount, beforeText, opts);
+    if (direct) return direct;
+    if (!hasCompletedReplyActions()) return '';
+    if (!hasNewTurnContent(messages, beforeCount, beforeText)) return '';
+    var full = getAssistantAnswerSince(messages, 0);
+    if (!full) full = getAssistantTextFromReplyScope();
+    return validateExtractedAnswer(full, opts, false) || '';
+  }
+
   function buildWaitOpts(args) {
     args = args || {};
     var maxWaitMs = Number(args.maxWaitMs) || NOTION_CHAT_WAIT_MS;
@@ -981,9 +1243,17 @@ async function(args) {
       pollMs: NOTION_CHAT_POLL_MS,
       maxWaitMs: maxWaitMs,
       graceWaitMs: args.graceWaitMs,
-      stableNeeded: 2
+      stableNeeded: 1
     };
-    if (args.query != null && String(args.query).trim()) opts.query = String(args.query);
+    if (args.query != null && String(args.query).trim()) {
+      opts.query = String(args.query);
+      if (queryExpectsJson(opts.query)) {
+        opts.expectJson = true;
+        if (args.stableNeeded == null || args.stableNeeded === '') {
+          opts.stableNeeded = 2;
+        }
+      }
+    }
     if (args.expectJson) opts.expectJson = true;
     return opts;
   }
@@ -992,7 +1262,7 @@ async function(args) {
     opts = opts || {};
     var pollMs = opts.pollMs || NOTION_CHAT_POLL_MS;
     var totalWaitMs = Math.max(1000, Number(opts.maxWaitMs) || NOTION_CHAT_WAIT_MS);
-    var stableNeeded = opts.stableNeeded || 2;
+    var stableNeeded = opts.stableNeeded || 1;
     var deadline = Date.now() + totalWaitMs;
 
     var answer = '';
@@ -1000,12 +1270,21 @@ async function(args) {
     var lastText = '';
     var lastMessageCount = beforeCount;
     var sawInFlight = false;
+    var pollCount = 0;
     lastWaitPending = false;
     lastWaitAbnormal = null;
+    lastCaptureWarning = null;
+    var tabState = getTabCaptureState();
+    if (!tabState.captureReliable) {
+      lastCaptureWarning = 'Tab is hidden; focus this Chrome tab for reliable capture.';
+    }
 
     while (Date.now() < deadline) {
-      await sleep(pollMs);
-      await drainUrlTrustPrompts({ maxRounds: 4, pauseMs: 250 });
+      pollCount++;
+      if (pollCount > 1) await sleep(pollMs);
+      if (isUrlTrustPromptVisible() || pollCount === 1 || pollCount % 5 === 0) {
+        await drainUrlTrustPrompts({ maxRounds: 2, pauseMs: 120 });
+      }
       var chatRejectBlock = matchPromptRejected(getChatActivityText(6000));
       if (chatRejectBlock) {
         lastWaitAbnormal = chatRejectBlock;
@@ -1020,8 +1299,17 @@ async function(args) {
       }
 
       var messages = getAssistantMessagesSinceLastUser();
-      var generating = isGenerating();
-      var pending = generating || messages.length <= beforeCount;
+      if (messages.length > beforeCount) sawInFlight = true;
+
+      var toolbarAnswer = tryExtractCompletedAnswer(messages, beforeCount, beforeText, opts);
+      if (toolbarAnswer === '') return '';
+      if (toolbarAnswer) {
+        lastWaitPending = false;
+        return toolbarAnswer;
+      }
+
+      var generating = isGeneratingForTurn(beforeCount, beforeText);
+      var pending = generating || !hasNewTurnContent(messages, beforeCount, beforeText);
       if (pending) sawInFlight = true;
 
       answer = getAssistantAnswerSince(messages, beforeCount);
@@ -1032,42 +1320,17 @@ async function(args) {
         sawInFlight = true;
       }
 
-      var answerCreditsBlock = matchCreditsExhausted(answer);
-      if (answerCreditsBlock) {
-        lastWaitAbnormal = answerCreditsBlock;
-        lastWaitPending = false;
-        return '';
-      }
-
-      var answerRejectBlock = matchPromptRejected(answer);
-      if (answerRejectBlock) {
-        lastWaitAbnormal = answerRejectBlock;
-        lastWaitPending = false;
-        return '';
-      }
-
-      if (messages.length > beforeCount && !generating && !looksLikeInProgressAnswer(answer)) {
-        var answerRateBlock = matchRateLimit(answer);
-        if (answerRateBlock && !looksLikeFinalAnswer(answer)) {
-          lastWaitAbnormal = answerRateBlock;
-          lastWaitPending = false;
-          return '';
-        }
+      var turnUpdated = messages.length > beforeCount ||
+        (messages.length === beforeCount && beforeCount > 0 && hasNewTurnContent(messages, beforeCount, beforeText));
+      if (turnUpdated && !generating && !looksLikeInProgressAnswer(answer)) {
         var expectsJson = waitExpectsJson(opts);
-        var hasReplyActions = hasCompletedReplyActions();
-        var ready = !!answer && looksLikeFinalAnswer(answer);
-        if (expectsJson && looksLikeJsonAnswerAttempt(answer) && !hasParsedJsonAnswer(answer)) {
-          ready = false;
-          stableRounds = 0;
-        }
-        if (ready) {
-          var effectiveStableNeeded = hasReplyActions
-            ? 1
-            : (expectsJson && hasParsedJsonAnswer(answer) ? 1 : stableNeeded);
+        if (expectsJson && answer && !hasParsedJsonAnswer(answer)) {
+          sawInFlight = true;
+        } else if (!!answer && looksLikeFinalAnswer(answer)) {
           if (answer === lastText) stableRounds++;
           else stableRounds = 0;
           lastText = answer;
-          if (stableRounds >= effectiveStableNeeded - 1) {
+          if (stableRounds >= stableNeeded - 1) {
             lastWaitPending = false;
             return answer;
           }
@@ -1076,6 +1339,11 @@ async function(args) {
     }
 
     var incompleteJson = waitExpectsJson(opts) && looksLikeJsonAnswerAttempt(answer) && !hasParsedJsonAnswer(answer);
+    var recovered = recoverCompletedAnswer(beforeCount, beforeText, opts);
+    if (recovered) {
+      lastWaitPending = false;
+      return recovered;
+    }
     lastWaitPending = sawInFlight || incompleteJson;
     if (incompleteJson) return '';
     return answer && looksLikeFinalAnswer(answer) ? answer : '';
@@ -2489,24 +2757,39 @@ async function(args) {
     setChatInput: setChatInput,
     getSubmitButton: getSubmitButton,
     clickSubmit: clickSubmit,
+    getComposerText: getComposerText,
+    hasSubmitFlightSignals: hasSubmitFlightSignals,
+    waitForSubmitAck: waitForSubmitAck,
+    submitChatPrompt: submitChatPrompt,
     getAssistantMessages: getAssistantMessages,
     getAssistantMessagesSinceLastUser: getAssistantMessagesSinceLastUser,
     getAssistantText: getAssistantText,
+    getAssistantTextFromReplyScope: getAssistantTextFromReplyScope,
     getAssistantAnswerSince: getAssistantAnswerSince,
     getCurrentReplyAssistantStartCount: getCurrentReplyAssistantStartCount,
     getChatActivityText: getChatActivityText,
     looksLikeInProgressAnswer: looksLikeInProgressAnswer,
     looksLikeThoughtBlock: looksLikeThoughtBlock,
     REPLY_ACTION_LABELS: REPLY_ACTION_LABELS,
+    REPLY_ACTION_REQUIRED: REPLY_ACTION_REQUIRED,
     findReplyActionButton: findReplyActionButton,
+    getLatestAssistantReplyScope: getLatestAssistantReplyScope,
+    isReplyFinishBlocked: isReplyFinishBlocked,
     hasCompletedReplyActions: hasCompletedReplyActions,
+    hasCompletedReplyActionsForTurn: hasCompletedReplyActionsForTurn,
+    hasNewTurnContent: hasNewTurnContent,
     hasAssistantReplyActions: hasAssistantReplyActions,
     isGenerating: isGenerating,
+    isGeneratingForTurn: isGeneratingForTurn,
     isChatInProgress: isChatInProgress,
     looksLikeFinalAnswer: looksLikeFinalAnswer,
     wasLastWaitPending: wasLastWaitPending,
     getLastWaitAbnormal: getLastWaitAbnormal,
+    getTabCaptureState: getTabCaptureState,
+    getLastCaptureWarning: getLastCaptureWarning,
     buildWaitOpts: buildWaitOpts,
+    tryExtractCompletedAnswer: tryExtractCompletedAnswer,
+    recoverCompletedAnswer: recoverCompletedAnswer,
     waitForAssistantAnswer: waitForAssistantAnswer,
     modelTitleToId: modelTitleToId,
     isModelTitleMapped: isModelTitleMapped,
@@ -2558,6 +2841,17 @@ async function(args) {
   globalThis.__notionAiChatHelpers = api;
   return api;
   })();
+
+  function attachCaptureWarning(obj, isFailure) {
+    var capWarn = h.getLastCaptureWarning();
+    if (!capWarn || !obj) return obj;
+    if (isFailure) {
+      obj.hint = obj.hint ? (obj.hint + ' ' + capWarn) : capWarn;
+    } else {
+      obj.captureWarning = capWarn;
+    }
+    return obj;
+  }
 
   h.resetUrlTrustState();
   var waitOpts = h.buildWaitOpts(args);
@@ -2628,12 +2922,15 @@ async function(args) {
     var pollBeforeText = pollBeforeCount < existing.length ? h.getAssistantText(existing[pollBeforeCount]) : '';
     var waitedAnswer = await h.waitForAssistantAnswer(pollBeforeCount, pollBeforeText, waitOpts);
     if (!waitedAnswer) {
+      waitedAnswer = h.recoverCompletedAnswer(pollBeforeCount, pollBeforeText, waitOpts);
+    }
+    if (!waitedAnswer) {
       if (h.wasLastWaitPending()) {
-        return { error: 'Still generating', hint: 'Notion AI is still generating. Retry with waitOnly: true.', action: 'retry with waitOnly: true' };
+        return attachCaptureWarning({ error: 'Still generating', hint: 'Notion AI is still generating. Retry with waitOnly: true.', action: 'retry with waitOnly: true' }, true);
       }
       var waitAbnormal = h.getLastWaitAbnormal();
       if (waitAbnormal) return waitAbnormal;
-      return { error: 'Empty response', hint: 'Notion AI returned no content.', action: 'bun-browser open https://app.notion.com/' };
+      return attachCaptureWarning({ error: 'Empty response', hint: 'Notion AI returned no content.', action: 'bun-browser open https://app.notion.com/' }, true);
     }
     var waitOut = {
       query: queryTextArg || args.query,
@@ -2656,7 +2953,7 @@ async function(args) {
       var waitJson = h.parseAnswerJson(waitedAnswer);
       if (waitJson) { waitOut.answerJson = waitJson; waitOut.answerFormat = 'json'; }
     }
-    return waitOut;
+    return attachCaptureWarning(waitOut, false);
   }
 
   if (newChat) {
@@ -2672,6 +2969,15 @@ async function(args) {
       return nav;
     }
   await h.drainUrlTrustPrompts();
+  }
+
+  if (newChat && h.getAssistantMessagesSinceLastUser().length > 0) {
+    return {
+      error: 'Stale chat thread still visible',
+      kind: 'stale_thread',
+      hint: 'Notion did not clear the prior reply before submit. Open a new tab and retry.',
+      action: 'bun-browser open https://app.notion.com/ai --tab new'
+    };
   }
 
   if (!h.getChatInput()) {
@@ -2715,31 +3021,29 @@ async function(args) {
   var beforeCount = h.getAssistantMessagesSinceLastUser().length;
   var beforeText = h.getAssistantMessagesSinceLastUser().map(h.getAssistantText).join('\n');
 
-  if (!h.setChatInput(queryText)) {
-    return { error: 'Chat input not found', hint: 'Could not fill the Notion AI prompt box.', action: 'bun-browser open https://app.notion.com/ai' };
-  }
-  await h.sleep(400);
-  await h.drainUrlTrustPrompts();
-
-  accessBlock = h.detectNotionPageAbnormal();
-  if (accessBlock) return accessBlock;
-
-  if (!h.clickSubmit()) {
-    accessBlock = h.detectNotionPageAbnormal();
-    if (accessBlock) return accessBlock;
-    return { error: 'Submit button not found', hint: 'Could not find the Notion AI send button.', action: 'bun-browser open https://app.notion.com/ai' };
+  var submitResult = await h.submitChatPrompt(queryText, beforeCount, beforeText, waitOpts);
+  if (!submitResult.ok) {
+    if (submitResult.kind) return submitResult;
+    return {
+      error: submitResult.error || 'Submit failed',
+      hint: submitResult.hint || 'Could not submit the Notion AI prompt.',
+      action: submitResult.action || 'bun-browser open https://app.notion.com/ai'
+    };
   }
   await h.drainUrlTrustPrompts();
 
   waitOpts.query = queryText;
   var answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
   if (!answer) {
+    answer = h.recoverCompletedAnswer(beforeCount, beforeText, waitOpts);
+  }
+  if (!answer) {
     var answerAbnormal = h.getLastWaitAbnormal();
     if (answerAbnormal) return answerAbnormal;
     if (h.wasLastWaitPending()) {
-      return { error: 'Still generating', hint: 'Notion AI is still generating. Retry with waitOnly: true.', action: 'retry with waitOnly: true' };
+      return attachCaptureWarning({ error: 'Still generating', hint: 'Notion AI is still generating. Retry with waitOnly: true.', action: 'retry with waitOnly: true' }, true);
     }
-    return { error: 'Empty response', hint: 'Notion AI returned no content.', action: 'bun-browser open https://app.notion.com/' };
+    return attachCaptureWarning({ error: 'Empty response', hint: 'Notion AI returned no content.', action: 'bun-browser open https://app.notion.com/' }, true);
   }
 
   var out = {
@@ -2763,5 +3067,5 @@ async function(args) {
     var answerJson = h.parseAnswerJson(answer);
     if (answerJson) { out.answerJson = answerJson; out.answerFormat = 'json'; }
   }
-  return out;
+  return attachCaptureWarning(out, false);
 }

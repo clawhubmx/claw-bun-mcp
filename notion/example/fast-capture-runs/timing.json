@@ -1,0 +1,202 @@
+{
+  "tab": "A1FB81B2B09020B1EB4EA097C64AAD83",
+  "wallMs": 260906,
+  "pollMs": 200,
+  "maxWaitMs": 60000,
+  "status": 0,
+  "timedOut": false,
+  "data": {
+    "helpersVersion": 31,
+    "pollMs": 200,
+    "maxWaitMs": 60000,
+    "results": [
+      {
+        "query": "What is 17+25? Reply with just the number.",
+        "answer": "",
+        "ok": false,
+        "totalMs": 147885,
+        "firstTextMs": null,
+        "toolbarMs": 888,
+        "captureMs": 147885,
+        "polls": 34,
+        "milestones": [
+          {
+            "label": "newChat",
+            "ms": 1
+          },
+          {
+            "label": "mode",
+            "ms": 1
+          },
+          {
+            "label": "drainTrust",
+            "ms": 1
+          },
+          {
+            "label": "inputFilled",
+            "ms": 18
+          },
+          {
+            "label": "submitted",
+            "ms": 887
+          },
+          {
+            "label": "toolbar",
+            "ms": 888,
+            "snap": {
+              "hasCopy": true,
+              "hasSave": true,
+              "hasToolbar": true,
+              "msgCount": 3,
+              "newMsgs": 0,
+              "textLen": 0,
+              "looksFinal": false,
+              "generating": false
+            }
+          },
+          {
+            "label": "waitForAssistantAnswer",
+            "ms": 147885,
+            "waitLoopMs": 60004
+          }
+        ],
+        "conversationId": "37d773dd-10fd-8053-9d43-00a94f3a0ee8"
+      },
+      {
+        "query": "Name one planet. One word only.",
+        "answer": "What should I do with “true”?\nIf you meant confirm/yes: tell me what you’re confirming.\nIf you meant a boolean value for a property in Notion: paste the page/database link (or tell me which item + which property) and what you want it set to.",
+        "ok": true,
+        "totalMs": 47961,
+        "firstTextMs": 47961,
+        "toolbarMs": 47961,
+        "captureMs": 47961,
+        "polls": 3,
+        "milestones": [
+          {
+            "label": "drainTrust",
+            "ms": 0
+          },
+          {
+            "label": "inputFilled",
+            "ms": 20
+          },
+          {
+            "label": "submitted",
+            "ms": 47331
+          },
+          {
+            "label": "firstText",
+            "ms": 47961,
+            "snap": {
+              "hasCopy": true,
+              "hasSave": true,
+              "hasToolbar": true,
+              "msgCount": 3,
+              "newMsgs": 3,
+              "textLen": 241,
+              "looksFinal": true,
+              "generating": false
+            }
+          },
+          {
+            "label": "toolbar",
+            "ms": 47961,
+            "snap": {
+              "hasCopy": true,
+              "hasSave": true,
+              "hasToolbar": true,
+              "msgCount": 3,
+              "newMsgs": 3,
+              "textLen": 241,
+              "looksFinal": true,
+              "generating": false
+            }
+          },
+          {
+            "label": "toolbarFastPath",
+            "ms": 47961,
+            "snap": {
+              "hasCopy": true,
+              "hasSave": true,
+              "hasToolbar": true,
+              "msgCount": 3,
+              "newMsgs": 3,
+              "textLen": 241,
+              "looksFinal": true,
+              "generating": false
+            }
+          }
+        ],
+        "conversationId": "37d773dd-10fd-8053-9d43-00a94f3a0ee8"
+      },
+      {
+        "query": "Capital of Japan? One word.",
+        "answer": "Tokyo",
+        "ok": true,
+        "totalMs": 3342,
+        "firstTextMs": 3341,
+        "toolbarMs": 3341,
+        "captureMs": 3342,
+        "polls": 11,
+        "milestones": [
+          {
+            "label": "drainTrust",
+            "ms": 0
+          },
+          {
+            "label": "inputFilled",
+            "ms": 10
+          },
+          {
+            "label": "submitted",
+            "ms": 166
+          },
+          {
+            "label": "firstText",
+            "ms": 3341,
+            "snap": {
+              "hasCopy": true,
+              "hasSave": true,
+              "hasToolbar": true,
+              "msgCount": 1,
+              "newMsgs": 1,
+              "textLen": 5,
+              "looksFinal": true,
+              "generating": false
+            }
+          },
+          {
+            "label": "toolbar",
+            "ms": 3341,
+            "snap": {
+              "hasCopy": true,
+              "hasSave": true,
+              "hasToolbar": true,
+              "msgCount": 1,
+              "newMsgs": 1,
+              "textLen": 5,
+              "looksFinal": true,
+              "generating": false
+            }
+          },
+          {
+            "label": "toolbarFastPath",
+            "ms": 3342,
+            "snap": {
+              "hasCopy": true,
+              "hasSave": true,
+              "hasToolbar": true,
+              "msgCount": 1,
+              "newMsgs": 1,
+              "textLen": 5,
+              "looksFinal": true,
+              "generating": false
+            }
+          }
+        ],
+        "conversationId": "37d773dd-10fd-8053-9d43-00a94f3a0ee8"
+      }
+    ]
+  },
+  "stderr": null
+}

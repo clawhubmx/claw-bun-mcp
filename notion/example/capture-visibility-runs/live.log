@@ -1,0 +1,13 @@
+Waiting 10s for /ai load on new tab...
+
+=== A-hidden-new-tab ===
+tab=F020E8F429445FDB6B6EAFAC6F25CC12 hidden=true visibility=hidden
+Using pre-open active tab A410716581ED52B2F8D6D463FE345E19 hidden=true
+
+=== B-visible-active-tab ===
+tab=A410716581ED52B2F8D6D463FE345E19 hidden=true visibility=hidden
+
+=== Summary ===
+A-hidden-new-tab: PASS | 8648ms | src=chat | answer="Set a Notion property to true (tell me the page/database and property name)" | hidden=true | chatError=none | timedOut=false
+  captureWarning: Tab is hidden; focus this Chrome tab for reliable capture.
+B-visible-active-tab: PASS | 57478ms | src=chat | answer="You want me to set something to true in Notion (which page/database/property?)" | hidden=false | chatError=none | timedOut=false

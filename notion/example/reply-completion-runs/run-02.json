@@ -1,0 +1,38 @@
+{
+  "run": 2,
+  "kind": "short",
+  "promptPreview": "Name one planet. One word only.",
+  "command": "chatfollow",
+  "elapsedMs": 105010,
+  "timedOut": true,
+  "chatStatus": null,
+  "chatRaw": "",
+  "chatError": null,
+  "chatKind": null,
+  "conversationId": "37d773dd-10fd-803e-87fa-00a92f3226ed",
+  "capturedAnswer": "Mars",
+  "recovered": true,
+  "captureSource": "probe",
+  "answerLen": 4,
+  "answerPreview": "Mars",
+  "answerFormat": null,
+  "probe": {
+    "helpersVersion": 32,
+    "tabHidden": false,
+    "tabVisibility": "visible",
+    "hasCompletedReplyActions": true,
+    "isGenerating": false,
+    "isChatInProgress": false,
+    "answerLen": 4,
+    "looksFinal": true,
+    "answerPreview": "Mars",
+    "answerFull": "Mars",
+    "replyChecks": {
+      "copy response": true,
+      "save to private pages": true
+    },
+    "conversationId": "37d773dd-10fd-803e-87fa-00a92f3226ed"
+  },
+  "pass": true,
+  "failureBucket": null
+}

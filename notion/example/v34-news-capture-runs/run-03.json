@@ -1,0 +1,30 @@
+{
+  "run": 3,
+  "topic": "Apple WWDC announcements 2026",
+  "command": "chatfollow",
+  "elapsedMs": 29835,
+  "timedOut": false,
+  "chatError": null,
+  "chatKind": null,
+  "chatAction": null,
+  "answerFormat": null,
+  "answerJson": null,
+  "capturedAnswer": "\"sources\": \"techcrunch.com, pcmag.com, apple.com, engadget.com, cnet.com\"\n}",
+  "captureSource": "chat",
+  "recovered": false,
+  "helpersVersion": 34,
+  "probe": {
+    "helpersVersion": 34,
+    "tabHidden": false,
+    "hasCompletedReplyActions": true,
+    "isGenerating": false,
+    "isChatInProgress": false,
+    "answerLen": 1043,
+    "looksFinal": true,
+    "answerPreview": "{\n\"query\": \"Apple WWDC announcements 2026\",\n\"time_period\": \"2026-06-07 to 2026-06-13\",\n\"unique_topics\": [\n\"Apple unveils next generation of Apple Intelligence and introduces a revamped Siri AI (more personal, conversational, systemwide integration)\",\n\"Major OS releases announced across Apple platforms (iOS 27, iPadOS 27, macOS 27, watchOS 27, visionOS 27, tvOS 27) with broad performance and featur",
+    "answerFull": "{\n\"query\": \"Apple WWDC announcements 2026\",\n\"time_period\": \"2026-06-07 to 2026-06-13\",\n\"unique_topics\": [\n\"Apple unveils next generation of Apple Intelligence and introduces a revamped Siri AI (more personal, conversational, systemwide integration)\",\n\"Major OS releases announced across Apple platforms (iOS 27, iPadOS 27, macOS 27, watchOS 27, visionOS 27, tvOS 27) with broad performance and feature updates\",\n\"New AI-powered writing and communication features (smart replies, writing tools across Messages/Mail, system assistance features highlighted in recaps)\",\n\"Security and privacy-focused AI features, including Passwords app enhancements (e.g., detecting weak/compromised credentials and helping update them)\",\n\"Expanded parental controls and child safety/trust-and-safety features highlighted as a key WWDC26 theme\",\n\"Developer rollout: WWDC26 sessions + developer testing availability and beta timeline for new Siri AI / Apple Intelligence capabilities\"\n],\n\"sources\": \"techcrunch.com, pcmag.com, apple.com, engadget.com, cnet.com\"\n}",
+    "conversationId": "37d773dd-10fd-8089-bcac-00a9abcb4bd6"
+  },
+  "pass": true,
+  "directCapture": true
+}

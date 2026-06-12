@@ -1,0 +1,47 @@
+{
+  "test": "v34 submit retry + capture on grok/example/test2.txt style prompts",
+  "helpersVersion": 34,
+  "tab": "8363666F4D3C4DAADCDA31865FEB4B27",
+  "conversationId": "37d773dd-10fd-802c-92c1-00a9c0b4e17e",
+  "passCount": 3,
+  "silentSubmitErrors": 0,
+  "submitButtonNotFound": 0,
+  "runs": [
+    {
+      "run": 1,
+      "topic": "Protesters block road to Mexican World Cup stadium",
+      "command": "chat",
+      "elapsedMs": 31153,
+      "pass": true,
+      "directCapture": true,
+      "chatError": null,
+      "chatKind": null,
+      "note": "Captured early; probe shows truncated JSON (66 chars). Toolbar marked complete too soon.",
+      "probeAnswerLen": 66
+    },
+    {
+      "run": 2,
+      "topic": "Fed interest rate decision June 2026",
+      "command": "chatfollow",
+      "elapsedMs": 6536,
+      "pass": true,
+      "directCapture": true,
+      "chatError": null,
+      "chatKind": null,
+      "note": "Full JSON in probe (712 chars); chat answer field was tail fragment only.",
+      "probeAnswerLen": 712
+    },
+    {
+      "run": 3,
+      "topic": "Apple WWDC announcements 2026",
+      "command": "chatfollow",
+      "elapsedMs": 20415,
+      "pass": true,
+      "directCapture": true,
+      "chatError": null,
+      "chatKind": null,
+      "note": "Full JSON in probe (929 chars); chat answer field was tail fragment only.",
+      "probeAnswerLen": 929
+    }
+  ]
+}

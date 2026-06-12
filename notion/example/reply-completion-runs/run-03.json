@@ -1,0 +1,38 @@
+{
+  "run": 3,
+  "kind": "short",
+  "promptPreview": "Capital of Japan? One word.",
+  "command": "chatfollow",
+  "elapsedMs": 2670,
+  "timedOut": false,
+  "chatStatus": 0,
+  "chatRaw": null,
+  "chatError": null,
+  "chatKind": null,
+  "conversationId": "37d773dd-10fd-803e-87fa-00a92f3226ed",
+  "capturedAnswer": "Tokyo",
+  "recovered": false,
+  "captureSource": "chat",
+  "answerLen": 5,
+  "answerPreview": "Tokyo",
+  "answerFormat": null,
+  "probe": {
+    "helpersVersion": 33,
+    "tabHidden": false,
+    "tabVisibility": "visible",
+    "hasCompletedReplyActions": true,
+    "isGenerating": false,
+    "isChatInProgress": false,
+    "answerLen": 5,
+    "looksFinal": true,
+    "answerPreview": "Tokyo",
+    "answerFull": "Tokyo",
+    "replyChecks": {
+      "copy response": true,
+      "save to private pages": true
+    },
+    "conversationId": "37d773dd-10fd-803e-87fa-00a92f3226ed"
+  },
+  "pass": true,
+  "failureBucket": null
+}

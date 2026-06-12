@@ -20,7 +20,9 @@ const helpersSource = readFileSync(join(__dirname, "chat-helpers.js"), "utf8");
 
 const REPLY_ACTION_BUTTONS =
   '<button aria-label="Copy response"><svg></svg></button>' +
-  '<button aria-label="Save to private pages"><svg></svg></button>' +
+  '<button aria-label="Save to private pages"><svg></svg></button>';
+const REPLY_ACTION_BUTTONS_WITH_FEEDBACK =
+  REPLY_ACTION_BUTTONS +
   '<button aria-label="Share positive feedback"><svg></svg></button>' +
   '<button aria-label="Share negative feedback"><svg></svg></button>';
 
@@ -34,6 +36,9 @@ function installHelpersAt(url, opts = {}) {
   globalThis.InputEvent = dom.window.InputEvent;
   globalThis.localStorage = dom.window.localStorage;
   globalThis.sessionStorage = dom.window.sessionStorage;
+  if (typeof dom.window.document.execCommand !== "function") {
+    dom.window.document.execCommand = () => false;
+  }
 
   let hrefValue = url;
   const navigationLog = [];
@@ -366,13 +371,14 @@ describe("notion chat helpers", () => {
     expect(h.isChatInProgress()).toBe(true);
   });
 
-  test("hasCompletedReplyActions requires all four labeled buttons with svg", () => {
+  test("hasCompletedReplyActions requires copy and save with svg", () => {
     const h = installHelpers();
     document.body.innerHTML =
       '<div class="layout-chat">' +
       '<div class="content-editable-leaf-rtl">Question here.</div>' +
       '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Answer with enough detail here.</div>' +
-      REPLY_ACTION_BUTTONS +
+      '<button aria-label="Copy response"><svg></svg></button>' +
+      '<button aria-label="Save to private pages"><svg></svg></button>' +
       '</div></div>';
     expect(h.hasCompletedReplyActions()).toBe(true);
 
@@ -411,6 +417,166 @@ describe("notion chat helpers", () => {
       '<div class="reply-toolbar">' + REPLY_ACTION_BUTTONS + '</div>' +
       '</div></div>';
     expect(h.hasCompletedReplyActions()).toBe(true);
+  });
+
+  test("hasCompletedReplyActionsForTurn ignores stale toolbar without new turn content", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">What is 17+25?</div>' +
+      '<div class="assistant-turn">' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">42</div></div>' +
+      '<div class="reply-toolbar">' + REPLY_ACTION_BUTTONS + '</div>' +
+      '</div></div>';
+    const msgs = h.getAssistantMessagesSinceLastUser();
+    expect(h.hasCompletedReplyActions()).toBe(true);
+    expect(h.hasCompletedReplyActionsForTurn(msgs.length, "42")).toBe(false);
+    expect(h.tryExtractCompletedAnswer(msgs, msgs.length, "42", {})).toBeNull();
+  });
+
+  test("tryExtractCompletedAnswer trusts toolbar for short answers rejected by looksLikeFinalAnswer", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">Reply with only: y</div>' +
+      '<div class="assistant-turn">' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">y</div></div>' +
+      '<div class="reply-toolbar">' + REPLY_ACTION_BUTTONS + '</div>' +
+      '</div></div>';
+    const msgs = h.getAssistantMessagesSinceLastUser();
+    expect(h.looksLikeFinalAnswer("y")).toBe(false);
+    expect(h.tryExtractCompletedAnswer(msgs, 0, "", {})).toBe("y");
+  });
+
+  test("recoverCompletedAnswer returns full reply since last user", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">Capital of Japan? One word.</div>' +
+      '<div class="assistant-turn">' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Tokyo</div></div>' +
+      '<div class="reply-toolbar">' + REPLY_ACTION_BUTTONS + '</div>' +
+      '</div></div>';
+    expect(h.recoverCompletedAnswer(0, "", {})).toBe("Tokyo");
+  });
+
+  test("ensureNewChatView clicks New chat when stale reply toolbar is visible", async () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div contenteditable="true" role="textbox">draft</div>' +
+      '<div class="assistant-turn">' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">stale answer</div></div>' +
+      '<div class="reply-toolbar">' + REPLY_ACTION_BUTTONS + '</div>' +
+      '</div>' +
+      '<button aria-label="New chat">New chat</button>' +
+      '</div>';
+    const newBtn = document.querySelector('[aria-label="New chat"]');
+    newBtn.getBoundingClientRect = () => ({ width: 80, height: 32, top: 10, left: 10, bottom: 42, right: 90 });
+    Object.defineProperty(newBtn, "offsetParent", { configurable: true, value: document.body });
+    newBtn.addEventListener("click", () => {
+      document.querySelector(".assistant-turn").remove();
+    });
+    const result = await h.ensureNewChatView();
+    expect(result.ok).toBe(true);
+    expect(h.getAssistantMessagesSinceLastUser().length).toBe(0);
+  });
+
+  test("validateExtractedAnswer rejects partial JSON tails for JSON prompts", () => {
+    const h = installHelpers();
+    const opts = { query: 'Return JSON only: {"status":"ok"}. json format only', expectJson: true };
+    const partial = '"sources": "reuters.com, bbc.com"\n}';
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">User prompt</div>' +
+      '<div class="assistant-turn"><div class="content-editable-leaf-rtl">' + partial + '</div>' +
+      '<div class="reply-toolbar">' + REPLY_ACTION_BUTTONS + '</div></div></div>';
+    const msgs = h.getAssistantMessagesSinceLastUser();
+    expect(h.tryExtractCompletedAnswer(msgs, 1, "Thinking", opts)).toBeNull();
+  });
+
+  test("getAssistantAnswerSince captures in-place reply updates when message count is unchanged", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">What is 17+25? Reply with just the number.</div>' +
+      '<div class="assistant-turn">' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">42</div></div>' +
+      '<div class="reply-toolbar">' + REPLY_ACTION_BUTTONS + '</div>' +
+      '</div></div>';
+    const msgs = h.getAssistantMessagesSinceLastUser();
+    expect(msgs.length).toBe(1);
+    expect(h.getAssistantAnswerSince(msgs, 1)).toBe("42");
+    expect(h.hasNewTurnContent(msgs, 1, "Thinking")).toBe(true);
+    expect(h.tryExtractCompletedAnswer(msgs, 1, "Thinking", {})).toBe("42");
+  });
+
+  test("getAssistantTextFromReplyScope reads text near sibling toolbar", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">Capital?</div>' +
+      '<div class="assistant-turn">' +
+      '<div class="notion-text-block"><span>Tokyo</span></div>' +
+      '<div class="reply-toolbar">' + REPLY_ACTION_BUTTONS + '</div>' +
+      '</div></div>';
+    expect(h.getAssistantTextFromReplyScope()).toBe("Tokyo");
+  });
+
+  test("hasSubmitFlightSignals detects composer cleared after submit", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div contenteditable="true" role="textbox" class="notion-text-block">What is 17+25? Reply with just the number.</div>' +
+      '</div>';
+    expect(h.hasSubmitFlightSignals(0, "", "What is 17+25? Reply with just the number.")).toBe(false);
+    document.querySelector('[role="textbox"]').textContent = "";
+    expect(h.hasSubmitFlightSignals(0, "", "What is 17+25? Reply with just the number.")).toBe(true);
+  });
+
+  test("waitForSubmitAck returns ok when progress lines appear", async () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat"><div class="content-editable-leaf-rtl">Thinking</div></div>';
+    const ack = await h.waitForSubmitAck(0, "", "Name one planet. One word only.", {
+      ackWaitMs: 200,
+      submitAckPollMs: 50,
+    });
+    expect(ack.ok).toBe(true);
+  });
+
+  test("waitForSubmitAck returns silent_no_signals when nothing changes", async () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div contenteditable="true" role="textbox">Name one planet. One word only.</div>' +
+      '</div>';
+    const ack = await h.waitForSubmitAck(0, "", "Name one planet. One word only.", {
+      ackWaitMs: 200,
+      submitAckPollMs: 50,
+    });
+    expect(ack.ok).toBe(false);
+    expect(ack.reason).toBe("silent_no_signals");
+  });
+
+  test("getTabCaptureState reports hidden document", () => {
+    const h = installHelpers();
+    Object.defineProperty(document, "hidden", { configurable: true, value: true });
+    Object.defineProperty(document, "visibilityState", { configurable: true, value: "hidden" });
+    const state = h.getTabCaptureState();
+    expect(state.hidden).toBe(true);
+    expect(state.captureReliable).toBe(false);
+    Object.defineProperty(document, "hidden", { configurable: true, value: false });
+    Object.defineProperty(document, "visibilityState", { configurable: true, value: "visible" });
+  });
+
+  test("isReplyFinishBlocked is reserved for future UI hooks", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div role="button" aria-label="Wait for the response to finish before sharing"><svg></svg></div>' +
+      '</div>';
+    expect(h.isReplyFinishBlocked()).toBe(false);
   });
 
   test("waitForAssistantAnswer returns once reply toolbar appears", async () => {

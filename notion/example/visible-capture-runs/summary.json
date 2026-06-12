@@ -1,0 +1,155 @@
+{
+  "startedAt": "2026-06-12T14:53:09.698Z",
+  "maxWaitMs": 60000,
+  "spawnTimeoutMs": 105000,
+  "waitForVisibleMs": 90000,
+  "requireVisible": false,
+  "model": "auto",
+  "tab": "3B412A020E589C7495AF13DA63231341",
+  "runs": [
+    {
+      "run": 1,
+      "promptPreview": "What is 17+25? Reply with just the number.",
+      "command": "chat",
+      "visibilityBefore": {
+        "hidden": true,
+        "visibility": "hidden",
+        "hasFocus": false,
+        "url": "https://app.notion.com/chat?t=37d773dd10fd80d48b0800a91635721c&wfv=chat"
+      },
+      "visibilityAfter": {
+        "hidden": false,
+        "visibility": "visible",
+        "hasFocus": true,
+        "url": "https://app.notion.com/chat?t=37d773dd10fd80d48b0800a91635721c&wfv=chat"
+      },
+      "waitForVisible": {
+        "ok": true,
+        "waitedMs": 15081,
+        "hidden": false,
+        "visibility": "visible",
+        "hasFocus": true,
+        "url": "https://app.notion.com/chat?t=37d773dd10fd80d48b0800a91635721c&wfv=chat"
+      },
+      "elapsedMs": 1005,
+      "timedOut": false,
+      "chatError": "Submit button not found",
+      "captureWarning": null,
+      "chatAnswer": null,
+      "capturedAnswer": null,
+      "captureSource": null,
+      "recovered": false,
+      "probe": {
+        "helpersVersion": 33,
+        "tabHidden": false,
+        "tabVisibility": "visible",
+        "hasCompletedReplyActions": false,
+        "isGenerating": true,
+        "isChatInProgress": true,
+        "answerLen": 0,
+        "looksFinal": false,
+        "answerPreview": "",
+        "answerFull": "",
+        "conversationId": "37d773dd-10fd-80d4-8b08-00a91635721c"
+      },
+      "pass": false,
+      "captureWhileHidden": false,
+      "directCapture": false
+    },
+    {
+      "run": 2,
+      "promptPreview": "Name one planet. One word only.",
+      "command": "chatfollow",
+      "visibilityBefore": {
+        "hidden": false,
+        "visibility": "visible",
+        "hasFocus": true,
+        "url": "https://app.notion.com/chat?t=37d773dd10fd80d48b0800a91635721c&wfv=chat"
+      },
+      "visibilityAfter": {
+        "hidden": false,
+        "visibility": "visible",
+        "hasFocus": true,
+        "url": "https://app.notion.com/chat?t=37d773dd10fd80d48b0800a91635721c&wfv=chat"
+      },
+      "waitForVisible": null,
+      "elapsedMs": 697,
+      "timedOut": false,
+      "chatError": "Submit button not found",
+      "captureWarning": null,
+      "chatAnswer": null,
+      "capturedAnswer": null,
+      "captureSource": null,
+      "recovered": false,
+      "probe": {
+        "helpersVersion": 33,
+        "tabHidden": false,
+        "tabVisibility": "visible",
+        "hasCompletedReplyActions": false,
+        "isGenerating": true,
+        "isChatInProgress": true,
+        "answerLen": 0,
+        "looksFinal": false,
+        "answerPreview": "",
+        "answerFull": "",
+        "conversationId": "37d773dd-10fd-80d4-8b08-00a91635721c"
+      },
+      "pass": false,
+      "captureWhileHidden": false,
+      "directCapture": false
+    },
+    {
+      "run": 3,
+      "promptPreview": "Capital of Japan? One word.",
+      "command": "chatfollow",
+      "visibilityBefore": {
+        "hidden": false,
+        "visibility": "visible",
+        "hasFocus": true,
+        "url": "https://app.notion.com/chat?t=37d773dd10fd80d48b0800a91635721c&wfv=chat"
+      },
+      "visibilityAfter": {
+        "hidden": false,
+        "visibility": "visible",
+        "hasFocus": true,
+        "url": "https://app.notion.com/chat?t=37d773dd10fd80d48b0800a91635721c&wfv=chat"
+      },
+      "waitForVisible": null,
+      "elapsedMs": 3967,
+      "timedOut": false,
+      "chatError": null,
+      "captureWarning": null,
+      "chatAnswer": "Tokyo",
+      "capturedAnswer": "Tokyo",
+      "captureSource": "chat",
+      "recovered": false,
+      "probe": {
+        "helpersVersion": 33,
+        "tabHidden": false,
+        "tabVisibility": "visible",
+        "hasCompletedReplyActions": true,
+        "isGenerating": false,
+        "isChatInProgress": false,
+        "answerLen": 5,
+        "looksFinal": true,
+        "answerPreview": "Tokyo",
+        "answerFull": "Tokyo",
+        "conversationId": "37d773dd-10fd-80d4-8b08-00a91635721c"
+      },
+      "pass": true,
+      "captureWhileHidden": false,
+      "directCapture": true
+    }
+  ],
+  "initialVisibility": {
+    "hidden": true,
+    "visibility": "hidden",
+    "hasFocus": false,
+    "url": "https://app.notion.com/ai"
+  },
+  "finishedAt": "2026-06-12T14:53:54.298Z",
+  "passCount": 1,
+  "directCaptureCount": 1,
+  "hiddenBeforeCount": 1,
+  "conversationId": "37d773dd-10fd-80d4-8b08-00a91635721c"
+}
