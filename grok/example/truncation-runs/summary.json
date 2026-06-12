@@ -1,0 +1,339 @@
+{
+  "startedAt": "2026-06-12T07:57:36.057Z",
+  "totalRuns": 20,
+  "e2eCount": 5,
+  "tab": "d77a",
+  "runs": [
+    {
+      "run": 1,
+      "kind": "prompt21-full",
+      "model": "fast",
+      "command": "chat",
+      "promptLen": 3475,
+      "input": {
+        "classification": "set_failed",
+        "setOk": false,
+        "expectedLen": 3475,
+        "actualLen": 3478,
+        "timedOut": false
+      },
+      "e2e": null
+    },
+    {
+      "run": 2,
+      "kind": "short",
+      "model": "auto",
+      "command": "chat",
+      "promptLen": 42,
+      "input": {
+        "classification": "input_ok",
+        "setOk": true,
+        "expectedLen": 42,
+        "actualLen": 42,
+        "timedOut": false
+      },
+      "e2e": {
+        "classification": "error:unknown",
+        "answerLen": 0,
+        "hasAnswerJson": false,
+        "timedOut": true
+      }
+    },
+    {
+      "run": 3,
+      "kind": "short",
+      "model": "expert",
+      "command": "chat",
+      "promptLen": 44,
+      "input": {
+        "classification": "input_ok",
+        "setOk": true,
+        "expectedLen": 44,
+        "actualLen": 44,
+        "timedOut": false
+      },
+      "e2e": {
+        "classification": "answer_json_ok",
+        "answerLen": 26,
+        "hasAnswerJson": true,
+        "timedOut": false
+      }
+    },
+    {
+      "run": 4,
+      "kind": "short",
+      "model": "heavy",
+      "command": "chatfollow",
+      "promptLen": 31,
+      "input": {
+        "classification": "input_ok",
+        "setOk": true,
+        "expectedLen": 31,
+        "actualLen": 31,
+        "timedOut": false
+      },
+      "e2e": {
+        "classification": "error:unknown",
+        "answerLen": 0,
+        "hasAnswerJson": false,
+        "timedOut": true
+      }
+    },
+    {
+      "run": 5,
+      "kind": "short",
+      "model": "beta",
+      "command": "chat",
+      "promptLen": 46,
+      "input": {
+        "classification": "input_ok",
+        "setOk": true,
+        "expectedLen": 46,
+        "actualLen": 46,
+        "timedOut": false
+      },
+      "e2e": {
+        "classification": "error:Mode selection failed",
+        "answerLen": 0,
+        "hasAnswerJson": false,
+        "error": "Mode selection failed",
+        "timedOut": false
+      }
+    },
+    {
+      "run": 6,
+      "kind": "long-json",
+      "model": "fast",
+      "command": "chat",
+      "promptLen": 2110,
+      "input": {
+        "classification": "input_ok",
+        "setOk": true,
+        "expectedLen": 2110,
+        "actualLen": 2111,
+        "timedOut": false
+      },
+      "e2e": null
+    },
+    {
+      "run": 7,
+      "kind": "short",
+      "model": "auto",
+      "command": "chatfollow",
+      "promptLen": 35,
+      "input": {
+        "classification": "input_ok",
+        "setOk": true,
+        "expectedLen": 35,
+        "actualLen": 35,
+        "timedOut": false
+      },
+      "e2e": null
+    },
+    {
+      "run": 8,
+      "kind": "news-json",
+      "model": "expert",
+      "command": "chat",
+      "promptLen": 309,
+      "input": {
+        "classification": "input_ok",
+        "setOk": true,
+        "expectedLen": 309,
+        "actualLen": 312,
+        "timedOut": false
+      },
+      "e2e": null
+    },
+    {
+      "run": 9,
+      "kind": "short",
+      "model": "heavy",
+      "command": "chat",
+      "promptLen": 34,
+      "input": {
+        "classification": "input_ok",
+        "setOk": true,
+        "expectedLen": 34,
+        "actualLen": 34,
+        "timedOut": false
+      },
+      "e2e": null
+    },
+    {
+      "run": 10,
+      "kind": "short",
+      "model": "beta",
+      "command": "chatfollow",
+      "promptLen": 29,
+      "input": {
+        "classification": "input_ok",
+        "setOk": true,
+        "expectedLen": 29,
+        "actualLen": 29,
+        "timedOut": false
+      },
+      "e2e": null
+    },
+    {
+      "run": 11,
+      "kind": "long-json",
+      "model": "fast",
+      "command": "chat",
+      "promptLen": 2113,
+      "input": {
+        "classification": "input_ok",
+        "setOk": true,
+        "expectedLen": 2113,
+        "actualLen": 2114,
+        "timedOut": false
+      },
+      "e2e": null
+    },
+    {
+      "run": 12,
+      "kind": "structural-json",
+      "model": "auto",
+      "command": "chat",
+      "promptLen": 451,
+      "input": {
+        "classification": "input_ok",
+        "setOk": true,
+        "expectedLen": 451,
+        "actualLen": 453,
+        "timedOut": false
+      },
+      "e2e": null
+    },
+    {
+      "run": 13,
+      "kind": "short",
+      "model": "expert",
+      "command": "chatfollow",
+      "promptLen": 44,
+      "input": {
+        "classification": "input_ok",
+        "setOk": true,
+        "expectedLen": 44,
+        "actualLen": 44,
+        "timedOut": false
+      },
+      "e2e": null
+    },
+    {
+      "run": 14,
+      "kind": "short",
+      "model": "heavy",
+      "command": "chat",
+      "promptLen": 31,
+      "input": {
+        "classification": "input_ok",
+        "setOk": true,
+        "expectedLen": 31,
+        "actualLen": 31,
+        "timedOut": false
+      },
+      "e2e": null
+    },
+    {
+      "run": 15,
+      "kind": "news-json",
+      "model": "beta",
+      "command": "chat",
+      "promptLen": 314,
+      "input": {
+        "classification": "input_ok",
+        "setOk": true,
+        "expectedLen": 314,
+        "actualLen": 317,
+        "timedOut": false
+      },
+      "e2e": null
+    },
+    {
+      "run": 16,
+      "kind": "long-json",
+      "model": "fast",
+      "command": "chatfollow",
+      "promptLen": 2113,
+      "input": {
+        "classification": "input_ok",
+        "setOk": true,
+        "expectedLen": 2113,
+        "actualLen": 2114,
+        "timedOut": false
+      },
+      "e2e": null
+    },
+    {
+      "run": 17,
+      "kind": "short",
+      "model": "auto",
+      "command": "chat",
+      "promptLen": 35,
+      "input": {
+        "classification": "input_ok",
+        "setOk": true,
+        "expectedLen": 35,
+        "actualLen": 35,
+        "timedOut": false
+      },
+      "e2e": null
+    },
+    {
+      "run": 18,
+      "kind": "short",
+      "model": "expert",
+      "command": "chat",
+      "promptLen": 27,
+      "input": {
+        "classification": "input_ok",
+        "setOk": true,
+        "expectedLen": 27,
+        "actualLen": 27,
+        "timedOut": false
+      },
+      "e2e": null
+    },
+    {
+      "run": 19,
+      "kind": "short",
+      "model": "heavy",
+      "command": "chatfollow",
+      "promptLen": 34,
+      "input": {
+        "classification": "input_ok",
+        "setOk": true,
+        "expectedLen": 34,
+        "actualLen": 34,
+        "timedOut": false
+      },
+      "e2e": null
+    },
+    {
+      "run": 20,
+      "kind": "short",
+      "model": "beta",
+      "command": "chat",
+      "promptLen": 29,
+      "input": {
+        "classification": "input_ok",
+        "setOk": true,
+        "expectedLen": 29,
+        "actualLen": 29,
+        "timedOut": false
+      },
+      "e2e": null
+    }
+  ],
+  "finishedAt": "2026-06-12T08:07:58.726Z",
+  "inputClassificationCounts": {
+    "set_failed": 1,
+    "input_ok": 19
+  },
+  "e2eClassificationCounts": {
+    "error:unknown": 2,
+    "answer_json_ok": 1,
+    "error:Mode selection failed": 1
+  }
+}

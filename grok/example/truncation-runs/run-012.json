@@ -1,0 +1,15 @@
+{
+  "run": 12,
+  "kind": "structural-json",
+  "model": "auto",
+  "command": "chat",
+  "promptLen": 451,
+  "input": {
+    "classification": "input_ok",
+    "setOk": true,
+    "expectedLen": 451,
+    "actualLen": 453,
+    "timedOut": false
+  },
+  "e2e": null
+}

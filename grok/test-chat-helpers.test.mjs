@@ -162,6 +162,36 @@ describe("grok chat completion detection", () => {
     expect(block.canRetry).toBe(true);
   });
 
+  test("verifyChatInput accepts full composer text", () => {
+    const editor = document.createElement("div");
+    editor.setAttribute("contenteditable", "true");
+    const host = document.createElement("div");
+    host.setAttribute("data-testid", "chat-input");
+    host.appendChild(editor);
+    document.body.appendChild(host);
+
+    const long = "HEAD_" + "x".repeat(500) + "_TAIL";
+    editor.textContent = long;
+    const check = h.verifyChatInput(long);
+    expect(check.ok).toBe(true);
+    expect(check.actualLen).toBe(long.length);
+  });
+
+  test("verifyChatInput flags short insert", () => {
+    const editor = document.createElement("div");
+    editor.setAttribute("contenteditable", "true");
+    editor.textContent = "partial";
+    const host = document.createElement("div");
+    host.setAttribute("data-testid", "chat-input");
+    host.appendChild(editor);
+    document.body.appendChild(host);
+
+    const expected = "START_" + "y".repeat(200) + "_END";
+    const check = h.verifyChatInput(expected);
+    expect(check.ok).toBe(false);
+    expect(check.kind).toBe("truncated");
+  });
+
   test("checkGrokAnswerBlocked detects unable-to-reply from page text without assistant-message", () => {
     const banner = document.createElement("div");
     banner.innerHTML = "<p>Grok was unable to reply to your last message.</p>";

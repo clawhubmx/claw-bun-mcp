@@ -1,0 +1,17 @@
+{
+  "run": 23,
+  "kind": "short",
+  "model": {
+    "alias": "opus-4.8",
+    "title": "Opus 4.8"
+  },
+  "promptPreview": "Return JSON only: {\"color\":\"blue\",\"count\":3}. json format only",
+  "probe": {
+    "timedOut": false,
+    "classification": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 2144\"}",
+    "timelineSummary": [],
+    "full": {
+      "error": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 2144\"}"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "run": 6,
+  "kind": "short",
+  "model": {
+    "alias": "opus-4.7",
+    "title": "Opus 4.7"
+  },
+  "promptPreview": "List two prime numbers under 20. Comma separated, no explanation.",
+  "probe": {
+    "timedOut": true,
+    "timelineSummary": [],
+    "full": null
+  }
+}

@@ -1,0 +1,40 @@
+Silent-submit probe: 25 runs, probe=30000ms, pause=1500ms
+
+Opened dedicated tab: f3e8
+Priming helpers...
+prime: undefined
+
+--- Run 1/25 | opus | prompt21-full ---
+  probe: undefined
+
+--- Run 2/25 | opus-4.7 | short ---
+  probe: undefined
+
+--- Run 3/25 | opus-4.8 | short ---
+  probe: undefined
+
+--- Run 4/25 | sonnet | short ---
+  probe: undefined
+
+--- Run 5/25 | opus | short ---
+  probe: undefined
+
+--- Run 6/25 | opus-4.7 | short ---
+  probe: undefined
+
+--- Run 7/25 | opus-4.8 | short ---
+  probe: undefined
+
+--- Run 8/25 | sonnet | news-json ---
+  probe: undefined
+
+--- Run 9/25 | opus | short ---
+  probe: undefined
+
+--- Run 10/25 | opus-4.7 | short ---
+  probe: undefined
+
+--- Run 11/25 | opus-4.8 | short ---
+  probe: undefined
+
+--- Run 12/25 | sonnet | short ---

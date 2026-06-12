@@ -1,0 +1,14 @@
+{
+  "run": 1,
+  "kind": "prompt21-full",
+  "model": {
+    "alias": "opus",
+    "title": "Opus 4.7"
+  },
+  "promptPreview": "You are a news research assistant. Search the listed publisher domains for recent coverage. Return JSON only.. json form",
+  "probe": {
+    "timedOut": true,
+    "timelineSummary": [],
+    "full": null
+  }
+}

@@ -1,0 +1,217 @@
+Grok truncation probe: 100 input checks, up to 15 e2e (tab d77a)
+
+Starting conversationId: 5db78da2-11b6-47d6-a744-ddbbe0c722b9
+
+--- Run 1/100 | fast | chatfollow | prompt21-full | len 3475 ---
+  input: input_ok | e2e: answer_ok
+--- Run 2/100 | auto | chat | short | len 42 ---
+  input: input_ok | e2e: error:Mode change requires page reload
+--- Run 3/100 | expert | chat | short | len 44 ---
+  input: input_ok | e2e: error:Mode change requires page reload
+--- Run 4/100 | heavy | chatfollow | short | len 31 ---
+  input: input_ok | e2e: error:Daemon HTTP 400: {"success":false,"error":"Runtime.evaluate: Inspected target navigated or closed"}
+--- Run 5/100 | beta | chat | short | len 46 ---
+  input: input_ok | e2e: error:Mode selection failed
+--- Run 6/100 | fast | chat | long-json | len 2110 ---
+  input: input_ok | e2e: error:Mode change requires page reload
+--- Run 7/100 | auto | chatfollow | short | len 35 ---
+  input: set_failed (35/35)
+--- Run 8/100 | expert | chat | news-json | len 309 ---
+  input: input_ok | e2e: error:Mode change requires page reload
+--- Run 9/100 | heavy | chat | short | len 34 ---
+  input: input_ok | e2e: error:Mode change requires page reload
+--- Run 10/100 | beta | chatfollow | short | len 29 ---
+  input: set_failed (29/29)
+--- Run 11/100 | fast | chat | long-json | len 2113 ---
+  input: input_ok | e2e: error:Mode change requires page reload
+--- Run 12/100 | auto | chat | structural-json | len 451 ---
+  input: input_ok | e2e: error:Mode change requires page reload
+--- Run 13/100 | expert | chatfollow | short | len 44 ---
+  input: set_failed (44/44)
+--- Run 14/100 | heavy | chat | short | len 31 ---
+  input: input_ok | e2e: error:Mode change requires page reload
+--- Run 15/100 | beta | chat | news-json | len 314 ---
+  input: input_mismatch (317/314)
+--- Run 16/100 | fast | chatfollow | long-json | len 2113 ---
+  input: input_ok (2114/2113)
+--- Run 17/100 | auto | chat | short | len 35 ---
+  input: input_ok (35/35)
+--- Run 18/100 | expert | chat | short | len 27 ---
+  input: input_ok (27/27)
+--- Run 19/100 | heavy | chatfollow | short | len 34 ---
+  input: input_ok (34/34)
+--- Run 20/100 | beta | chat | short | len 29 ---
+  input: input_ok (29/29)
+--- Run 21/100 | fast | chat | long-json | len 2113 ---
+  input: input_ok (2114/2113)
+--- Run 22/100 | auto | chatfollow | news-json | len 317 ---
+  input: input_ok (317/317)
+--- Run 23/100 | expert | chat | structural-json | len 451 ---
+  input: input_ok (453/451)
+--- Run 24/100 | heavy | chat | short | len 31 ---
+  input: input_ok (31/31)
+--- Run 25/100 | beta | chatfollow | short | len 46 ---
+  input: input_ok (46/46)
+--- Run 26/100 | fast | chat | long-json | len 2113 ---
+  input: input_ok (2114/2113)
+--- Run 27/100 | auto | chat | short | len 35 ---
+  input: input_ok (35/35)
+--- Run 28/100 | expert | chatfollow | short | len 27 ---
+  input: input_ok (27/27)
+--- Run 29/100 | heavy | chat | news-json | len 319 ---
+  input: input_ok (319/319)
+--- Run 30/100 | beta | chat | short | len 29 ---
+  input: input_ok (29/29)
+--- Run 31/100 | fast | chatfollow | long-json | len 2113 ---
+  input: input_ok (2114/2113)
+--- Run 32/100 | auto | chat | short | len 42 ---
+  input: input_ok (42/42)
+--- Run 33/100 | expert | chat | short | len 44 ---
+  input: input_ok (44/44)
+--- Run 34/100 | heavy | chatfollow | structural-json | len 451 ---
+  input: input_ok (453/451)
+--- Run 35/100 | beta | chat | short | len 46 ---
+  input: input_ok (46/46)
+--- Run 36/100 | fast | chat | news-json | len 314 ---
+  input: input_ok (314/314)
+--- Run 37/100 | auto | chatfollow | short | len 35 ---
+  input: input_ok (35/35)
+--- Run 38/100 | expert | chat | short | len 27 ---
+  input: input_ok (27/27)
+--- Run 39/100 | heavy | chat | short | len 34 ---
+  input: input_ok (34/34)
+--- Run 40/100 | beta | chatfollow | short | len 29 ---
+  input: input_ok (29/29)
+--- Run 41/100 | fast | chat | long-json | len 2113 ---
+  input: input_ok (2114/2113)
+--- Run 42/100 | auto | chat | short | len 42 ---
+  input: input_ok (42/42)
+--- Run 43/100 | expert | chatfollow | news-json | len 312 ---
+  input: input_ok (312/312)
+--- Run 44/100 | heavy | chat | short | len 31 ---
+  input: input_ok (31/31)
+--- Run 45/100 | beta | chat | structural-json | len 451 ---
+  input: input_ok (453/451)
+--- Run 46/100 | fast | chatfollow | long-json | len 2113 ---
+  input: input_ok (2114/2113)
+--- Run 47/100 | auto | chat | short | len 35 ---
+  input: input_ok (35/35)
+--- Run 48/100 | expert | chat | short | len 27 ---
+  input: input_ok (27/27)
+--- Run 49/100 | heavy | chatfollow | short | len 34 ---
+  input: input_ok (34/34)
+--- Run 50/100 | beta | chat | news-json | len 310 ---
+  input: input_ok (310/310)
+--- Run 51/100 | fast | chat | long-json | len 2113 ---
+  input: input_ok (2114/2113)
+--- Run 52/100 | auto | chatfollow | short | len 42 ---
+  input: input_ok (42/42)
+--- Run 53/100 | expert | chat | short | len 44 ---
+  input: input_ok (44/44)
+--- Run 54/100 | heavy | chat | short | len 31 ---
+  input: input_ok (31/31)
+--- Run 55/100 | beta | chatfollow | short | len 46 ---
+  input: input_ok (46/46)
+--- Run 56/100 | fast | chat | structural-json | len 451 ---
+  input: input_ok (453/451)
+--- Run 57/100 | auto | chat | news-json | len 317 ---
+  input: input_ok (317/317)
+--- Run 58/100 | expert | chatfollow | short | len 27 ---
+  input: input_ok (27/27)
+--- Run 59/100 | heavy | chat | short | len 34 ---
+  input: input_ok (34/34)
+--- Run 60/100 | beta | chat | short | len 29 ---
+  input: input_ok (29/29)
+--- Run 61/100 | fast | chatfollow | long-json | len 2113 ---
+  input: input_ok (2114/2113)
+--- Run 62/100 | auto | chat | short | len 42 ---
+  input: input_ok (42/42)
+--- Run 63/100 | expert | chat | short | len 44 ---
+  input: input_ok (44/44)
+--- Run 64/100 | heavy | chatfollow | news-json | len 310 ---
+  input: input_ok (310/310)
+--- Run 65/100 | beta | chat | short | len 46 ---
+  input: input_ok (46/46)
+--- Run 66/100 | fast | chat | long-json | len 2113 ---
+  input: input_ok (2114/2113)
+--- Run 67/100 | auto | chatfollow | structural-json | len 451 ---
+  input: input_ok (453/451)
+--- Run 68/100 | expert | chat | short | len 27 ---
+  input: input_ok (27/27)
+--- Run 69/100 | heavy | chat | short | len 34 ---
+  input: input_ok (34/34)
+--- Run 70/100 | beta | chatfollow | short | len 29 ---
+  input: input_ok (29/29)
+--- Run 71/100 | fast | chat | news-json | len 314 ---
+  input: input_ok (314/314)
+--- Run 72/100 | auto | chat | short | len 42 ---
+  input: input_ok (42/42)
+--- Run 73/100 | expert | chatfollow | short | len 44 ---
+  input: input_ok (44/44)
+--- Run 74/100 | heavy | chat | short | len 31 ---
+  input: input_ok (31/31)
+--- Run 75/100 | beta | chat | short | len 46 ---
+  input: input_ok (46/46)
+--- Run 76/100 | fast | chatfollow | long-json | len 2113 ---
+  input: input_ok (2114/2113)
+--- Run 77/100 | auto | chat | short | len 35 ---
+  input: input_ok (35/35)
+--- Run 78/100 | expert | chat | structural-json | len 451 ---
+  input: input_ok (453/451)
+--- Run 79/100 | heavy | chatfollow | short | len 34 ---
+  input: input_ok (34/34)
+--- Run 80/100 | beta | chat | short | len 29 ---
+  input: input_ok (29/29)
+--- Run 81/100 | fast | chat | long-json | len 2113 ---
+  input: input_ok (2114/2113)
+--- Run 82/100 | auto | chatfollow | short | len 42 ---
+  input: input_ok (42/42)
+--- Run 83/100 | expert | chat | short | len 44 ---
+  input: input_ok (44/44)
+--- Run 84/100 | heavy | chat | short | len 31 ---
+  input: input_ok (31/31)
+--- Run 85/100 | beta | chatfollow | news-json | len 319 ---
+  input: input_ok (319/319)
+--- Run 86/100 | fast | chat | long-json | len 2113 ---
+  input: input_ok (2114/2113)
+--- Run 87/100 | auto | chat | short | len 35 ---
+  input: input_ok (35/35)
+--- Run 88/100 | expert | chatfollow | short | len 27 ---
+  input: input_ok (27/27)
+--- Run 89/100 | heavy | chat | structural-json | len 451 ---
+  input: input_ok (453/451)
+--- Run 90/100 | beta | chat | short | len 29 ---
+  input: input_ok (29/29)
+--- Run 91/100 | fast | chatfollow | long-json | len 2113 ---
+  input: input_ok (2114/2113)
+--- Run 92/100 | auto | chat | news-json | len 314 ---
+  input: input_ok (314/314)
+--- Run 93/100 | expert | chat | short | len 44 ---
+  input: input_ok (44/44)
+--- Run 94/100 | heavy | chatfollow | short | len 31 ---
+  input: input_ok (31/31)
+--- Run 95/100 | beta | chat | short | len 46 ---
+  input: input_ok (46/46)
+--- Run 96/100 | fast | chat | long-json | len 2113 ---
+  input: input_ok (2114/2113)
+--- Run 97/100 | auto | chatfollow | short | len 35 ---
+  input: input_ok (35/35)
+--- Run 98/100 | expert | chat | short | len 27 ---
+  input: input_ok (27/27)
+--- Run 99/100 | heavy | chat | news-json | len 312 ---
+  input: input_ok (312/312)
+--- Run 100/100 | beta | chatfollow | structural-json | len 452 ---
+  input: input_ok (454/452)
+
+=== Input classification ===
+  input_ok: 96
+  set_failed: 3
+  input_mismatch: 1
+
+=== E2E classification ===
+  answer_ok: 1
+  error:Mode change requires page reload: 8
+  error:Daemon HTTP 400: {"success":false,"error":"Runtime.evaluate: Inspected target navigated or closed"}: 1
+  error:Mode selection failed: 1
+
+Results: /Users/hesdx/Documents/clawhost/claw-bun-mcp/grok/example/truncation-runs/summary.json

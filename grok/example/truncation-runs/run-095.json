@@ -1,0 +1,15 @@
+{
+  "run": 95,
+  "kind": "short",
+  "model": "beta",
+  "command": "chat",
+  "promptLen": 46,
+  "input": {
+    "classification": "input_ok",
+    "setOk": true,
+    "expectedLen": 46,
+    "actualLen": 46,
+    "timedOut": false
+  },
+  "e2e": null
+}

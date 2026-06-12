@@ -1,0 +1,15 @@
+{
+  "run": 100,
+  "kind": "structural-json",
+  "model": "beta",
+  "command": "chatfollow",
+  "promptLen": 452,
+  "input": {
+    "classification": "input_ok",
+    "setOk": true,
+    "expectedLen": 452,
+    "actualLen": 454,
+    "timedOut": false
+  },
+  "e2e": null
+}

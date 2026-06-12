@@ -1,0 +1,17 @@
+{
+  "run": 24,
+  "kind": "short",
+  "model": {
+    "alias": "sonnet",
+    "title": "Sonnet 4.6"
+  },
+  "promptPreview": "Name one planet. One word only.",
+  "probe": {
+    "timedOut": false,
+    "classification": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 2144\"}",
+    "timelineSummary": [],
+    "full": {
+      "error": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 2144\"}"
+    }
+  }
+}

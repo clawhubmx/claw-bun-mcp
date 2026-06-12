@@ -1,0 +1,17 @@
+{
+  "run": 22,
+  "kind": "news-json",
+  "model": {
+    "alias": "opus-4.7",
+    "title": "Opus 4.7"
+  },
+  "promptPreview": "You are a news research assistant. Return JSON only; json format only; NO markdown.\nBased on user query: \"Fed interest r",
+  "probe": {
+    "timedOut": false,
+    "classification": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 2144\"}",
+    "timelineSummary": [],
+    "full": {
+      "error": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 2144\"}"
+    }
+  }
+}

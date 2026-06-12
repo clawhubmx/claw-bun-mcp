@@ -1,0 +1,14 @@
+{
+  "run": 7,
+  "kind": "short",
+  "model": {
+    "alias": "opus-4.8",
+    "title": "Opus 4.8"
+  },
+  "promptPreview": "Return only JSON: {\"hello\":\"world\"}. json format only",
+  "probe": {
+    "timedOut": true,
+    "timelineSummary": [],
+    "full": null
+  }
+}

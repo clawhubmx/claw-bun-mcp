@@ -1,0 +1,17 @@
+{
+  "run": 14,
+  "kind": "short",
+  "model": {
+    "alias": "opus-4.7",
+    "title": "Opus 4.7"
+  },
+  "promptPreview": "Name one planet. One word only.",
+  "probe": {
+    "timedOut": false,
+    "classification": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 2144\"}",
+    "timelineSummary": [],
+    "full": {
+      "error": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 2144\"}"
+    }
+  }
+}

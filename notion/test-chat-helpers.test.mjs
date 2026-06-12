@@ -80,6 +80,13 @@ describe("notion chat helpers", () => {
     expect(h.looksLikeFinalAnswer("Hello there, Joseph.")).toBe(true);
   });
 
+  test("looksLikeFinalAnswer accepts short numeric and one-word answers", () => {
+    const h = installHelpers();
+    expect(h.looksLikeFinalAnswer("7")).toBe(true);
+    expect(h.looksLikeFinalAnswer("42")).toBe(true);
+    expect(h.looksLikeFinalAnswer("Mars")).toBe(true);
+  });
+
   test("looksLikeFinalAnswer rejects progress lines", () => {
     const h = installHelpers();
     expect(h.looksLikeFinalAnswer("Notion AI finished.")).toBe(false);
@@ -241,15 +248,56 @@ describe("notion chat helpers", () => {
     const h = installHelpers();
     document.body.innerHTML =
       '<div class="layout-chat">' +
-      "Searching the web\n".repeat(20) +
-      "Thought\nSearched the web\n" +
-      "Final report complete." +
+      '<div class="content-editable-leaf-rtl">Summarize this in one sentence.</div>' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Final report complete with enough detail for the user.</div>' +
       '<button aria-label="Copy response"></button>' +
       '<button aria-label="Share positive feedback"></button>' +
       '<button aria-label="Share negative feedback"></button>' +
-      '</div>';
+      '</div></div>';
     expect(h.isGenerating()).toBe(false);
     expect(h.isChatInProgress()).toBe(false);
+  });
+
+  test("isGenerating detects Brewing and Focusing status lines", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">What is 17+25?</div>' +
+      "Focusing\nFocusing\nOpus 4.7</div>";
+    expect(h.isGenerating()).toBe(true);
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">News search</div>' +
+      "Brewing\nBrewing</div>";
+    expect(h.isGenerating()).toBe(true);
+  });
+
+  test("isGenerating stays true when stale copy buttons exist but new turn is Brewing", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Old completed answer with enough detail.</div>' +
+      '<button aria-label="Copy response"></button>' +
+      '<button aria-label="Share positive feedback"></button>' +
+      '<button aria-label="Share negative feedback"></button>' +
+      '</div>' +
+      '<div class="content-editable-leaf-rtl">What is 17+25?</div>' +
+      "Focusing\nFocusing</div>";
+    expect(h.isGenerating()).toBe(true);
+    expect(h.isChatInProgress()).toBe(true);
+  });
+
+  test("getAssistantMessagesSinceLastUser ignores metadata and pre-user assistant blocks", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">true</div></div>' +
+      '<div class="content-editable-leaf-rtl">What is 17+25?</div>' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">42</div></div>' +
+      '</div>';
+    expect(h.getAssistantMessages().length).toBe(1);
+    expect(h.getAssistantMessagesSinceLastUser().length).toBe(1);
+    expect(h.getAssistantText(h.getAssistantMessagesSinceLastUser()[0])).toBe("42");
   });
 
   test("isGenerating ignores stale agent progress outside recent lines", () => {

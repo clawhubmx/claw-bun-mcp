@@ -1,0 +1,14 @@
+{
+  "run": 11,
+  "kind": "short",
+  "model": {
+    "alias": "opus-4.8",
+    "title": "Opus 4.8"
+  },
+  "promptPreview": "Reply with only valid JSON: {\"status\":\"ok\",\"n\":1}. json format only; NO markdown",
+  "probe": {
+    "timedOut": true,
+    "timelineSummary": [],
+    "full": null
+  }
+}

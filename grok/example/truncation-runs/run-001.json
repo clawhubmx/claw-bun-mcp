@@ -1,0 +1,15 @@
+{
+  "run": 1,
+  "kind": "prompt21-full",
+  "model": "fast",
+  "command": "chat",
+  "promptLen": 3475,
+  "input": {
+    "classification": "set_failed",
+    "setOk": false,
+    "expectedLen": 3475,
+    "actualLen": 3478,
+    "timedOut": false
+  },
+  "e2e": null
+}

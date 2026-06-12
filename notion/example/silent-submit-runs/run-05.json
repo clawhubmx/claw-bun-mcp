@@ -1,0 +1,14 @@
+{
+  "run": 5,
+  "kind": "short",
+  "model": {
+    "alias": "opus",
+    "title": "Opus 4.7"
+  },
+  "promptPreview": "JSON only: {\"topic\":\"AI regulation\",\"score\":7}. no markdown",
+  "probe": {
+    "timedOut": true,
+    "timelineSummary": [],
+    "full": null
+  }
+}

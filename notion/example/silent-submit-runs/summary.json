@@ -1,0 +1,162 @@
+{
+  "startedAt": "2026-06-12T07:43:16.933Z",
+  "probeMs": 30000,
+  "pauseMs": 1500,
+  "tab": "f3e8",
+  "runs": [
+    {
+      "run": 1,
+      "kind": "prompt21-full",
+      "model": {
+        "alias": "opus",
+        "title": "Opus 4.7"
+      },
+      "promptPreview": "You are a news research assistant. Search the listed publisher domains for recent coverage. Return JSON only.. json form",
+      "probe": {
+        "timedOut": true,
+        "timelineSummary": [],
+        "full": null
+      }
+    },
+    {
+      "run": 2,
+      "kind": "short",
+      "model": {
+        "alias": "opus-4.7",
+        "title": "Opus 4.7"
+      },
+      "promptPreview": "What is 17+25? Reply with just the number.",
+      "probe": {
+        "timedOut": true,
+        "timelineSummary": [],
+        "full": null
+      }
+    },
+    {
+      "run": 3,
+      "kind": "short",
+      "model": {
+        "alias": "opus-4.8",
+        "title": "Opus 4.8"
+      },
+      "promptPreview": "Return JSON only: {\"color\":\"blue\",\"count\":3}. json format only",
+      "probe": {
+        "timedOut": true,
+        "timelineSummary": [],
+        "full": null
+      }
+    },
+    {
+      "run": 4,
+      "kind": "short",
+      "model": {
+        "alias": "sonnet",
+        "title": "Sonnet 4.6"
+      },
+      "promptPreview": "Name one planet. One word only.",
+      "probe": {
+        "timedOut": true,
+        "timelineSummary": [],
+        "full": null
+      }
+    },
+    {
+      "run": 5,
+      "kind": "short",
+      "model": {
+        "alias": "opus",
+        "title": "Opus 4.7"
+      },
+      "promptPreview": "JSON only: {\"topic\":\"AI regulation\",\"score\":7}. no markdown",
+      "probe": {
+        "timedOut": true,
+        "timelineSummary": [],
+        "full": null
+      }
+    },
+    {
+      "run": 6,
+      "kind": "short",
+      "model": {
+        "alias": "opus-4.7",
+        "title": "Opus 4.7"
+      },
+      "promptPreview": "List two prime numbers under 20. Comma separated, no explanation.",
+      "probe": {
+        "timedOut": true,
+        "timelineSummary": [],
+        "full": null
+      }
+    },
+    {
+      "run": 7,
+      "kind": "short",
+      "model": {
+        "alias": "opus-4.8",
+        "title": "Opus 4.8"
+      },
+      "promptPreview": "Return only JSON: {\"hello\":\"world\"}. json format only",
+      "probe": {
+        "timedOut": true,
+        "timelineSummary": [],
+        "full": null
+      }
+    },
+    {
+      "run": 8,
+      "kind": "news-json",
+      "model": {
+        "alias": "sonnet",
+        "title": "Sonnet 4.6"
+      },
+      "promptPreview": "You are a news research assistant. Return JSON only; json format only; NO markdown.\nBased on user query: \"Bitcoin halvin",
+      "probe": {
+        "timedOut": true,
+        "timelineSummary": [],
+        "full": null
+      }
+    },
+    {
+      "run": 9,
+      "kind": "short",
+      "model": {
+        "alias": "opus",
+        "title": "Opus 4.7"
+      },
+      "promptPreview": "JSON only: {\"items\":[\"a\",\"b\"]}. json format only",
+      "probe": {
+        "timedOut": true,
+        "timelineSummary": [],
+        "full": null
+      }
+    },
+    {
+      "run": 10,
+      "kind": "short",
+      "model": {
+        "alias": "opus-4.7",
+        "title": "Opus 4.7"
+      },
+      "promptPreview": "Is water wet? yes or no only.",
+      "probe": {
+        "timedOut": true,
+        "timelineSummary": [],
+        "full": null
+      }
+    },
+    {
+      "run": 11,
+      "kind": "short",
+      "model": {
+        "alias": "opus-4.8",
+        "title": "Opus 4.8"
+      },
+      "promptPreview": "Reply with only valid JSON: {\"status\":\"ok\",\"n\":1}. json format only; NO markdown",
+      "probe": {
+        "timedOut": true,
+        "timelineSummary": [],
+        "full": null
+      }
+    }
+  ]
+}

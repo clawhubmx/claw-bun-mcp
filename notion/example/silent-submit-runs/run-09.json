@@ -1,0 +1,14 @@
+{
+  "run": 9,
+  "kind": "short",
+  "model": {
+    "alias": "opus",
+    "title": "Opus 4.7"
+  },
+  "promptPreview": "JSON only: {\"items\":[\"a\",\"b\"]}. json format only",
+  "probe": {
+    "timedOut": true,
+    "timelineSummary": [],
+    "full": null
+  }
+}

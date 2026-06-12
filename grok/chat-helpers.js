@@ -3,7 +3,7 @@
  * Inlined by grok/chat.js, grok/chatfollow.js, and grok/agent-chat.js — keep in sync.
  */
 function installGrokChatHelpers() {
-  var HELPERS_VERSION = 19;
+  var HELPERS_VERSION = 23;
 
   // Default wait when mode is unrecognized (fast/auto)
   var GROK_CHAT_WAIT_MS = 15 * 60 * 1000;
@@ -314,23 +314,156 @@ function installGrokChatHelpers() {
     return false;
   }
 
-  function setChatInput(value) {
+  function getChatInput() {
     var editor = document.querySelector('[data-testid="chat-input"] [contenteditable="true"]');
-    if (editor) {
-      editor.focus();
+    if (editor) return editor;
+    return document.querySelector('textarea') || null;
+  }
+
+  function normalizePromptText(text) {
+    return String(text || '')
+      .replace(/\r\n/g, '\n')
+      .replace(/\u2013|\u2014/g, '-')
+      .replace(/\u2018|\u2019/g, "'")
+      .replace(/\u201c|\u201d/g, '"')
+      .replace(/\n+$/, '');
+  }
+
+  function getChatInputText() {
+    var editor = getChatInput();
+    if (!editor) return '';
+    var raw = editor.innerText != null ? editor.innerText : (editor.textContent || editor.value || '');
+    return normalizePromptText(raw);
+  }
+
+  function inputMatchesExpected(got, expected) {
+    got = normalizePromptText(got);
+    expected = normalizePromptText(expected);
+    if (got === expected) return true;
+    if (got.length < Math.floor(expected.length * 0.98)) return false;
+    if (expected.length >= 40 && got.slice(0, 40) !== expected.slice(0, 40)) return false;
+    if (expected.length >= 40 && got.slice(-40) !== expected.slice(-40)) return false;
+    return Math.abs(got.length - expected.length) <= 3;
+  }
+
+  function verifyChatInput(expected) {
+    expected = String(expected == null ? '' : expected);
+    var got = getChatInputText();
+    var ok = inputMatchesExpected(got, expected);
+    var out = {
+      ok: ok,
+      expectedLen: expected.length,
+      actualLen: got.length
+    };
+    if (!ok) {
+      out.kind = got.length < expected.length * 0.98 ? 'truncated' : 'mismatch';
+      out.expectedHead = expected.slice(0, 80);
+      out.actualHead = got.slice(0, 80);
+      out.expectedTail = expected.slice(-80);
+      out.actualTail = got.slice(-80);
+    }
+    return out;
+  }
+
+  function setChatInput(value) {
+    value = String(value == null ? '' : value);
+    var editor = getChatInput();
+    if (!editor) return false;
+    editor.focus();
+    try { editor.click(); } catch (e) {}
+
+    if (editor.getAttribute('contenteditable') === 'true' || editor.isContentEditable) {
       document.execCommand('selectAll', false, null);
       document.execCommand('insertText', false, value);
+      if (inputMatchesExpected(getChatInputText(), value)) {
+        editor.dispatchEvent(new InputEvent('input', {bubbles: true, inputType: 'insertText', data: value}));
+        return true;
+      }
+      editor.textContent = '';
+      var beforeInput = new InputEvent('beforeinput', {
+        bubbles: true,
+        cancelable: true,
+        inputType: 'insertText',
+        data: value
+      });
+      editor.dispatchEvent(beforeInput);
+      if (!beforeInput.defaultPrevented) {
+        editor.textContent = value;
+      }
       editor.dispatchEvent(new InputEvent('input', {bubbles: true, inputType: 'insertText', data: value}));
-      return true;
+      editor.dispatchEvent(new Event('change', {bubbles: true}));
+      return inputMatchesExpected(getChatInputText(), value);
     }
-    var ta = document.querySelector('textarea');
-    if (!ta) return false;
+
     var setter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value');
-    if (setter && setter.set) setter.set.call(ta, value);
-    else ta.value = value;
-    ta.dispatchEvent(new Event('input', {bubbles: true}));
-    ta.dispatchEvent(new Event('change', {bubbles: true}));
-    return true;
+    if (setter && setter.set) setter.set.call(editor, value);
+    else editor.value = value;
+    editor.dispatchEvent(new Event('input', {bubbles: true}));
+    editor.dispatchEvent(new Event('change', {bubbles: true}));
+    return inputMatchesExpected(getChatInputText(), value);
+  }
+
+  async function fillChatInput(value) {
+    value = String(value == null ? '' : value);
+    if (!getChatInput()) {
+      return { ok: false, error: 'Chat input not found', kind: 'composer_missing' };
+    }
+    var lastCheck = null;
+    for (var attempt = 0; attempt < 2; attempt++) {
+      if (attempt > 0) await sleep(250);
+      if (!setChatInput(value)) continue;
+      await sleep(attempt === 0 ? 200 : 350);
+      lastCheck = verifyChatInput(value);
+      if (lastCheck.ok) {
+        return { ok: true, inputCheck: lastCheck, attempts: attempt + 1 };
+      }
+    }
+    lastCheck = lastCheck || verifyChatInput(value);
+    return {
+      ok: false,
+      kind: lastCheck.kind || 'input_truncated',
+      error: 'Prompt truncated in composer',
+      inputCheck: lastCheck,
+      attempts: 2
+    };
+  }
+
+  async function pollModeLabel(requested, catalog, rounds, delayMs) {
+    for (var i = 0; i < rounds; i++) {
+      await sleep(delayMs);
+      var label = readGrokModeLabel();
+      if (modeLabelsMatch(requested, label, catalog)) return label;
+    }
+    return readGrokModeLabel();
+  }
+
+  async function tryApplyGrokModeViaMenu(requested, catalog) {
+    for (var menuTry = 0; menuTry < 2; menuTry++) {
+      if (!(await openModelMenu())) continue;
+      var option = findModeOptionElement(requested, catalog);
+      if (!option) {
+        document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+        await sleep(200);
+        continue;
+      }
+      option.click();
+      writeStoredGrokMode(requested);
+      var appliedLabel = await pollModeLabel(requested, catalog, 12, 350);
+      if (modeLabelsMatch(requested, appliedLabel, catalog)) {
+        document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+        return {
+          ok: true,
+          changed: true,
+          mode: requested,
+          label: appliedLabel,
+          modeTitle: getModeTitle(requested, catalog),
+          appliedVia: 'ui'
+        };
+      }
+      document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      await sleep(250);
+    }
+    return null;
   }
 
   function getSubmitButton() {
@@ -872,26 +1005,20 @@ function installGrokChatHelpers() {
       };
     }
 
-    if (await openModelMenu()) {
-      var option = findModeOptionElement(requested, catalog);
-      if (option) {
-        option.click();
-        await sleep(500);
-        writeStoredGrokMode(requested);
-        var appliedLabel = readGrokModeLabel();
-        if (modeLabelsMatch(requested, appliedLabel, catalog)) {
-          return {
-            ok: true,
-            changed: true,
-            mode: requested,
-            label: appliedLabel,
-            modeTitle: getModeTitle(requested, catalog),
-            appliedVia: 'ui'
-          };
-        }
-      }
-      document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
-      await sleep(200);
+    var viaMenu = await tryApplyGrokModeViaMenu(requested, catalog);
+    if (viaMenu && viaMenu.ok) return viaMenu;
+
+    writeStoredGrokMode(requested);
+    var storageLabel = await pollModeLabel(requested, catalog, 8, 400);
+    if (modeLabelsMatch(requested, storageLabel, catalog)) {
+      return {
+        ok: true,
+        changed: true,
+        mode: requested,
+        label: storageLabel,
+        modeTitle: getModeTitle(requested, catalog),
+        appliedVia: 'storage'
+      };
     }
 
     writeStoredGrokMode(requested);
@@ -1002,7 +1129,7 @@ function installGrokChatHelpers() {
           if (answer === lastText) stableRounds++;
           else stableRounds = 0;
           lastText = answer;
-          if (stableRounds >= 1) break;
+          if (stableRounds >= stableNeeded) break;
         } else if (!generating && !pending) {
           if (answer === lastText) stableRounds++;
           else stableRounds = 0;
@@ -1013,7 +1140,7 @@ function installGrokChatHelpers() {
           lastText = '';
         }
 
-        if (Date.now() >= deadline - pollMs * 10 && ready && !generating && !pending) break;
+        if (Date.now() >= deadline - pollMs * 10 && ready && !generating && !pending && stableRounds >= 1) break;
       }
     }
 
@@ -1071,6 +1198,10 @@ function installGrokChatHelpers() {
     readStoredGrokMode: readStoredGrokMode,
     readGrokModeLabel: readGrokModeLabel,
     setGrokMode: setGrokMode,
+    getChatInput: getChatInput,
+    getChatInputText: getChatInputText,
+    verifyChatInput: verifyChatInput,
+    fillChatInput: fillChatInput,
     setChatInput: setChatInput,
     clickSubmit: clickSubmit,
     waitForAssistantAnswer: waitForAssistantAnswer,

@@ -33,7 +33,7 @@ async function(args) {
 
 
   var h = (function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 25;
+  var HELPERS_VERSION = 26;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 500;
 
@@ -643,6 +643,23 @@ async function(args) {
     return !!block;
   }
 
+  function isAssistantMetadataText(text) {
+    var t = String(text || '').trim();
+    if (!t) return true;
+    if (/^(true|false)\.?$/i.test(t)) return true;
+    return false;
+  }
+
+  function getLastUserLeafIndex(leaves) {
+    var lastUserLeafIdx = -1;
+    for (var i = 0; i < leaves.length; i++) {
+      var text = (leaves[i].innerText || leaves[i].textContent || '').trim();
+      if (!text || leaves[i].getAttribute('contenteditable') === 'true') continue;
+      if (!isAssistantLeaf(leaves[i])) lastUserLeafIdx = i;
+    }
+    return lastUserLeafIdx;
+  }
+
   function getAssistantMessages() {
     var root = document.querySelector('.layout-chat') || document;
     var leaves = Array.prototype.slice.call(root.querySelectorAll('.content-editable-leaf-rtl'));
@@ -651,7 +668,25 @@ async function(args) {
       var text = (leaves[i].innerText || leaves[i].textContent || '').trim();
       if (!text) continue;
       if (leaves[i].getAttribute('contenteditable') === 'true') continue;
-      if (isAssistantLeaf(leaves[i])) out.push(leaves[i]);
+      if (!isAssistantLeaf(leaves[i])) continue;
+      if (isAssistantMetadataText(text)) continue;
+      out.push(leaves[i]);
+    }
+    return out;
+  }
+
+  function getAssistantMessagesSinceLastUser() {
+    var root = document.querySelector('.layout-chat') || document;
+    var leaves = Array.prototype.slice.call(root.querySelectorAll('.content-editable-leaf-rtl'));
+    var lastUserLeafIdx = getLastUserLeafIndex(leaves);
+    var out = [];
+    for (var j = lastUserLeafIdx + 1; j < leaves.length; j++) {
+      var leaf = leaves[j];
+      var leafText = (leaf.innerText || leaf.textContent || '').trim();
+      if (!leafText || leaf.getAttribute('contenteditable') === 'true') continue;
+      if (!isAssistantLeaf(leaf)) continue;
+      if (isAssistantMetadataText(leafText)) continue;
+      out.push(leaf);
     }
     return out;
   }
@@ -660,7 +695,7 @@ async function(args) {
     var t = String(line || '').trim();
     if (!t) return false;
     if (/^Notion AI finished\.?$/i.test(t)) return true;
-    if (/^(Searching|Reading|Browsing|Fetching|Thinking|Running)\b/i.test(t)) return true;
+    if (/^(Searching|Reading|Browsing|Fetching|Thinking|Running|Brewing|Focusing)\b/i.test(t)) return true;
     if (/^\d+s$/i.test(t)) return true;
     return false;
   }
@@ -669,7 +704,7 @@ async function(args) {
     var t = String(line || '').trim();
     if (!t) return false;
     if (isProgressLine(t)) return true;
-    if (/^(Exploring|Computing|Thought|Thinking|Searching the web|Reading files|Running tool|Generating|Writing file|Loading web page|Loaded web page|Called function|Searched the web|Browsing|Fetching top|Fetching recent)\b/i.test(t)) {
+    if (/^(Exploring|Computing|Thought|Thinking|Brewing|Focusing|Searching the web|Reading files|Running tool|Generating|Writing file|Loading web page|Loaded web page|Called function|Searched the web|Browsing|Fetching top|Fetching recent)\b/i.test(t)) {
       return true;
     }
     return false;
@@ -703,25 +738,7 @@ async function(args) {
   }
 
   function getCurrentReplyAssistantStartCount() {
-    var root = document.querySelector('.layout-chat') || document;
-    var leaves = Array.prototype.slice.call(root.querySelectorAll('.content-editable-leaf-rtl'));
-    var lastUserLeafIdx = -1;
-    for (var i = 0; i < leaves.length; i++) {
-      var text = (leaves[i].innerText || leaves[i].textContent || '').trim();
-      if (!text || leaves[i].getAttribute('contenteditable') === 'true') continue;
-      if (!isAssistantLeaf(leaves[i])) lastUserLeafIdx = i;
-    }
-    if (lastUserLeafIdx < 0) {
-      var msgs = getAssistantMessages();
-      return Math.max(0, msgs.length - 1);
-    }
-    var assistantBefore = 0;
-    for (var j = 0; j <= lastUserLeafIdx; j++) {
-      var leafText = (leaves[j].innerText || leaves[j].textContent || '').trim();
-      if (!leafText || leaves[j].getAttribute('contenteditable') === 'true') continue;
-      if (isAssistantLeaf(leaves[j])) assistantBefore++;
-    }
-    return assistantBefore;
+    return getAssistantMessages().length - getAssistantMessagesSinceLastUser().length;
   }
 
   function normalizeAnswerText(text) {
@@ -756,8 +773,12 @@ async function(args) {
   }
 
   function hasAssistantReplyActions() {
-    var root = document.querySelector('.layout-chat') || document;
-    var nodes = root.querySelectorAll('[aria-label]');
+    var msgs = getAssistantMessagesSinceLastUser();
+    if (!msgs.length) return false;
+    var latest = msgs[msgs.length - 1];
+    var block = latest.closest('.notion-text-block, .notion-selectable') || latest.parentElement;
+    if (!block) return false;
+    var nodes = block.querySelectorAll('[aria-label]');
     var hasCopyResponse = false;
     var hasFeedback = false;
     for (var i = 0; i < nodes.length; i++) {
@@ -770,15 +791,16 @@ async function(args) {
 
   function isGenerating() {
     if (isUrlTrustPromptVisible()) return true;
-    if (hasAssistantReplyActions()) return false;
     var text = getChatActivityText(12000);
     if (/Notion AI finished/i.test(text)) return false;
-    return hasActiveAgentStatusLines();
+    if (hasActiveAgentStatusLines()) return true;
+    if (hasAssistantReplyActions()) return false;
+    return false;
   }
 
   function isChatInProgress() {
-    if (hasAssistantReplyActions()) return false;
     if (isGenerating()) return true;
+    if (hasAssistantReplyActions()) return false;
     var msgs = getAssistantMessages();
     if (!msgs.length) return false;
     var latest = getAssistantText(msgs[msgs.length - 1]);
@@ -843,8 +865,10 @@ async function(args) {
     if (matchPromptRejected(t)) return false;
     if (looksLikeInProgressAnswer(t)) return false;
     if (looksLikeJsonAnswerAttempt(t)) return hasParsedJsonAnswer(t);
-    if (t.length < 2) return false;
     if (/^Auto$/i.test(t)) return false;
+    if (/^\d+$/.test(t)) return true;
+    if (/^[A-Za-z]{2,48}$/.test(t)) return true;
+    if (t.length < 2) return false;
     if (/[.!?]/.test(t) && /[A-Za-z]{2,}/.test(t)) return true;
     if (t.length >= 8) return true;
     return false;
@@ -906,7 +930,7 @@ async function(args) {
         return '';
       }
 
-      var messages = getAssistantMessages();
+      var messages = getAssistantMessagesSinceLastUser();
       var generating = isGenerating();
       var pending = generating || messages.length <= beforeCount;
       if (pending) sawInFlight = true;
@@ -2381,6 +2405,7 @@ async function(args) {
     getSubmitButton: getSubmitButton,
     clickSubmit: clickSubmit,
     getAssistantMessages: getAssistantMessages,
+    getAssistantMessagesSinceLastUser: getAssistantMessagesSinceLastUser,
     getAssistantText: getAssistantText,
     getAssistantAnswerSince: getAssistantAnswerSince,
     getCurrentReplyAssistantStartCount: getCurrentReplyAssistantStartCount,

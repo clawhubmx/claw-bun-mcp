@@ -1,0 +1,17 @@
+{
+  "run": 25,
+  "kind": "short",
+  "model": {
+    "alias": "opus",
+    "title": "Opus 4.7"
+  },
+  "promptPreview": "JSON only: {\"topic\":\"AI regulation\",\"score\":7}. no markdown",
+  "probe": {
+    "timedOut": false,
+    "classification": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 2144\"}",
+    "timelineSummary": [],
+    "full": {
+      "error": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 2144\"}"
+    }
+  }
+}

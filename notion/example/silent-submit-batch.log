@@ -1,0 +1,89 @@
+Silent-submit probe: 25 runs, probe=35000ms, pause=2000ms
+
+Priming helpers...
+prime: "New chat button not found"
+
+--- Run 1/25 | opus | prompt21-full ---
+  probe: silent_no_signals
+
+--- Run 2/25 | opus-4.7 | short ---
+  probe: silent_no_signals
+
+--- Run 3/25 | opus-4.8 | short ---
+  probe: in_flight_with_signals
+
+--- Run 4/25 | sonnet | short ---
+  probe: Daemon HTTP 400: {"success":false,"error":"Runtime.evaluate: Inspected target navigated or closed"}
+
+--- Run 5/25 | opus | short ---
+  probe: silent_no_signals
+
+--- Run 6/25 | opus-4.7 | short ---
+  probe: silent_no_signals
+
+--- Run 7/25 | opus-4.8 | short ---
+  probe: in_flight_with_signals
+
+--- Run 8/25 | sonnet | news-json ---
+  probe: answered
+
+--- Run 9/25 | opus | short ---
+  probe: answered
+
+--- Run 10/25 | opus-4.7 | short ---
+  probe: answered
+
+--- Run 11/25 | opus-4.8 | short ---
+  probe: answered
+
+--- Run 12/25 | sonnet | short ---
+  probe: in_flight_with_signals
+
+--- Run 13/25 | opus | short ---
+  probe: undefined
+
+--- Run 14/25 | opus-4.7 | short ---
+  probe: Daemon HTTP 400: {"success":false,"error":"Tab not found: 2144"}
+
+--- Run 15/25 | opus-4.8 | news-json ---
+  probe: Daemon HTTP 400: {"success":false,"error":"Tab not found: 2144"}
+
+--- Run 16/25 | sonnet | short ---
+  probe: Daemon HTTP 400: {"success":false,"error":"Tab not found: 2144"}
+
+--- Run 17/25 | opus | short ---
+  probe: Daemon HTTP 400: {"success":false,"error":"Tab not found: 2144"}
+
+--- Run 18/25 | opus-4.7 | short ---
+  probe: Daemon HTTP 400: {"success":false,"error":"Tab not found: 2144"}
+
+--- Run 19/25 | opus-4.8 | short ---
+  probe: Daemon HTTP 400: {"success":false,"error":"Tab not found: 2144"}
+
+--- Run 20/25 | sonnet | short ---
+  probe: Daemon HTTP 400: {"success":false,"error":"Tab not found: 2144"}
+
+--- Run 21/25 | opus | short ---
+  probe: Daemon HTTP 400: {"success":false,"error":"Tab not found: 2144"}
+
+--- Run 22/25 | opus-4.7 | news-json ---
+  probe: Daemon HTTP 400: {"success":false,"error":"Tab not found: 2144"}
+
+--- Run 23/25 | opus-4.8 | short ---
+  probe: Daemon HTTP 400: {"success":false,"error":"Tab not found: 2144"}
+
+--- Run 24/25 | sonnet | short ---
+  probe: Daemon HTTP 400: {"success":false,"error":"Tab not found: 2144"}
+
+--- Run 25/25 | opus | short ---
+  probe: Daemon HTTP 400: {"success":false,"error":"Tab not found: 2144"}
+
+=== Classification counts ===
+  silent_no_signals: 4
+  in_flight_with_signals: 3
+  Daemon HTTP 400: {"success":false,"error":"Runtime.evaluate: Inspected target navigated or closed"}: 1
+  answered: 4
+  unknown: 1
+  Daemon HTTP 400: {"success":false,"error":"Tab not found: 2144"}: 12
+
+Results: /Users/hesdx/Documents/clawhost/claw-bun-mcp/notion/example/silent-submit-runs/summary.json

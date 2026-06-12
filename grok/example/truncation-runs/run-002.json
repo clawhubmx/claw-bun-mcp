@@ -1,0 +1,20 @@
+{
+  "run": 2,
+  "kind": "short",
+  "model": "auto",
+  "command": "chat",
+  "promptLen": 42,
+  "input": {
+    "classification": "input_ok",
+    "setOk": true,
+    "expectedLen": 42,
+    "actualLen": 42,
+    "timedOut": false
+  },
+  "e2e": {
+    "classification": "error:unknown",
+    "answerLen": 0,
+    "hasAnswerJson": false,
+    "timedOut": true
+  }
+}

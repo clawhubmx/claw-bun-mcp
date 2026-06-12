@@ -1,0 +1,15 @@
+{
+  "run": 36,
+  "kind": "news-json",
+  "model": "fast",
+  "command": "chat",
+  "promptLen": 314,
+  "input": {
+    "classification": "input_ok",
+    "setOk": true,
+    "expectedLen": 314,
+    "actualLen": 314,
+    "timedOut": false
+  },
+  "e2e": null
+}

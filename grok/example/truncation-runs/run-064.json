@@ -1,0 +1,15 @@
+{
+  "run": 64,
+  "kind": "news-json",
+  "model": "heavy",
+  "command": "chatfollow",
+  "promptLen": 310,
+  "input": {
+    "classification": "input_ok",
+    "setOk": true,
+    "expectedLen": 310,
+    "actualLen": 310,
+    "timedOut": false
+  },
+  "e2e": null
+}

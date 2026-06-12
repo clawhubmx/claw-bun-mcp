@@ -1,0 +1,14 @@
+{
+  "run": 4,
+  "kind": "short",
+  "model": {
+    "alias": "sonnet",
+    "title": "Sonnet 4.6"
+  },
+  "promptPreview": "Name one planet. One word only.",
+  "probe": {
+    "timedOut": true,
+    "timelineSummary": [],
+    "full": null
+  }
+}

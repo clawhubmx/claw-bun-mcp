@@ -1,0 +1,14 @@
+{
+  "run": 8,
+  "kind": "news-json",
+  "model": {
+    "alias": "sonnet",
+    "title": "Sonnet 4.6"
+  },
+  "promptPreview": "You are a news research assistant. Return JSON only; json format only; NO markdown.\nBased on user query: \"Bitcoin halvin",
+  "probe": {
+    "timedOut": true,
+    "timelineSummary": [],
+    "full": null
+  }
+}

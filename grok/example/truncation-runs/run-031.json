@@ -1,0 +1,15 @@
+{
+  "run": 31,
+  "kind": "long-json",
+  "model": "fast",
+  "command": "chatfollow",
+  "promptLen": 2113,
+  "input": {
+    "classification": "input_ok",
+    "setOk": true,
+    "expectedLen": 2113,
+    "actualLen": 2114,
+    "timedOut": false
+  },
+  "e2e": null
+}

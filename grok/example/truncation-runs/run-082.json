@@ -1,0 +1,15 @@
+{
+  "run": 82,
+  "kind": "short",
+  "model": "auto",
+  "command": "chatfollow",
+  "promptLen": 42,
+  "input": {
+    "classification": "input_ok",
+    "setOk": true,
+    "expectedLen": 42,
+    "actualLen": 42,
+    "timedOut": false
+  },
+  "e2e": null
+}

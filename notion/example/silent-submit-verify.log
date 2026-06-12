@@ -1,0 +1,27 @@
+Silent-submit probe: 5 runs, probe=25000ms, pause=1500ms
+
+Opened dedicated tab: 861f
+Priming helpers...
+prime: "New chat button not found"
+
+--- Run 1/5 | opus | prompt21-full ---
+  probe: silent_no_signals
+
+--- Run 2/5 | opus-4.7 | short ---
+  probe: silent_no_signals
+
+--- Run 3/5 | opus-4.8 | short ---
+  probe: answered
+
+--- Run 4/5 | sonnet | short ---
+  probe: in_flight_with_signals
+
+--- Run 5/5 | opus | short ---
+  probe: answered
+
+=== Classification counts ===
+  silent_no_signals: 2
+  answered: 2
+  in_flight_with_signals: 1
+
+Results: /Users/hesdx/Documents/clawhost/claw-bun-mcp/notion/example/silent-submit-runs/summary.json

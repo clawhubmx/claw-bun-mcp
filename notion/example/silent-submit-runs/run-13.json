@@ -1,0 +1,14 @@
+{
+  "run": 13,
+  "kind": "short",
+  "model": {
+    "alias": "opus",
+    "title": "Opus 4.7"
+  },
+  "promptPreview": "Return JSON only: {\"color\":\"blue\",\"count\":3}. json format only",
+  "probe": {
+    "timedOut": true,
+    "timelineSummary": [],
+    "full": null
+  }
+}

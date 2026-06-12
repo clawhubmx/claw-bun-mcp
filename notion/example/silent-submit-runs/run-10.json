@@ -1,0 +1,14 @@
+{
+  "run": 10,
+  "kind": "short",
+  "model": {
+    "alias": "opus-4.7",
+    "title": "Opus 4.7"
+  },
+  "promptPreview": "Is water wet? yes or no only.",
+  "probe": {
+    "timedOut": true,
+    "timelineSummary": [],
+    "full": null
+  }
+}

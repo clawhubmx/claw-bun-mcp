@@ -55,7 +55,7 @@ async function(args) {
     var line = String(lines[j] || '').trim();
     if (!line) continue;
     if (/^Notion AI finished\.?$/i.test(line)) continue;
-    if (/^(Searching|Reading|Browsing|Fetching|Thinking|Running|Exploring|Computing|Thought|Searching the web|Reading files|Running tool|Generating|Writing file|Loading web page|Loaded web page|Called function|Searched the web|Browsing|Fetching top|Fetching recent|\d+s)\b/i.test(line)) {
+    if (/^(Searching|Reading|Browsing|Fetching|Thinking|Running|Exploring|Computing|Thought|Searching the web|Reading files|Running tool|Generating|Writing file|Loading web page|Loaded web page|Called function|Searched the web|Browsing|Fetching top|Fetching recent|Brewing|Focusing|\d+s)\b/i.test(line)) {
       busy = true;
       break;
     }

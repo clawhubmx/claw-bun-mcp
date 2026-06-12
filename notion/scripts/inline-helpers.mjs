@@ -258,8 +258,8 @@ ${trustDrainBlock}  }
   }
 ${trustDrainBlock}
 ${attachBlock}
-  var beforeCount = h.getAssistantMessages().length;
-  var beforeText = h.getAssistantMessages().map(h.getAssistantText).join('\\n');
+  var beforeCount = h.getAssistantMessagesSinceLastUser().length;
+  var beforeText = h.getAssistantMessagesSinceLastUser().map(h.getAssistantText).join('\\n');
 
   if (!h.setChatInput(queryText)) {
     return { error: 'Chat input not found', hint: 'Could not fill the Notion AI prompt box.', action: 'bun-browser open https://app.notion.com/ai' };
@@ -440,8 +440,8 @@ ${trustDrainBlock}
   }
 ${trustDrainBlock}
 ${attachBlock}
-  var beforeCount = h.getAssistantMessages().length;
-  var beforeText = h.getAssistantMessages().map(h.getAssistantText).join('\\n');
+  var beforeCount = h.getAssistantMessagesSinceLastUser().length;
+  var beforeText = h.getAssistantMessagesSinceLastUser().map(h.getAssistantText).join('\\n');
 
   if (!h.setChatInput(queryText)) {
     return { error: 'Chat input not found', hint: 'Could not fill the Notion AI prompt box.', action: 'bun-browser open ' + h.buildConversationUrl(conversationId) };
