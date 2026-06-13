@@ -3,7 +3,7 @@
  * Inlined by notion/chat.js and notion/chatfollow.js — keep in sync.
  */
 function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 36;
+  var HELPERS_VERSION = 37;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 200;
   var NOTION_SUBMIT_ACK_MS = 8000;
@@ -846,8 +846,10 @@ function installNotionAiChatHelpers() {
     if (!el) return false;
     var label = normalizeReplyActionLabel(el.getAttribute('aria-label') || '');
     if (label === 'give context') return true;
-    if (label === 'new chat') return true;
+    if (label === 'new chat' || label === 'start new chat') return true;
     if (label === 'submit ai message') return true;
+    if (label === 'settings') return true;
+    if (label === 'start voice recording') return true;
     if (label === 'add photos and files') return true;
     return false;
   }

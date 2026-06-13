@@ -861,9 +861,9 @@ Loaded web page: api.llama.fi/chains</div>
     expect(giveBtn.getAttribute("aria-expanded")).not.toBe("true");
   });
 
-  test("helpers version is 36", () => {
+  test("helpers version is 37", () => {
     const h = installHelpers();
-    expect(h.version).toBe(36);
+    expect(h.version).toBe(37);
   });
 
   test("isUrlTrustPromptVisible finds dialog below long page prefix", () => {
