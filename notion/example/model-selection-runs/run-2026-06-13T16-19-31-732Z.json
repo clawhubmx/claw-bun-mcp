@@ -1,0 +1,174 @@
+{
+  "runId": "MODEL-SEL-MQCK9B54",
+  "startedAt": "2026-06-13T16:19:31.732Z",
+  "finishedAt": "2026-06-13T16:21:24.540Z",
+  "helpersVersion": 50,
+  "withChat": false,
+  "maxWaitMs": null,
+  "totals": {
+    "pass": 10,
+    "total": 10
+  },
+  "results": [
+    {
+      "index": 1,
+      "alias": "auto",
+      "expectedTitle": "Auto",
+      "token": null,
+      "tab": "9993",
+      "select": {
+        "modeLabel": "Auto",
+        "modeTitle": "Auto",
+        "selected": true,
+        "error": null,
+        "errors": []
+      },
+      "chat": null,
+      "ok": true
+    },
+    {
+      "index": 2,
+      "alias": "sonnet",
+      "expectedTitle": "Sonnet 4.6",
+      "token": null,
+      "tab": "4adc",
+      "select": {
+        "modeLabel": "Sonnet 4.6",
+        "modeTitle": "Sonnet 4.6",
+        "selected": true,
+        "error": null,
+        "errors": []
+      },
+      "chat": null,
+      "ok": true
+    },
+    {
+      "index": 3,
+      "alias": "opus",
+      "expectedTitle": "Opus 4.7",
+      "token": null,
+      "tab": "4e4e",
+      "select": {
+        "modeLabel": "Opus 4.7",
+        "modeTitle": "Opus 4.7",
+        "selected": true,
+        "error": null,
+        "errors": []
+      },
+      "chat": null,
+      "ok": true
+    },
+    {
+      "index": 4,
+      "alias": "fable",
+      "expectedTitle": "Fable 5",
+      "token": null,
+      "tab": "7fc3",
+      "select": {
+        "modeLabel": "Fable 5",
+        "modeTitle": "Fable 5",
+        "selected": true,
+        "error": null,
+        "errors": []
+      },
+      "chat": null,
+      "ok": true
+    },
+    {
+      "index": 5,
+      "alias": "gemini",
+      "expectedTitle": "Gemini 3.1 Pro",
+      "token": null,
+      "tab": "f758",
+      "select": {
+        "modeLabel": "Gemini 3.1 Pro",
+        "modeTitle": "Gemini 3.1 Pro",
+        "selected": true,
+        "error": null,
+        "errors": []
+      },
+      "chat": null,
+      "ok": true
+    },
+    {
+      "index": 6,
+      "alias": "gpt-5.2",
+      "expectedTitle": "GPT-5.2",
+      "token": null,
+      "tab": "093a",
+      "select": {
+        "modeLabel": "GPT-5.2",
+        "modeTitle": "GPT-5.2",
+        "selected": true,
+        "error": null,
+        "errors": []
+      },
+      "chat": null,
+      "ok": true
+    },
+    {
+      "index": 7,
+      "alias": "gpt-5.4",
+      "expectedTitle": "GPT-5.4",
+      "token": null,
+      "tab": "ae8d",
+      "select": {
+        "modeLabel": "GPT-5.4",
+        "modeTitle": "GPT-5.4",
+        "selected": true,
+        "error": null,
+        "errors": []
+      },
+      "chat": null,
+      "ok": true
+    },
+    {
+      "index": 8,
+      "alias": "grok",
+      "expectedTitle": "Grok 4.3",
+      "token": null,
+      "tab": "f4fb",
+      "select": {
+        "modeLabel": "Grok 4.3",
+        "modeTitle": "Grok 4.3",
+        "selected": true,
+        "error": null,
+        "errors": []
+      },
+      "chat": null,
+      "ok": true
+    },
+    {
+      "index": 9,
+      "alias": "kimi",
+      "expectedTitle": "Kimi K2.6",
+      "token": null,
+      "tab": "7d52",
+      "select": {
+        "modeLabel": "Kimi K2.6",
+        "modeTitle": "Kimi K2.6",
+        "selected": true,
+        "error": null,
+        "errors": []
+      },
+      "chat": null,
+      "ok": true
+    },
+    {
+      "index": 10,
+      "alias": "deepseek",
+      "expectedTitle": "DeepSeek V4 Pro",
+      "token": null,
+      "tab": "fc14",
+      "select": {
+        "modeLabel": "DeepSeek V4 Pro",
+        "modeTitle": "DeepSeek V4 Pro",
+        "selected": true,
+        "error": null,
+        "errors": []
+      },
+      "chat": null,
+      "ok": true
+    }
+  ]
+}

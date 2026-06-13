@@ -944,9 +944,9 @@ Loaded web page: api.llama.fi/chains</div>
     expect(giveBtn.getAttribute("aria-expanded")).not.toBe("true");
   });
 
-  test("helpers version is 50", () => {
+  test("helpers version is 51", () => {
     const h = installHelpers();
-    expect(h.version).toBe(50);
+    expect(h.version).toBe(51);
   });
 
   test("isStaleChatThread detects assistant messages and reply toolbar", () => {
@@ -1736,6 +1736,59 @@ Loaded web page: api.llama.fi/chains</div>
       ok: true,
       via: "ai-landing",
     });
+  });
+
+  test("ensureNotionModelListView returns ok when model picker is already visible", async () => {
+    const h = installHelpersAt("https://www.notion.so/my-workspace");
+    document.body.innerHTML =
+      '<div role="button" data-testid="unified-chat-model-button">Sonnet 4.6</div>';
+    const picker = document.querySelector('[data-testid="unified-chat-model-button"]');
+    Object.defineProperty(picker, "offsetParent", { value: document.body, configurable: true });
+    picker.getBoundingClientRect = () => ({
+      left: 600,
+      top: 300,
+      width: 120,
+      height: 28,
+      right: 720,
+      bottom: 328,
+      x: 600,
+      y: 300,
+    });
+    await expect(h.ensureNotionModelListView()).resolves.toEqual({
+      ok: true,
+      via: "model-picker",
+    });
+  });
+
+  test("closeModelPickerSurface dismisses open model menu", async () => {
+    const h = installHelpersAt("https://app.notion.com/ai");
+    document.body.innerHTML = `
+      <div role="button" data-testid="unified-chat-model-button" aria-expanded="true">Auto</div>
+      <div id="models" role="dialog">
+        <div role="menuitem"><div role="presentation">Auto</div></div>
+        <div role="menuitem"><div role="presentation">Sonnet 4.6</div></div>
+        <div role="menuitem"><div role="presentation">Opus 4.7</div></div>
+      </div>`;
+    const picker = document.querySelector('[data-testid="unified-chat-model-button"]');
+    const models = document.getElementById("models");
+    for (const el of [picker, models]) {
+      Object.defineProperty(el, "offsetParent", { value: document.body, configurable: true });
+      el.getBoundingClientRect = () => ({
+        left: 580,
+        top: 300,
+        width: 288,
+        height: 300,
+        right: 868,
+        bottom: 600,
+        x: 580,
+        y: 300,
+      });
+    }
+    expect(h.isModelPickerMenuOpen(picker)).toBe(true);
+    await h.closeModelPickerSurface(picker);
+    picker.setAttribute("aria-expanded", "false");
+    models.remove();
+    expect(h.isModelPickerMenuOpen(picker)).toBe(false);
   });
 });
 

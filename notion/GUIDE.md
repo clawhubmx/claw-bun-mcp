@@ -31,9 +31,11 @@ bun-browser open https://www.notion.so/ --tab new
 |------|------|
 | `bun-browser site notion/health` | 检查登录、侧边栏 Chat、输入框、API 可达性（不发送消息） |
 | `bun-browser site notion/models` | 列出可用 AI 模型（Auto、Sonnet、Opus 等） |
+| `bun-browser site notion/mode` | 列出或设置 AI 行为模式（Default、Ask、Plan、Research） |
 | `bun-browser site notion/chat "<prompt>"` | 新建对话并提问 |
 | `bun-browser site notion/chatfollow <id> "<prompt>"` | 在已有线程中继续提问 |
 | `bun-browser site notion/search "<keyword>"` | 搜索/列出 AI 聊天历史 |
+| `bun-browser site notion/tab-probe` | 探测当前 tab 是否仍在生成 AI 回复（不发送消息） |
 | `bun-browser site notion/create-article "<title>" "<content>"` | 在当前或指定父页面下新建文章页（标题 + 正文） |
 | `bun-browser site notion/edit-article "<page-url>" "<content>" --title "<title>"` | 编辑已有页面（更新标题和/或正文；`mode=append` 追加段落） |
 
@@ -182,6 +184,46 @@ bun-browser site notion/chat "Explain CRDTs" --model sonnet
 
 `--model` 可传 **别名**、**slug id**（如 `sonnet-4-6`）或 **完整 UI 标题**（如 `Sonnet 4.6`）。未知模型会直接按你传入的标题尝试选择。
 
+### 行为模式（`notion/mode`）
+
+Notion AI 设置中的行为模式与模型选择器独立，通过 Settings 菜单切换：
+
+```bash
+bun-browser site notion/mode
+bun-browser site notion/mode --mode ask
+bun-browser site notion/mode --mode research --selectOnly true
+```
+
+| 别名 | UI 标题 |
+|------|---------|
+| `default` | Default |
+| `ask` | Ask |
+| `plan` | Plan |
+| `research` | Research |
+
+省略 `--mode` 时列出当前模式与可用项；传入 `--mode` 则切换。`--selectOnly true` 只切换、不返回完整列表。
+
+### 上下文、附件与页面引用
+
+`notion/chat` 与 `notion/chatfollow` 支持在提示词外附加材料：
+
+```bash
+# 前置说明文字（会包在 --- External context --- 块中）
+bun-browser site notion/chat "Summarize the attached notes" --context "Meeting notes from Q2..."
+
+# 单文件附件（Give context → Upload file）
+bun-browser site notion/chat "Review this draft" --fileName draft.txt --fileContent "First line..."
+
+# 多文件（JSON 数组）
+bun-browser site notion/chat "Compare versions" --files '[{"fileName":"a.txt","fileContent":"..."},{"fileName":"b.txt","fileContent":"..."}]'
+
+# 引用工作区页面（Give context → Mention pages or people）
+bun-browser site notion/chat "Summarize this page" --page "Weekly Recap"
+bun-browser site notion/chat "Cross-check docs" --pages "Page A,https://app.notion.com/p/..."
+```
+
+`fileBase64` 可代替 `fileContent` 传二进制。页面标题模糊匹配时会返回 `Ambiguous page title`，请改用更具体的标题或 URL。
+
 ### 模型列表（`notion/models`）
 
 `notion/models` 会打开 Notion AI 聊天页、点击模型下拉菜单，并抓取菜单中所有 `[role=menuitem]` / `[role=option]` 项。**不再**使用硬编码白名单过滤，因此 Notion 新上的模型也会出现在列表里。
@@ -261,6 +303,25 @@ bun-browser site notion/chat --model sonnet --selectOnly true
 
 返回 `{ "selected": true, "modeLabel": "Sonnet 4.6", ... }`，不消耗 AI 额度发送提示词。E2E 流程 `run-api-flow.mjs` 对每个模型都走此路径做选择矩阵测试。
 
+### JSON 输出与模型回退
+
+当提示词要求 **仅返回 JSON** 时，helpers 会等待可解析的完整 JSON 再判定完成（`stableNeeded: 2`）。触发方式：
+
+- 提示词含 `Return ONLY valid JSON`、`json format only` 等（`queryExpectsJson` 自动检测）
+- 显式 `--json true` 或 `--expectJson true`
+
+若 JSON 不完整，默认启用 `modelFallback`（可用 `--modelFallback false` 关闭）：
+
+| `modelFallback.reason` | 条件 | 行为 |
+|------------------------|------|------|
+| `incomplete_json_stuck` | `--model opus` 且同一截断 JSON 约 5s 不变 | `chat` 新开对话切 Auto 重发；`chatfollow` 同线程切 Auto 重发 |
+| `incomplete_json_failed` | 期望 JSON 但 wait 结束仍无法解析 | 切到 `modelFallbackTo`（默认 `auto`）重发 |
+| `single_char_failed` | Opus / Sonnet / Fable 仅返回单字符 | 同上 |
+
+```bash
+bun-browser site notion/chat "Return ONLY valid JSON: {\"ok\":true}" --model opus --json true
+```
+
 ## 多标签页与长时间生成
 
 Notion Agent 任务（搜索、多步推理）可能运行 **数分钟到 15 分钟**。每个进行中的提示词应**绑定一个浏览器标签页**：在该 tab 上只轮询，不要点 New chat 或重新导航。
@@ -303,7 +364,7 @@ query → model → newChat → selectOnly → waitOnly → (空) → maxWaitMs
 | 3 | `selectOnly` | `false` |
 | 4 | `waitOnly` | `true` 表示只轮询 |
 | 5 | （保留） | 传空或省略 |
-| 6 | `maxWaitMs` | 毫秒；也可用 `--maxWaitMs` |
+| 6 | `maxWaitMs` | 毫秒（v50+ 支持位置参数；命名 `--maxWaitMs` 优先） |
 
 示例：
 
@@ -341,6 +402,16 @@ bun-browser eval "(function(){var h=globalThis.__notionAiChatHelpers;if(!h)retur
 
 `notion/health` **不**检测某条回复是否仍在生成。
 
+### Tab 探测（`notion/tab-probe`）
+
+比完整 `waitOnly` 更轻量的快照，适合调度器判断 tab 是否空闲：
+
+```bash
+bun-browser site notion/tab-probe --tab <TAB_ID> --json
+```
+
+返回 `busy`、`generating`、`conversationId`、`helpersLoaded` 等字段。线程仍在生成时，`chatfollow` 会返回 `Tab busy` 并提示改用 `--waitOnly true`。
+
 ### 并行多任务
 
 每个并行 prompt 各占一个 tab（参见 `notion/example/test-models-test2.mjs`）：
@@ -351,19 +422,19 @@ bun-browser tab new https://app.notion.com/ai
 # 分别对 tab A / tab B 提交，超时后用位置参数 waitOnly 轮询各自 tab
 ```
 
-### N-tab pool title-watch test (helpers v36+)
+### 多 tab 批量采集（helpers v36+）
 
-For batch capture across many tabs without blocking on one reply, use the tab-pool orchestrator script. It polls `bun-browser tab list` for title changes, activates each tab, calls **`scrollToLatestReply()`** (clicks the floating scroll-to-bottom FAB when long replies are off-screen), then captures JSON via waitOnly / recover.
+跨多个 tab 批量等待回复时，可用 tab-pool 编排脚本：轮询 `bun-browser tab list` 的标题变化，激活各 tab，调用 **`scrollToLatestReply()`**（长回复在视口外时点击右下角滚到底 FAB），再通过 waitOnly / recover 抓取 JSON。
 
 ```bash
 bun notion/scripts/test-tab-pool-title-watch.mjs --poolSize 2
 bun notion/scripts/test-tab-pool-title-watch.mjs --poolSize 5
-bun notion/scripts/test-dual-tab-title-watch.mjs   # wrapper for --poolSize 2
+bun notion/scripts/test-dual-tab-title-watch.mjs   # --poolSize 2 的封装
 ```
 
-Output: `notion/example/tab-pool-title-watch-runs/responses.txt` and `summary.json` (per-tab title events, scroll stats, validation).
+输出：`notion/example/tab-pool-title-watch-runs/responses.txt` 与 `summary.json`（每 tab 标题事件、滚动统计、校验结果）。
 
-Flags: `--poolSize N`, `--topics "A,B,..."`, `--full` (full test2 template), `--pollMs`, `--globalTimeoutMs`.
+常用 flag：`--poolSize N`、`--topics "A,B,..."`、`--full`（完整 test2 模板）、`--pollMs`、`--globalTimeoutMs`。
 
 ## 参数
 
@@ -377,13 +448,18 @@ Flags: `--poolSize N`, `--topics "A,B,..."`, `--full` (full test2 template), `--
 | `selectOnly` | `false` | 只选择模型，不发送提示词 |
 | `waitOnly` | `false` | 只轮询进行中的回复，不重新发送（**请用位置参数**，见上文） |
 | `allowBusyTab` | `false` | 允许在仍生成的 tab 上执行 `newChat`（默认拒绝并返回 `Tab busy`） |
-| `maxWaitMs` | 15 分钟 | 最长等待时间 |
+| `maxWaitMs` | 15 分钟 | 最长等待时间（位置参数索引 6 或 `--maxWaitMs`） |
 | `graceWaitMs` | — | 额外等待毫秒数 |
-| `modelFallback` | `true` | Opus JSON 卡住，或 Opus/Sonnet/Fable 仅返回单字符失败回复时，自动换模型重试 |
-| `modelFallbackTo` | `auto` | 回退模型别名 |
-| `modelFallbackStuckMs` | `5000` | Opus JSON 判定卡住的 unchanged incomplete JSON 毫秒数 |
+| `context` | — | 前置说明，包在 `--- External context ---` 块中 |
+| `fileName` / `fileContent` / `fileBase64` | — | 单文件附件（Give context） |
+| `files` | — | JSON 数组 `[{fileName, fileContent\|fileBase64}, ...]` |
+| `page` / `pages` | — | 引用工作区页面（逗号分隔） |
+| `json` / `expectJson` | `false` | 强制按 JSON 输出等待与回退逻辑 |
+| `modelFallback` | `true` | JSON 不完整、Opus JSON 卡住，或 Opus/Sonnet/Fable 单字符失败时自动换模型重试 |
+| `modelFallbackTo` | `auto` | 回退目标模型别名 |
+| `modelFallbackStuckMs` | `5000` | Opus 同一截断 JSON 判定卡住的毫秒数 |
 
-当 `--model opus`（或 Opus 4.7/4.8）且提示词要求 JSON 时，若回复在页面上显示为**同一截断 JSON** 且持续约 5 秒不变，`notion/chat` 会新开对话、切换到 Auto 并重发一次；`notion/chatfollow` 在同一线程内切到 Auto 并重发。当 **Opus、Sonnet 或 Fable** 的回复仅为**一个字符**（常见于限速或模型失败）时，也会触发同样的回退重试。成功时响应含 `modelFallback` 字段（`reason`: `incomplete_json_stuck` 或 `single_char_failed`）。禁用：`--modelFallback false`。
+成功回退时响应含 `modelFallback` 字段（`reason`: `incomplete_json_stuck`、`incomplete_json_failed` 或 `single_char_failed`）。详见上文「JSON 输出与模型回退」。
 
 ### notion/create-article
 
@@ -411,8 +487,11 @@ Flags: `--poolSize N`, `--topics "A,B,..."`, `--full` (full test2 template), `--
 | `conversation` | 必填 | 线程 UUID 或 `https://app.notion.com/chat?t=...` URL |
 | `query` | 必填 | 跟进提示词 |
 | `model` | `auto` | 模型 |
-| `waitOnly` | `false` | 只轮询（**请用位置参数** `... true false true`，见「多标签页与长时间生成」） |
-| `modelFallback` | `true` | 同 `notion/chat`：Opus JSON 卡住或 premium 单字符失败时自动换模型重试（线程内重发，不 New chat） |
+| `waitOnly` | `false` | 只轮询（`--waitOnly true`；线程忙时勿重复提交） |
+| `maxWaitMs` / `graceWaitMs` | 15 分钟 | 同 `notion/chat` |
+| `context` / `fileName` / `fileContent` / `fileBase64` / `files` / `page` / `pages` | — | 同 `notion/chat` |
+| `json` / `expectJson` | `false` | 同 `notion/chat` |
+| `modelFallback` | `true` | 同 `notion/chat`（线程内重发，不 New chat） |
 | `modelFallbackTo` | `auto` | 回退模型别名 |
 | `modelFallbackStuckMs` | `5000` | unchanged incomplete JSON 阈值（毫秒） |
 
@@ -427,7 +506,8 @@ Flags: `--poolSize N`, `--topics "A,B,..."`, `--full` (full test2 template), `--
 | 标题已写入、正文待填 | `partialSuccess` + `nextStep: body` | 重跑同一条命令 |
 | 无法设置标题/正文 | `Could not set page title` / `Could not set body text` | 等待页面加载完成后重跑 |
 | 找不到正文区 | `Body editor not found` | 确认页面已打开且为普通文章页，然后重跑 |
-| 仍在生成 | `Still generating` | 用位置参数 waitOnly 重试：`notion/chat "x" auto true false true --tab <ID>` |
+| 仍在生成 | `Still generating` | `chat`：位置参数 waitOnly；`chatfollow`：`--waitOnly true` |
+| 线程仍在生成、误发跟进 | `Tab busy`（`kind: chat_in_progress`） | `notion/chatfollow <id> "x" --waitOnly true --tab <ID>` |
 | Tab 仍在生成、误开新对话 | `Tab busy`（`kind: chat_in_progress`） | `bun-browser open https://app.notion.com/ai --tab new`，在新 tab 提交；原 tab 用 waitOnly 轮询 |
 | 无回复 | `Empty response` | 刷新 Notion 标签页；确认 Chrome 中该 tab **处于前台可见**（见下方「回复已完成但未捕获」） |
 | 回复已完成但未捕获 | `Empty response` / `Still generating`，或成功但带 `captureWarning` | 见下方专节 |
@@ -446,20 +526,23 @@ Flags: `--poolSize N`, `--topics "A,B,..."`, `--full` (full test2 template), `--
    ```
    需要 `"hidden": false`。请把 Chrome 切到前台并选中该 Notion tab。
 2. **waitOnly 重试**：`notion/chat "x" auto true false true --tab <ID>`
-3. **v32 恢复路径**：helpers 在 wait 结束时会用 `recoverCompletedAnswer` 再扫一遍 DOM；若 tab 隐藏，响应可能带 `captureWarning` 提示聚焦 tab。
+3. **恢复路径**：helpers 在 wait 结束时会用 `recoverCompletedAnswer` 再扫一遍 DOM，并在长回复时自动 `scrollToLatestReply`；若 tab 隐藏，响应可能带 `captureWarning` 提示聚焦 tab。
 
 ## 开发同步
 
+当前 helpers 版本：**50**（`HELPERS_VERSION`，内联于 `chat.js` / `chatfollow.js` / `models.js` / `mode.js`）。
+
 ```bash
 cp -r notion ~/.bun-browser/claw-bun-mcp/
-# 或
+# 或（推荐，从远程 fast-forward）
 bun-browser site update
 
 bun test notion/test-chat-helpers.test.mjs
 bun notion/scripts/run-api-flow.mjs
+bun notion/scripts/validate-block-stops.mjs
 ```
 
-修改 `chat-helpers.js` 后需重新生成内联文件：
+修改 `chat-helpers.js` 后需重新生成内联文件并 bump `HELPERS_VERSION`：
 
 ```bash
 bun notion/scripts/inline-helpers.mjs
@@ -478,9 +561,9 @@ bun notion/scripts/inline-helpers.mjs
 - **历史 API**：`POST /api/v3/getInferenceTranscriptsForUser`
 - **模型列表**：DOM 抓取下拉菜单（`listNotionModelsFromUi`），非 Notion API
 - **模型选择器定位**：聊天输入框附近的 `aria-haspopup="menu"` 按钮，或 Submit 按钮同区域的可见按钮
-- **回复完整性**：轮询 DOM 直至最新 assistant 回复上出现 4 个 reply action 按钮（`Copy response`、`Save to private pages`、`Share positive feedback`、`Share negative feedback`，各带 `svg` 子元素），且 `looksLikeFinalAnswer` 通过、文本稳定；不依赖 `"Notion AI finished"` 文案；进度行（`Thinking`、`Searching` 等）会被过滤；短 intro stub（如 `I'll prioritize…`）由 `looksLikeInProgressAnswer` 视为未完成；调试 eval 可用 `hasCompletedReplyActions()`
-- **完成检测（v33）**：`hasCompletedReplyActionsForTurn(beforeCount, beforeText)` — 工具栏 + 本轮新内容；`getAssistantAnswerSince` 支持同一条 assistant 消息原地更新（`messages.length === beforeCount`）；wait 结束前 `recoverCompletedAnswer` 兜底
-- **异常检测**：`detectNotionPageAbnormal` 识别 `credits_exhausted`（含 `Run out of free AI responses`）、`rate_limit`、`submit_disabled`
+- **回复完整性**：轮询 DOM 直至最新 assistant 回复上出现 **Copy** + **Save**（`Save` 或 `Save to private pages`，各带 `svg`）；正/负反馈按钮存在时需成对出现。配合 `looksLikeFinalAnswer`、文本稳定判定；不依赖 `"Notion AI finished"` 文案；进度行（`Thinking`、`Searching` 等）与 thought block（`The user wants me to…`）会被过滤；短 intro stub（如 `I'll prioritize…`）由 `looksLikeInProgressAnswer` 视为未完成；调试 eval 可用 `hasCompletedReplyActions()`
+- **完成检测（v33+）**：`hasCompletedReplyActionsForTurn(beforeCount, beforeText)` — 工具栏 + 本轮新内容 + JSON 可解析（若期望 JSON）；`getAssistantAnswerSince` 支持同一条 assistant 消息原地更新（`messages.length === beforeCount`）；wait 期间 `scrollToLatestReply`（v36+）与 `revealThrottle`（v38，2s 节流）减少长回复漏抓；wait 结束前 `recoverCompletedAnswer` 兜底
+- **异常检测**：`detectNotionPageAbnormal` 识别 `credits_exhausted`（含 `Run out of free AI responses`）、`rate_limit`、`submit_disabled`；`drainUrlTrustPrompts` 自动处理 Agent 外链信任弹窗
 
 ### 文章页（create-article / edit-article）
 

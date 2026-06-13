@@ -737,19 +737,12 @@ writeFileSync(
 */`,
     `${loginBlock}
 ${installBlock}
-  var nav = await h.ensureNewChatView();
+  var nav = await h.ensureNotionModelListView();
   if (!nav.ok) {
-    if (nav.needsRetry) {
-      return {
-        error: nav.error || 'Navigation required',
-        hint: nav.hint || 'Re-run the same command after Notion finishes loading.',
-        action: nav.action || 'retry same command'
-      };
-    }
     return nav;
   }
 
-  if (!h.getChatInput()) {
+  if (!h.findModelPickerButton()) {
     return {
       defaultModelId: 'auto',
       current: 'Auto',

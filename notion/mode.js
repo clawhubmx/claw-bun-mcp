@@ -33,7 +33,7 @@ async function(args) {
 
 
   var h = (function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 50;
+  var HELPERS_VERSION = 51;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 200;
   var NOTION_REVEAL_THROTTLE_MS = 2000;
@@ -535,6 +535,49 @@ async function(args) {
     clickElement(btn);
     await sleep(1200);
     return { ok: true };
+  }
+
+  function hasNotionChatShell() {
+    return location.pathname.indexOf('/ai') === 0 ||
+      location.pathname.indexOf('/chat') === 0 ||
+      !!document.querySelector('.layout-chat');
+  }
+
+  async function waitForModelPickerButton(maxMs) {
+    var deadline = Date.now() + (maxMs == null ? 1500 : maxMs);
+    while (Date.now() < deadline) {
+      var picker = findModelPickerButton();
+      if (picker) return picker;
+      await sleep(250);
+    }
+    return null;
+  }
+
+  async function ensureNotionModelListView() {
+    dismissCookieBanner();
+
+    var existingPicker = await waitForModelPickerButton(300);
+    if (existingPicker) return { ok: true, via: 'model-picker' };
+
+    if (hasNotionChatShell()) {
+      existingPicker = await waitForModelPickerButton(1500);
+      if (existingPicker) return { ok: true, via: 'chat-view' };
+    }
+
+    var sidebar = await openAiChatSidebar();
+    if (sidebar.ok) {
+      existingPicker = await waitForModelPickerButton(1500);
+      if (existingPicker) {
+        return { ok: true, via: sidebar.via || 'chat-sidebar' };
+      }
+    }
+
+    return {
+      ok: false,
+      error: 'Model picker not found',
+      hint: 'Open any Notion tab with AI chat visible (sidebar Chat tab or app.notion.com/ai), then retry.',
+      action: 'bun-browser open https://app.notion.com/ai'
+    };
   }
 
   function isStaleChatThread() {
@@ -2011,8 +2054,44 @@ async function(args) {
     return null;
   }
 
-  function closeModelPickerSurface() {
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+  function isModelPickerMenuOpen(picker) {
+    picker = picker || findModelPickerButton();
+    if (picker && picker.getAttribute('aria-expanded') === 'true') return true;
+    var knownTitles = getKnownModelTitles();
+    var dialogs = Array.prototype.slice.call(document.querySelectorAll('[role=dialog]'));
+    for (var i = 0; i < dialogs.length; i++) {
+      if (!isElementVisible(dialogs[i])) continue;
+      if (countKnownModelHits(dialogs[i], knownTitles).hits >= 2) return true;
+    }
+    return false;
+  }
+
+  async function closeModelPickerSurface(picker) {
+    picker = picker || findModelPickerButton();
+    for (var round = 0; round < 4; round++) {
+      if (!isModelPickerMenuOpen(picker)) break;
+      document.dispatchEvent(new KeyboardEvent('keydown', {
+        key: 'Escape',
+        code: 'Escape',
+        keyCode: 27,
+        bubbles: true
+      }));
+      document.dispatchEvent(new KeyboardEvent('keyup', {
+        key: 'Escape',
+        code: 'Escape',
+        keyCode: 27,
+        bubbles: true
+      }));
+      if (picker && picker.getAttribute('aria-expanded') === 'true') {
+        clickElement(picker);
+      }
+      await sleep(round === 0 ? 120 : 180);
+    }
+    try {
+      if (document.activeElement && document.activeElement !== document.body) {
+        document.activeElement.blur();
+      }
+    } catch (e) {}
   }
 
   function isLikelyModelMenuTitle(title) {
@@ -2028,10 +2107,7 @@ async function(args) {
   function findModelPickerButton() {
     var pickers = Array.prototype.slice.call(document.querySelectorAll(MODEL_PICKER_SELECTOR));
     for (var i = 0; i < pickers.length; i++) {
-      if (isElementVisible(pickers[i]) && isInViewport(pickers[i])) return pickers[i];
-    }
-    for (var j = 0; j < pickers.length; j++) {
-      if (isElementVisible(pickers[j])) return pickers[j];
+      if (isElementVisible(pickers[i])) return pickers[i];
     }
     return null;
   }
@@ -2068,35 +2144,36 @@ async function(args) {
         models: [{ id: 'auto', title: 'Auto', available: true, mapped: true }]
       };
     }
-    var menuRoot = await ensureModelPickerSurface(picker);
-    if (!menuRoot) {
-      closeModelPickerSurface();
-      await sleep(200);
-      return {
-        current: current,
-        models: [{ id: 'auto', title: 'Auto', available: true, mapped: true }],
-        warning: 'Model picker menu not found'
-      };
-    }
-    var items = collectModelMenuItems(menuRoot);
-    var seen = {};
-    var models = [];
-    items.forEach(function(el) {
-      var title = readModelMenuItemTitle(el);
-      if (!title || !isLikelyModelMenuTitle(title)) return;
-      if (seen[title]) return;
-      seen[title] = true;
-      models.push({
-        id: modelTitleToId(title),
-        title: title,
-        available: true,
-        mapped: isModelTitleMapped(title)
+    var menuRoot = null;
+    try {
+      menuRoot = await ensureModelPickerSurface(picker);
+      if (!menuRoot) {
+        return {
+          current: current,
+          models: [{ id: 'auto', title: 'Auto', available: true, mapped: true }],
+          warning: 'Model picker menu not found'
+        };
+      }
+      var items = collectModelMenuItems(menuRoot);
+      var seen = {};
+      var models = [];
+      items.forEach(function(el) {
+        var title = readModelMenuItemTitle(el);
+        if (!title || !isLikelyModelMenuTitle(title)) return;
+        if (seen[title]) return;
+        seen[title] = true;
+        models.push({
+          id: modelTitleToId(title),
+          title: title,
+          available: true,
+          mapped: isModelTitleMapped(title)
+        });
       });
-    });
-    closeModelPickerSurface();
-    await sleep(200);
-    if (!models.length) models = [{ id: 'auto', title: 'Auto', available: true, mapped: true }];
-    return { current: current, models: models };
+      if (!models.length) models = [{ id: 'auto', title: 'Auto', available: true, mapped: true }];
+      return { current: current, models: models };
+    } finally {
+      await closeModelPickerSurface(picker);
+    }
   }
 
   async function setNotionMode(modeRaw) {
@@ -2109,17 +2186,17 @@ async function(args) {
     }
     var menuRoot = await ensureModelPickerSurface(picker);
     if (!menuRoot) {
-      closeModelPickerSurface();
+      await closeModelPickerSurface(picker);
       return { ok: false, error: 'Model picker menu not found', hint: 'Open a Notion AI chat view and retry.' };
     }
     var match = findModelMenuItem(menuRoot, target);
     if (!match) {
-      closeModelPickerSurface();
+      await closeModelPickerSurface(picker);
       return { ok: false, error: 'Mode selection failed', hint: 'Could not select model "' + target + '"' };
     }
     clickElement(match);
     await sleep(400);
-    closeModelPickerSurface();
+    await closeModelPickerSurface(picker);
     return { ok: true, modeTitle: target, label: target };
   }
 
@@ -3203,6 +3280,8 @@ async function(args) {
     ensureAiLandingPage: ensureAiLandingPage,
     clickNewChat: clickNewChat,
     ensureNewChatView: ensureNewChatView,
+    ensureNotionModelListView: ensureNotionModelListView,
+    hasNotionChatShell: hasNotionChatShell,
     isStaleChatThread: isStaleChatThread,
     getChatInput: getChatInput,
     setChatInput: setChatInput,
@@ -3273,6 +3352,8 @@ async function(args) {
     isModelTitleMapped: isModelTitleMapped,
     isLikelyModelMenuTitle: isLikelyModelMenuTitle,
     findModelPickerButton: findModelPickerButton,
+    isModelPickerMenuOpen: isModelPickerMenuOpen,
+    closeModelPickerSurface: closeModelPickerSurface,
     findModelPickerSurface: findModelPickerSurface,
     scoreModelPickerSurface: scoreModelPickerSurface,
     normalizeMenuItemTitle: normalizeMenuItemTitle,
