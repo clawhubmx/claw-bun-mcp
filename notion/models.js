@@ -30,7 +30,7 @@ async function(args) {
 
 
   var h = (function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 55;
+  var HELPERS_VERSION = 57;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 200;
   var NOTION_REVEAL_THROTTLE_MS = 2000;
@@ -124,6 +124,38 @@ async function(args) {
     if (!el) return;
     try { el.focus(); } catch (e) {}
     dispatchElementClick(el);
+  }
+
+  function clickElementOnce(el) {
+    if (!el) return;
+    try { el.focus(); } catch (e) {}
+    try { el.click(); } catch (e) {}
+  }
+
+  function dispatchSyntheticClick(el) {
+    if (!el) return;
+    try { el.focus(); } catch (e) {}
+    var rect = el.getBoundingClientRect();
+    var x = rect.left + rect.width / 2;
+    var y = rect.top + rect.height / 2;
+    ['pointerdown', 'mousedown', 'mouseup', 'pointerup', 'click'].forEach(function(type) {
+      el.dispatchEvent(new MouseEvent(type, {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+        clientX: x,
+        clientY: y
+      }));
+    });
+  }
+
+  function toggleModelPickerButton(picker) {
+    if (!picker) return;
+    var expandedBefore = picker.getAttribute('aria-expanded');
+    dispatchSyntheticClick(picker);
+    if (picker.getAttribute('aria-expanded') === expandedBefore) {
+      clickElementOnce(picker);
+    }
   }
 
   function isElementVisible(el) {
@@ -2087,14 +2119,20 @@ async function(args) {
 
   async function closeModelPickerSurface(picker) {
     picker = picker || findModelPickerButton();
+    if (!picker) {
+      focusChatInput();
+      return true;
+    }
 
-    for (var round = 0; round < 4; round++) {
+    for (var attempt = 0; attempt < 10; attempt++) {
       if (!isModelPickerMenuOpen(picker)) break;
+
       document.dispatchEvent(new KeyboardEvent('keydown', {
         key: 'Escape',
         code: 'Escape',
         keyCode: 27,
-        bubbles: true
+        bubbles: true,
+        cancelable: true
       }));
       document.dispatchEvent(new KeyboardEvent('keyup', {
         key: 'Escape',
@@ -2102,22 +2140,23 @@ async function(args) {
         keyCode: 27,
         bubbles: true
       }));
-      await sleep(300);
-    }
-
-    var editor = getChatInput();
-    if (editor && isModelPickerMenuOpen(picker)) {
-      dispatchElementClick(editor);
       await sleep(250);
-    }
 
-    if (picker && picker.getAttribute('aria-expanded') === 'true') {
-      dispatchElementClick(picker);
-      await sleep(300);
+      if (picker.getAttribute('aria-expanded') === 'true') {
+        toggleModelPickerButton(picker);
+        await sleep(300);
+      }
+
+      var editor = getChatInput();
+      if (editor) {
+        clickElement(editor);
+        await sleep(200);
+      }
     }
 
     blurModelPicker(picker);
     focusChatInput();
+    return !isModelPickerMenuOpen(picker);
   }
 
   function isLikelyModelMenuTitle(title) {
@@ -2205,7 +2244,10 @@ async function(args) {
   async function setNotionMode(modeRaw) {
     var target = resolveNotionMode(modeRaw);
     var current = readNotionModeLabel();
-    if (current === target) return { ok: true, modeTitle: target, label: target };
+    if (current === target) {
+      await closeModelPickerSurface();
+      return { ok: true, modeTitle: target, label: target };
+    }
     var picker = getModePickerButton(current);
     if (!picker) {
       return { ok: false, error: 'Model picker not found', hint: 'Open a Notion AI chat view first.' };
@@ -3449,6 +3491,7 @@ async function(args) {
 
   var listed = await h.listNotionModelsFromUi();
   var models = listed.models || [];
+  await h.closeModelPickerSurface();
   return {
     defaultModelId: 'auto',
     current: listed.current || 'Auto',

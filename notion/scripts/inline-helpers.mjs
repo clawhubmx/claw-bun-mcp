@@ -40,6 +40,7 @@ const loginBlock = `  var loginBlock = (function() {
 
 `;
 const trustDrainBlock = "  await h.drainUrlTrustPrompts();\n";
+const restoreComposerBlock = "  await h.closeModelPickerSurface();\n";
 const parseArgHelpers = `  function parseBool(val, defaultVal) {
     if (val === undefined || val === null || val === '') return defaultVal;
     if (val === true || val === false) return val;
@@ -407,7 +408,7 @@ ${trustDrainBlock}    var existing = h.getAssistantMessages();
       var waitJson = h.parseAnswerJson(waitedAnswer);
       if (waitJson) { waitOut.answerJson = waitJson; waitOut.answerFormat = 'json'; }
     }
-    return attachCaptureWarning(waitOut, false);
+${restoreComposerBlock}    return attachCaptureWarning(waitOut, false);
   }
 
   if (newChat) {
@@ -514,7 +515,7 @@ ${incompleteJsonRejectBlock}${modelFallbackChatBlock}  if (!answer) {
     var answerJson = h.parseAnswerJson(answer);
     if (answerJson) { out.answerJson = answerJson; out.answerFormat = 'json'; }
   }
-${modelFallbackOutField}  return attachCaptureWarning(out, false);`
+${modelFallbackOutField}${restoreComposerBlock}  return attachCaptureWarning(out, false);`
   )
 );
 
@@ -612,7 +613,7 @@ ${trustDrainBlock}    var existing = h.getAssistantMessages();
     };
     var waitFollowTrust = h.getLastUrlTrustAccepts();
     if (waitFollowTrust.length) waitFollowOut.urlTrustAccepted = waitFollowTrust;
-    return attachCaptureWarning(waitFollowOut, false);
+${restoreComposerBlock}    return attachCaptureWarning(waitFollowOut, false);
   }
 
   var landing = await h.ensureAiLandingPage();
@@ -717,7 +718,7 @@ ${incompleteJsonRejectBlock}${modelFallbackChatfollowBlock}  if (!answer) {
     var answerJson = h.parseAnswerJson(answer);
     if (answerJson) { out.answerJson = answerJson; out.answerFormat = 'json'; }
   }
-${modelFallbackOutField}  return attachCaptureWarning(out, false);`
+${modelFallbackOutField}${restoreComposerBlock}  return attachCaptureWarning(out, false);`
   )
 );
 
@@ -754,7 +755,7 @@ ${installBlock}
 
   var listed = await h.listNotionModelsFromUi();
   var models = listed.models || [];
-  return {
+${restoreComposerBlock}  return {
     defaultModelId: 'auto',
     current: listed.current || 'Auto',
     available: models.map(function(m) { return m.id; }),

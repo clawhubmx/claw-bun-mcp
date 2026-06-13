@@ -1,0 +1,160 @@
+{
+  "runId": "MODELS-FOCUS-MQCLND3L",
+  "at": "2026-06-13T16:58:26.961Z",
+  "helpersVersion": 57,
+  "synced": true,
+  "model": "auto",
+  "prompts": [
+    "What is 17+25? Reply with just the number.",
+    "Add 10 to that result. Reply with just the number.",
+    "Multiply that by 2. Reply with just the number.",
+    "Is the result even? Reply yes or no only."
+  ],
+  "steps": [
+    {
+      "name": "sync-adapters",
+      "status": "pass",
+      "installDir": "/Users/hesdx/.bun-browser/claw-bun-mcp/notion"
+    },
+    {
+      "name": "open-fresh-tab",
+      "status": "pass",
+      "tab": "5b52",
+      "url": "https://app.notion.com/ai"
+    },
+    {
+      "name": "notion/models",
+      "status": "pass",
+      "errors": [],
+      "modelCount": 13,
+      "current": "Auto",
+      "argv": "bun /Users/hesdx/Documents/toolings/bun-browser/dist/cli.js site notion/models --json --tab 5b52"
+    },
+    {
+      "name": "focus-probe-after-models",
+      "status": "pass",
+      "errors": [],
+      "probe": {
+        "helpersVersion": 57,
+        "menuOpen": false,
+        "pickerFocused": false,
+        "editorFocused": true,
+        "hasPicker": true,
+        "hasEditor": true,
+        "activeTag": "DIV",
+        "activeTestId": null,
+        "pickerExpanded": "false",
+        "url": "https://app.notion.com/ai"
+      },
+      "argv": "bun /Users/hesdx/Documents/toolings/bun-browser/dist/cli.js eval (function() {\n  var h = globalThis.__notionAiChatHelpers;\n  var picker = h && h.findModelPickerButton ? h.findModelPickerButton() : document.querySelector('[data-testid=\"unified-chat-model-button\"]');\n  var editor = h && h.getChatInput ? h.getChatInput() : null;\n  var active = document.activeElement;\n  var pickerFocused = !!(picker && (active === picker || picker.contains(active)));\n  var editorFocused = !!(editor && (active === editor || editor.contains(active)));\n  var menuOpen = h && h.isModelPickerMenuOpen ? h.isModelPickerMenuOpen(picker) : false;\n  return {\n    helpersVersion: h ? h.version : null,\n    menuOpen: menuOpen,\n    pickerFocused: pickerFocused,\n    editorFocused: editorFocused,\n    hasPicker: !!picker,\n    hasEditor: !!editor,\n    activeTag: active ? active.tagName : null,\n    activeTestId: active ? active.getAttribute('data-testid') : null,\n    pickerExpanded: picker ? picker.getAttribute('aria-expanded') : null,\n    url: location.href\n  };\n})() --json --tab 5b52"
+    },
+    {
+      "name": "notion/chat",
+      "status": "pass",
+      "errors": [],
+      "conversationId": "37e773dd-10fd-80b3-bde3-00a98c217ad1",
+      "answerPreview": "42",
+      "argv": "bun /Users/hesdx/Documents/toolings/bun-browser/dist/cli.js site notion/chat What is 17+25? Reply with just the number. --model auto --maxWaitMs 90000 --json --tab 5b52"
+    },
+    {
+      "name": "focus-probe-after-chat",
+      "status": "pass",
+      "errors": [],
+      "probe": {
+        "helpersVersion": 57,
+        "menuOpen": false,
+        "pickerFocused": false,
+        "editorFocused": true,
+        "hasPicker": true,
+        "hasEditor": true,
+        "activeTag": "DIV",
+        "activeTestId": null,
+        "pickerExpanded": "false",
+        "url": "https://app.notion.com/chat?t=37e773dd10fd80b3bde300a98c217ad1&wfv=chat"
+      },
+      "argv": "bun /Users/hesdx/Documents/toolings/bun-browser/dist/cli.js eval (function() {\n  var h = globalThis.__notionAiChatHelpers;\n  var picker = h && h.findModelPickerButton ? h.findModelPickerButton() : document.querySelector('[data-testid=\"unified-chat-model-button\"]');\n  var editor = h && h.getChatInput ? h.getChatInput() : null;\n  var active = document.activeElement;\n  var pickerFocused = !!(picker && (active === picker || picker.contains(active)));\n  var editorFocused = !!(editor && (active === editor || editor.contains(active)));\n  var menuOpen = h && h.isModelPickerMenuOpen ? h.isModelPickerMenuOpen(picker) : false;\n  return {\n    helpersVersion: h ? h.version : null,\n    menuOpen: menuOpen,\n    pickerFocused: pickerFocused,\n    editorFocused: editorFocused,\n    hasPicker: !!picker,\n    hasEditor: !!editor,\n    activeTag: active ? active.tagName : null,\n    activeTestId: active ? active.getAttribute('data-testid') : null,\n    pickerExpanded: picker ? picker.getAttribute('aria-expanded') : null,\n    url: location.href\n  };\n})() --json --tab 5b52"
+    },
+    {
+      "name": "notion/chatfollow-1",
+      "status": "pass",
+      "errors": [],
+      "conversationId": "37e773dd-10fd-80b3-bde3-00a98c217ad1",
+      "answerPreview": "52",
+      "argv": "bun /Users/hesdx/Documents/toolings/bun-browser/dist/cli.js site notion/chatfollow 37e773dd-10fd-80b3-bde3-00a98c217ad1 Add 10 to that result. Reply with just the number. --model auto --maxWaitMs 90000 --json --tab 5b52"
+    },
+    {
+      "name": "focus-probe-after-chatfollow-1",
+      "status": "pass",
+      "errors": [],
+      "probe": {
+        "helpersVersion": 57,
+        "menuOpen": false,
+        "pickerFocused": false,
+        "editorFocused": true,
+        "hasPicker": true,
+        "hasEditor": true,
+        "activeTag": "DIV",
+        "activeTestId": null,
+        "pickerExpanded": "false",
+        "url": "https://app.notion.com/chat?t=37e773dd10fd80b3bde300a98c217ad1&wfv=chat"
+      },
+      "argv": "bun /Users/hesdx/Documents/toolings/bun-browser/dist/cli.js eval (function() {\n  var h = globalThis.__notionAiChatHelpers;\n  var picker = h && h.findModelPickerButton ? h.findModelPickerButton() : document.querySelector('[data-testid=\"unified-chat-model-button\"]');\n  var editor = h && h.getChatInput ? h.getChatInput() : null;\n  var active = document.activeElement;\n  var pickerFocused = !!(picker && (active === picker || picker.contains(active)));\n  var editorFocused = !!(editor && (active === editor || editor.contains(active)));\n  var menuOpen = h && h.isModelPickerMenuOpen ? h.isModelPickerMenuOpen(picker) : false;\n  return {\n    helpersVersion: h ? h.version : null,\n    menuOpen: menuOpen,\n    pickerFocused: pickerFocused,\n    editorFocused: editorFocused,\n    hasPicker: !!picker,\n    hasEditor: !!editor,\n    activeTag: active ? active.tagName : null,\n    activeTestId: active ? active.getAttribute('data-testid') : null,\n    pickerExpanded: picker ? picker.getAttribute('aria-expanded') : null,\n    url: location.href\n  };\n})() --json --tab 5b52"
+    },
+    {
+      "name": "notion/chatfollow-2",
+      "status": "pass",
+      "errors": [],
+      "conversationId": "37e773dd-10fd-80b3-bde3-00a98c217ad1",
+      "answerPreview": "104",
+      "argv": "bun /Users/hesdx/Documents/toolings/bun-browser/dist/cli.js site notion/chatfollow 37e773dd-10fd-80b3-bde3-00a98c217ad1 Multiply that by 2. Reply with just the number. --model auto --maxWaitMs 90000 --json --tab 5b52"
+    },
+    {
+      "name": "focus-probe-after-chatfollow-2",
+      "status": "pass",
+      "errors": [],
+      "probe": {
+        "helpersVersion": 57,
+        "menuOpen": false,
+        "pickerFocused": false,
+        "editorFocused": true,
+        "hasPicker": true,
+        "hasEditor": true,
+        "activeTag": "DIV",
+        "activeTestId": null,
+        "pickerExpanded": "false",
+        "url": "https://app.notion.com/chat?t=37e773dd10fd80b3bde300a98c217ad1&wfv=chat"
+      },
+      "argv": "bun /Users/hesdx/Documents/toolings/bun-browser/dist/cli.js eval (function() {\n  var h = globalThis.__notionAiChatHelpers;\n  var picker = h && h.findModelPickerButton ? h.findModelPickerButton() : document.querySelector('[data-testid=\"unified-chat-model-button\"]');\n  var editor = h && h.getChatInput ? h.getChatInput() : null;\n  var active = document.activeElement;\n  var pickerFocused = !!(picker && (active === picker || picker.contains(active)));\n  var editorFocused = !!(editor && (active === editor || editor.contains(active)));\n  var menuOpen = h && h.isModelPickerMenuOpen ? h.isModelPickerMenuOpen(picker) : false;\n  return {\n    helpersVersion: h ? h.version : null,\n    menuOpen: menuOpen,\n    pickerFocused: pickerFocused,\n    editorFocused: editorFocused,\n    hasPicker: !!picker,\n    hasEditor: !!editor,\n    activeTag: active ? active.tagName : null,\n    activeTestId: active ? active.getAttribute('data-testid') : null,\n    pickerExpanded: picker ? picker.getAttribute('aria-expanded') : null,\n    url: location.href\n  };\n})() --json --tab 5b52"
+    },
+    {
+      "name": "notion/chatfollow-3",
+      "status": "pass",
+      "errors": [],
+      "conversationId": "37e773dd-10fd-80b3-bde3-00a98c217ad1",
+      "answerPreview": "yes",
+      "argv": "bun /Users/hesdx/Documents/toolings/bun-browser/dist/cli.js site notion/chatfollow 37e773dd-10fd-80b3-bde3-00a98c217ad1 Is the result even? Reply yes or no only. --model auto --maxWaitMs 90000 --json --tab 5b52"
+    },
+    {
+      "name": "focus-probe-after-chatfollow-3",
+      "status": "pass",
+      "errors": [],
+      "probe": {
+        "helpersVersion": 57,
+        "menuOpen": false,
+        "pickerFocused": false,
+        "editorFocused": true,
+        "hasPicker": true,
+        "hasEditor": true,
+        "activeTag": "DIV",
+        "activeTestId": null,
+        "pickerExpanded": "false",
+        "url": "https://app.notion.com/chat?t=37e773dd10fd80b3bde300a98c217ad1&wfv=chat"
+      },
+      "argv": "bun /Users/hesdx/Documents/toolings/bun-browser/dist/cli.js eval (function() {\n  var h = globalThis.__notionAiChatHelpers;\n  var picker = h && h.findModelPickerButton ? h.findModelPickerButton() : document.querySelector('[data-testid=\"unified-chat-model-button\"]');\n  var editor = h && h.getChatInput ? h.getChatInput() : null;\n  var active = document.activeElement;\n  var pickerFocused = !!(picker && (active === picker || picker.contains(active)));\n  var editorFocused = !!(editor && (active === editor || editor.contains(active)));\n  var menuOpen = h && h.isModelPickerMenuOpen ? h.isModelPickerMenuOpen(picker) : false;\n  return {\n    helpersVersion: h ? h.version : null,\n    menuOpen: menuOpen,\n    pickerFocused: pickerFocused,\n    editorFocused: editorFocused,\n    hasPicker: !!picker,\n    hasEditor: !!editor,\n    activeTag: active ? active.tagName : null,\n    activeTestId: active ? active.getAttribute('data-testid') : null,\n    pickerExpanded: picker ? picker.getAttribute('aria-expanded') : null,\n    url: location.href\n  };\n})() --json --tab 5b52"
+    }
+  ],
+  "tab": "5b52",
+  "conversationId": "37e773dd-10fd-80b3-bde3-00a98c217ad1",
+  "ok": true,
+  "summary": "notion/models plus chat with 3 auto follow-ups closed picker and restored composer focus after each step"
+}

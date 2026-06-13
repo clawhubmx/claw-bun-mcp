@@ -1806,12 +1806,16 @@ Loaded web page: api.llama.fi/chains</div>
         y: 300,
       });
     }
+    picker.onclick = () => {
+      const open = picker.getAttribute("aria-expanded") === "true";
+      picker.setAttribute("aria-expanded", open ? "false" : "true");
+      models.style.display = open ? "none" : "block";
+    };
     expect(h.isModelPickerMenuOpen(picker)).toBe(true);
     picker.focus();
     expect(document.activeElement).toBe(picker);
-    await h.closeModelPickerSurface(picker);
-    picker.setAttribute("aria-expanded", "false");
-    models.remove();
+    const closed = await h.closeModelPickerSurface(picker);
+    expect(closed).toBe(true);
     expect(h.isModelPickerMenuOpen(picker)).toBe(false);
     expect(document.activeElement).not.toBe(picker);
     expect(document.activeElement).toBe(editor);

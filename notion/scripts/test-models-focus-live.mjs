@@ -1,6 +1,12 @@
 #!/usr/bin/env bun
 /**
- * Live test: notion/models closes picker and restores composer focus.
+ * Live test: notion/models and notion/chat/chatfollow close the model picker
+ * and restore composer focus after each step.
+ *
+ * Flow:
+ *   1. notion/models
+ *   2. notion/chat (new chat, auto)
+ *   3. notion/chatfollow x3 (auto follow-ups in same thread)
  *
  * Usage:
  *   bun notion/scripts/test-models-focus-live.mjs
@@ -19,9 +25,17 @@ const CLI = "/Users/hesdx/Documents/toolings/bun-browser/dist/cli.js";
 const AI_URL = "https://app.notion.com/ai";
 const OUT_DIR = join(ROOT, "example/models-focus-live/runs");
 
+const INITIAL_PROMPT = "What is 17+25? Reply with just the number.";
+const FOLLOW_UP_PROMPTS = [
+  "Add 10 to that result. Reply with just the number.",
+  "Multiply that by 2. Reply with just the number.",
+  "Is the result even? Reply yes or no only.",
+];
+
 const args = process.argv.slice(2);
 const noSync = args.includes("--no-sync");
 const tabArg = args.includes("--tab") ? args[args.indexOf("--tab") + 1] : null;
+const maxWaitMs = args.includes("--maxWaitMs") ? Number(args[args.indexOf("--maxWaitMs") + 1]) : 90000;
 
 const HELPERS_VERSION = Number(
   readFileSync(join(ROOT, "chat-helpers.js"), "utf8").match(/HELPERS_VERSION = (\d+)/)?.[1] || 0,
@@ -142,6 +156,14 @@ function validateModels(data) {
   return { ok: errors.length === 0, errors };
 }
 
+function validateChat(data) {
+  const errors = [];
+  if (data?.error) errors.push(String(data.error));
+  if (!data?.conversationId) errors.push("missing conversationId");
+  if (!String(data?.answer || "").trim()) errors.push("empty answer");
+  return { ok: errors.length === 0, errors };
+}
+
 function validateFocusProbe(probe) {
   const errors = [];
   if (probe?.error) errors.push(String(probe.error));
@@ -157,6 +179,22 @@ function validateFocusProbe(probe) {
   return { ok: errors.length === 0, errors };
 }
 
+function runFocusProbe(tab, stepName, report) {
+  spawnSync("sleep", ["0.5"]);
+  const probeRun = run(["eval", FOCUS_PROBE], 60000, tab);
+  const probe = unwrapEvalData(probeRun.data || { error: probeRun.error || "empty probe" });
+  const probeVal = validateFocusProbe(probe);
+  report.steps.push({
+    name: stepName,
+    status: probeVal.ok ? "pass" : "fail",
+    errors: probeVal.errors,
+    probe,
+    argv: probeRun.argv,
+  });
+  if (!probeVal.ok) throw new Error(`${stepName}: ${probeVal.errors.join("; ")}`);
+  return probe;
+}
+
 function main() {
   mkdirSync(OUT_DIR, { recursive: true });
   const runId = `MODELS-FOCUS-${Date.now().toString(36).toUpperCase()}`;
@@ -165,6 +203,8 @@ function main() {
     at: new Date().toISOString(),
     helpersVersion: HELPERS_VERSION,
     synced: !noSync,
+    model: "auto",
+    prompts: [INITIAL_PROMPT, ...FOLLOW_UP_PROMPTS],
     steps: [],
   };
 
@@ -175,9 +215,13 @@ function main() {
     }
 
     let tab = tabArg || findNotionTab();
-    if (!tab) tab = openNotionTab();
+    if (!tabArg) {
+      tab = openNotionTab();
+      report.steps.push({ name: "open-fresh-tab", status: "pass", tab, url: AI_URL });
+    } else {
+      report.steps.push({ name: "resolve-tab", status: "pass", tab });
+    }
     report.tab = tab;
-    report.steps.push({ name: "resolve-tab", status: "pass", tab });
 
     const modelsRun = run(["site", "notion/models"], 120000, tab);
     const modelsVal = validateModels(modelsRun.data || { error: modelsRun.error || "empty" });
@@ -190,23 +234,51 @@ function main() {
       argv: modelsRun.argv,
     });
     if (!modelsVal.ok) throw new Error(modelsVal.errors.join("; "));
+    runFocusProbe(tab, "focus-probe-after-models", report);
 
-    spawnSync("sleep", ["0.5"]);
-
-    const probeRun = run(["eval", FOCUS_PROBE], 60000, tab);
-    const probe = unwrapEvalData(probeRun.data || { error: probeRun.error || "empty probe" });
-    const probeVal = validateFocusProbe(probe);
+    const chatRun = run(
+      ["site", "notion/chat", INITIAL_PROMPT, "--model", "auto", "--maxWaitMs", String(maxWaitMs)],
+      maxWaitMs + 60000,
+      tab,
+    );
+    const chatVal = validateChat(chatRun.data || { error: chatRun.error || "empty chat" });
     report.steps.push({
-      name: "focus-probe",
-      status: probeVal.ok ? "pass" : "fail",
-      errors: probeVal.errors,
-      probe,
-      argv: probeRun.argv,
+      name: "notion/chat",
+      status: chatVal.ok ? "pass" : "fail",
+      errors: chatVal.errors,
+      conversationId: chatRun.data?.conversationId || null,
+      answerPreview: String(chatRun.data?.answer || "").slice(0, 120),
+      argv: chatRun.argv,
     });
-    if (!probeVal.ok) throw new Error(probeVal.errors.join("; "));
+    if (!chatVal.ok) throw new Error(chatVal.errors.join("; "));
+    runFocusProbe(tab, "focus-probe-after-chat", report);
 
+    let conversationId = chatRun.data.conversationId;
+    for (let i = 0; i < FOLLOW_UP_PROMPTS.length; i++) {
+      const prompt = FOLLOW_UP_PROMPTS[i];
+      const followRun = run(
+        ["site", "notion/chatfollow", conversationId, prompt, "--model", "auto", "--maxWaitMs", String(maxWaitMs)],
+        maxWaitMs + 60000,
+        tab,
+      );
+      const followVal = validateChat(followRun.data || { error: followRun.error || "empty follow-up" });
+      report.steps.push({
+        name: `notion/chatfollow-${i + 1}`,
+        status: followVal.ok ? "pass" : "fail",
+        errors: followVal.errors,
+        conversationId: followRun.data?.conversationId || conversationId,
+        answerPreview: String(followRun.data?.answer || "").slice(0, 120),
+        argv: followRun.argv,
+      });
+      if (!followVal.ok) throw new Error(`chatfollow ${i + 1}: ${followVal.errors.join("; ")}`);
+      if (followRun.data?.conversationId) conversationId = followRun.data.conversationId;
+      runFocusProbe(tab, `focus-probe-after-chatfollow-${i + 1}`, report);
+    }
+
+    report.conversationId = conversationId;
     report.ok = true;
-    report.summary = "notion/models listed models, picker closed, composer focused";
+    report.summary =
+      "notion/models plus chat with 3 auto follow-ups closed picker and restored composer focus after each step";
   } catch (err) {
     report.ok = false;
     report.error = err instanceof Error ? err.message : String(err);

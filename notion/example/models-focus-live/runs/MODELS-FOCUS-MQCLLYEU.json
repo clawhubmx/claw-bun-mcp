@@ -1,0 +1,68 @@
+{
+  "runId": "MODELS-FOCUS-MQCLLYEU",
+  "at": "2026-06-13T16:57:21.270Z",
+  "helpersVersion": 57,
+  "synced": true,
+  "model": "auto",
+  "prompts": [
+    "What is 17+25? Reply with just the number.",
+    "Add 10 to that result. Reply with just the number.",
+    "Multiply that by 2. Reply with just the number.",
+    "Is the result even? Reply yes or no only."
+  ],
+  "steps": [
+    {
+      "name": "sync-adapters",
+      "status": "pass",
+      "installDir": "/Users/hesdx/.bun-browser/claw-bun-mcp/notion"
+    },
+    {
+      "name": "open-fresh-tab",
+      "status": "pass",
+      "tab": "bf15",
+      "url": "https://app.notion.com/ai"
+    },
+    {
+      "name": "notion/models",
+      "status": "pass",
+      "errors": [],
+      "modelCount": 13,
+      "current": "Auto",
+      "argv": "bun /Users/hesdx/Documents/toolings/bun-browser/dist/cli.js site notion/models --json --tab bf15"
+    },
+    {
+      "name": "focus-probe-after-models",
+      "status": "pass",
+      "errors": [],
+      "probe": {
+        "helpersVersion": 57,
+        "menuOpen": false,
+        "pickerFocused": false,
+        "editorFocused": true,
+        "hasPicker": true,
+        "hasEditor": true,
+        "activeTag": "DIV",
+        "activeTestId": null,
+        "pickerExpanded": "false",
+        "url": "https://app.notion.com/ai"
+      },
+      "argv": "bun /Users/hesdx/Documents/toolings/bun-browser/dist/cli.js eval (function() {\n  var h = globalThis.__notionAiChatHelpers;\n  var picker = h && h.findModelPickerButton ? h.findModelPickerButton() : document.querySelector('[data-testid=\"unified-chat-model-button\"]');\n  var editor = h && h.getChatInput ? h.getChatInput() : null;\n  var active = document.activeElement;\n  var pickerFocused = !!(picker && (active === picker || picker.contains(active)));\n  var editorFocused = !!(editor && (active === editor || editor.contains(active)));\n  var menuOpen = h && h.isModelPickerMenuOpen ? h.isModelPickerMenuOpen(picker) : false;\n  return {\n    helpersVersion: h ? h.version : null,\n    menuOpen: menuOpen,\n    pickerFocused: pickerFocused,\n    editorFocused: editorFocused,\n    hasPicker: !!picker,\n    hasEditor: !!editor,\n    activeTag: active ? active.tagName : null,\n    activeTestId: active ? active.getAttribute('data-testid') : null,\n    pickerExpanded: picker ? picker.getAttribute('aria-expanded') : null,\n    url: location.href\n  };\n})() --json --tab bf15"
+    },
+    {
+      "name": "notion/chat",
+      "status": "fail",
+      "errors": [
+        "Mode selection failed",
+        "missing conversationId",
+        "empty answer"
+      ],
+      "conversationId": null,
+      "answerPreview": "",
+      "argv": "bun /Users/hesdx/Documents/toolings/bun-browser/dist/cli.js site notion/chat --newChat --model auto --maxWaitMs 90000 What is 17+25? Reply with just the number. --json --tab bf15"
+    }
+  ],
+  "tab": "bf15",
+  "ok": false,
+  "error": "Mode selection failed; missing conversationId; empty answer",
+  "summary": "live focus test failed"
+}
