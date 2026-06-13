@@ -79,7 +79,7 @@ async function(args) {
 
 
   var h = (function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 38;
+  var HELPERS_VERSION = 39;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 200;
   var NOTION_REVEAL_THROTTLE_MS = 2000;
@@ -1094,9 +1094,11 @@ async function(args) {
     beforeCount = Math.max(0, Number(beforeCount) || 0);
     beforeText = beforeText != null ? String(beforeText) : '';
     captureOpts = captureOpts || {};
-    var scopeReady = arguments.length >= 3
-      ? hasCompletedReplyActionsForTurn(beforeCount, beforeText)
-      : hasCompletedReplyActions() && !isGenerating();
+    var scopeReady = !captureOpts.skipScopeReady && (
+      arguments.length >= 3
+        ? hasCompletedReplyActionsForTurn(beforeCount, beforeText)
+        : hasCompletedReplyActions() && !isGenerating()
+    );
     var parts = [];
     if (messages.length > beforeCount) {
       for (var i = beforeCount; i < messages.length; i++) {
@@ -1262,11 +1264,22 @@ async function(args) {
 
   function hasCompletedReplyActionsForTurn(beforeCount, beforeText) {
     if (!hasCompletedReplyActions()) return false;
-    return hasNewTurnContent(getAssistantMessagesSinceLastUser(), beforeCount, beforeText);
+    var messages = getAssistantMessagesSinceLastUser();
+    if (!hasNewTurnContent(messages, beforeCount, beforeText)) return false;
+    var answer = getAssistantAnswerSince(messages, beforeCount, beforeText, { skipScopeReady: true });
+    if (!looksLikeFinalAnswer(answer)) return false;
+    if (looksLikeJsonAnswerAttempt(answer) && !hasParsedJsonAnswer(answer)) return false;
+    return true;
   }
 
   function isGeneratingForTurn(beforeCount, beforeText) {
     if (isUrlTrustPromptVisible()) return true;
+    var messages = getAssistantMessagesSinceLastUser();
+    if (hasNewTurnContent(messages, beforeCount, beforeText)) {
+      var answer = getAssistantAnswerSince(messages, beforeCount, beforeText, { skipScopeReady: true });
+      if (!looksLikeFinalAnswer(answer)) return true;
+      if (looksLikeJsonAnswerAttempt(answer) && !hasParsedJsonAnswer(answer)) return true;
+    }
     if (hasCompletedReplyActionsForTurn(beforeCount, beforeText)) return false;
     if (hasCompletedReplyActions()) return true;
     if (hasActiveAgentStatusLines()) return true;
@@ -1281,7 +1294,17 @@ async function(args) {
   }
 
   function isChatInProgress() {
-    if (hasCompletedReplyActions()) return false;
+    if (hasCompletedReplyActions()) {
+      var completedMsgs = getAssistantMessages();
+      if (completedMsgs.length) {
+        var completedLatest = getAssistantText(completedMsgs[completedMsgs.length - 1]);
+        if (completedLatest) {
+          if (!looksLikeFinalAnswer(completedLatest)) return true;
+          if (looksLikeJsonAnswerAttempt(completedLatest) && !hasParsedJsonAnswer(completedLatest)) return true;
+        }
+      }
+      return false;
+    }
     if (isGenerating()) return true;
     var msgs = getAssistantMessages();
     if (!msgs.length) return false;
@@ -3077,7 +3100,7 @@ async function(args) {
   var newChat = pickBoolArg(args, 'newChat', 2, true);
   var modeId = h.resolveNotionMode(pickArg(args, 'model', 1, 'auto') || 'auto');
 
-  var accessBlock = h.detectNotionPageAbnormal();
+  var accessBlock = h.detectNotionPageAbnormal({ skipSubmitCheck: waitOnly || selectOnly });
   if (accessBlock) return accessBlock;
   await h.drainUrlTrustPrompts();
   var allowBusyTab = pickBoolArg(args, 'allowBusyTab', -1, false);

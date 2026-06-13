@@ -1,0 +1,94 @@
+{
+  "id": "p01-control",
+  "purpose": "Baseline: tiny JSON-only reply should finish in seconds with valid parsed JSON.",
+  "expectJson": true,
+  "maxWaitMs": 30000,
+  "pollMaxWaitMs": 30000,
+  "pass": false,
+  "issues": [
+    "identical_answer_stuck",
+    "missing_json"
+  ],
+  "identicalAnswerStuck": true,
+  "identicalAnswerHash": "021fb596db81e6d0",
+  "identicalPollCount": 4,
+  "steps": [
+    {
+      "mode": "submit",
+      "pollIndex": null,
+      "elapsedMs": 500,
+      "timedOut": false,
+      "chatError": "Chat submission blocked",
+      "chatKind": null,
+      "answerLen": 1,
+      "answerHash": "021fb596db81e6d0",
+      "looksFinal": false,
+      "hasParsedJson": false,
+      "helpersVersion": 38,
+      "answerFormat": null,
+      "jsonRecovered": false,
+      "answerPreview": "{"
+    },
+    {
+      "mode": "waitOnly",
+      "pollIndex": 1,
+      "elapsedMs": 629,
+      "timedOut": false,
+      "chatError": "Chat submission blocked",
+      "chatKind": null,
+      "answerLen": 1,
+      "answerHash": "021fb596db81e6d0",
+      "looksFinal": false,
+      "hasParsedJson": false,
+      "helpersVersion": 38,
+      "answerFormat": null,
+      "jsonRecovered": false,
+      "answerPreview": "{"
+    },
+    {
+      "mode": "waitOnly",
+      "pollIndex": 2,
+      "elapsedMs": 455,
+      "timedOut": false,
+      "chatError": "Chat submission blocked",
+      "chatKind": null,
+      "answerLen": 1,
+      "answerHash": "021fb596db81e6d0",
+      "looksFinal": false,
+      "hasParsedJson": false,
+      "helpersVersion": 38,
+      "answerFormat": null,
+      "jsonRecovered": false,
+      "answerPreview": "{"
+    },
+    {
+      "mode": "waitOnly",
+      "pollIndex": 3,
+      "elapsedMs": 447,
+      "timedOut": false,
+      "chatError": "Chat submission blocked",
+      "chatKind": null,
+      "answerLen": 1,
+      "answerHash": "021fb596db81e6d0",
+      "looksFinal": false,
+      "hasParsedJson": false,
+      "helpersVersion": 38,
+      "answerFormat": null,
+      "jsonRecovered": false,
+      "answerPreview": "{"
+    }
+  ],
+  "final": {
+    "chatError": "Chat submission blocked",
+    "answer": null,
+    "answerJson": null,
+    "helpersVersion": 38,
+    "looksFinal": false
+  },
+  "passCriteria": [
+    "Initial submit or waitOnly poll returns answer (not Still generating) within 1 poll",
+    "answerJson or parseAnswerJson succeeds",
+    "probe.looksFinal is true when answer is returned",
+    "No identical-answer-stuck pattern across polls"
+  ]
+}

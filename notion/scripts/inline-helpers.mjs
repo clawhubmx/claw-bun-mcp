@@ -159,7 +159,7 @@ ${captureWarningHelper}  h.resetUrlTrustState();
   var newChat = pickBoolArg(args, 'newChat', 2, true);
   var modeId = h.resolveNotionMode(pickArg(args, 'model', 1, 'auto') || 'auto');
 
-  var accessBlock = h.detectNotionPageAbnormal();
+  var accessBlock = h.detectNotionPageAbnormal({ skipSubmitCheck: waitOnly || selectOnly });
   if (accessBlock) return accessBlock;
 ${trustDrainBlock}${busyTabGuardBlock}  if (selectOnly) {
     if (newChat) {
@@ -391,7 +391,7 @@ ${captureWarningHelper}  h.resetUrlTrustState();
   var waitOnly = parseBool(args.waitOnly, false);
   var modeId = h.resolveNotionMode(args.model || 'auto');
 
-  var accessBlock = h.detectNotionPageAbnormal();
+  var accessBlock = h.detectNotionPageAbnormal({ skipSubmitCheck: waitOnly });
   if (accessBlock) return accessBlock;
 ${trustDrainBlock}
   if (waitOnly) {

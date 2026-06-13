@@ -1,0 +1,44 @@
+{
+  "id": "p04-prose-control",
+  "purpose": "Non-JSON exact token reply: prose path must still complete without JSON guards interfering.",
+  "expectJson": false,
+  "maxWaitMs": 30000,
+  "pollMaxWaitMs": 30000,
+  "pass": false,
+  "issues": [
+    "missing_expected_token"
+  ],
+  "identicalAnswerStuck": false,
+  "identicalAnswerHash": null,
+  "identicalPollCount": 0,
+  "steps": [
+    {
+      "mode": "submit",
+      "pollIndex": null,
+      "elapsedMs": 435,
+      "timedOut": false,
+      "chatError": "Chat submission blocked",
+      "chatKind": null,
+      "answerLen": 1,
+      "answerHash": "021fb596db81e6d0",
+      "looksFinal": false,
+      "hasParsedJson": false,
+      "helpersVersion": 38,
+      "answerFormat": null,
+      "jsonRecovered": false,
+      "answerPreview": "{"
+    }
+  ],
+  "final": {
+    "chatError": "Chat submission blocked",
+    "answer": null,
+    "answerJson": null,
+    "helpersVersion": 38,
+    "looksFinal": false
+  },
+  "passCriteria": [
+    "Answer contains exact token OK-NOTION-FLOW",
+    "probe.looksFinal true when toolbar complete",
+    "No Still generating loop after toolbar shows complete"
+  ]
+}

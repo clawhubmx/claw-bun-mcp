@@ -1,0 +1,92 @@
+{
+  "id": "p05-preamble-edge",
+  "purpose": "JSON with preamble risk: model may add prose before JSON; tests parseAnswerJson and looksLikeFinalAnswer recovery.",
+  "expectJson": true,
+  "maxWaitMs": 45000,
+  "pollMaxWaitMs": 30000,
+  "pass": false,
+  "issues": [
+    "identical_answer_stuck"
+  ],
+  "identicalAnswerStuck": true,
+  "identicalAnswerHash": "021fb596db81e6d0",
+  "identicalPollCount": 4,
+  "steps": [
+    {
+      "mode": "submit",
+      "pollIndex": null,
+      "elapsedMs": 447,
+      "timedOut": false,
+      "chatError": "Chat submission blocked",
+      "chatKind": null,
+      "answerLen": 1,
+      "answerHash": "021fb596db81e6d0",
+      "looksFinal": false,
+      "hasParsedJson": false,
+      "helpersVersion": 38,
+      "answerFormat": null,
+      "jsonRecovered": false,
+      "answerPreview": "{"
+    },
+    {
+      "mode": "waitOnly",
+      "pollIndex": 1,
+      "elapsedMs": 437,
+      "timedOut": false,
+      "chatError": "Chat submission blocked",
+      "chatKind": null,
+      "answerLen": 1,
+      "answerHash": "021fb596db81e6d0",
+      "looksFinal": false,
+      "hasParsedJson": false,
+      "helpersVersion": 38,
+      "answerFormat": null,
+      "jsonRecovered": false,
+      "answerPreview": "{"
+    },
+    {
+      "mode": "waitOnly",
+      "pollIndex": 2,
+      "elapsedMs": 441,
+      "timedOut": false,
+      "chatError": "Chat submission blocked",
+      "chatKind": null,
+      "answerLen": 1,
+      "answerHash": "021fb596db81e6d0",
+      "looksFinal": false,
+      "hasParsedJson": false,
+      "helpersVersion": 38,
+      "answerFormat": null,
+      "jsonRecovered": false,
+      "answerPreview": "{"
+    },
+    {
+      "mode": "waitOnly",
+      "pollIndex": 3,
+      "elapsedMs": 429,
+      "timedOut": false,
+      "chatError": "Chat submission blocked",
+      "chatKind": null,
+      "answerLen": 1,
+      "answerHash": "021fb596db81e6d0",
+      "looksFinal": false,
+      "hasParsedJson": false,
+      "helpersVersion": 38,
+      "answerFormat": null,
+      "jsonRecovered": false,
+      "answerPreview": "{"
+    }
+  ],
+  "final": {
+    "chatError": "Chat submission blocked",
+    "answer": null,
+    "answerJson": null,
+    "helpersVersion": 38,
+    "looksFinal": false
+  },
+  "passCriteria": [
+    "When complete, parseAnswerJson extracts {probe:preamble, ok:true} despite optional leading sentence",
+    "Incomplete preamble+partial JSON returns Still generating, not partial success",
+    "jsonRecovered true is acceptable when raw differs from compact JSON"
+  ]
+}

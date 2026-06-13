@@ -434,7 +434,7 @@ describe("notion chat helpers", () => {
     expect(h.tryExtractCompletedAnswer(msgs, msgs.length, "42", {})).toBeNull();
   });
 
-  test("tryExtractCompletedAnswer trusts toolbar for short answers rejected by looksLikeFinalAnswer", () => {
+  test("tryExtractCompletedAnswer requires final-looking answer with toolbar", () => {
     const h = installHelpers();
     document.body.innerHTML =
       '<div class="layout-chat">' +
@@ -445,7 +445,24 @@ describe("notion chat helpers", () => {
       '</div></div>';
     const msgs = h.getAssistantMessagesSinceLastUser();
     expect(h.looksLikeFinalAnswer("y")).toBe(false);
-    expect(h.tryExtractCompletedAnswer(msgs, 0, "", {})).toBe("y");
+    expect(h.tryExtractCompletedAnswer(msgs, 0, "", {})).toBeNull();
+  });
+
+  test("toolbar with incomplete JSON answer is still generating", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">Return ONLY valid JSON.</div>' +
+      '<div class="assistant-turn">' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">{</div></div>' +
+      '<div class="reply-toolbar">' + REPLY_ACTION_BUTTONS_WITH_FEEDBACK + '</div>' +
+      '</div></div>';
+    const msgs = h.getAssistantMessagesSinceLastUser();
+    expect(h.hasCompletedReplyActions()).toBe(true);
+    expect(h.hasCompletedReplyActionsForTurn(0, "")).toBe(false);
+    expect(h.isGeneratingForTurn(0, "")).toBe(true);
+    expect(h.isChatInProgress()).toBe(true);
+    expect(h.looksLikeFinalAnswer("{")).toBe(false);
   });
 
   test("recoverCompletedAnswer returns full reply since last user", () => {
@@ -861,9 +878,9 @@ Loaded web page: api.llama.fi/chains</div>
     expect(giveBtn.getAttribute("aria-expanded")).not.toBe("true");
   });
 
-  test("helpers version is 38", () => {
+  test("helpers version is 39", () => {
     const h = installHelpers();
-    expect(h.version).toBe(38);
+    expect(h.version).toBe(39);
   });
 
   test("shouldRunRevealSideEffect throttles reveal side effects during wait polling", () => {

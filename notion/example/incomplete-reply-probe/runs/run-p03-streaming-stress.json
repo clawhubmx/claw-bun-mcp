@@ -1,0 +1,93 @@
+{
+  "id": "p03-streaming-stress",
+  "purpose": "News-style unique_topics JSON (search + long output): main repro candidate for identical incomplete reply loops.",
+  "expectJson": true,
+  "maxWaitMs": 60000,
+  "pollMaxWaitMs": 30000,
+  "pass": false,
+  "issues": [
+    "identical_answer_stuck"
+  ],
+  "identicalAnswerStuck": true,
+  "identicalAnswerHash": "021fb596db81e6d0",
+  "identicalPollCount": 4,
+  "steps": [
+    {
+      "mode": "submit",
+      "pollIndex": null,
+      "elapsedMs": 458,
+      "timedOut": false,
+      "chatError": "Chat submission blocked",
+      "chatKind": null,
+      "answerLen": 1,
+      "answerHash": "021fb596db81e6d0",
+      "looksFinal": false,
+      "hasParsedJson": false,
+      "helpersVersion": 38,
+      "answerFormat": null,
+      "jsonRecovered": false,
+      "answerPreview": "{"
+    },
+    {
+      "mode": "waitOnly",
+      "pollIndex": 1,
+      "elapsedMs": 436,
+      "timedOut": false,
+      "chatError": "Chat submission blocked",
+      "chatKind": null,
+      "answerLen": 1,
+      "answerHash": "021fb596db81e6d0",
+      "looksFinal": false,
+      "hasParsedJson": false,
+      "helpersVersion": 38,
+      "answerFormat": null,
+      "jsonRecovered": false,
+      "answerPreview": "{"
+    },
+    {
+      "mode": "waitOnly",
+      "pollIndex": 2,
+      "elapsedMs": 441,
+      "timedOut": false,
+      "chatError": "Chat submission blocked",
+      "chatKind": null,
+      "answerLen": 1,
+      "answerHash": "021fb596db81e6d0",
+      "looksFinal": false,
+      "hasParsedJson": false,
+      "helpersVersion": 38,
+      "answerFormat": null,
+      "jsonRecovered": false,
+      "answerPreview": "{"
+    },
+    {
+      "mode": "waitOnly",
+      "pollIndex": 3,
+      "elapsedMs": 440,
+      "timedOut": false,
+      "chatError": "Chat submission blocked",
+      "chatKind": null,
+      "answerLen": 1,
+      "answerHash": "021fb596db81e6d0",
+      "looksFinal": false,
+      "hasParsedJson": false,
+      "helpersVersion": 38,
+      "answerFormat": null,
+      "jsonRecovered": false,
+      "answerPreview": "{"
+    }
+  ],
+  "final": {
+    "chatError": "Chat submission blocked",
+    "answer": null,
+    "answerJson": null,
+    "helpersVersion": 38,
+    "looksFinal": false
+  },
+  "passCriteria": [
+    "Eventually completes with parseable JSON containing unique_topics array OR",
+    "While incomplete, each poll returns Still generating (not frozen partial answer)",
+    "If stuck: flag identicalAnswerHashAcrossPolls with looksFinal false",
+    "helpersVersion >= 25 should treat incomplete JSON as in-flight"
+  ]
+}

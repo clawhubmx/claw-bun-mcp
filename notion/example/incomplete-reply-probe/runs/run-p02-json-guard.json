@@ -1,0 +1,93 @@
+{
+  "id": "p02-json-guard",
+  "purpose": "Medium JSON schema: truncated streaming JSON must yield Still generating, never partial success with invalid JSON.",
+  "expectJson": true,
+  "maxWaitMs": 45000,
+  "pollMaxWaitMs": 30000,
+  "pass": false,
+  "issues": [
+    "identical_answer_stuck"
+  ],
+  "identicalAnswerStuck": true,
+  "identicalAnswerHash": "021fb596db81e6d0",
+  "identicalPollCount": 4,
+  "steps": [
+    {
+      "mode": "submit",
+      "pollIndex": null,
+      "elapsedMs": 603,
+      "timedOut": false,
+      "chatError": "Chat submission blocked",
+      "chatKind": null,
+      "answerLen": 1,
+      "answerHash": "021fb596db81e6d0",
+      "looksFinal": false,
+      "hasParsedJson": false,
+      "helpersVersion": 38,
+      "answerFormat": null,
+      "jsonRecovered": false,
+      "answerPreview": "{"
+    },
+    {
+      "mode": "waitOnly",
+      "pollIndex": 1,
+      "elapsedMs": 603,
+      "timedOut": false,
+      "chatError": "Chat submission blocked",
+      "chatKind": null,
+      "answerLen": 1,
+      "answerHash": "021fb596db81e6d0",
+      "looksFinal": false,
+      "hasParsedJson": false,
+      "helpersVersion": 38,
+      "answerFormat": null,
+      "jsonRecovered": false,
+      "answerPreview": "{"
+    },
+    {
+      "mode": "waitOnly",
+      "pollIndex": 2,
+      "elapsedMs": 512,
+      "timedOut": false,
+      "chatError": "Chat submission blocked",
+      "chatKind": null,
+      "answerLen": 1,
+      "answerHash": "021fb596db81e6d0",
+      "looksFinal": false,
+      "hasParsedJson": false,
+      "helpersVersion": 38,
+      "answerFormat": null,
+      "jsonRecovered": false,
+      "answerPreview": "{"
+    },
+    {
+      "mode": "waitOnly",
+      "pollIndex": 3,
+      "elapsedMs": 778,
+      "timedOut": false,
+      "chatError": "Chat submission blocked",
+      "chatKind": null,
+      "answerLen": 1,
+      "answerHash": "021fb596db81e6d0",
+      "looksFinal": false,
+      "hasParsedJson": false,
+      "helpersVersion": 38,
+      "answerFormat": null,
+      "jsonRecovered": false,
+      "answerPreview": "{"
+    }
+  ],
+  "final": {
+    "chatError": "Chat submission blocked",
+    "answer": null,
+    "answerJson": null,
+    "helpersVersion": 38,
+    "looksFinal": false
+  },
+  "passCriteria": [
+    "If DOM answer is incomplete JSON, chat returns error Still generating (not answer with truncated text)",
+    "When complete, answerJson.planets is a non-empty array",
+    "probe.looksFinal false while JSON is truncated",
+    "No identical-answer-stuck: same hash across polls while Still generating"
+  ]
+}
