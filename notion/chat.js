@@ -79,9 +79,10 @@ async function(args) {
 
 
   var h = (function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 37;
+  var HELPERS_VERSION = 38;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 200;
+  var NOTION_REVEAL_THROTTLE_MS = 2000;
   var NOTION_SUBMIT_ACK_MS = 8000;
   var NOTION_SUBMIT_MAX_ATTEMPTS = 3;
 
@@ -1008,6 +1009,16 @@ async function(args) {
     return true;
   }
 
+  function shouldRunRevealSideEffect(revealThrottle) {
+    if (!revealThrottle) return true;
+    var now = Date.now();
+    if (revealThrottle.lastAt === 0 || now - revealThrottle.lastAt >= NOTION_REVEAL_THROTTLE_MS) {
+      revealThrottle.lastAt = now;
+      return true;
+    }
+    return false;
+  }
+
   function revealLatestReplyInView() {
     var clicks = 0;
     var scrolled = false;
@@ -1051,8 +1062,12 @@ async function(args) {
     return hasCompletedReplyActions() && !isGenerating();
   }
 
-  function getAssistantTextFromReplyScope(beforeCount, beforeText) {
-    if (shouldRevealReplyScope(beforeCount, beforeText)) revealLatestReplyInView();
+  function getAssistantTextFromReplyScope(beforeCount, beforeText, captureOpts) {
+    captureOpts = captureOpts || {};
+    if (shouldRevealReplyScope(beforeCount, beforeText) &&
+        shouldRunRevealSideEffect(captureOpts.revealThrottle)) {
+      revealLatestReplyInView();
+    }
     var scope = getLatestAssistantReplyScope();
     if (!scope) {
       var chatRoot = document.querySelector('.layout-chat');
@@ -1074,10 +1089,11 @@ async function(args) {
     return parts.join('\n').trim();
   }
 
-  function getAssistantAnswerSince(messages, beforeCount, beforeText) {
+  function getAssistantAnswerSince(messages, beforeCount, beforeText, captureOpts) {
     if (!messages || messages.length < beforeCount) return '';
     beforeCount = Math.max(0, Number(beforeCount) || 0);
     beforeText = beforeText != null ? String(beforeText) : '';
+    captureOpts = captureOpts || {};
     var scopeReady = arguments.length >= 3
       ? hasCompletedReplyActionsForTurn(beforeCount, beforeText)
       : hasCompletedReplyActions() && !isGenerating();
@@ -1094,7 +1110,7 @@ async function(args) {
     }
     var result = parts.join('\n').trim();
     if (scopeReady) {
-      var scopeText = getAssistantTextFromReplyScope(beforeCount, beforeText);
+      var scopeText = getAssistantTextFromReplyScope(beforeCount, beforeText, captureOpts);
       if (scopeText && scopeText.length > result.length) {
         var extraLen = scopeText.replace(result, '').trim().length;
         if (extraLen > 8 || (hasParsedJsonAnswer(scopeText) && !hasParsedJsonAnswer(result))) {
@@ -1103,7 +1119,7 @@ async function(args) {
       }
     }
     if (!result && scopeReady) {
-      var scopeFallback = getAssistantTextFromReplyScope(beforeCount, beforeText);
+      var scopeFallback = getAssistantTextFromReplyScope(beforeCount, beforeText, captureOpts);
       if (scopeFallback) return scopeFallback;
     }
     return result;
@@ -1453,6 +1469,8 @@ async function(args) {
     var lastMessageCount = beforeCount;
     var sawInFlight = false;
     var pollCount = 0;
+    var revealThrottle = { lastAt: 0 };
+    var captureOpts = Object.assign({}, opts, { revealThrottle: revealThrottle });
     lastWaitPending = false;
     lastWaitAbnormal = null;
     lastCaptureWarning = null;
@@ -1483,7 +1501,7 @@ async function(args) {
       var messages = getAssistantMessagesSinceLastUser();
       if (messages.length > beforeCount) sawInFlight = true;
 
-      var toolbarAnswer = tryExtractCompletedAnswer(messages, beforeCount, beforeText, opts);
+      var toolbarAnswer = tryExtractCompletedAnswer(messages, beforeCount, beforeText, captureOpts);
       if (toolbarAnswer === '') return '';
       if (toolbarAnswer) {
         lastWaitPending = false;
@@ -1494,7 +1512,7 @@ async function(args) {
       var pending = generating || !hasNewTurnContent(messages, beforeCount, beforeText);
       if (pending) sawInFlight = true;
 
-      answer = getAssistantAnswerSince(messages, beforeCount, beforeText);
+      answer = getAssistantAnswerSince(messages, beforeCount, beforeText, captureOpts);
       if (messages.length > lastMessageCount) {
         lastMessageCount = messages.length;
         stableRounds = 0;
@@ -1508,8 +1526,10 @@ async function(args) {
         var expectsJson = waitExpectsJson(opts);
         if (expectsJson && answer && !hasParsedJsonAnswer(answer)) {
           if (hasCompletedReplyActionsForTurn(beforeCount, beforeText)) {
-            await scrollToLatestReply({ maxClicks: 2, pauseMs: 120 });
-            answer = getAssistantAnswerSince(messages, beforeCount, beforeText);
+            if (shouldRunRevealSideEffect(revealThrottle)) {
+              await scrollToLatestReply({ maxClicks: 2, pauseMs: 120 });
+            }
+            answer = getAssistantAnswerSince(messages, beforeCount, beforeText, captureOpts);
             if (hasParsedJsonAnswer(answer)) {
               lastWaitPending = false;
               return answer;
@@ -2960,6 +2980,8 @@ async function(args) {
     scrollChatContainerToBottom: scrollChatContainerToBottom,
     revealLatestReplyInView: revealLatestReplyInView,
     scrollToLatestReply: scrollToLatestReply,
+    shouldRunRevealSideEffect: shouldRunRevealSideEffect,
+    NOTION_REVEAL_THROTTLE_MS: NOTION_REVEAL_THROTTLE_MS,
     getAssistantTextFromReplyScope: getAssistantTextFromReplyScope,
     getAssistantAnswerSince: getAssistantAnswerSince,
     getCurrentReplyAssistantStartCount: getCurrentReplyAssistantStartCount,

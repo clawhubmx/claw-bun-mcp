@@ -1,0 +1,43 @@
+{
+  "mode": "live",
+  "tabId": "8688",
+  "polls": 10,
+  "pollMs": 250,
+  "maxWaitMs": null,
+  "phases": [
+    {
+      "phase": "initial-state",
+      "data": {
+        "error": "helpers not loaded"
+      }
+    },
+    {
+      "phase": "instrumented-poll",
+      "data": {
+        "error": "helpers not loaded"
+      }
+    }
+  ],
+  "bugDetected": false,
+  "bugSignals": [],
+  "rootCause": {
+    "files": [
+      "notion/chat-helpers.js"
+    ],
+    "functions": [
+      "findScrollToBottomButton",
+      "clickScrollToBottomButton",
+      "revealLatestReplyInView",
+      "scrollToLatestReply",
+      "getAssistantTextFromReplyScope",
+      "getAssistantAnswerSince",
+      "waitForAssistantAnswer"
+    ],
+    "callSitesDuringWait": [
+      "waitForAssistantAnswer poll → getAssistantAnswerSince → getAssistantTextFromReplyScope → revealLatestReplyInView",
+      "waitForAssistantAnswer JSON incomplete → scrollToLatestReply",
+      "recoverCompletedAnswer → revealLatestReplyInView"
+    ]
+  },
+  "suggestedFix": "Exclude composer controls from findScrollToBottomButton; gate revealLatestReplyInView on isGeneratingForTurn / only when scrolling is required."
+}

@@ -176,6 +176,7 @@ function buildAttachmentProbeJs(pollCount, pollPauseMs) {
 
   var log = [];
   log.push(attachmentState('start'));
+  var revealThrottle = { lastAt: 0 };
 
   for (var i = 0; i < ${pollCount}; i++) {
     var msgs = h.getAssistantMessagesSinceLastUser();
@@ -183,7 +184,7 @@ function buildAttachmentProbeJs(pollCount, pollPauseMs) {
     snapBefore.callSite = 'getAssistantAnswerSince → getAssistantTextFromReplyScope → revealLatestReplyInView';
     log.push(snapBefore);
 
-    h.getAssistantAnswerSince(msgs, beforeCount);
+    h.getAssistantAnswerSince(msgs, beforeCount, beforeText, { revealThrottle: revealThrottle });
 
     var snapAfter = attachmentState('poll-' + i + '-after-getAssistantAnswerSince');
     snapAfter.callSite = 'getAssistantAnswerSince (same chain if hasCompletedReplyActions)';
@@ -193,7 +194,9 @@ function buildAttachmentProbeJs(pollCount, pollPauseMs) {
       var scrollSnapBefore = attachmentState('scrollToLatestReply-before');
       scrollSnapBefore.callSite = 'waitForAssistantAnswer JSON path → scrollToLatestReply';
       log.push(scrollSnapBefore);
-      await h.scrollToLatestReply({ maxClicks: 1, pauseMs: 0 });
+      if (h.shouldRunRevealSideEffect(revealThrottle)) {
+        await h.scrollToLatestReply({ maxClicks: 1, pauseMs: 0 });
+      }
       var scrollSnapAfter = attachmentState('scrollToLatestReply-after');
       scrollSnapAfter.callSite = 'scrollToLatestReply → clickScrollToBottomButton';
       log.push(scrollSnapAfter);
@@ -307,14 +310,17 @@ function runFixtureProbe() {
   };
 
   snap("start", null);
+  const revealThrottle = { lastAt: 0 };
   for (let i = 0; i < polls; i++) {
     const msgs = h.getAssistantMessagesSinceLastUser();
     snap(`poll-${i}-before`, "getAssistantAnswerSince → revealLatestReplyInView");
-    h.getAssistantAnswerSince(msgs, beforeCount);
+    h.getAssistantAnswerSince(msgs, beforeCount, beforeText, { revealThrottle });
     snap(`poll-${i}-after`, "getAssistantAnswerSince (toolbar from prior turn)");
     if (i === 2) {
       snap("scroll-before", "waitForAssistantAnswer → scrollToLatestReply");
-      h.scrollToLatestReply({ maxClicks: 1, pauseMs: 0 });
+      if (h.shouldRunRevealSideEffect(revealThrottle)) {
+        h.scrollToLatestReply({ maxClicks: 1, pauseMs: 0 });
+      }
       snap("scroll-after", "scrollToLatestReply → clickScrollToBottomButton");
     }
   }

@@ -861,9 +861,69 @@ Loaded web page: api.llama.fi/chains</div>
     expect(giveBtn.getAttribute("aria-expanded")).not.toBe("true");
   });
 
-  test("helpers version is 37", () => {
+  test("helpers version is 38", () => {
     const h = installHelpers();
-    expect(h.version).toBe(37);
+    expect(h.version).toBe(38);
+  });
+
+  test("shouldRunRevealSideEffect throttles reveal side effects during wait polling", () => {
+    const h = installHelpers();
+    expect(h.NOTION_REVEAL_THROTTLE_MS).toBe(2000);
+    const throttle = { lastAt: 0 };
+    expect(h.shouldRunRevealSideEffect(throttle)).toBe(true);
+    for (let i = 0; i < 5; i++) {
+      expect(h.shouldRunRevealSideEffect(throttle)).toBe(false);
+    }
+    throttle.lastAt = Date.now() - h.NOTION_REVEAL_THROTTLE_MS;
+    expect(h.shouldRunRevealSideEffect(throttle)).toBe(true);
+  });
+
+  test("getAssistantAnswerSince throttles revealLatestReplyInView during wait poll capture", () => {
+    const h = installHelpers();
+    let scrollClicks = 0;
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">Follow-up user prompt</div>' +
+      '<div class="assistant-turn">' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Prior completed answer.</div></div>' +
+      '<div class="reply-toolbar">' + REPLY_ACTION_BUTTONS + "</div>" +
+      "</div>" +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Streaming JSON partial</div></div>' +
+      '<button aria-label="Scroll to bottom" id="scrollFab" style="position:fixed;bottom:20px;right:20px;width:40px;height:40px">' +
+      '<svg><path d="M6 10 L12 16 L18 10"></path></svg></button>' +
+      "</div>";
+    const fab = document.getElementById("scrollFab");
+    fab.getBoundingClientRect = () => ({
+      left: 900,
+      top: 700,
+      width: 40,
+      height: 40,
+      right: 940,
+      bottom: 740,
+      x: 900,
+      y: 700,
+    });
+    Object.defineProperty(window, "innerHeight", { configurable: true, value: 800 });
+    fab.addEventListener("click", () => {
+      scrollClicks++;
+    });
+
+    const beforeCount = h.getCurrentReplyAssistantStartCount();
+    const msgs = h.getAssistantMessagesSinceLastUser();
+    const existing = h.getAssistantMessages();
+    const beforeText =
+      beforeCount < existing.length ? h.getAssistantText(existing[beforeCount]) : "Prior completed answer.";
+    const revealThrottle = { lastAt: 0 };
+    const clicksPerPoll = [];
+
+    for (let i = 0; i < 10; i++) {
+      const before = scrollClicks;
+      h.getAssistantAnswerSince(msgs, beforeCount, beforeText, { revealThrottle });
+      clicksPerPoll.push(scrollClicks - before);
+    }
+
+    expect(clicksPerPoll[0]).toBeGreaterThan(0);
+    expect(clicksPerPoll.slice(1).every((count) => count === 0)).toBe(true);
   });
 
   test("isUrlTrustPromptVisible finds dialog below long page prefix", () => {
