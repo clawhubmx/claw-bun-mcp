@@ -1,0 +1,170 @@
+{
+  "runId": "MODEL-SEL-MQCDYZBO",
+  "startedAt": "2026-06-13T13:23:32.156Z",
+  "finishedAt": "2026-06-13T13:25:47.815Z",
+  "helpersVersion": 40,
+  "totals": {
+    "pass": 6,
+    "total": 10
+  },
+  "results": [
+    {
+      "index": 1,
+      "alias": "auto",
+      "expectedTitle": "Auto",
+      "token": "OK-01",
+      "tab": "f3f7",
+      "chat": {
+        "modeLabel": "Auto",
+        "modeTitle": "Auto",
+        "answer": "OK",
+        "error": null,
+        "errors": [
+          "answer must contain token \"OK-01\""
+        ]
+      },
+      "ok": false
+    },
+    {
+      "index": 2,
+      "alias": "sonnet",
+      "expectedTitle": "Sonnet 4.6",
+      "token": "OK-02",
+      "tab": "016f",
+      "chat": {
+        "modeLabel": "Sonnet 4.6",
+        "modeTitle": "Sonnet 4.6",
+        "answer": "OK-02",
+        "error": null,
+        "errors": []
+      },
+      "ok": true
+    },
+    {
+      "index": 3,
+      "alias": "opus",
+      "expectedTitle": "Opus 4.7",
+      "token": "OK-03",
+      "tab": "e300",
+      "chat": {
+        "modeLabel": "Opus 4.7",
+        "modeTitle": "Opus 4.7",
+        "answer": "OK-03",
+        "error": null,
+        "errors": []
+      },
+      "ok": true
+    },
+    {
+      "index": 4,
+      "alias": "fable",
+      "expectedTitle": "Fable 5",
+      "token": "OK-04",
+      "tab": "57a1",
+      "chat": {
+        "modeLabel": "Fable 5",
+        "modeTitle": "Fable 5",
+        "answer": "OK-04",
+        "error": null,
+        "errors": []
+      },
+      "ok": true
+    },
+    {
+      "index": 5,
+      "alias": "gemini",
+      "expectedTitle": "Gemini 3.1 Pro",
+      "token": "OK-05",
+      "tab": "1bf3",
+      "chat": {
+        "modeLabel": "Gemini 3.1 Pro",
+        "modeTitle": "Gemini 3.1 Pro",
+        "answer": "OK-05",
+        "error": null,
+        "errors": []
+      },
+      "ok": true
+    },
+    {
+      "index": 6,
+      "alias": "gpt-5.2",
+      "expectedTitle": "GPT-5.2",
+      "token": "OK-06",
+      "tab": "64e4",
+      "chat": {
+        "modeLabel": "GPT-5.2",
+        "modeTitle": "GPT-5.2",
+        "answer": "OK-",
+        "error": null,
+        "errors": [
+          "answer must contain token \"OK-06\""
+        ]
+      },
+      "ok": false
+    },
+    {
+      "index": 7,
+      "alias": "gpt-5.4",
+      "expectedTitle": "GPT-5.4",
+      "token": "OK-07",
+      "tab": "6a13",
+      "chat": {
+        "modeLabel": "GPT-5.4",
+        "modeTitle": "GPT-5.4",
+        "answer": "OK",
+        "error": null,
+        "errors": [
+          "answer must contain token \"OK-07\""
+        ]
+      },
+      "ok": false
+    },
+    {
+      "index": 8,
+      "alias": "grok",
+      "expectedTitle": "Grok 4.3",
+      "token": "OK-08",
+      "tab": "1493",
+      "chat": {
+        "modeLabel": "Grok 4.3",
+        "modeTitle": "Grok 4.3",
+        "answer": "OK-08",
+        "error": null,
+        "errors": []
+      },
+      "ok": true
+    },
+    {
+      "index": 9,
+      "alias": "kimi",
+      "expectedTitle": "Kimi K2.6",
+      "token": "OK-09",
+      "tab": "3180",
+      "chat": {
+        "modeLabel": "Kimi K2.6",
+        "modeTitle": "Kimi K2.6",
+        "answer": "OK-",
+        "error": null,
+        "errors": [
+          "answer must contain token \"OK-09\""
+        ]
+      },
+      "ok": false
+    },
+    {
+      "index": 10,
+      "alias": "deepseek",
+      "expectedTitle": "DeepSeek V4 Pro",
+      "token": "OK-10",
+      "tab": "daff",
+      "chat": {
+        "modeLabel": "DeepSeek V4 Pro",
+        "modeTitle": "DeepSeek V4 Pro",
+        "answer": "OK-10",
+        "error": null,
+        "errors": []
+      },
+      "ok": true
+    }
+  ]
+}

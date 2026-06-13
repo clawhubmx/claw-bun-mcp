@@ -1,0 +1,10 @@
+You are a research assistant. Write a detailed analysis (at least 800 words) of how quantum computing commercialization is progressing in 2026.
+
+Cover these sections with concrete examples:
+1. Hardware milestones (superconducting, trapped-ion, photonic)
+2. Cloud access (AWS Braket, Azure Quantum, IBM Quantum)
+3. Error correction and logical qubit progress
+4. Industry adoption in finance, pharma, and logistics
+5. Key risks and timeline estimates through 2030
+
+Use clear headings. Do not use JSON. End with a one-sentence summary labeled "Bottom line:".

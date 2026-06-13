@@ -1,0 +1,226 @@
+{
+  "runId": "MODEL-SEL-MQCDUQMZ",
+  "startedAt": "2026-06-13T13:20:20.943Z",
+  "finishedAt": "2026-06-13T13:20:54.634Z",
+  "tab": "00a1",
+  "helpersVersion": 40,
+  "totals": {
+    "selectPass": 1,
+    "chatPass": 0,
+    "total": 10
+  },
+  "results": [
+    {
+      "index": 1,
+      "alias": "auto",
+      "expectedTitle": "Auto",
+      "token": "OK-01",
+      "select": {
+        "modeLabel": "Auto",
+        "modeTitle": "Auto",
+        "selected": true,
+        "error": null,
+        "errors": []
+      },
+      "chat": {
+        "modeLabel": "Auto",
+        "answer": "OK-01",
+        "error": null,
+        "errors": [
+          "answer does not look complete"
+        ]
+      },
+      "selectOk": true,
+      "chatOk": false
+    },
+    {
+      "index": 2,
+      "alias": "sonnet",
+      "expectedTitle": "Sonnet 4.6",
+      "token": "OK-02",
+      "select": {
+        "error": "Stale chat thread still visible",
+        "errors": [
+          "Stale chat thread still visible"
+        ]
+      },
+      "chat": {
+        "error": "Stale chat thread still visible",
+        "errors": [
+          "Stale chat thread still visible",
+          "answer must contain token \"OK-02\""
+        ]
+      },
+      "selectOk": false,
+      "chatOk": false
+    },
+    {
+      "index": 3,
+      "alias": "opus",
+      "expectedTitle": "Opus 4.7",
+      "token": "OK-03",
+      "select": {
+        "error": "Stale chat thread still visible",
+        "errors": [
+          "Stale chat thread still visible"
+        ]
+      },
+      "chat": {
+        "error": "Stale chat thread still visible",
+        "errors": [
+          "Stale chat thread still visible",
+          "answer must contain token \"OK-03\""
+        ]
+      },
+      "selectOk": false,
+      "chatOk": false
+    },
+    {
+      "index": 4,
+      "alias": "fable",
+      "expectedTitle": "Fable 5",
+      "token": "OK-04",
+      "select": {
+        "error": "Stale chat thread still visible",
+        "errors": [
+          "Stale chat thread still visible"
+        ]
+      },
+      "chat": {
+        "error": "Stale chat thread still visible",
+        "errors": [
+          "Stale chat thread still visible",
+          "answer must contain token \"OK-04\""
+        ]
+      },
+      "selectOk": false,
+      "chatOk": false
+    },
+    {
+      "index": 5,
+      "alias": "gemini",
+      "expectedTitle": "Gemini 3.1 Pro",
+      "token": "OK-05",
+      "select": {
+        "error": "Stale chat thread still visible",
+        "errors": [
+          "Stale chat thread still visible"
+        ]
+      },
+      "chat": {
+        "error": "Stale chat thread still visible",
+        "errors": [
+          "Stale chat thread still visible",
+          "answer must contain token \"OK-05\""
+        ]
+      },
+      "selectOk": false,
+      "chatOk": false
+    },
+    {
+      "index": 6,
+      "alias": "gpt-5.2",
+      "expectedTitle": "GPT-5.2",
+      "token": "OK-06",
+      "select": {
+        "error": "Stale chat thread still visible",
+        "errors": [
+          "Stale chat thread still visible"
+        ]
+      },
+      "chat": {
+        "error": "Stale chat thread still visible",
+        "errors": [
+          "Stale chat thread still visible",
+          "answer must contain token \"OK-06\""
+        ]
+      },
+      "selectOk": false,
+      "chatOk": false
+    },
+    {
+      "index": 7,
+      "alias": "gpt-5.4",
+      "expectedTitle": "GPT-5.4",
+      "token": "OK-07",
+      "select": {
+        "error": "Stale chat thread still visible",
+        "errors": [
+          "Stale chat thread still visible"
+        ]
+      },
+      "chat": {
+        "error": "Stale chat thread still visible",
+        "errors": [
+          "Stale chat thread still visible",
+          "answer must contain token \"OK-07\""
+        ]
+      },
+      "selectOk": false,
+      "chatOk": false
+    },
+    {
+      "index": 8,
+      "alias": "grok",
+      "expectedTitle": "Grok 4.3",
+      "token": "OK-08",
+      "select": {
+        "error": "Stale chat thread still visible",
+        "errors": [
+          "Stale chat thread still visible"
+        ]
+      },
+      "chat": {
+        "error": "Stale chat thread still visible",
+        "errors": [
+          "Stale chat thread still visible",
+          "answer must contain token \"OK-08\""
+        ]
+      },
+      "selectOk": false,
+      "chatOk": false
+    },
+    {
+      "index": 9,
+      "alias": "kimi",
+      "expectedTitle": "Kimi K2.6",
+      "token": "OK-09",
+      "select": {
+        "error": "Stale chat thread still visible",
+        "errors": [
+          "Stale chat thread still visible"
+        ]
+      },
+      "chat": {
+        "error": "Stale chat thread still visible",
+        "errors": [
+          "Stale chat thread still visible",
+          "answer must contain token \"OK-09\""
+        ]
+      },
+      "selectOk": false,
+      "chatOk": false
+    },
+    {
+      "index": 10,
+      "alias": "deepseek",
+      "expectedTitle": "DeepSeek V4 Pro",
+      "token": "OK-10",
+      "select": {
+        "error": "Stale chat thread still visible",
+        "errors": [
+          "Stale chat thread still visible"
+        ]
+      },
+      "chat": {
+        "error": "Stale chat thread still visible",
+        "errors": [
+          "Stale chat thread still visible",
+          "answer must contain token \"OK-10\""
+        ]
+      },
+      "selectOk": false,
+      "chatOk": false
+    }
+  ]
+}

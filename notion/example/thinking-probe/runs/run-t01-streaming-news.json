@@ -1,0 +1,192 @@
+{
+  "id": "t01-streaming-news",
+  "tab": "0d05",
+  "expectJson": true,
+  "steps": [
+    {
+      "mode": "submit",
+      "pollIndex": null,
+      "elapsedMs": 180200,
+      "chatError": null,
+      "answerLen": 85,
+      "answerHash": "9a5cf1cb83d6937e",
+      "anchor": {
+        "helpersVersion": 38,
+        "anchors": {
+          "layoutChat": true,
+          "modelPicker": {
+            "text": "Sonnet 4.6",
+            "expanded": "false",
+            "controls": null
+          },
+          "copyButtonCount": 1,
+          "assistantLeafCount": 1,
+          "replyScopeTag": "DIV"
+        },
+        "signals": {
+          "isGenerating": false,
+          "isGeneratingForTurn": false,
+          "isChatInProgress": false,
+          "hasCompletedReplyActions": true,
+          "hasCompletedReplyActionsForTurn": true,
+          "looksFinal": false
+        },
+        "statusLines": [],
+        "recentTail": [
+          "Fed interest rate June 2026",
+          "You are a news research assistant. Search the listed publisher domains for recent coverage. Return JSON only. json format only; NO markdown format; NO bold formatting; NO pretty format",
+          "Based on user query: \"Fed interest rate decision June 2026\" as the intent, go find out from the given publishers:reuters.com;apnews.com;bloomberg.com;cnbc.com;bbc.com;nytimes.com;wsj.com;ft.com;axios.com;marketwatch.com;finance.yahoo.com;theguardian.com;washingtonpost.com;politico.com;forbes.com;fortune.com;investing.com;barrons.com;economist.com;aljazeera.com;From the pool of the publisher look for the the latest topics ± 3 days for the most relevant news topics, and then deduplicate them and show me the unique topics in JSON format only. if there is no result is falling into the give date range but only found that event topics that out of the range, still shown them in the list.format in{  \"query\": <text>,  \"time_period\": <text>,  \"unique_topics\": <array of strings>,  \"sources\": <text>}Use coverage window roughly 2026-06-09 to 2026-06-15. time_period use this format from: 2026-06-10T14:30:00Z. json format only; NO markdown format; NO bold formatting; NO pretty format",
+          "3 steps",
+          "{\"query\": \"Fed interest rate decision June",
+          "Sonnet 4.6"
+        ],
+        "answerLen": 85,
+        "answerPreview": "{\"query\": \"Fed interest rate decision June\n{\"query\": \"Fed interest rate decision June",
+        "mismatches": [
+          "toolbar_visible_nonfinal_answer"
+        ]
+      },
+      "answerPreview": null
+    },
+    {
+      "mode": "waitOnly",
+      "pollIndex": 1,
+      "elapsedMs": 441,
+      "chatError": "Chat submission blocked",
+      "answerLen": 85,
+      "answerHash": "9a5cf1cb83d6937e",
+      "anchor": {
+        "helpersVersion": 38,
+        "anchors": {
+          "layoutChat": true,
+          "modelPicker": {
+            "text": "Sonnet 4.6",
+            "expanded": "false",
+            "controls": null
+          },
+          "copyButtonCount": 1,
+          "assistantLeafCount": 1,
+          "replyScopeTag": "DIV"
+        },
+        "signals": {
+          "isGenerating": false,
+          "isGeneratingForTurn": false,
+          "isChatInProgress": false,
+          "hasCompletedReplyActions": true,
+          "hasCompletedReplyActionsForTurn": true,
+          "looksFinal": false
+        },
+        "statusLines": [],
+        "recentTail": [
+          "Fed interest rate June 2026",
+          "You are a news research assistant. Search the listed publisher domains for recent coverage. Return JSON only. json format only; NO markdown format; NO bold formatting; NO pretty format",
+          "Based on user query: \"Fed interest rate decision June 2026\" as the intent, go find out from the given publishers:reuters.com;apnews.com;bloomberg.com;cnbc.com;bbc.com;nytimes.com;wsj.com;ft.com;axios.com;marketwatch.com;finance.yahoo.com;theguardian.com;washingtonpost.com;politico.com;forbes.com;fortune.com;investing.com;barrons.com;economist.com;aljazeera.com;From the pool of the publisher look for the the latest topics ± 3 days for the most relevant news topics, and then deduplicate them and show me the unique topics in JSON format only. if there is no result is falling into the give date range but only found that event topics that out of the range, still shown them in the list.format in{  \"query\": <text>,  \"time_period\": <text>,  \"unique_topics\": <array of strings>,  \"sources\": <text>}Use coverage window roughly 2026-06-09 to 2026-06-15. time_period use this format from: 2026-06-10T14:30:00Z. json format only; NO markdown format; NO bold formatting; NO pretty format",
+          "3 steps",
+          "{\"query\": \"Fed interest rate decision June",
+          "Sonnet 4.6"
+        ],
+        "answerLen": 85,
+        "answerPreview": "{\"query\": \"Fed interest rate decision June\n{\"query\": \"Fed interest rate decision June",
+        "mismatches": [
+          "toolbar_visible_nonfinal_answer"
+        ]
+      },
+      "answerPreview": null
+    },
+    {
+      "mode": "waitOnly",
+      "pollIndex": 2,
+      "elapsedMs": 404,
+      "chatError": "Chat submission blocked",
+      "answerLen": 85,
+      "answerHash": "9a5cf1cb83d6937e",
+      "anchor": {
+        "helpersVersion": 38,
+        "anchors": {
+          "layoutChat": true,
+          "modelPicker": {
+            "text": "Sonnet 4.6",
+            "expanded": "false",
+            "controls": null
+          },
+          "copyButtonCount": 1,
+          "assistantLeafCount": 1,
+          "replyScopeTag": "DIV"
+        },
+        "signals": {
+          "isGenerating": false,
+          "isGeneratingForTurn": false,
+          "isChatInProgress": false,
+          "hasCompletedReplyActions": true,
+          "hasCompletedReplyActionsForTurn": true,
+          "looksFinal": false
+        },
+        "statusLines": [],
+        "recentTail": [
+          "Fed interest rate June 2026",
+          "You are a news research assistant. Search the listed publisher domains for recent coverage. Return JSON only. json format only; NO markdown format; NO bold formatting; NO pretty format",
+          "Based on user query: \"Fed interest rate decision June 2026\" as the intent, go find out from the given publishers:reuters.com;apnews.com;bloomberg.com;cnbc.com;bbc.com;nytimes.com;wsj.com;ft.com;axios.com;marketwatch.com;finance.yahoo.com;theguardian.com;washingtonpost.com;politico.com;forbes.com;fortune.com;investing.com;barrons.com;economist.com;aljazeera.com;From the pool of the publisher look for the the latest topics ± 3 days for the most relevant news topics, and then deduplicate them and show me the unique topics in JSON format only. if there is no result is falling into the give date range but only found that event topics that out of the range, still shown them in the list.format in{  \"query\": <text>,  \"time_period\": <text>,  \"unique_topics\": <array of strings>,  \"sources\": <text>}Use coverage window roughly 2026-06-09 to 2026-06-15. time_period use this format from: 2026-06-10T14:30:00Z. json format only; NO markdown format; NO bold formatting; NO pretty format",
+          "3 steps",
+          "{\"query\": \"Fed interest rate decision June",
+          "Sonnet 4.6"
+        ],
+        "answerLen": 85,
+        "answerPreview": "{\"query\": \"Fed interest rate decision June\n{\"query\": \"Fed interest rate decision June",
+        "mismatches": [
+          "toolbar_visible_nonfinal_answer"
+        ]
+      },
+      "answerPreview": null
+    },
+    {
+      "mode": "waitOnly",
+      "pollIndex": 3,
+      "elapsedMs": 470,
+      "chatError": "Chat submission blocked",
+      "answerLen": 85,
+      "answerHash": "9a5cf1cb83d6937e",
+      "anchor": {
+        "helpersVersion": 38,
+        "anchors": {
+          "layoutChat": true,
+          "modelPicker": {
+            "text": "Sonnet 4.6",
+            "expanded": "false",
+            "controls": null
+          },
+          "copyButtonCount": 1,
+          "assistantLeafCount": 1,
+          "replyScopeTag": "DIV"
+        },
+        "signals": {
+          "isGenerating": false,
+          "isGeneratingForTurn": false,
+          "isChatInProgress": false,
+          "hasCompletedReplyActions": true,
+          "hasCompletedReplyActionsForTurn": true,
+          "looksFinal": false
+        },
+        "statusLines": [],
+        "recentTail": [
+          "Fed interest rate June 2026",
+          "You are a news research assistant. Search the listed publisher domains for recent coverage. Return JSON only. json format only; NO markdown format; NO bold formatting; NO pretty format",
+          "Based on user query: \"Fed interest rate decision June 2026\" as the intent, go find out from the given publishers:reuters.com;apnews.com;bloomberg.com;cnbc.com;bbc.com;nytimes.com;wsj.com;ft.com;axios.com;marketwatch.com;finance.yahoo.com;theguardian.com;washingtonpost.com;politico.com;forbes.com;fortune.com;investing.com;barrons.com;economist.com;aljazeera.com;From the pool of the publisher look for the the latest topics ± 3 days for the most relevant news topics, and then deduplicate them and show me the unique topics in JSON format only. if there is no result is falling into the give date range but only found that event topics that out of the range, still shown them in the list.format in{  \"query\": <text>,  \"time_period\": <text>,  \"unique_topics\": <array of strings>,  \"sources\": <text>}Use coverage window roughly 2026-06-09 to 2026-06-15. time_period use this format from: 2026-06-10T14:30:00Z. json format only; NO markdown format; NO bold formatting; NO pretty format",
+          "3 steps",
+          "{\"query\": \"Fed interest rate decision June",
+          "Sonnet 4.6"
+        ],
+        "answerLen": 85,
+        "answerPreview": "{\"query\": \"Fed interest rate decision June\n{\"query\": \"Fed interest rate decision June",
+        "mismatches": [
+          "toolbar_visible_nonfinal_answer"
+        ]
+      },
+      "answerPreview": null
+    }
+  ],
+  "finalError": "Chat submission blocked",
+  "finalLen": 85,
+  "allMismatches": [
+    "toolbar_visible_nonfinal_answer"
+  ]
+}

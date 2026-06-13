@@ -30,7 +30,7 @@ async function(args) {
 
 
   var h = (function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 39;
+  var HELPERS_VERSION = 40;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 200;
   var NOTION_REVEAL_THROTTLE_MS = 2000;
@@ -1726,43 +1726,15 @@ async function(args) {
     return true;
   }
 
+  var MODEL_PICKER_SELECTOR = '[data-testid="unified-chat-model-button"][role="button"]';
+
   function findModelPickerButton() {
-    var editor = getChatInput();
-    if (editor) {
-      var node = editor.parentElement;
-      for (var depth = 0; depth < 10 && node; depth++) {
-        var candidates = Array.prototype.slice.call(node.querySelectorAll('[role=button], button'));
-        for (var i = 0; i < candidates.length; i++) {
-          var b = candidates[i];
-          if (!isElementVisible(b)) continue;
-          if (b.getAttribute('aria-haspopup') === 'menu' || b.getAttribute('aria-haspopup') === 'dialog' || b.getAttribute('aria-haspopup') === 'listbox' || b.getAttribute('aria-expanded') != null) {
-            var text = (b.innerText || b.textContent || '').trim();
-            if (text && isLikelyModelMenuTitle(text)) return b;
-          }
-        }
-        node = node.parentElement;
-      }
+    var pickers = Array.prototype.slice.call(document.querySelectorAll(MODEL_PICKER_SELECTOR));
+    for (var i = 0; i < pickers.length; i++) {
+      if (isElementVisible(pickers[i]) && isInViewport(pickers[i])) return pickers[i];
     }
-
-    var submit = getSubmitButton();
-    if (submit) {
-      var node2 = submit.parentElement;
-      for (var d = 0; d < 8 && node2; d++) {
-        var btns = Array.prototype.slice.call(node2.querySelectorAll('[role=button], button'));
-        for (var j = 0; j < btns.length; j++) {
-          if (btns[j] === submit) continue;
-          var txt = (btns[j].innerText || btns[j].textContent || '').trim();
-          if (txt && isLikelyModelMenuTitle(txt) && isElementVisible(btns[j])) return btns[j];
-        }
-        node2 = node2.parentElement;
-      }
-    }
-
-    var knownTitles = getKnownModelTitles();
-    var buttons = Array.prototype.slice.call(document.querySelectorAll('[role=button], button'));
-    for (var k = 0; k < buttons.length; k++) {
-      var label = (buttons[k].innerText || buttons[k].textContent || '').trim();
-      if (knownTitles.indexOf(label) >= 0 && isElementVisible(buttons[k])) return buttons[k];
+    for (var j = 0; j < pickers.length; j++) {
+      if (isElementVisible(pickers[j])) return pickers[j];
     }
     return null;
   }
@@ -1787,16 +1759,7 @@ async function(args) {
   }
 
   function getModePickerButton(current) {
-    var picker = findModelPickerButton();
-    current = current || readNotionModeLabel();
-    if (picker) {
-      var pickerText = (picker.innerText || picker.textContent || '').trim();
-      if (!current || pickerText === current) return picker;
-    }
-    var buttons = Array.prototype.slice.call(document.querySelectorAll('[role=button], button'));
-    return buttons.find(function(b) {
-      return (b.innerText || b.textContent || '').trim() === current && isElementVisible(b);
-    }) || picker || null;
+    return findModelPickerButton();
   }
 
   async function listNotionModelsFromUi() {
@@ -2986,6 +2949,7 @@ async function(args) {
     modelTitleToId: modelTitleToId,
     isModelTitleMapped: isModelTitleMapped,
     isLikelyModelMenuTitle: isLikelyModelMenuTitle,
+    findModelPickerButton: findModelPickerButton,
     findModelPickerSurface: findModelPickerSurface,
     scoreModelPickerSurface: scoreModelPickerSurface,
     normalizeMenuItemTitle: normalizeMenuItemTitle,

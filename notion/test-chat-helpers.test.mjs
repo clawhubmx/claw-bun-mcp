@@ -878,9 +878,9 @@ Loaded web page: api.llama.fi/chains</div>
     expect(giveBtn.getAttribute("aria-expanded")).not.toBe("true");
   });
 
-  test("helpers version is 39", () => {
+  test("helpers version is 40", () => {
     const h = installHelpers();
-    expect(h.version).toBe(39);
+    expect(h.version).toBe(40);
   });
 
   test("shouldRunRevealSideEffect throttles reveal side effects during wait polling", () => {
@@ -1023,6 +1023,51 @@ Loaded web page: api.llama.fi/chains</div>
     const h = installHelpers();
     expect(h.isLikelyModelMenuTitle("Search news on protest\n1h")).toBe(false);
     expect(h.isLikelyModelMenuTitle("Sonnet 4.6")).toBe(true);
+  });
+
+  test("findModelPickerButton anchors unified-chat-model-button test id", () => {
+    const dom = new JSDOM(
+      `<!DOCTYPE html><html><body>
+        <div role="button" tabindex="0" data-testid="unified-chat-model-button" aria-expanded="false">Auto</div>
+        <button id="sidebar-model">Auto</button>
+      </body></html>`,
+      { url: "https://app.notion.com/ai" },
+    );
+    globalThis.document = dom.window.document;
+    globalThis.window = dom.window;
+    Object.defineProperty(window, "innerWidth", { value: 1125, configurable: true });
+    Object.defineProperty(window, "innerHeight", { value: 700, configurable: true });
+    const loadHelpers = new Function(`${helpersSource}\nreturn installNotionAiChatHelpers;`);
+    const h = loadHelpers()();
+
+    const picker = document.querySelector('[data-testid="unified-chat-model-button"]');
+    const sidebar = document.getElementById("sidebar-model");
+    for (const el of [picker, sidebar]) {
+      Object.defineProperty(el, "offsetParent", { value: document.body, configurable: true });
+    }
+    picker.getBoundingClientRect = () => ({
+      left: 600,
+      top: 300,
+      width: 120,
+      height: 28,
+      right: 720,
+      bottom: 328,
+      x: 600,
+      y: 300,
+    });
+    sidebar.getBoundingClientRect = () => ({
+      left: 20,
+      top: 100,
+      width: 80,
+      height: 28,
+      right: 100,
+      bottom: 128,
+      x: 20,
+      y: 100,
+    });
+
+    expect(h.findModelPickerButton()).toBe(picker);
+    expect(h.readNotionModeLabel()).toBe("Auto");
   });
 
   test("findModelPickerSurface prefers in-viewport model menu near picker", () => {

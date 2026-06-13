@@ -1,0 +1,106 @@
+{
+  "id": "t03-json-guard",
+  "tab": "2db1",
+  "expectJson": true,
+  "steps": [
+    {
+      "mode": "submit",
+      "pollIndex": null,
+      "elapsedMs": 180120,
+      "chatError": null,
+      "answerLen": 103,
+      "answerHash": "48c19a8ecdcf19a0",
+      "anchor": {
+        "helpersVersion": 38,
+        "anchors": {
+          "layoutChat": true,
+          "modelPicker": {
+            "text": "Sonnet 4.6",
+            "expanded": "false",
+            "controls": null
+          },
+          "copyButtonCount": 1,
+          "assistantLeafCount": 1,
+          "replyScopeTag": "DIV"
+        },
+        "signals": {
+          "isGenerating": false,
+          "isGeneratingForTurn": false,
+          "isChatInProgress": false,
+          "hasCompletedReplyActions": true,
+          "hasCompletedReplyActionsForTurn": true,
+          "looksFinal": false
+        },
+        "statusLines": [
+          "Thought"
+        ],
+        "recentTail": [
+          "Schema:{\"planets\":[{\"name\":\"string\",\"mass_earth\":number,\"moon_count\":number,\"atmosphere\":\"string\",\"habitability_score\":number}]}",
+          "Use distinct creative names. Output the complete JSON object only.",
+          "9:34 PM",
+          "Thought",
+          "{\"planets\":[{\"name\":\"Velundra Prime\",\"mass_earth\":2",
+          "Sonnet 4.6"
+        ],
+        "answerLen": 103,
+        "answerPreview": "{\"planets\":[{\"name\":\"Velundra Prime\",\"mass_earth\":2\n{\"planets\":[{\"name\":\"Velundra Prime\",\"mass_earth\":2",
+        "mismatches": [
+          "toolbar_visible_nonfinal_answer"
+        ]
+      },
+      "answerPreview": null
+    },
+    {
+      "mode": "waitOnly",
+      "pollIndex": 1,
+      "elapsedMs": 427,
+      "chatError": null,
+      "answerLen": 103,
+      "answerHash": "48c19a8ecdcf19a0",
+      "anchor": {
+        "helpersVersion": 38,
+        "anchors": {
+          "layoutChat": true,
+          "modelPicker": {
+            "text": "Sonnet 4.6",
+            "expanded": "false",
+            "controls": null
+          },
+          "copyButtonCount": 1,
+          "assistantLeafCount": 1,
+          "replyScopeTag": "DIV"
+        },
+        "signals": {
+          "isGenerating": false,
+          "isGeneratingForTurn": false,
+          "isChatInProgress": false,
+          "hasCompletedReplyActions": true,
+          "hasCompletedReplyActionsForTurn": true,
+          "looksFinal": false
+        },
+        "statusLines": [
+          "Thought"
+        ],
+        "recentTail": [
+          "Schema:{\"planets\":[{\"name\":\"string\",\"mass_earth\":number,\"moon_count\":number,\"atmosphere\":\"string\",\"habitability_score\":number}]}",
+          "Use distinct creative names. Output the complete JSON object only.",
+          "9:34 PM",
+          "Thought",
+          "{\"planets\":[{\"name\":\"Velundra Prime\",\"mass_earth\":2",
+          "Sonnet 4.6"
+        ],
+        "answerLen": 103,
+        "answerPreview": "{\"planets\":[{\"name\":\"Velundra Prime\",\"mass_earth\":2\n{\"planets\":[{\"name\":\"Velundra Prime\",\"mass_earth\":2",
+        "mismatches": [
+          "toolbar_visible_nonfinal_answer"
+        ]
+      },
+      "answerPreview": "{\"planets\":[{\"name\":\"Velundra Prime\",\"mass_earth\":2\n{\"planets\":[{\"name\":\"Velundra Prime\",\"mass_earth\":2"
+    }
+  ],
+  "finalError": null,
+  "finalLen": 103,
+  "allMismatches": [
+    "toolbar_visible_nonfinal_answer"
+  ]
+}

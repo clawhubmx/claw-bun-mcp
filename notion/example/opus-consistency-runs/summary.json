@@ -1,0 +1,1411 @@
+{
+  "startedAt": "2026-06-13T12:29:05.696Z",
+  "runTimestamp": "2026-06-13T12-29-05-696Z",
+  "suite": "opus-consistency",
+  "model": "opus",
+  "tab": "858e",
+  "maxPolls": 5,
+  "maxWaitMs": 900000,
+  "pollMaxWaitMs": 900000,
+  "helpersTargetMin": 39,
+  "runs": [
+    {
+      "id": "n01",
+      "kind": "json-news",
+      "expectJson": true,
+      "promptLen": 3474,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 900564,
+      "final": {
+        "chatError": "Daemon request timed out",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 900564,
+          "timedOut": false,
+          "chatError": "Daemon request timed out",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "n02",
+      "kind": "json-news",
+      "expectJson": true,
+      "promptLen": 3467,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 969,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 969,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "n03",
+      "kind": "json-news",
+      "expectJson": true,
+      "promptLen": 3463,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 402,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 402,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "n04",
+      "kind": "json-news",
+      "expectJson": true,
+      "promptLen": 3470,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 370,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 370,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "n05",
+      "kind": "json-news",
+      "expectJson": true,
+      "promptLen": 3470,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 414,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 414,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "n06",
+      "kind": "json-news",
+      "expectJson": true,
+      "promptLen": 3469,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 373,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 373,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "n07",
+      "kind": "json-news",
+      "expectJson": true,
+      "promptLen": 3468,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 374,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 374,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "n08",
+      "kind": "json-news",
+      "expectJson": true,
+      "promptLen": 3483,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 652,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 652,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "n09",
+      "kind": "json-news",
+      "expectJson": true,
+      "promptLen": 3466,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 710,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 710,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "n10",
+      "kind": "json-news",
+      "expectJson": true,
+      "promptLen": 3488,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 426,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 426,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "n11",
+      "kind": "json-news",
+      "expectJson": true,
+      "promptLen": 3473,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 481,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 481,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "n12",
+      "kind": "json-news",
+      "expectJson": true,
+      "promptLen": 3480,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 484,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 484,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "n13",
+      "kind": "json-news",
+      "expectJson": true,
+      "promptLen": 3477,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 476,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 476,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "n14",
+      "kind": "json-news",
+      "expectJson": true,
+      "promptLen": 3480,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 410,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 410,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "n15",
+      "kind": "json-news",
+      "expectJson": true,
+      "promptLen": 3472,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 435,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 435,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "n16",
+      "kind": "json-news",
+      "expectJson": true,
+      "promptLen": 1178,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 429,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 429,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "n17",
+      "kind": "json-news",
+      "expectJson": true,
+      "promptLen": 3474,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 490,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 490,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "n18",
+      "kind": "json-news",
+      "expectJson": true,
+      "promptLen": 3482,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 451,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 451,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "f01",
+      "kind": "json-financial",
+      "expectJson": true,
+      "promptLen": 5098,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 382,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 382,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "f02",
+      "kind": "json-financial",
+      "expectJson": true,
+      "promptLen": 5100,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 401,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 401,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "f03",
+      "kind": "json-financial",
+      "expectJson": true,
+      "promptLen": 5087,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 401,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 401,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "f04",
+      "kind": "json-financial",
+      "expectJson": true,
+      "promptLen": 5085,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 389,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 389,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "f05",
+      "kind": "json-financial",
+      "expectJson": true,
+      "promptLen": 5079,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 395,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 395,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "p01",
+      "kind": "json-probe",
+      "expectJson": true,
+      "promptLen": 435,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 390,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 390,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "p02",
+      "kind": "json-probe",
+      "expectJson": true,
+      "promptLen": 1171,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 375,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 375,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "p03",
+      "kind": "json-probe",
+      "expectJson": true,
+      "promptLen": 302,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 403,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 403,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "p04",
+      "kind": "json-probe",
+      "expectJson": true,
+      "promptLen": 151,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_parseable_json"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 389,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 389,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "pr01",
+      "kind": "prose",
+      "expectJson": false,
+      "promptLen": 464,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "empty_answer"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 457,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 457,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "pr02",
+      "kind": "prose",
+      "expectJson": false,
+      "promptLen": 372,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "empty_answer"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 384,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 384,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    },
+    {
+      "id": "pr03",
+      "kind": "prose",
+      "expectJson": false,
+      "promptLen": 118,
+      "skipped": false,
+      "skipReason": null,
+      "pass": false,
+      "issues": [
+        "missing_expected_token"
+      ],
+      "incomplete": false,
+      "prematureStop": false,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "totalElapsedMs": 439,
+      "final": {
+        "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+        "answerLen": 0,
+        "answerFormat": null,
+        "parseableJson": false,
+        "conversationId": null,
+        "looksFinal": null,
+        "hasCompletedReplyActions": null,
+        "helpersVersion": null,
+        "answerPreview": null
+      },
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 439,
+          "timedOut": false,
+          "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 858e\"}",
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "parseableJson": false,
+          "answerFormat": null,
+          "prematureStop": false,
+          "helpersVersion": null
+        }
+      ]
+    }
+  ],
+  "blockers": [],
+  "finishedAt": "2026-06-13T12:45:57.231Z",
+  "passCount": 0,
+  "failCount": 30,
+  "skippedCount": 0,
+  "incompleteCount": 0,
+  "prematureStopCount": 0,
+  "stuckCount": 0,
+  "avgElapsedMs": 30457,
+  "identicalFailures": {
+    "missing_parseable_json": [
+      "n01",
+      "n02",
+      "n03",
+      "n04",
+      "n05",
+      "n06",
+      "n07",
+      "n08",
+      "n09",
+      "n10",
+      "n11",
+      "n12",
+      "n13",
+      "n14",
+      "n15",
+      "n16",
+      "n17",
+      "n18",
+      "f01",
+      "f02",
+      "f03",
+      "f04",
+      "f05",
+      "p01",
+      "p02",
+      "p03",
+      "p04"
+    ],
+    "empty_answer": [
+      "pr01",
+      "pr02"
+    ],
+    "missing_expected_token": [
+      "pr03"
+    ]
+  },
+  "passRate": "0/30"
+}

@@ -1,0 +1,43 @@
+{
+  "suite": "opus-consistency",
+  "description": "30 long prompts for Opus 4.7 consistency testing (JSON news, financial temporal, probe, prose).",
+  "defaults": {
+    "model": "opus",
+    "maxWaitMs": 900000,
+    "pollMaxWaitMs": 900000,
+    "maxPolls": 5,
+    "pauseMs": 3000
+  },
+  "prompts": [
+    { "id": "n01", "template": "news-compact", "topic": "Fed interest rate decision June 2026", "expectJson": true, "kind": "json-news" },
+    { "id": "n02", "template": "news-compact", "topic": "Apple WWDC announcements 2026", "expectJson": true, "kind": "json-news" },
+    { "id": "n03", "template": "news-compact", "topic": "SpaceX IPO oversubscribed", "expectJson": true, "kind": "json-news" },
+    { "id": "n04", "template": "news-compact", "topic": "Ethereum ETF inflows record high", "expectJson": true, "kind": "json-news" },
+    { "id": "n05", "template": "news-compact", "topic": "OpenAI next model release rumors", "expectJson": true, "kind": "json-news" },
+    { "id": "n06", "template": "news-compact", "topic": "Ukraine peace talks Geneva 2026", "expectJson": true, "kind": "json-news" },
+    { "id": "n07", "template": "news-compact", "topic": "NVIDIA chip export rules China", "expectJson": true, "kind": "json-news" },
+    { "id": "n08", "template": "news-compact", "topic": "Bitcoin halving aftermath miner consolidation", "expectJson": true, "kind": "json-news" },
+    { "id": "n09", "template": "news-compact", "topic": "Tesla robotaxi launch Austin", "expectJson": true, "kind": "json-news" },
+    { "id": "n10", "template": "news-compact", "topic": "Protesters block road to Mexican World Cup stadium", "expectJson": true, "kind": "json-news" },
+    { "id": "n11", "template": "news-compact", "topic": "EU AI Act enforcement timeline 2026", "expectJson": true, "kind": "json-news" },
+    { "id": "n12", "template": "news-compact", "topic": "China semiconductor export controls update", "expectJson": true, "kind": "json-news" },
+    { "id": "n13", "template": "news-compact", "topic": "Amazon Prime Day 2026 consumer spending", "expectJson": true, "kind": "json-news" },
+    { "id": "n14", "template": "news-compact", "topic": "Microsoft OpenAI partnership restructuring", "expectJson": true, "kind": "json-news" },
+    { "id": "n15", "template": "news-compact", "topic": "Google antitrust ruling appeal DOJ", "expectJson": true, "kind": "json-news" },
+    { "id": "n16", "template": "news-streaming", "topic": "Iran nuclear negotiations Strait of Hormuz", "expectJson": true, "kind": "json-news" },
+    { "id": "n17", "template": "news-compact", "topic": "US jobs report May 2026 unemployment", "expectJson": true, "kind": "json-news" },
+    { "id": "n18", "template": "news-compact", "topic": "Climate summit COP31 outcomes carbon targets", "expectJson": true, "kind": "json-news" },
+    { "id": "f01", "template": "financial-temporal", "variant": 0, "expectJson": true, "kind": "json-financial" },
+    { "id": "f02", "template": "financial-temporal", "variant": 1, "expectJson": true, "kind": "json-financial" },
+    { "id": "f03", "template": "financial-temporal", "variant": 2, "expectJson": true, "kind": "json-financial" },
+    { "id": "f04", "template": "financial-temporal", "variant": 3, "expectJson": true, "kind": "json-financial" },
+    { "id": "f05", "template": "financial-temporal", "variant": 4, "expectJson": true, "kind": "json-financial" },
+    { "id": "p01", "file": "../incomplete-reply-probe/prompt-02-json-guard.txt", "expectJson": true, "kind": "json-probe" },
+    { "id": "p02", "file": "../incomplete-reply-probe/prompt-03-streaming-news.txt", "expectJson": true, "kind": "json-probe" },
+    { "id": "p03", "file": "../incomplete-reply-probe/prompt-05-preamble-json.txt", "expectJson": true, "kind": "json-probe" },
+    { "id": "p04", "file": "../incomplete-reply-probe/prompt-01-control-json.txt", "expectJson": true, "kind": "json-probe" },
+    { "id": "pr01", "template": "prose-essay", "topic": "quantum computing commercialization 2026", "expectJson": false, "kind": "prose" },
+    { "id": "pr02", "template": "prose-analysis", "topic": "renewable energy grid storage bottlenecks", "expectJson": false, "kind": "prose" },
+    { "id": "pr03", "file": "../incomplete-reply-probe/prompt-04-prose-token.txt", "expectJson": false, "expectedToken": "OK-NOTION-FLOW", "kind": "prose" }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "suite": "thinking-probe",
+  "description": "Five long prompts that trigger agent/thought/search phases. Probes DOM anchor consistency during and after generation.",
+  "defaults": {
+    "model": "sonnet",
+    "maxWaitMs": 180000,
+    "pollMaxWaitMs": 60000,
+    "maxPolls": 4,
+    "pauseMs": 2500
+  },
+  "prompts": [
+    {
+      "id": "t01-streaming-news",
+      "file": "../incomplete-reply-probe/prompt-03-streaming-news.txt",
+      "purpose": "Web search + long JSON stream: stresses hasActiveAgentStatusLines, incomplete JSON guards, reply scope during Thinking/Searching.",
+      "expectJson": true,
+      "triggersThinking": true
+    },
+    {
+      "id": "t02-financial-temporal",
+      "file": "../../../grok/example/test1.txt",
+      "purpose": "Long financial JSON with web search: thought blocks + multi-step agent status lines in .layout-chat tail.",
+      "expectJson": true,
+      "triggersThinking": true
+    },
+    {
+      "id": "t03-json-guard",
+      "file": "../incomplete-reply-probe/prompt-02-json-guard.txt",
+      "purpose": "Medium JSON schema: partial stream vs toolbar-ready mismatch on getLatestAssistantReplyScope.",
+      "expectJson": true,
+      "triggersThinking": true
+    },
+    {
+      "id": "t04-prose-research",
+      "file": "prompt-04-prose-research.txt",
+      "purpose": "Long prose research (no JSON): Thought section vs final answer; looksLikeThoughtBlock filtering.",
+      "expectJson": false,
+      "triggersThinking": true
+    },
+    {
+      "id": "t05-preamble-json",
+      "file": "../incomplete-reply-probe/prompt-05-preamble-json.txt",
+      "purpose": "JSON with preamble risk: scope capture may merge thought + answer incorrectly.",
+      "expectJson": true,
+      "triggersThinking": true
+    }
+  ]
+}

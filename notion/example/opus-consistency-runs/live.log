@@ -1,0 +1,133 @@
+Opus consistency: 30 prompts, model=opus, maxWaitMs=900000, maxPolls=5, tab=858e
+
+--- n01 | json-news | expectJson=true | len=3474 ---
+  submit: error=Daemon request timed out | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 900564ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=900564ms
+
+--- n02 | json-news | expectJson=true | len=3467 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 969ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=969ms
+
+--- n03 | json-news | expectJson=true | len=3463 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 402ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=402ms
+
+--- n04 | json-news | expectJson=true | len=3470 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 370ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=370ms
+
+--- n05 | json-news | expectJson=true | len=3470 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 414ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=414ms
+
+--- n06 | json-news | expectJson=true | len=3469 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 373ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=373ms
+
+--- n07 | json-news | expectJson=true | len=3468 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 374ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=374ms
+
+--- n08 | json-news | expectJson=true | len=3483 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 652ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=652ms
+
+--- n09 | json-news | expectJson=true | len=3466 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 710ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=710ms
+
+--- n10 | json-news | expectJson=true | len=3488 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 426ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=426ms
+
+--- n11 | json-news | expectJson=true | len=3473 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 481ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=481ms
+
+--- n12 | json-news | expectJson=true | len=3480 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 484ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=484ms
+
+--- n13 | json-news | expectJson=true | len=3477 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 476ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=476ms
+
+--- n14 | json-news | expectJson=true | len=3480 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 410ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=410ms
+
+--- n15 | json-news | expectJson=true | len=3472 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 435ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=435ms
+
+--- n16 | json-news | expectJson=true | len=1178 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 429ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=429ms
+
+--- n17 | json-news | expectJson=true | len=3474 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 490ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=490ms
+
+--- n18 | json-news | expectJson=true | len=3482 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 451ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=451ms
+
+--- f01 | json-financial | expectJson=true | len=5098 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 382ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=382ms
+
+--- f02 | json-financial | expectJson=true | len=5100 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 401ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=401ms
+
+--- f03 | json-financial | expectJson=true | len=5087 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 401ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=401ms
+
+--- f04 | json-financial | expectJson=true | len=5085 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 389ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=389ms
+
+--- f05 | json-financial | expectJson=true | len=5079 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 395ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=395ms
+
+--- p01 | json-probe | expectJson=true | len=435 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 390ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=390ms
+
+--- p02 | json-probe | expectJson=true | len=1171 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 375ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=375ms
+
+--- p03 | json-probe | expectJson=true | len=302 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 403ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=403ms
+
+--- p04 | json-probe | expectJson=true | len=151 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 389ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_parseable_json | total=389ms
+
+--- pr01 | prose | expectJson=false | len=464 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 457ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=empty_answer | total=457ms
+
+--- pr02 | prose | expectJson=false | len=372 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 384ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=empty_answer | total=384ms
+
+--- pr03 | prose | expectJson=false | len=118 ---
+  submit: error=Daemon HTTP 400: {"success":false,"error":"Tab not found: 858e"} | answerLen=0 | looksFinal=null | parseableJson=false | helpers=null | 439ms
+  FAIL | stuck=false | incomplete=false | premature=false | issues=missing_expected_token | total=439ms
+
+=== Summary ===
+Passed: 0/30
+Incomplete/truncated: 0
+Premature stop: 0
+Identical-stuck: 0
+Skipped/blockers: 0
+Avg elapsed: 30457ms
+Identical failure groups: {"missing_parseable_json":["n01","n02","n03","n04","n05","n06","n07","n08","n09","n10","n11","n12","n13","n14","n15","n16","n17","n18","f01","f02","f03","f04","f05","p01","p02","p03","p04"],"empty_answer":["pr01","pr02"],"missing_expected_token":["pr03"]}
+Output: /Users/hesdx/Documents/clawhost/claw-bun-mcp/notion/example/opus-consistency-runs/run-2026-06-13T12-29-05-696Z.json
+Summary: /Users/hesdx/Documents/clawhost/claw-bun-mcp/notion/example/opus-consistency-runs/summary.json
+n

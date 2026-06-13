@@ -1,0 +1,45 @@
+Model selection batch (MODEL-SEL-MQCDYZBO) maxWaitMs=90000
+
+[1/10] auto — opening tab
+[1/10] auto — chat + select (f3f7)
+  FAIL mode=Auto answer=OK
+
+[2/10] sonnet — opening tab
+[2/10] sonnet — chat + select (016f)
+  PASS mode=Sonnet 4.6 answer=OK-02
+
+[3/10] opus — opening tab
+[3/10] opus — chat + select (e300)
+  PASS mode=Opus 4.7 answer=OK-03
+
+[4/10] fable — opening tab
+[4/10] fable — chat + select (57a1)
+  PASS mode=Fable 5 answer=OK-04
+
+[5/10] gemini — opening tab
+[5/10] gemini — chat + select (1bf3)
+  PASS mode=Gemini 3.1 Pro answer=OK-05
+
+[6/10] gpt-5.2 — opening tab
+[6/10] gpt-5.2 — chat + select (64e4)
+  FAIL mode=GPT-5.2 answer=OK-
+
+[7/10] gpt-5.4 — opening tab
+[7/10] gpt-5.4 — chat + select (6a13)
+  FAIL mode=GPT-5.4 answer=OK
+
+[8/10] grok — opening tab
+[8/10] grok — chat + select (1493)
+  PASS mode=Grok 4.3 answer=OK-08
+
+[9/10] kimi — opening tab
+[9/10] kimi — chat + select (3180)
+  FAIL mode=Kimi K2.6 answer=OK-
+
+[10/10] deepseek — opening tab
+[10/10] deepseek — chat + select (daff)
+  PASS mode=DeepSeek V4 Pro answer=OK-10
+
+Summary
+  pass: 6/10
+  report: /Users/hesdx/Documents/clawhost/claw-bun-mcp/notion/example/model-selection-runs/run-2026-06-13T13-23-32-156Z.json

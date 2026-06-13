@@ -1,0 +1,22 @@
+{
+  "id": "t05-preamble-json",
+  "tab": "eedb",
+  "expectJson": true,
+  "steps": [
+    {
+      "mode": "submit",
+      "pollIndex": null,
+      "elapsedMs": 438,
+      "chatError": "Daemon HTTP 400: {\"success\":false,\"error\":\"SecurityError: Failed to read the 'cookie' property from 'Document': Access is denied for this document.\\n    at hasCookie (<anonymous>:37:23)\\n    at <anonymous>:41:10\\n    at <anonymous>:49:5\\n    at <anonymous>:3261:3\"}",
+      "answerLen": 0,
+      "answerHash": "e3b0c44298fc1c14",
+      "anchor": {
+        "error": "helpers not loaded"
+      },
+      "answerPreview": null
+    }
+  ],
+  "finalError": "Daemon HTTP 400: {\"success\":false,\"error\":\"SecurityError: Failed to read the 'cookie' property from 'Document': Access is denied for this document.\\n    at hasCookie (<anonymous>:37:23)\\n    at <anonymous>:41:10\\n    at <anonymous>:49:5\\n    at <anonymous>:3261:3\"}",
+  "finalLen": 0,
+  "allMismatches": []
+}

@@ -1,0 +1,19 @@
+{
+  "mismatchCounts": {
+    "toolbar_visible_nonfinal_answer": 8
+  },
+  "findings": [
+    {
+      "bug": "clickElement double-fires on toggles and menu items",
+      "anchor": "clickElement() used by ensureModelPickerSurface, findScrollToBottomButton",
+      "evidence": "code review (helpers v40)",
+      "fix": "Use clickOnce for aria-expanded controls; keep synthetic events only when native click fails."
+    },
+    {
+      "bug": "Thought/reasoning content filtered by regex only, not DOM Thought sections",
+      "anchor": "looksLikeThoughtBlock() + .content-editable-leaf-rtl message list",
+      "evidence": "long prompts with agent reasoning",
+      "fix": "Exclude leaves under [data-section=thought] or role=region labeled Thought; do not rely on English regex stubs alone."
+    }
+  ]
+}
