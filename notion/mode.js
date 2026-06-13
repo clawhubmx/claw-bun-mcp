@@ -33,7 +33,7 @@ async function(args) {
 
 
   var h = (function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 57;
+  var HELPERS_VERSION = 58;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 200;
   var NOTION_REVEAL_THROTTLE_MS = 2000;
@@ -81,6 +81,7 @@ async function(args) {
   var lastWaitIncompleteJsonFailed = false;
   var lastWaitSingleCharFailed = false;
   var lastCaptureWarning = null;
+  var lastCaptureSource = null;
   var lastUrlTrustAccepts = [];
 
   function sleep(ms) {
@@ -1142,34 +1143,7 @@ async function(args) {
   }
 
   function getAssistantTextFromReplyScope(beforeCount, beforeText, captureOpts) {
-    captureOpts = captureOpts || {};
-    if (shouldRevealReplyScope(beforeCount, beforeText) &&
-        shouldRunRevealSideEffect(captureOpts.revealThrottle)) {
-      revealLatestReplyInView();
-    }
-    var scope = getLatestAssistantReplyScope();
-    if (!scope) {
-      var chatRoot = document.querySelector('.layout-chat');
-      if (chatRoot) {
-        var anchorBtn = chatRoot.querySelector('[aria-label="Copy response"]') ||
-          findUnifiedReplySaveButton(chatRoot) ||
-          chatRoot.querySelector('[aria-label="Save to private pages"]');
-        if (anchorBtn) {
-          scope = anchorBtn.closest('.assistant-turn') || anchorBtn.parentElement;
-        }
-      }
-    }
-    if (!scope) return '';
-    var nodes = scope.querySelectorAll('.content-editable-leaf-rtl, .notion-text-block');
-    var parts = [];
-    for (var i = 0; i < nodes.length; i++) {
-      var node = nodes[i];
-      if (node.getAttribute('contenteditable') === 'true') continue;
-      var text = cleanAssistantText(node.innerText || node.textContent || '');
-      if (!text || isAssistantMetadataText(text) || looksLikeThoughtBlock(text)) continue;
-      parts.push(text);
-    }
-    return parts.join('\n').trim();
+    return captureAnswerFromTurnDom(beforeCount, beforeText, captureOpts);
   }
 
   function getAssistantAnswerSince(messages, beforeCount, beforeText, captureOpts) {
@@ -1195,17 +1169,26 @@ async function(args) {
     }
     var result = parts.join('\n').trim();
     if (scopeReady) {
-      var scopeText = getAssistantTextFromReplyScope(beforeCount, beforeText, captureOpts);
-      if (scopeText && scopeText.length > result.length) {
-        var extraLen = scopeText.replace(result, '').trim().length;
-        if (extraLen > 8 || (hasParsedJsonAnswer(scopeText) && !hasParsedJsonAnswer(result))) {
-          result = scopeText;
+      lastCaptureSource = 'leaf';
+      var scopeText = captureAnswerFromTurnDom(beforeCount, beforeText, captureOpts);
+      if (scopeText) {
+        if (!result || scopeText.length > result.length) {
+          var extraLen = scopeText.replace(result, '').trim().length;
+          if (!result || extraLen > 8 || (hasParsedJsonAnswer(scopeText) && !hasParsedJsonAnswer(result))) {
+            result = scopeText;
+            lastCaptureSource = 'dom';
+          }
+        } else if (scopeText === result) {
+          lastCaptureSource = 'dom';
         }
       }
     }
     if (!result && scopeReady) {
-      var scopeFallback = getAssistantTextFromReplyScope(beforeCount, beforeText, captureOpts);
-      if (scopeFallback) return scopeFallback;
+      var scopeFallback = captureAnswerFromTurnDom(beforeCount, beforeText, captureOpts);
+      if (scopeFallback) {
+        lastCaptureSource = 'dom';
+        return scopeFallback;
+      }
     }
     return result;
   }
@@ -1325,6 +1308,176 @@ async function(args) {
       return null;
     }
     return findReplyActionButtonByAria(scope, attr);
+  }
+
+  function findReplyToolbarRow(scope, copyBtn) {
+    if (copyBtn) {
+      var autolayout = copyBtn.closest('.autolayout-row');
+      if (autolayout) return autolayout;
+      var replyToolbar = copyBtn.closest('.reply-toolbar');
+      if (replyToolbar) return replyToolbar;
+      var parent = copyBtn.parentElement;
+      if (parent && parent !== scope) {
+        if (parent.classList && parent.classList.contains('assistant-turn')) return null;
+        if (parent.classList && parent.classList.contains('layout-chat')) return null;
+        if (findReplyActionButton(parent, 'copy response') ||
+            findReplyActionButton(parent, 'save to private pages')) {
+          return parent;
+        }
+      }
+    }
+    if (scope) {
+      var rows = scope.querySelectorAll('.reply-toolbar, .autolayout-row');
+      for (var r = rows.length - 1; r >= 0; r--) {
+        if (findReplyActionButton(rows[r], 'copy response')) return rows[r];
+      }
+    }
+    return null;
+  }
+
+  function findTurnContentContainer(toolbarRow, scope) {
+    if (toolbarRow) {
+      var fromRow = toolbarRow.closest('.assistant-turn');
+      if (fromRow) return fromRow;
+    }
+    if (scope) {
+      if (scope.classList && scope.classList.contains('assistant-turn')) return scope;
+      if (scope.closest) {
+        var fromScope = scope.closest('.assistant-turn');
+        if (fromScope) return fromScope;
+      }
+      return scope;
+    }
+    return null;
+  }
+
+  function resolveTurnCaptureScope(beforeCount, beforeText) {
+    var scope = getLatestAssistantReplyScope();
+    if (!scope) {
+      var chatRoot = document.querySelector('.layout-chat');
+      if (chatRoot) {
+        var msgs = getAssistantMessagesSinceLastUser();
+        var copyCandidates = chatRoot.querySelectorAll('[aria-label="Copy response"]');
+        for (var c = copyCandidates.length - 1; c >= 0; c--) {
+          var candidate = copyCandidates[c];
+          var candidateScope = candidate.closest('.assistant-turn') || candidate.parentElement;
+          if (!candidateScope) continue;
+          if (msgs.length && !candidateScope.contains(msgs[msgs.length - 1])) continue;
+          scope = candidateScope;
+          break;
+        }
+      }
+    }
+    if (!scope) return null;
+    var copyBtn = findReplyActionButton(scope, 'copy response');
+    var toolbarRow = findReplyToolbarRow(scope, copyBtn);
+    var contentRoot = findTurnContentContainer(toolbarRow, scope);
+    return {
+      scope: scope,
+      copyBtn: copyBtn,
+      toolbarRow: toolbarRow,
+      contentRoot: contentRoot
+    };
+  }
+
+  function findCopyButtonForTurn(beforeCount, beforeText) {
+    beforeText = beforeText != null ? String(beforeText) : '';
+    var messages = getAssistantMessagesSinceLastUser();
+    if (!hasNewTurnContent(messages, beforeCount, beforeText)) return null;
+    if (!hasCompletedReplyActionsForTurn(beforeCount, beforeText)) return null;
+    var resolved = resolveTurnCaptureScope(beforeCount, beforeText);
+    return resolved && resolved.copyBtn ? resolved.copyBtn : null;
+  }
+
+  function collectTurnDomText(contentRoot, toolbarRow) {
+    if (!contentRoot) return '';
+    var leaves = Array.prototype.slice.call(contentRoot.querySelectorAll('.content-editable-leaf-rtl'));
+    var parts = [];
+    var seen = [];
+    for (var i = 0; i < leaves.length; i++) {
+      var leaf = leaves[i];
+      if (leaf.getAttribute('contenteditable') === 'true') continue;
+      if (toolbarRow && toolbarRow.contains(leaf)) continue;
+      if (!isAssistantLeaf(leaf)) continue;
+      var nested = false;
+      for (var j = 0; j < leaves.length; j++) {
+        if (i !== j && leaves[j] !== leaf && leaves[j].contains(leaf)) {
+          nested = true;
+          break;
+        }
+      }
+      if (nested) continue;
+      var text = cleanAssistantText(leaf.innerText || leaf.textContent || '');
+      if (!text || isAssistantMetadataText(text) || looksLikeThoughtBlock(text)) continue;
+      if (seen.indexOf(text) >= 0) continue;
+      seen.push(text);
+      parts.push(text);
+    }
+    if (!parts.length) {
+      var blocks = contentRoot.querySelectorAll('.notion-text-block');
+      for (var b = 0; b < blocks.length; b++) {
+        var block = blocks[b];
+        if (toolbarRow && toolbarRow.contains(block)) continue;
+        if (block.querySelector('.content-editable-leaf-rtl')) continue;
+        var blockText = cleanAssistantText(block.innerText || block.textContent || '');
+        if (!blockText || isAssistantMetadataText(blockText) || looksLikeThoughtBlock(blockText)) continue;
+        if (seen.indexOf(blockText) >= 0) continue;
+        seen.push(blockText);
+        parts.push(blockText);
+      }
+    }
+    return parts.join('\n').trim();
+  }
+
+  function captureAnswerFromTurnDom(beforeCount, beforeText, captureOpts) {
+    captureOpts = captureOpts || {};
+    if (shouldRevealReplyScope(beforeCount, beforeText) &&
+        shouldRunRevealSideEffect(captureOpts.revealThrottle)) {
+      revealLatestReplyInView();
+    }
+    var resolved = resolveTurnCaptureScope(beforeCount, beforeText);
+    if (!resolved || !resolved.contentRoot) return '';
+    var text = collectTurnDomText(resolved.contentRoot, resolved.toolbarRow);
+    if (text) lastCaptureSource = 'dom';
+    return text;
+  }
+
+  async function captureAnswerViaCopyEvent(copyBtn) {
+    if (!copyBtn) return '';
+    var captured = '';
+    function onCopy(e) {
+      if (!e.clipboardData) return;
+      captured = e.clipboardData.getData('text/plain') || '';
+      if (captured) e.preventDefault();
+    }
+    document.addEventListener('copy', onCopy, true);
+    clickElement(copyBtn);
+    await sleep(80);
+    document.removeEventListener('copy', onCopy, true);
+    captured = cleanAssistantText(captured).trim();
+    if (captured) lastCaptureSource = 'copy';
+    return captured;
+  }
+
+  async function extractCompletedAnswer(messages, beforeCount, beforeText, opts) {
+    opts = opts || {};
+    beforeText = beforeText != null ? String(beforeText) : '';
+    if (!messages) messages = getAssistantMessagesSinceLastUser();
+    if (!hasNewTurnContent(messages, beforeCount, beforeText)) return null;
+    if (!hasCompletedReplyActionsForTurn(beforeCount, beforeText)) return null;
+    var answer = '';
+    var copyBtn = findCopyButtonForTurn(beforeCount, beforeText);
+    if (copyBtn) answer = await captureAnswerViaCopyEvent(copyBtn);
+    if (!answer) answer = captureAnswerFromTurnDom(beforeCount, beforeText, opts);
+    if (!answer) {
+      answer = getAssistantAnswerSince(messages, beforeCount, beforeText, Object.assign({}, opts, { skipScopeReady: true }));
+      if (answer) lastCaptureSource = 'leaf';
+    }
+    return validateExtractedAnswer(answer, opts, false);
+  }
+
+  function getLastCaptureSource() {
+    return lastCaptureSource;
   }
 
   function getLatestAssistantReplyScope() {
@@ -1652,35 +1805,32 @@ async function(args) {
     return answer;
   }
 
-  function tryExtractCompletedAnswer(messages, beforeCount, beforeText, opts) {
+  async function tryExtractCompletedAnswer(messages, beforeCount, beforeText, opts) {
     if (typeof beforeText === 'object' && beforeText !== null && !Array.isArray(beforeText)) {
       opts = beforeText;
       beforeText = '';
     }
     opts = opts || {};
     beforeText = beforeText != null ? String(beforeText) : '';
-    if (!hasNewTurnContent(messages, beforeCount, beforeText)) return null;
-    if (!hasCompletedReplyActionsForTurn(beforeCount, beforeText)) return null;
-    var answer = getAssistantAnswerSince(messages, beforeCount, beforeText);
-    return validateExtractedAnswer(answer, opts, false);
+    return extractCompletedAnswer(messages, beforeCount, beforeText, opts);
   }
 
-  function recoverCompletedAnswer(beforeCount, beforeText, opts) {
+  async function recoverCompletedAnswer(beforeCount, beforeText, opts) {
     opts = opts || {};
     beforeText = beforeText != null ? String(beforeText) : '';
     var messages = getAssistantMessagesSinceLastUser();
-    var direct = tryExtractCompletedAnswer(messages, beforeCount, beforeText, opts);
+    var direct = await tryExtractCompletedAnswer(messages, beforeCount, beforeText, opts);
     if (direct) return direct;
     if (!hasCompletedReplyActions()) return '';
     if (!hasNewTurnContent(messages, beforeCount, beforeText)) return '';
     revealLatestReplyInView();
     var full = getAssistantAnswerSince(messages, 0, beforeText);
-    if (!full) full = getAssistantTextFromReplyScope(beforeCount, beforeText);
+    if (!full) full = captureAnswerFromTurnDom(beforeCount, beforeText);
     var validated = validateExtractedAnswer(full, opts, false);
     if (validated) return validated;
     revealLatestReplyInView();
     full = getAssistantAnswerSince(messages, beforeCount, beforeText);
-    if (!full) full = getAssistantTextFromReplyScope(beforeCount, beforeText);
+    if (!full) full = captureAnswerFromTurnDom(beforeCount, beforeText);
     return validateExtractedAnswer(full, opts, false) || '';
   }
 
@@ -1780,7 +1930,7 @@ async function(args) {
       var messages = getAssistantMessagesSinceLastUser();
       if (messages.length > beforeCount) sawInFlight = true;
 
-      var toolbarAnswer = tryExtractCompletedAnswer(messages, beforeCount, beforeText, captureOpts);
+      var toolbarAnswer = await tryExtractCompletedAnswer(messages, beforeCount, beforeText, captureOpts);
       if (toolbarAnswer === '') return '';
       if (toolbarAnswer) {
         var rejectedToolbar = rejectSingleCharFailedAnswer(toolbarAnswer, opts);
@@ -1858,7 +2008,7 @@ async function(args) {
     }
 
     var incompleteJson = waitExpectsJson(opts) && looksLikeJsonAnswerAttempt(answer) && !hasParsedJsonAnswer(answer);
-    var recovered = recoverCompletedAnswer(beforeCount, beforeText, opts);
+    var recovered = await recoverCompletedAnswer(beforeCount, beforeText, opts);
     if (recovered) {
       var rejectedRecovered = rejectSingleCharFailedAnswer(recovered, opts);
       if (!rejectedRecovered) return '';
@@ -2145,14 +2295,14 @@ async function(args) {
       }));
       await sleep(250);
 
-      if (picker.getAttribute('aria-expanded') === 'true') {
+      if (isModelPickerMenuOpen(picker) && picker.getAttribute('aria-expanded') === 'true') {
         toggleModelPickerButton(picker);
         await sleep(300);
       }
 
       var editor = getChatInput();
       if (editor) {
-        clickElement(editor);
+        clickElementOnce(editor);
         await sleep(200);
       }
     }
@@ -3309,19 +3459,45 @@ async function(args) {
     return queryExpectsJson(query);
   }
 
+  function looksLikeMarkdown(text) {
+    var t = String(text || '').trim();
+    if (!t) return false;
+    if (/```/.test(t)) return true;
+    if (/^\s{0,3}#{1,6}\s+\S/m.test(t)) return true;
+    if (/\*\*[^*]+\*\*/.test(t)) return true;
+    if (/\[[^\]]+\]\([^)]+\)/.test(t)) return true;
+    if (/^\s{0,3}[-*+]\s+\S/m.test(t)) return true;
+    if (/^\s{0,3}\d+\.\s+\S/m.test(t)) return true;
+    return false;
+  }
+
+  function buildAnswerFields(answer, query, opts) {
+    opts = opts || {};
+    var raw = String(answer || '').trim();
+    if (!raw) return null;
+    var parsed = parseAnswerJson(answer);
+    if (parsed) {
+      var compact = JSON.stringify(parsed);
+      var jsonOut = {
+        answer: compact,
+        answerJson: parsed,
+        answerFormat: 'json'
+      };
+      if (raw !== compact) jsonOut.jsonRecovered = true;
+      return jsonOut;
+    }
+    if (jsonOutputExpected(query, opts)) return null;
+    if (looksLikeMarkdown(raw)) {
+      return { answer: raw, answerFormat: 'markdown' };
+    }
+    return { answer: normalizeAnswerText(raw), answerFormat: 'text' };
+  }
+
   function buildJsonAnswerFields(answer, query, opts) {
     if (!jsonOutputExpected(query, opts)) return null;
-    var parsed = parseAnswerJson(answer);
-    if (!parsed) return null;
-    var compact = JSON.stringify(parsed);
-    var raw = String(answer || '').trim();
-    var out = {
-      answer: compact,
-      answerJson: parsed,
-      answerFormat: 'json'
-    };
-    if (raw !== compact) out.jsonRecovered = true;
-    return out;
+    var fields = buildAnswerFields(answer, query, opts);
+    if (!fields || fields.answerFormat !== 'json') return null;
+    return fields;
   }
 
   var api = {
@@ -3375,6 +3551,12 @@ async function(args) {
     shouldRunRevealSideEffect: shouldRunRevealSideEffect,
     NOTION_REVEAL_THROTTLE_MS: NOTION_REVEAL_THROTTLE_MS,
     getAssistantTextFromReplyScope: getAssistantTextFromReplyScope,
+    captureAnswerFromTurnDom: captureAnswerFromTurnDom,
+    captureAnswerViaCopyEvent: captureAnswerViaCopyEvent,
+    extractCompletedAnswer: extractCompletedAnswer,
+    findCopyButtonForTurn: findCopyButtonForTurn,
+    findReplyToolbarRow: findReplyToolbarRow,
+    getLastCaptureSource: getLastCaptureSource,
     getAssistantAnswerSince: getAssistantAnswerSince,
     getCurrentReplyAssistantStartCount: getCurrentReplyAssistantStartCount,
     getChatActivityText: getChatActivityText,
@@ -3469,6 +3651,8 @@ async function(args) {
     looksLikeJsonAnswerAttempt: looksLikeJsonAnswerAttempt,
     hasParsedJsonAnswer: hasParsedJsonAnswer,
     queryExpectsJson: queryExpectsJson,
+    looksLikeMarkdown: looksLikeMarkdown,
+    buildAnswerFields: buildAnswerFields,
     buildJsonAnswerFields: buildJsonAnswerFields,
     readResponseError: readResponseError
   };

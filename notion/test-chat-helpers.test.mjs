@@ -37,6 +37,7 @@ function installHelpersAt(url, opts = {}) {
   globalThis.MouseEvent = dom.window.MouseEvent;
   globalThis.KeyboardEvent = dom.window.KeyboardEvent;
   globalThis.InputEvent = dom.window.InputEvent;
+  globalThis.ClipboardEvent = dom.window.ClipboardEvent || dom.window.Event;
   globalThis.localStorage = dom.window.localStorage;
   globalThis.sessionStorage = dom.window.sessionStorage;
   if (typeof dom.window.document.execCommand !== "function") {
@@ -83,6 +84,21 @@ function makeElementVisible(el) {
     right: 42,
   });
   Object.defineProperty(el, "offsetParent", { configurable: true, value: document.body });
+}
+
+function dispatchCopyEvent(text) {
+  const clipboardData = {
+    getData: (type) => (type === "text/plain" ? text : ""),
+    setData: () => {},
+  };
+  let ev;
+  try {
+    ev = new ClipboardEvent("copy", { bubbles: true, cancelable: true });
+  } catch {
+    ev = new Event("copy", { bubbles: true, cancelable: true });
+  }
+  Object.defineProperty(ev, "clipboardData", { value: clipboardData });
+  document.dispatchEvent(ev);
 }
 
 function makeReplyToolbarVisible(root = document) {
@@ -485,7 +501,7 @@ describe("notion chat helpers", () => {
     expect(h.hasCompletedReplyActions()).toBe(true);
   });
 
-  test("hasCompletedReplyActionsForTurn ignores stale toolbar without new turn content", () => {
+  test("hasCompletedReplyActionsForTurn ignores stale toolbar without new turn content", async () => {
     const h = installHelpers();
     document.body.innerHTML =
       '<div class="layout-chat">' +
@@ -494,13 +510,14 @@ describe("notion chat helpers", () => {
       '<div class="notion-text-block"><div class="content-editable-leaf-rtl">42</div></div>' +
       '<div class="reply-toolbar">' + REPLY_ACTION_BUTTONS + '</div>' +
       '</div></div>';
+    makeReplyToolbarVisible();
     const msgs = h.getAssistantMessagesSinceLastUser();
     expect(h.hasCompletedReplyActions()).toBe(true);
     expect(h.hasCompletedReplyActionsForTurn(msgs.length, "42")).toBe(false);
-    expect(h.tryExtractCompletedAnswer(msgs, msgs.length, "42", {})).toBeNull();
+    expect(await h.tryExtractCompletedAnswer(msgs, msgs.length, "42", {})).toBeNull();
   });
 
-  test("tryExtractCompletedAnswer requires final-looking answer with toolbar", () => {
+  test("tryExtractCompletedAnswer requires final-looking answer with toolbar", async () => {
     const h = installHelpers();
     document.body.innerHTML =
       '<div class="layout-chat">' +
@@ -509,9 +526,10 @@ describe("notion chat helpers", () => {
       '<div class="notion-text-block"><div class="content-editable-leaf-rtl">y</div></div>' +
       '<div class="reply-toolbar">' + REPLY_ACTION_BUTTONS + '</div>' +
       '</div></div>';
+    makeReplyToolbarVisible();
     const msgs = h.getAssistantMessagesSinceLastUser();
     expect(h.looksLikeFinalAnswer("y")).toBe(false);
-    expect(h.tryExtractCompletedAnswer(msgs, 0, "", {})).toBeNull();
+    expect(await h.tryExtractCompletedAnswer(msgs, 0, "", {})).toBeNull();
   });
 
   test("toolbar with incomplete JSON answer is still generating", () => {
@@ -531,7 +549,7 @@ describe("notion chat helpers", () => {
     expect(h.looksLikeFinalAnswer("{")).toBe(false);
   });
 
-  test("recoverCompletedAnswer returns full reply since last user", () => {
+  test("recoverCompletedAnswer returns full reply since last user", async () => {
     const h = installHelpers();
     document.body.innerHTML =
       '<div class="layout-chat">' +
@@ -540,7 +558,8 @@ describe("notion chat helpers", () => {
       '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Tokyo</div></div>' +
       '<div class="reply-toolbar">' + REPLY_ACTION_BUTTONS + '</div>' +
       '</div></div>';
-    expect(h.recoverCompletedAnswer(0, "", {})).toBe("Tokyo");
+    makeReplyToolbarVisible();
+    expect(await h.recoverCompletedAnswer(0, "", {})).toBe("Tokyo");
   });
 
   test("ensureNewChatView clicks New chat when stale reply toolbar is visible", async () => {
@@ -569,7 +588,7 @@ describe("notion chat helpers", () => {
     expect(h.getAssistantMessagesSinceLastUser().length).toBe(0);
   });
 
-  test("validateExtractedAnswer rejects partial JSON tails for JSON prompts", () => {
+  test("validateExtractedAnswer rejects partial JSON tails for JSON prompts", async () => {
     const h = installHelpers();
     const opts = { query: 'Return JSON only: {"status":"ok"}. json format only', expectJson: true };
     const partial = '"sources": "reuters.com, bbc.com"\n}';
@@ -578,11 +597,12 @@ describe("notion chat helpers", () => {
       '<div class="content-editable-leaf-rtl">User prompt</div>' +
       '<div class="assistant-turn"><div class="content-editable-leaf-rtl">' + partial + '</div>' +
       '<div class="reply-toolbar">' + REPLY_ACTION_BUTTONS + '</div></div></div>';
+    makeReplyToolbarVisible();
     const msgs = h.getAssistantMessagesSinceLastUser();
-    expect(h.tryExtractCompletedAnswer(msgs, 1, "Thinking", opts)).toBeNull();
+    expect(await h.tryExtractCompletedAnswer(msgs, 1, "Thinking", opts)).toBeNull();
   });
 
-  test("getAssistantAnswerSince captures in-place reply updates when message count is unchanged", () => {
+  test("getAssistantAnswerSince captures in-place reply updates when message count is unchanged", async () => {
     const h = installHelpers();
     document.body.innerHTML =
       '<div class="layout-chat">' +
@@ -591,11 +611,12 @@ describe("notion chat helpers", () => {
       '<div class="notion-text-block"><div class="content-editable-leaf-rtl">42</div></div>' +
       '<div class="reply-toolbar">' + REPLY_ACTION_BUTTONS + '</div>' +
       '</div></div>';
+    makeReplyToolbarVisible();
     const msgs = h.getAssistantMessagesSinceLastUser();
     expect(msgs.length).toBe(1);
     expect(h.getAssistantAnswerSince(msgs, 1)).toBe("42");
     expect(h.hasNewTurnContent(msgs, 1, "Thinking")).toBe(true);
-    expect(h.tryExtractCompletedAnswer(msgs, 1, "Thinking", {})).toBe("42");
+    expect(await h.tryExtractCompletedAnswer(msgs, 1, "Thinking", {})).toBe("42");
   });
 
   test("getAssistantTextFromReplyScope reads text near sibling toolbar", () => {
@@ -801,7 +822,7 @@ Loaded web page: api.llama.fi/chains</div>
       '<div class="assistant-turn">' +
       '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Prefix line</div></div>' +
       '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Tail JSON block</div></div>' +
-      REPLY_ACTION_BUTTONS +
+      '<div class="reply-toolbar">' + REPLY_ACTION_BUTTONS + '</div>' +
       "</div>" +
       '<button aria-label="Scroll to bottom" style="position:fixed;bottom:20px;right:20px;width:40px;height:40px">' +
       '<svg><path d="M6 10 L12 16"></path></svg></button>' +
@@ -944,9 +965,9 @@ Loaded web page: api.llama.fi/chains</div>
     expect(giveBtn.getAttribute("aria-expanded")).not.toBe("true");
   });
 
-  test("helpers version is 55", () => {
+  test("helpers version is 58", () => {
     const h = installHelpers();
-    expect(h.version).toBe(55);
+    expect(h.version).toBe(58);
   });
 
   test("isStaleChatThread detects assistant messages and reply toolbar", () => {
@@ -1714,6 +1735,98 @@ Loaded web page: api.llama.fi/chains</div>
     expect(fields).not.toBeNull();
     expect(fields.answer).toBe(compact);
     expect(fields.jsonRecovered).toBeUndefined();
+  });
+
+  test("captureAnswerViaCopyEvent intercepts copy event text", async () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<button id="copyBtn" aria-label="Copy response"><svg></svg></button>';
+    const btn = document.getElementById("copyBtn");
+    btn.addEventListener("click", () => {
+      dispatchCopyEvent("[Label](https://x.com)");
+    });
+    const text = await h.captureAnswerViaCopyEvent(btn);
+    expect(text).toBe("[Label](https://x.com)");
+    expect(h.getLastCaptureSource()).toBe("copy");
+  });
+
+  test("captureAnswerFromTurnDom dedupes nested block and leaf text", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">Question</div>' +
+      '<div class="assistant-turn">' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Hello once</div></div>' +
+      '<div class="autolayout-row reply-toolbar">' +
+      REPLY_ACTION_BUTTONS +
+      "</div></div></div>";
+    makeReplyToolbarVisible();
+    expect(h.captureAnswerFromTurnDom(0, "")).toBe("Hello once");
+    expect(h.getLastCaptureSource()).toBe("dom");
+  });
+
+  test("captureAnswerFromTurnDom excludes toolbar row labels", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="assistant-turn">' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Answer body</div></div>' +
+      '<div class="autolayout-row">' +
+      REPLY_ACTION_BUTTONS +
+      "</div></div></div>";
+    makeReplyToolbarVisible();
+    const text = h.captureAnswerFromTurnDom();
+    expect(text).toBe("Answer body");
+    expect(text).not.toContain("Copy response");
+  });
+
+  test("extractCompletedAnswer prefers copy capture over DOM", async () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">Return json</div>' +
+      '<div class="assistant-turn">' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">{"status":"dom"}</div></div>' +
+      '<div class="autolayout-row reply-toolbar">' +
+      REPLY_ACTION_BUTTONS_WITH_FEEDBACK +
+      "</div></div></div>";
+    makeReplyToolbarVisible();
+    const copyBtn = document.querySelector('[aria-label="Copy response"]');
+    copyBtn.addEventListener("click", () => {
+      dispatchCopyEvent('{"status":"copy"}');
+    });
+    const msgs = h.getAssistantMessagesSinceLastUser();
+    const answer = await h.extractCompletedAnswer(msgs, 0, "");
+    expect(answer).toBe('{"status":"copy"}');
+    expect(h.getLastCaptureSource()).toBe("copy");
+  });
+
+  test("buildAnswerFields classifies markdown and plain text", () => {
+    const h = installHelpers();
+    const md = h.buildAnswerFields("**bold** intro\n- item", "Summarize this");
+    expect(md.answerFormat).toBe("markdown");
+    expect(md.answer).toContain("**bold**");
+    const plain = h.buildAnswerFields("Short plain answer here.", "Summarize this");
+    expect(plain.answerFormat).toBe("text");
+    const json = h.buildAnswerFields('{"status":"ok"}', "Return ONLY valid JSON.");
+    expect(json.answerFormat).toBe("json");
+    expect(json.answerJson).toEqual({ status: "ok" });
+  });
+
+  test("buildAnswerFields sets jsonRecovered for JSON preamble", () => {
+    const h = installHelpers();
+    const answer = 'Here is JSON:\n{"status":"ok","code":"PING-1"}';
+    const fields = h.buildAnswerFields(answer, "Return ONLY valid JSON.", { expectJson: true });
+    expect(fields.answerFormat).toBe("json");
+    expect(fields.jsonRecovered).toBe(true);
+    expect(fields.answerJson).toEqual({ status: "ok", code: "PING-1" });
+  });
+
+  test("looksLikeMarkdown detects common markdown patterns", () => {
+    const h = installHelpers();
+    expect(h.looksLikeMarkdown("**bold**")).toBe(true);
+    expect(h.looksLikeMarkdown("[link](https://x.com)")).toBe(true);
+    expect(h.looksLikeMarkdown("Plain sentence.")).toBe(false);
   });
 
   test("ensureNewChatView returns ok on /ai with chat input", async () => {

@@ -113,7 +113,23 @@ const captureWarningHelper = `  function attachCaptureWarning(obj, isFailure) {
   }
 
 `;
-const emptyAnswerRecoveryBlock = `    answer = h.recoverCompletedAnswer(beforeCount, beforeText, waitOpts);
+const emptyAnswerRecoveryBlock = `    answer = await h.recoverCompletedAnswer(beforeCount, beforeText, waitOpts);
+`;
+const attachAnswerFieldsBlock = (outVar, queryVar) => `  var answerFields = h.buildAnswerFields(${outVar}.answer, ${queryVar}, waitOpts);
+  if (answerFields) {
+    if (answerFields.answer != null) ${outVar}.answer = answerFields.answer;
+    if (answerFields.answerFormat) ${outVar}.answerFormat = answerFields.answerFormat;
+    if (answerFields.answerJson) ${outVar}.answerJson = answerFields.answerJson;
+    if (answerFields.jsonRecovered) ${outVar}.jsonRecovered = true;
+  } else {
+    var parsedAnswerJson = h.parseAnswerJson(${outVar}.answer);
+    if (parsedAnswerJson) {
+      ${outVar}.answerJson = parsedAnswerJson;
+      ${outVar}.answerFormat = 'json';
+    }
+  }
+  var captureSource = h.getLastCaptureSource();
+  if (captureSource) ${outVar}.captureSource = captureSource;
 `;
 const incompleteJsonRejectBlock = `  if (answer) {
     answer = h.rejectIncompleteJsonFailedAnswer(answer, waitOpts);
@@ -170,7 +186,7 @@ const modelFallbackSharedRetry = `    var fallbackModeResult = await h.setNotion
     }
     answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
     if (!answer) {
-      answer = h.recoverCompletedAnswer(beforeCount, beforeText, waitOpts);
+      answer = await h.recoverCompletedAnswer(beforeCount, beforeText, waitOpts);
     }
     if (answer) {
       modelFallbackMeta = {
@@ -254,7 +270,7 @@ const modelFallbackSharedRetryChatfollow = `    var fallbackModeResult = await h
     }
     answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
     if (!answer) {
-      answer = h.recoverCompletedAnswer(beforeCount, beforeText, waitOpts);
+      answer = await h.recoverCompletedAnswer(beforeCount, beforeText, waitOpts);
     }
     if (answer) {
       modelFallbackMeta = {
@@ -374,7 +390,7 @@ ${trustDrainBlock}    var existing = h.getAssistantMessages();
     var pollBeforeText = pollBeforeCount < existing.length ? h.getAssistantText(existing[pollBeforeCount]) : '';
     var waitedAnswer = await h.waitForAssistantAnswer(pollBeforeCount, pollBeforeText, waitOpts);
     if (!waitedAnswer) {
-      waitedAnswer = h.recoverCompletedAnswer(pollBeforeCount, pollBeforeText, waitOpts);
+      waitedAnswer = await h.recoverCompletedAnswer(pollBeforeCount, pollBeforeText, waitOpts);
     }
     if (waitedAnswer) {
       waitedAnswer = h.rejectIncompleteJsonFailedAnswer(waitedAnswer, waitOpts);
@@ -398,17 +414,7 @@ ${trustDrainBlock}    var existing = h.getAssistantMessages();
     var waitTrust = h.getLastUrlTrustAccepts();
     if (waitTrust.length) waitOut.urlTrustAccepted = waitTrust;
     var waitQuery = queryTextArg || args.query;
-    var waitJsonFields = h.buildJsonAnswerFields(waitedAnswer, waitQuery, waitOpts);
-    if (waitJsonFields) {
-      if (waitJsonFields.answer != null) waitOut.answer = waitJsonFields.answer;
-      waitOut.answerJson = waitJsonFields.answerJson;
-      waitOut.answerFormat = waitJsonFields.answerFormat;
-      if (waitJsonFields.jsonRecovered) waitOut.jsonRecovered = true;
-    } else {
-      var waitJson = h.parseAnswerJson(waitedAnswer);
-      if (waitJson) { waitOut.answerJson = waitJson; waitOut.answerFormat = 'json'; }
-    }
-${restoreComposerBlock}    return attachCaptureWarning(waitOut, false);
+${attachAnswerFieldsBlock('waitOut', 'waitQuery')}${restoreComposerBlock}    return attachCaptureWarning(waitOut, false);
   }
 
   if (newChat) {
@@ -505,17 +511,7 @@ ${incompleteJsonRejectBlock}${modelFallbackChatBlock}  if (!answer) {
   if (attachedItems) out.attachments = attachedItems;
   var trustAccepted = h.getLastUrlTrustAccepts();
   if (trustAccepted.length) out.urlTrustAccepted = trustAccepted;
-  var jsonFields = h.buildJsonAnswerFields(answer, queryText, waitOpts);
-  if (jsonFields) {
-    if (jsonFields.answer != null) out.answer = jsonFields.answer;
-    out.answerJson = jsonFields.answerJson;
-    out.answerFormat = jsonFields.answerFormat;
-    if (jsonFields.jsonRecovered) out.jsonRecovered = true;
-  } else {
-    var answerJson = h.parseAnswerJson(answer);
-    if (answerJson) { out.answerJson = answerJson; out.answerFormat = 'json'; }
-  }
-${modelFallbackOutField}${restoreComposerBlock}  return attachCaptureWarning(out, false);`
+${attachAnswerFieldsBlock('out', 'queryText')}${modelFallbackOutField}${restoreComposerBlock}  return attachCaptureWarning(out, false);`
   )
 );
 
@@ -588,7 +584,7 @@ ${trustDrainBlock}    var existing = h.getAssistantMessages();
     var pollBeforeText = pollBeforeCount < existing.length ? h.getAssistantText(existing[pollBeforeCount]) : '';
     var waitedAnswer = await h.waitForAssistantAnswer(pollBeforeCount, pollBeforeText, waitOpts);
     if (!waitedAnswer) {
-      waitedAnswer = h.recoverCompletedAnswer(pollBeforeCount, pollBeforeText, waitOpts);
+      waitedAnswer = await h.recoverCompletedAnswer(pollBeforeCount, pollBeforeText, waitOpts);
     }
     if (waitedAnswer) {
       waitedAnswer = h.rejectIncompleteJsonFailedAnswer(waitedAnswer, waitOpts);
@@ -613,7 +609,7 @@ ${trustDrainBlock}    var existing = h.getAssistantMessages();
     };
     var waitFollowTrust = h.getLastUrlTrustAccepts();
     if (waitFollowTrust.length) waitFollowOut.urlTrustAccepted = waitFollowTrust;
-${restoreComposerBlock}    return attachCaptureWarning(waitFollowOut, false);
+${attachAnswerFieldsBlock('waitFollowOut', 'args.query')}${restoreComposerBlock}    return attachCaptureWarning(waitFollowOut, false);
   }
 
   var landing = await h.ensureAiLandingPage();
@@ -708,17 +704,7 @@ ${incompleteJsonRejectBlock}${modelFallbackChatfollowBlock}  if (!answer) {
   if (attachedItems) out.attachments = attachedItems;
   var followTrustAccepted = h.getLastUrlTrustAccepts();
   if (followTrustAccepted.length) out.urlTrustAccepted = followTrustAccepted;
-  var jsonFields = h.buildJsonAnswerFields(answer, queryText, waitOpts);
-  if (jsonFields) {
-    if (jsonFields.answer != null) out.answer = jsonFields.answer;
-    out.answerJson = jsonFields.answerJson;
-    out.answerFormat = jsonFields.answerFormat;
-    if (jsonFields.jsonRecovered) out.jsonRecovered = true;
-  } else {
-    var answerJson = h.parseAnswerJson(answer);
-    if (answerJson) { out.answerJson = answerJson; out.answerFormat = 'json'; }
-  }
-${modelFallbackOutField}${restoreComposerBlock}  return attachCaptureWarning(out, false);`
+${attachAnswerFieldsBlock('out', 'queryText')}${modelFallbackOutField}${restoreComposerBlock}  return attachCaptureWarning(out, false);`
   )
 );
 
