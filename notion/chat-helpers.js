@@ -3,7 +3,7 @@
  * Inlined by notion/chat.js and notion/chatfollow.js — keep in sync.
  */
 function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 46;
+  var HELPERS_VERSION = 49;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 200;
   var NOTION_REVEAL_THROTTLE_MS = 2000;
@@ -1804,25 +1804,33 @@ function installNotionAiChatHelpers() {
     return String(title || '').trim().replace(/\s+/g, ' ');
   }
 
+  function readModelMenuItemTitle(el) {
+    if (!el || !el.closest('[role=dialog]')) return '';
+    var presentations = el.querySelectorAll('[role=presentation]');
+    for (var pi = 0; pi < presentations.length; pi++) {
+      var title = normalizeMenuItemTitle(presentations[pi].innerText || presentations[pi].textContent || '');
+      if (title) return title;
+    }
+    return '';
+  }
+
   function collectModelMenuItems(root) {
     if (!root) return [];
-    return Array.prototype.slice.call(
-      root.querySelectorAll('[role=menuitem], [role=option], [role=menuitemradio], [role=menuitemcheckbox]')
-    );
+    return Array.prototype.slice.call(root.querySelectorAll('[role=menuitem]'));
   }
 
   function countKnownModelHits(root, knownTitles) {
     var items = collectModelMenuItems(root);
     var hits = 0;
     for (var i = 0; i < items.length; i++) {
-      var title = normalizeMenuItemTitle(items[i].innerText || items[i].textContent || '');
-      if (knownTitles.indexOf(title) >= 0) hits++;
+      if (knownTitles.indexOf(readModelMenuItemTitle(items[i])) >= 0) hits++;
     }
     return { hits: hits, items: items };
   }
 
   function scoreModelPickerSurface(el, picker, knownTitles) {
     if (!el || !isElementVisible(el)) return -1;
+    if ((el.getAttribute('role') || '') !== 'dialog') return -1;
     var stats = countKnownModelHits(el, knownTitles);
     if (stats.hits < 2) return -1;
 
@@ -1848,7 +1856,7 @@ function installNotionAiChatHelpers() {
     }
 
     var role = el.getAttribute('role') || '';
-    if (role === 'dialog' || role === 'menu' || role === 'listbox') score += 40;
+    if (role === 'dialog') score += 40;
     if (el.hasAttribute('data-radix-menu-content')) score += 30;
 
     return score;
@@ -1882,9 +1890,31 @@ function installNotionAiChatHelpers() {
     return out;
   }
 
+  function gatherModelPickerDialogCandidates(picker) {
+    var seen = [];
+    var out = [];
+    function add(el) {
+      if (!el || seen.indexOf(el) >= 0) return;
+      seen.push(el);
+      out.push(el);
+    }
+
+    if (picker) {
+      var controlId = picker.getAttribute('aria-controls') || picker.getAttribute('aria-owns');
+      if (controlId) {
+        var controlled = document.getElementById(controlId);
+        if (controlled && (controlled.getAttribute('role') || '') === 'dialog') add(controlled);
+      }
+    }
+
+    var nodes = document.querySelectorAll('[role=dialog]');
+    for (var di = 0; di < nodes.length; di++) add(nodes[di]);
+    return out;
+  }
+
   function findModelPickerSurface(picker) {
     var knownTitles = getKnownModelTitles();
-    var candidates = gatherModelPickerSurfaceCandidates(picker);
+    var candidates = gatherModelPickerDialogCandidates(picker);
     var best = null;
     var bestScore = -1;
     for (var i = 0; i < candidates.length; i++) {
@@ -1937,8 +1967,7 @@ function installNotionAiChatHelpers() {
     var items = collectModelMenuItems(surface);
     var normalizedTarget = normalizeMenuItemTitle(targetTitle);
     for (var i = 0; i < items.length; i++) {
-      var title = normalizeMenuItemTitle(items[i].innerText || items[i].textContent || '');
-      if (title === normalizedTarget) return items[i];
+      if (readModelMenuItemTitle(items[i]) === normalizedTarget) return items[i];
     }
     return null;
   }
@@ -2014,7 +2043,7 @@ function installNotionAiChatHelpers() {
     var seen = {};
     var models = [];
     items.forEach(function(el) {
-      var title = normalizeMenuItemTitle(el.innerText || el.textContent || '');
+      var title = readModelMenuItemTitle(el);
       if (!title || !isLikelyModelMenuTitle(title)) return;
       if (seen[title]) return;
       seen[title] = true;
@@ -3208,6 +3237,8 @@ function installNotionAiChatHelpers() {
     findModelPickerSurface: findModelPickerSurface,
     scoreModelPickerSurface: scoreModelPickerSurface,
     normalizeMenuItemTitle: normalizeMenuItemTitle,
+    readModelMenuItemTitle: readModelMenuItemTitle,
+    findModelMenuItem: findModelMenuItem,
     readNotionModeLabel: readNotionModeLabel,
     resolveNotionMode: resolveNotionMode,
     listNotionModelsFromUi: listNotionModelsFromUi,

@@ -944,9 +944,9 @@ Loaded web page: api.llama.fi/chains</div>
     expect(giveBtn.getAttribute("aria-expanded")).not.toBe("true");
   });
 
-  test("helpers version is 46", () => {
+  test("helpers version is 49", () => {
     const h = installHelpers();
-    expect(h.version).toBe(46);
+    expect(h.version).toBe(49);
   });
 
   test("isStaleChatThread detects assistant messages and reply toolbar", () => {
@@ -1101,6 +1101,60 @@ Loaded web page: api.llama.fi/chains</div>
     expect(h.isLikelyModelMenuTitle("Sonnet 4.6")).toBe(true);
   });
 
+  test("readModelMenuItemTitle reads role=presentation under role=dialog menuitem only", () => {
+    const dom = new JSDOM(
+      `<!DOCTYPE html><html><body>
+        <div role="dialog" id="models">
+          <div role="menuitem" id="flat">Sonnet 4.6</div>
+          <div role="menuitem" id="nested">
+            <div role="presentation"></div>
+            <div role="presentation">Sonnet 4.6</div>
+            <div role="presentation">Fast</div>
+          </div>
+          <div role="menuitem" id="subtitle">Sonnet 4.6\nRecommended for coding</div>
+        </div>
+        <div role="menuitem" id="outside">
+          <div role="presentation">Sonnet 4.6 Recommended</div>
+        </div>
+      </body></html>`,
+      { url: "https://app.notion.com/ai" },
+    );
+    globalThis.document = dom.window.document;
+    const loadHelpers = new Function(`${helpersSource}\nreturn installNotionAiChatHelpers;`);
+    const h = loadHelpers()();
+
+    expect(h.readModelMenuItemTitle(document.getElementById("flat"))).toBe("");
+    expect(h.readModelMenuItemTitle(document.getElementById("nested"))).toBe("Sonnet 4.6");
+    expect(h.readModelMenuItemTitle(document.getElementById("subtitle"))).toBe("");
+    expect(h.readModelMenuItemTitle(document.getElementById("outside"))).toBe("");
+  });
+
+  test("findModelMenuItem matches nested presentation labels in role=dialog", () => {
+    const dom = new JSDOM(
+      `<!DOCTYPE html><html><body>
+        <div id="models" role="dialog">
+          <div role="menuitem">
+            <div role="presentation"></div>
+            <div role="presentation">Auto</div>
+          </div>
+          <div role="menuitem">
+            <div role="presentation"></div>
+            <div role="presentation">Sonnet 4.6</div>
+            <div role="presentation">Fast</div>
+          </div>
+        </div>
+      </body></html>`,
+      { url: "https://app.notion.com/ai" },
+    );
+    globalThis.document = dom.window.document;
+    const loadHelpers = new Function(`${helpersSource}\nreturn installNotionAiChatHelpers;`);
+    const h = loadHelpers()();
+    const surface = document.getElementById("models");
+
+    expect(h.findModelMenuItem(surface, "Sonnet 4.6")?.getAttribute("role")).toBe("menuitem");
+    expect(h.findModelMenuItem(surface, "Missing Model")).toBeNull();
+  });
+
   test("findModelPickerButton anchors unified-chat-model-button test id", () => {
     const dom = new JSDOM(
       `<!DOCTYPE html><html><body>
@@ -1156,9 +1210,9 @@ Loaded web page: api.llama.fi/chains</div>
           <div role="menuitem">Sonnet 4.6</div>
         </div>
         <div id="models" role="dialog">
-          <div role="menuitem">Auto</div>
-          <div role="menuitem">Sonnet 4.6</div>
-          <div role="menuitem">Opus 4.7</div>
+          <div role="menuitem"><div role="presentation">Auto</div></div>
+          <div role="menuitem"><div role="presentation">Sonnet 4.6</div></div>
+          <div role="menuitem"><div role="presentation">Opus 4.7</div></div>
         </div>
       </body></html>`,
       { url: "https://app.notion.com/ai" },
