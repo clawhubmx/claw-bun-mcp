@@ -1,0 +1,49 @@
+{
+  "suite": "fallback-probe",
+  "description": "Live probes for model fallback: Opus JSON stuck and premium single-char failure policy.",
+  "defaults": {
+    "model": "opus",
+    "modelFallbackStuckMs": 2000,
+    "maxWaitMs": 120000
+  },
+  "prompts": [
+    {
+      "id": "fb-json-stuck",
+      "file": "prompt-json-stuck.txt",
+      "purpose": "Live Opus JSON prompt; fallback to Auto when incomplete_json_stuck triggers (non-deterministic).",
+      "model": "opus",
+      "expectFallbackReason": "incomplete_json_stuck",
+      "maxWaitMs": 120000,
+      "modelFallbackStuckMs": 1500,
+      "optional": true
+    },
+    {
+      "id": "fb-json-stuck-policy",
+      "purpose": "In-tab policy check: incomplete JSON stuck on Opus triggers shouldRetryModelFallback (no model call).",
+      "kind": "policy-eval",
+      "model": "opus",
+      "expectFallbackReason": "incomplete_json_stuck"
+    },
+    {
+      "id": "fb-json-control",
+      "file": "prompt-json-control.txt",
+      "purpose": "Tiny JSON control on Auto; should complete without fallback.",
+      "model": "auto",
+      "expectFallbackReason": null,
+      "maxWaitMs": 60000,
+      "modelFallbackStuckMs": 3000
+    },
+    {
+      "id": "fb-incomplete-json-policy",
+      "purpose": "In-tab policy check: incomplete JSON with expectJson triggers shouldRetryModelFallback (no model call).",
+      "kind": "policy-eval",
+      "model": "grok",
+      "expectFallbackReason": "incomplete_json_failed"
+    },
+      "purpose": "In-tab policy check: rejectSingleCharFailedAnswer on Opus with 1-char reply (no model call).",
+      "kind": "policy-eval",
+      "model": "opus",
+      "expectFallbackReason": "single_char_failed"
+    }
+  ]
+}

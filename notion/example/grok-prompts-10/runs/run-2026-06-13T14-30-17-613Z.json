@@ -1,0 +1,38 @@
+{
+  "startedAt": "2026-06-13T14:30:17.613Z",
+  "finishedAt": "2026-06-13T14:30:53.202Z",
+  "model": "opus",
+  "modelFallbackStuckMs": 5000,
+  "passCount": 0,
+  "fallbackCount": 0,
+  "jsonSuccessCount": 0,
+  "errorCount": 1,
+  "emptyCount": 1,
+  "results": [
+    {
+      "id": "p01-test1-baseline",
+      "kind": "financial-temporal",
+      "tab": "efca",
+      "promptLen": 5260,
+      "maxWaitMs": 180000,
+      "elapsedMs": 26220,
+      "errors": [
+        "Stale chat thread still visible",
+        "answer too short (<=1 char)",
+        "missing parseable JSON"
+      ],
+      "error": "Stale chat thread still visible",
+      "hint": "Could not start a fresh Notion AI chat. Retry or open a new tab.",
+      "model": null,
+      "modeLabel": null,
+      "modelFallback": null,
+      "hasAnswerJson": false,
+      "jsonRecovered": false,
+      "answerLen": 0,
+      "wasEmpty": true,
+      "timedOut": false,
+      "helpersVersion": 43,
+      "answerPreview": null
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+Return JSON only describing exactly 8 fictional exoplanets. json format only; NO markdown; NO prose before or after the JSON object.
+
+Each planet must have: name (string), mass_earth (number), moon_count (integer), atmosphere (string), habitability_score (number 0-1), discovery_year (integer).
+
+Schema:
+{"planets":[{"name":"string","mass_earth":number,"moon_count":number,"atmosphere":"string","habitability_score":number,"discovery_year":number}]}
+
+Use distinct creative names. Output the complete JSON object only.

@@ -1,0 +1,20 @@
+{
+  "startedAt": "2026-06-13T15:22:44.869Z",
+  "finishedAt": "2026-06-13T15:24:17.671Z",
+  "passCount": 0,
+  "results": [
+    {
+      "id": "fb-json-stuck",
+      "kind": "live-chat",
+      "tab": "2752",
+      "elapsedMs": 15359,
+      "ok": false,
+      "error": "Stale chat thread still visible",
+      "modelFallback": null,
+      "hasAnswerJson": false,
+      "answerLen": 0,
+      "expectFallbackReason": "incomplete_json_stuck",
+      "actualFallbackReason": null
+    }
+  ]
+}

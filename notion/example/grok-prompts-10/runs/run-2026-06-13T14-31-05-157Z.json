@@ -1,0 +1,38 @@
+{
+  "startedAt": "2026-06-13T14:31:05.157Z",
+  "finishedAt": "2026-06-13T14:31:47.729Z",
+  "model": "opus",
+  "modelFallbackStuckMs": 5000,
+  "passCount": 0,
+  "fallbackCount": 0,
+  "jsonSuccessCount": 0,
+  "errorCount": 1,
+  "emptyCount": 1,
+  "results": [
+    {
+      "id": "p01-test1-baseline",
+      "kind": "financial-temporal",
+      "tab": "e813",
+      "promptLen": 5260,
+      "maxWaitMs": 180000,
+      "elapsedMs": 31947,
+      "errors": [
+        "Chat input not found",
+        "answer too short (<=1 char)",
+        "missing parseable JSON"
+      ],
+      "error": "Chat input not found",
+      "hint": "Could not fill the Notion AI prompt box.",
+      "model": null,
+      "modeLabel": null,
+      "modelFallback": null,
+      "hasAnswerJson": false,
+      "jsonRecovered": false,
+      "answerLen": 0,
+      "wasEmpty": true,
+      "timedOut": false,
+      "helpersVersion": 43,
+      "answerPreview": null
+    }
+  ]
+}

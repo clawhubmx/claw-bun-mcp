@@ -1,0 +1,18 @@
+{
+  "startedAt": "2026-06-13T15:27:13.307Z",
+  "finishedAt": "2026-06-13T15:28:26.353Z",
+  "passCount": 0,
+  "results": [
+    {
+      "id": "fb-json-stuck-policy",
+      "kind": "policy-eval",
+      "tab": "7f27",
+      "ok": false,
+      "modelFallback": null,
+      "policy": {
+        "error": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 7f27\"}"
+      },
+      "helpersVersion": null
+    }
+  ]
+}

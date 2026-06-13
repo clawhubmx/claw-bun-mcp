@@ -19,7 +19,7 @@
     "files": {"required": false, "description": "JSON array of {fileName, fileContent|fileBase64} for multiple files"},
     "pages": {"required": false, "description": "Comma-separated Notion page titles or URLs to mention"},
     "page": {"required": false, "description": "Single Notion page title or URL to mention"},
-    "modelFallback": {"required": false, "description": "Retry with fallback model when Opus JSON stalls or premium models return a single-char failure (default true)"},
+    "modelFallback": {"required": false, "description": "Retry with fallback model when --json/expectJson incomplete JSON, Opus JSON stalls, or premium models return a single-char failure (default true)"},
     "modelFallbackTo": {"required": false, "description": "Fallback model alias when Opus JSON is stuck (default auto)"},
     "modelFallbackStuckMs": {"required": false, "description": "Ms of unchanged incomplete JSON before Opus fallback (default 5000)"}
   },
@@ -82,7 +82,7 @@ async function(args) {
 
 
   var h = (function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 43;
+  var HELPERS_VERSION = 46;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 200;
   var NOTION_REVEAL_THROTTLE_MS = 2000;
@@ -127,6 +127,7 @@ async function(args) {
   var lastWaitPending = false;
   var lastWaitAbnormal = null;
   var lastWaitIncompleteJsonStuck = false;
+  var lastWaitIncompleteJsonFailed = false;
   var lastWaitSingleCharFailed = false;
   var lastCaptureWarning = null;
   var lastUrlTrustAccepts = [];
@@ -585,36 +586,55 @@ async function(args) {
     return { ok: true };
   }
 
+  function isStaleChatThread() {
+    return getAssistantMessagesSinceLastUser().length > 0 || hasCompletedReplyActions();
+  }
+
   async function ensureNewChatView() {
     var landing = await ensureAiLandingPage();
     if (!landing.ok) return landing;
 
-    var staleReply =
-      getAssistantMessagesSinceLastUser().length > 0 || hasCompletedReplyActions();
-    if (getChatInput() && !staleReply) {
+    if (getChatInput() && !isStaleChatThread()) {
       return { ok: true, via: 'ai-landing' };
     }
 
-    var created = await clickNewChat();
-    if (!created.ok) {
-      if (getChatInput() && !staleReply) {
-        return { ok: true, via: 'ai-landing' };
+    for (var attempt = 0; attempt < 5; attempt++) {
+      if (getChatInput() && !isStaleChatThread()) {
+        return { ok: true, via: attempt > 0 ? 'new-chat-cleared' : 'ai-landing' };
       }
-      if (getChatInput() && staleReply) {
-        return {
-          ok: false,
-          error: 'Stale chat thread still visible',
-          hint: 'Could not start a fresh Notion AI chat. Retry or open a new tab.',
-          action: 'bun-browser open https://app.notion.com/ai --tab new'
-        };
+      var created = await clickNewChat();
+      if (!created.ok) {
+        if (getChatInput() && !isStaleChatThread()) {
+          return { ok: true, via: 'ai-landing' };
+        }
+        if (attempt >= 4) {
+          if (getChatInput() && isStaleChatThread()) {
+            try { sessionStorage.setItem('__notionAiPendingNewChat', '1'); } catch (e) {}
+            location.href = 'https://app.notion.com/ai';
+            return {
+              ok: false,
+              needsRetry: true,
+              error: 'Navigation required',
+              hint: 'Re-run the same command after Notion clears the prior chat.',
+              action: 'retry same command'
+            };
+          }
+          return {
+            ok: false,
+            error: 'New chat button not found',
+            hint: 'Open the sidebar Chat tab first, then retry.',
+            action: 'bun-browser open https://app.notion.com/ai'
+          };
+        }
+        await sleep(400);
+        continue;
       }
-      return {
-        ok: false,
-        error: 'New chat button not found',
-        hint: 'Open the sidebar Chat tab first, then retry.',
-        action: 'bun-browser open https://app.notion.com/ai'
-      };
+      var clearDeadline = Date.now() + 6000;
+      while (Date.now() < clearDeadline && isStaleChatThread()) {
+        await sleep(200);
+      }
     }
+
     if (!getChatInput()) {
       try { sessionStorage.setItem('__notionAiPendingNewChat', '1'); } catch (e) {}
       location.href = 'https://app.notion.com/ai';
@@ -626,11 +646,20 @@ async function(args) {
         action: 'retry same command'
       };
     }
-    var clearDeadline = Date.now() + 5000;
-    while (Date.now() < clearDeadline && getAssistantMessagesSinceLastUser().length > 0) {
-      await sleep(200);
+
+    if (isStaleChatThread()) {
+      try { sessionStorage.setItem('__notionAiPendingNewChat', '1'); } catch (e) {}
+      location.href = 'https://app.notion.com/ai';
+      return {
+        ok: false,
+        needsRetry: true,
+        error: 'Navigation required',
+        hint: 'Re-run the same command after Notion clears the prior chat.',
+        action: 'retry same command'
+      };
     }
-    return { ok: true };
+
+    return { ok: true, via: 'new-chat-cleared' };
   }
 
   function getChatInput() {
@@ -1441,6 +1470,10 @@ async function(args) {
     return lastWaitIncompleteJsonStuck;
   }
 
+  function wasLastWaitIncompleteJsonFailed() {
+    return lastWaitIncompleteJsonFailed;
+  }
+
   function wasLastWaitSingleCharFailed() {
     return lastWaitSingleCharFailed;
   }
@@ -1474,6 +1507,7 @@ async function(args) {
 
   function getModelFallbackTriggerReason() {
     if (lastWaitSingleCharFailed) return 'single_char_failed';
+    if (lastWaitIncompleteJsonFailed) return 'incomplete_json_failed';
     if (lastWaitIncompleteJsonStuck) return 'incomplete_json_stuck';
     return null;
   }
@@ -1488,6 +1522,7 @@ async function(args) {
     opts = opts || {};
     if (!parseBoolish(opts.modelFallback, true)) return false;
     if (lastWaitSingleCharFailed) return shouldModelFallbackOnSingleCharFailed(modeRaw, opts);
+    if (lastWaitIncompleteJsonFailed) return shouldModelFallbackOnIncompleteJson(modeRaw, opts);
     if (lastWaitIncompleteJsonStuck) return shouldModelFallbackOnJsonStuck(modeRaw, query, opts);
     return false;
   }
@@ -1512,8 +1547,32 @@ async function(args) {
   function shouldModelFallbackOnJsonStuck(modeRaw, query, opts) {
     opts = opts || {};
     if (!parseBoolish(opts.modelFallback, true)) return false;
-    if (!queryExpectsJson(query)) return false;
+    if (!waitExpectsJson(opts) && !queryExpectsJson(query)) return false;
     return isOpusMode(modeRaw);
+  }
+
+  function shouldModelFallbackOnIncompleteJson(modeRaw, opts) {
+    opts = opts || {};
+    if (!parseBoolish(opts.modelFallback, true)) return false;
+    if (!waitExpectsJson(opts)) return false;
+    var target = resolveModelFallbackTarget(modeRaw, opts);
+    if (resolveNotionMode(modeRaw) === target) return false;
+    return true;
+  }
+
+  function isIncompleteJsonFailedAnswer(answer, opts) {
+    if (!answer) return false;
+    if (!waitExpectsJson(opts)) return false;
+    return !hasParsedJsonAnswer(answer);
+  }
+
+  function rejectIncompleteJsonFailedAnswer(answer, opts) {
+    if (!isIncompleteJsonFailedAnswer(answer, opts)) return answer;
+    opts = opts || {};
+    if (!shouldModelFallbackOnIncompleteJson(opts.mode || opts.model, opts)) return answer;
+    lastWaitIncompleteJsonFailed = true;
+    lastWaitPending = true;
+    return '';
   }
 
   function getLastWaitAbnormal() {
@@ -1609,6 +1668,7 @@ async function(args) {
       }
     }
     if (args.expectJson) opts.expectJson = true;
+    if (parseBoolish(args.json, false)) opts.expectJson = true;
     opts.modelFallback = parseBoolish(args.modelFallback, true);
     if (args.modelFallbackTo != null && String(args.modelFallbackTo).trim()) {
       opts.modelFallbackTo = String(args.modelFallbackTo).trim();
@@ -1643,6 +1703,7 @@ async function(args) {
     lastWaitPending = false;
     lastWaitAbnormal = null;
     lastWaitIncompleteJsonStuck = false;
+    lastWaitIncompleteJsonFailed = false;
     lastWaitSingleCharFailed = false;
     lastCaptureWarning = null;
     var tabState = getTabCaptureState();
@@ -1676,6 +1737,8 @@ async function(args) {
       if (toolbarAnswer === '') return '';
       if (toolbarAnswer) {
         var rejectedToolbar = rejectSingleCharFailedAnswer(toolbarAnswer, opts);
+        if (!rejectedToolbar) return '';
+        rejectedToolbar = rejectIncompleteJsonFailedAnswer(rejectedToolbar, opts);
         if (!rejectedToolbar) return '';
         lastWaitPending = false;
         return rejectedToolbar;
@@ -1738,6 +1801,8 @@ async function(args) {
           if (stableRounds >= stableNeeded - 1) {
             var rejectedStable = rejectSingleCharFailedAnswer(answer, opts);
             if (!rejectedStable) return '';
+            rejectedStable = rejectIncompleteJsonFailedAnswer(rejectedStable, opts);
+            if (!rejectedStable) return '';
             lastWaitPending = false;
             return rejectedStable;
           }
@@ -1750,12 +1815,30 @@ async function(args) {
     if (recovered) {
       var rejectedRecovered = rejectSingleCharFailedAnswer(recovered, opts);
       if (!rejectedRecovered) return '';
+      rejectedRecovered = rejectIncompleteJsonFailedAnswer(rejectedRecovered, opts);
+      if (!rejectedRecovered) return '';
       lastWaitPending = false;
       return rejectedRecovered;
     }
     lastWaitPending = sawInFlight || incompleteJson;
-    if (incompleteJson) return '';
-    return answer && looksLikeFinalAnswer(answer) ? answer : '';
+    if (incompleteJson) {
+      if (hasCompletedReplyActionsForTurn(beforeCount, beforeText) || hasCompletedReplyActions()) {
+        if (shouldModelFallbackOnIncompleteJson(opts.mode, opts)) {
+          lastWaitIncompleteJsonFailed = true;
+          lastWaitPending = true;
+        }
+      }
+      return '';
+    }
+    if (answer && looksLikeFinalAnswer(answer)) {
+      if (waitExpectsJson(opts) && !hasParsedJsonAnswer(answer)) {
+        var rejectedFinal = rejectIncompleteJsonFailedAnswer(answer, opts);
+        if (!rejectedFinal) return '';
+        return rejectedFinal;
+      }
+      return answer;
+    }
+    return '';
   }
 
   function modelTitleToId(title) {
@@ -3083,8 +3166,14 @@ async function(args) {
     return false;
   }
 
-  function buildJsonAnswerFields(answer, query) {
-    if (!queryExpectsJson(query)) return null;
+  function jsonOutputExpected(query, opts) {
+    opts = opts || {};
+    if (opts.expectJson) return true;
+    return queryExpectsJson(query);
+  }
+
+  function buildJsonAnswerFields(answer, query, opts) {
+    if (!jsonOutputExpected(query, opts)) return null;
     var parsed = parseAnswerJson(answer);
     if (!parsed) return null;
     var compact = JSON.stringify(parsed);
@@ -3125,6 +3214,7 @@ async function(args) {
     ensureAiLandingPage: ensureAiLandingPage,
     clickNewChat: clickNewChat,
     ensureNewChatView: ensureNewChatView,
+    isStaleChatThread: isStaleChatThread,
     getChatInput: getChatInput,
     setChatInput: setChatInput,
     getSubmitButton: getSubmitButton,
@@ -3167,6 +3257,7 @@ async function(args) {
     looksLikeFinalAnswer: looksLikeFinalAnswer,
     wasLastWaitPending: wasLastWaitPending,
     wasLastWaitIncompleteJsonStuck: wasLastWaitIncompleteJsonStuck,
+    wasLastWaitIncompleteJsonFailed: wasLastWaitIncompleteJsonFailed,
     wasLastWaitSingleCharFailed: wasLastWaitSingleCharFailed,
     INCOMPLETE_JSON_STUCK_MS: INCOMPLETE_JSON_STUCK_MS,
     isOpusMode: isOpusMode,
@@ -3175,9 +3266,13 @@ async function(args) {
     getModelFallbackTriggerReason: getModelFallbackTriggerReason,
     resolveModelFallbackTarget: resolveModelFallbackTarget,
     shouldModelFallbackOnJsonStuck: shouldModelFallbackOnJsonStuck,
+    shouldModelFallbackOnIncompleteJson: shouldModelFallbackOnIncompleteJson,
     shouldModelFallbackOnSingleCharFailed: shouldModelFallbackOnSingleCharFailed,
     shouldRetryModelFallback: shouldRetryModelFallback,
     rejectSingleCharFailedAnswer: rejectSingleCharFailedAnswer,
+    rejectIncompleteJsonFailedAnswer: rejectIncompleteJsonFailedAnswer,
+    isIncompleteJsonFailedAnswer: isIncompleteJsonFailedAnswer,
+    jsonOutputExpected: jsonOutputExpected,
     getLastWaitAbnormal: getLastWaitAbnormal,
     getTabCaptureState: getTabCaptureState,
     getLastCaptureWarning: getLastCaptureWarning,
@@ -3319,6 +3414,9 @@ async function(args) {
     if (!waitedAnswer) {
       waitedAnswer = h.recoverCompletedAnswer(pollBeforeCount, pollBeforeText, waitOpts);
     }
+    if (waitedAnswer) {
+      waitedAnswer = h.rejectIncompleteJsonFailedAnswer(waitedAnswer, waitOpts);
+    }
     if (!waitedAnswer) {
       if (h.wasLastWaitPending()) {
         return attachCaptureWarning({ error: 'Still generating', hint: 'Notion AI is still generating. Retry with waitOnly: true.', action: 'retry with waitOnly: true' }, true);
@@ -3338,7 +3436,7 @@ async function(args) {
     var waitTrust = h.getLastUrlTrustAccepts();
     if (waitTrust.length) waitOut.urlTrustAccepted = waitTrust;
     var waitQuery = queryTextArg || args.query;
-    var waitJsonFields = h.buildJsonAnswerFields(waitedAnswer, waitQuery);
+    var waitJsonFields = h.buildJsonAnswerFields(waitedAnswer, waitQuery, waitOpts);
     if (waitJsonFields) {
       if (waitJsonFields.answer != null) waitOut.answer = waitJsonFields.answer;
       waitOut.answerJson = waitJsonFields.answerJson;
@@ -3366,7 +3464,21 @@ async function(args) {
   await h.drainUrlTrustPrompts();
   }
 
-  if (newChat && h.getAssistantMessagesSinceLastUser().length > 0) {
+  if (newChat && h.isStaleChatThread()) {
+    var reclear = await h.ensureNewChatView();
+    if (!reclear.ok) {
+      if (reclear.needsRetry) {
+        return {
+          error: reclear.error || 'Navigation required',
+          hint: reclear.hint || 'Re-run the same command after Notion finishes loading.',
+          action: reclear.action || 'retry same command'
+        };
+      }
+      return reclear;
+    }
+  }
+
+  if (newChat && h.isStaleChatThread()) {
     return {
       error: 'Stale chat thread still visible',
       kind: 'stale_thread',
@@ -3432,6 +3544,9 @@ async function(args) {
   var answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
   if (!answer) {
     answer = h.recoverCompletedAnswer(beforeCount, beforeText, waitOpts);
+  }
+  if (answer) {
+    answer = h.rejectIncompleteJsonFailedAnswer(answer, waitOpts);
   }
   var modelFallbackMeta = null;
   if (!answer && h.shouldRetryModelFallback(modeId, queryText, waitOpts)) {
@@ -3531,7 +3646,7 @@ async function(args) {
   if (attachedItems) out.attachments = attachedItems;
   var trustAccepted = h.getLastUrlTrustAccepts();
   if (trustAccepted.length) out.urlTrustAccepted = trustAccepted;
-  var jsonFields = h.buildJsonAnswerFields(answer, queryText);
+  var jsonFields = h.buildJsonAnswerFields(answer, queryText, waitOpts);
   if (jsonFields) {
     if (jsonFields.answer != null) out.answer = jsonFields.answer;
     out.answerJson = jsonFields.answerJson;

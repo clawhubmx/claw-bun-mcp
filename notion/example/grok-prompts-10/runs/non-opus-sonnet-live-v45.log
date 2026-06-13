@@ -1,0 +1,18 @@
+
+========== model=auto | 10 prompts | stuckMs=5000 ==========
+
+--- auto | p01-test1-baseline len=5260 maxWait=240000 ---
+  tab=4760
+  OK | ok | model=Auto | json=true | len=138 | helpers=v45 | no fallback
+  preview: {"url":"https://www.cnn.com/2026/05/23/middleeast/iran-us-progress-framework-diplomacy-intl","published_at":"2026-05-23","overlap":"high"}
+
+--- auto | p02-financial-fed len=5100 maxWait=240000 ---
+  tab=6569
+  OK | ok | model=Auto | json=true | len=123 | helpers=v45 | no fallback
+  preview: {"url":"https://www.axios.com/2026/05/17/trump-iran-warning-harder-strikes","published_at":"2026-05-17","overlap":"medium"}
+
+--- auto | p03-financial-apple len=5087 maxWait=240000 ---
+
+========== model=auto | 10 prompts | stuckMs=5000 ==========
+
+--- auto | p01-test1-baseline len=5260 maxWait=240000 ---

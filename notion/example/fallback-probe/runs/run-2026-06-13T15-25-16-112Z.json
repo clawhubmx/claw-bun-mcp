@@ -1,0 +1,52 @@
+{
+  "startedAt": "2026-06-13T15:25:16.112Z",
+  "finishedAt": "2026-06-13T15:26:38.948Z",
+  "passCount": 2,
+  "results": [
+    {
+      "id": "fb-json-stuck",
+      "kind": "live-chat",
+      "tab": "9259",
+      "elapsedMs": 6995,
+      "ok": false,
+      "error": null,
+      "modelFallback": null,
+      "hasAnswerJson": true,
+      "answerLen": 154,
+      "expectFallbackReason": "incomplete_json_stuck",
+      "actualFallbackReason": null
+    },
+    {
+      "id": "fb-json-control",
+      "kind": "live-chat",
+      "tab": "9ffd",
+      "elapsedMs": 11814,
+      "ok": true,
+      "error": null,
+      "modelFallback": null,
+      "hasAnswerJson": true,
+      "answerLen": 55,
+      "expectFallbackReason": null,
+      "actualFallbackReason": null
+    },
+    {
+      "id": "fb-single-char-policy",
+      "kind": "policy-eval",
+      "tab": "1b54",
+      "ok": true,
+      "modelFallback": {
+        "reason": "single_char_failed",
+        "policy": true
+      },
+      "policy": {
+        "helpersVersion": 45,
+        "rejected": "",
+        "wasSingleCharFailed": true,
+        "reason": "single_char_failed",
+        "shouldRetry": true,
+        "autoNoRetry": false
+      },
+      "helpersVersion": 45
+    }
+  ]
+}

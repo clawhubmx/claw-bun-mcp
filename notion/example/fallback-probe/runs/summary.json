@@ -1,0 +1,26 @@
+{
+  "startedAt": "2026-06-13T15:29:06.484Z",
+  "finishedAt": "2026-06-13T15:29:17.995Z",
+  "passCount": 1,
+  "results": [
+    {
+      "id": "fb-single-char-policy",
+      "kind": "policy-eval",
+      "tab": "59ee",
+      "ok": true,
+      "modelFallback": {
+        "reason": "single_char_failed",
+        "policy": true
+      },
+      "policy": {
+        "helpersVersion": 45,
+        "rejected": "",
+        "wasSingleCharFailed": true,
+        "reason": "single_char_failed",
+        "shouldRetry": true,
+        "autoNoRetry": false
+      },
+      "helpersVersion": 45
+    }
+  ]
+}

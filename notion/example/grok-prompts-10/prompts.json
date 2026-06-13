@@ -1,0 +1,110 @@
+{
+  "defaults": {
+    "model": "opus",
+    "maxWaitMsFinancial": 240000,
+    "maxWaitMsNews": 900000,
+    "modelFallbackStuckMs": 5000,
+    "pauseMs": 2000
+  },
+  "prompts": [
+    {
+      "id": "p01-test1-baseline",
+      "kind": "financial-temporal",
+      "template": "test1-file",
+      "variant": 0,
+      "description": "Iran deal baseline from grok/example/test1.txt",
+      "maxWaitMs": 240000,
+      "expectJson": true,
+      "jsonSchemaHint": "is_event_from_prior_date, novelty_type, search_evidence"
+    },
+    {
+      "id": "p02-financial-fed",
+      "kind": "financial-temporal",
+      "template": "financial-temporal",
+      "variant": 1,
+      "description": "Fed rate hold variant",
+      "maxWaitMs": 240000,
+      "expectJson": true,
+      "jsonSchemaHint": "is_event_from_prior_date, novelty_type, search_evidence"
+    },
+    {
+      "id": "p03-financial-apple",
+      "kind": "financial-temporal",
+      "template": "financial-temporal",
+      "variant": 2,
+      "description": "Apple WWDC AI variant",
+      "maxWaitMs": 240000,
+      "expectJson": true,
+      "jsonSchemaHint": "is_event_from_prior_date, novelty_type, search_evidence"
+    },
+    {
+      "id": "p04-financial-spacex",
+      "kind": "financial-temporal",
+      "template": "financial-temporal",
+      "variant": 3,
+      "description": "SpaceX IPO variant",
+      "maxWaitMs": 240000,
+      "expectJson": true,
+      "jsonSchemaHint": "is_event_from_prior_date, novelty_type, search_evidence"
+    },
+    {
+      "id": "p05-financial-eth",
+      "kind": "financial-temporal",
+      "template": "financial-temporal",
+      "variant": 4,
+      "description": "Ethereum ETF inflows variant",
+      "maxWaitMs": 240000,
+      "expectJson": true,
+      "jsonSchemaHint": "is_event_from_prior_date, novelty_type, search_evidence"
+    },
+    {
+      "id": "p06-test2-baseline",
+      "kind": "news-search",
+      "template": "test2-file",
+      "description": "Mexico World Cup topic from grok/example/test2.txt",
+      "maxWaitMs": 900000,
+      "expectJson": true,
+      "jsonSchemaHint": "query, time_period, unique_topics, sources"
+    },
+    {
+      "id": "p07-news-fed",
+      "kind": "news-search",
+      "template": "test2-topic",
+      "topic": "Fed interest rate decision June 2026",
+      "description": "test2 template with Fed topic",
+      "maxWaitMs": 900000,
+      "expectJson": true,
+      "jsonSchemaHint": "query, time_period, unique_topics, sources"
+    },
+    {
+      "id": "p08-news-spacex",
+      "kind": "news-search",
+      "template": "test2-topic",
+      "topic": "SpaceX IPO oversubscribed",
+      "description": "test2 template with SpaceX IPO topic",
+      "maxWaitMs": 900000,
+      "expectJson": true,
+      "jsonSchemaHint": "query, time_period, unique_topics, sources"
+    },
+    {
+      "id": "p09-news-apple",
+      "kind": "news-search",
+      "template": "test2-topic",
+      "topic": "Apple WWDC announcements 2026",
+      "description": "test2 template with Apple WWDC topic",
+      "maxWaitMs": 900000,
+      "expectJson": true,
+      "jsonSchemaHint": "query, time_period, unique_topics, sources"
+    },
+    {
+      "id": "p10-news-eth",
+      "kind": "news-search",
+      "template": "test2-topic",
+      "topic": "Ethereum ETF inflows",
+      "description": "test2 template with Ethereum ETF topic",
+      "maxWaitMs": 900000,
+      "expectJson": true,
+      "jsonSchemaHint": "query, time_period, unique_topics, sources"
+    }
+  ]
+}

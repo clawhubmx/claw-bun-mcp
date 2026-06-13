@@ -1,0 +1,54 @@
+Grok prompts 10: 10 runs, model=opus, stuckMs=5000
+
+--- p01-test1-baseline tab=57c0 len=5260 maxWait=240000 ---
+  OK | ok | model=Opus 4.7 | json=true | len=101 | helpers=v43 | no fallback
+  preview: {"url":"https://www.bbc.com/news/articles/crmp121z3z8o","published_at":"2026-05-24","overlap":"high"}
+
+--- p02-financial-fed tab=17ed len=5100 maxWait=240000 ---
+  OK | ok | model=Opus 4.7 | json=true | len=1338 | helpers=v43 | no fallback
+  preview: {"is_event_from_prior_date":"unclear","is_mostly_duplicate_content":"no","novelty_type":"unclear","event_date_estimate":null,"primary_event":"Headline references a Federal Reserve rate-hold decision, 
+
+--- p03-financial-apple tab=fe65 len=5087 maxWait=240000 ---
+  OK | ok | model=Opus 4.7 | json=true | len=591 | helpers=v43 | no fallback
+  preview: {"is_event_from_prior_date":"no","is_mostly_duplicate_content":"no","novelty_type":"unclear","event_date_estimate":"2026-06-05","primary_event":"Headline references Apple unveiling AI features at WWDC
+
+--- p04-financial-spacex tab=9a03 len=5085 maxWait=240000 ---
+  OK | ok | model=Opus 4.7 | json=true | len=592 | helpers=v43 | no fallback
+  preview: {"is_event_from_prior_date":"no","is_mostly_duplicate_content":"no","novelty_type":"unclear","event_date_estimate":null,"primary_event":"Headline references SpaceX IPO oversubscription, but the articl
+
+--- p05-financial-eth tab=6de5 len=5079 maxWait=240000 ---
+  OK | ok | model=Opus 4.7 | json=true | len=558 | helpers=v43 | no fallback
+  preview: {"is_event_from_prior_date":"no","is_mostly_duplicate_content":"no","novelty_type":"unclear","event_date_estimate":null,"primary_event":"Headline claims Ethereum ETFs posted record weekly inflows, but
+
+--- p06-test2-baseline tab=903b len=3553 maxWait=900000 ---
+  retry: opening fresh tab (Stale chat thread still visible)
+  FAIL | Stale chat thread still visible | model=? | json=false | len=0 | helpers=v43 | no fallback
+  errors: Stale chat thread still visible; answer too short (<=1 char); missing parseable JSON
+
+--- p07-news-fed tab=1e54 len=3539 maxWait=900000 ---
+  retry: opening fresh tab (Stale chat thread still visible)
+  FAIL | Stale chat thread still visible | model=? | json=false | len=0 | helpers=v43 | no fallback
+  errors: Stale chat thread still visible; answer too short (<=1 char); missing parseable JSON
+
+--- p08-news-spacex tab=a98f len=3528 maxWait=900000 ---
+  retry: opening fresh tab (Stale chat thread still visible)
+  FAIL | Stale chat thread still visible | model=? | json=false | len=0 | helpers=v43 | no fallback
+  errors: Stale chat thread still visible; answer too short (<=1 char); missing parseable JSON
+
+--- p09-news-apple tab=1f8d len=3532 maxWait=900000 ---
+  retry: opening fresh tab (Stale chat thread still visible)
+  FAIL | Stale chat thread still visible | model=? | json=false | len=0 | helpers=v43 | no fallback
+  errors: Stale chat thread still visible; answer too short (<=1 char); missing parseable JSON
+
+--- p10-news-eth tab=db9c len=3523 maxWait=900000 ---
+  retry: opening fresh tab (Stale chat thread still visible)
+  FAIL | Stale chat thread still visible | model=? | json=false | len=0 | helpers=v43 | no fallback
+  errors: Stale chat thread still visible; answer too short (<=1 char); missing parseable JSON
+
+=== Summary ===
+  pass:             5/10
+  fallback triggered: 0/10
+  parseable JSON:   5/10
+  CLI errors:       5/10
+  empty answers:    5/10
+  report: /Users/hesdx/Documents/clawhost/claw-bun-mcp/notion/example/grok-prompts-10/runs/run-2026-06-13T14-32-45-583Z.json

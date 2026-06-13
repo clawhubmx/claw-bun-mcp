@@ -1,0 +1,1 @@
+Reply with only valid JSON: {"status":"ok","code":"FB-CONTROL-1","ts":"2026-06-13"}. json format only; NO markdown; NO prose before or after the JSON object.

@@ -944,9 +944,19 @@ Loaded web page: api.llama.fi/chains</div>
     expect(giveBtn.getAttribute("aria-expanded")).not.toBe("true");
   });
 
-  test("helpers version is 43", () => {
+  test("helpers version is 46", () => {
     const h = installHelpers();
-    expect(h.version).toBe(43);
+    expect(h.version).toBe(46);
+  });
+
+  test("isStaleChatThread detects assistant messages and reply toolbar", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">stale</div></div>' +
+      '<div class="reply-toolbar">' + REPLY_ACTION_BUTTONS_UNIFIED + '</div></div>';
+    makeReplyToolbarVisible();
+    expect(h.isStaleChatThread()).toBe(true);
   });
 
   test("shouldRunRevealSideEffect throttles reveal side effects during wait polling", () => {
@@ -1466,8 +1476,35 @@ Loaded web page: api.llama.fi/chains</div>
     expect(h.shouldModelFallbackOnJsonStuck("sonnet", jsonQuery, {})).toBe(false);
     expect(h.shouldModelFallbackOnJsonStuck("opus", "plain prose please", {})).toBe(false);
     expect(h.shouldModelFallbackOnJsonStuck("opus", jsonQuery, { modelFallback: false })).toBe(false);
+    expect(h.shouldModelFallbackOnJsonStuck("opus", "plain prose", { expectJson: true })).toBe(true);
     expect(h.resolveModelFallbackTarget("opus", {})).toBe("Auto");
     expect(h.resolveModelFallbackTarget("opus", { modelFallbackTo: "sonnet" })).toBe("Sonnet 4.6");
+  });
+
+  test("incomplete JSON with expectJson triggers fallback to auto", () => {
+    const h = installHelpers();
+    const opts = { expectJson: true, modelFallback: true, mode: "grok" };
+    const partial = '{"query":"Fed interest rate';
+    expect(h.isIncompleteJsonFailedAnswer(partial, opts)).toBe(true);
+    expect(h.rejectIncompleteJsonFailedAnswer(partial, opts)).toBe("");
+    expect(h.wasLastWaitIncompleteJsonFailed()).toBe(true);
+    expect(h.getModelFallbackTriggerReason()).toBe("incomplete_json_failed");
+    expect(h.shouldRetryModelFallback("grok", "plain", opts)).toBe(true);
+    expect(h.shouldModelFallbackOnIncompleteJson("auto", opts)).toBe(false);
+    expect(h.rejectIncompleteJsonFailedAnswer('{"ok":true}', opts)).toBe('{"ok":true}');
+  });
+
+  test("buildWaitOpts maps bun-browser --json to expectJson", () => {
+    const h = installHelpers();
+    const opts = h.buildWaitOpts({ json: true, query: "Summarize this article" });
+    expect(opts.expectJson).toBe(true);
+  });
+
+  test("buildJsonAnswerFields honors expectJson without JSON phrasing in query", () => {
+    const h = installHelpers();
+    const answer = '{"status":"ok","code":"PING-1"}';
+    expect(h.buildJsonAnswerFields(answer, "Summarize this article")).toBeNull();
+    expect(h.buildJsonAnswerFields(answer, "Summarize this article", { expectJson: true })).not.toBeNull();
   });
 
   test("single-char failed response triggers fallback for opus sonnet fable only", () => {

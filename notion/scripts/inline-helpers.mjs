@@ -114,6 +114,10 @@ const captureWarningHelper = `  function attachCaptureWarning(obj, isFailure) {
 `;
 const emptyAnswerRecoveryBlock = `    answer = h.recoverCompletedAnswer(beforeCount, beforeText, waitOpts);
 `;
+const incompleteJsonRejectBlock = `  if (answer) {
+    answer = h.rejectIncompleteJsonFailedAnswer(answer, waitOpts);
+  }
+`;
 
 const modelFallbackOutField = `  if (modelFallbackMeta) out.modelFallback = modelFallbackMeta;
 `;
@@ -297,7 +301,7 @@ writeFileSync(
     "files": {"required": false, "description": "JSON array of {fileName, fileContent|fileBase64} for multiple files"},
     "pages": {"required": false, "description": "Comma-separated Notion page titles or URLs to mention"},
     "page": {"required": false, "description": "Single Notion page title or URL to mention"},
-    "modelFallback": {"required": false, "description": "Retry with fallback model when Opus JSON stalls or premium models return a single-char failure (default true)"},
+    "modelFallback": {"required": false, "description": "Retry with fallback model when --json/expectJson incomplete JSON, Opus JSON stalls, or premium models return a single-char failure (default true)"},
     "modelFallbackTo": {"required": false, "description": "Fallback model alias when Opus JSON is stuck (default auto)"},
     "modelFallbackStuckMs": {"required": false, "description": "Ms of unchanged incomplete JSON before Opus fallback (default 5000)"}
   },
@@ -371,6 +375,9 @@ ${trustDrainBlock}    var existing = h.getAssistantMessages();
     if (!waitedAnswer) {
       waitedAnswer = h.recoverCompletedAnswer(pollBeforeCount, pollBeforeText, waitOpts);
     }
+    if (waitedAnswer) {
+      waitedAnswer = h.rejectIncompleteJsonFailedAnswer(waitedAnswer, waitOpts);
+    }
     if (!waitedAnswer) {
       if (h.wasLastWaitPending()) {
         return attachCaptureWarning({ error: 'Still generating', hint: 'Notion AI is still generating. Retry with waitOnly: true.', action: 'retry with waitOnly: true' }, true);
@@ -390,7 +397,7 @@ ${trustDrainBlock}    var existing = h.getAssistantMessages();
     var waitTrust = h.getLastUrlTrustAccepts();
     if (waitTrust.length) waitOut.urlTrustAccepted = waitTrust;
     var waitQuery = queryTextArg || args.query;
-    var waitJsonFields = h.buildJsonAnswerFields(waitedAnswer, waitQuery);
+    var waitJsonFields = h.buildJsonAnswerFields(waitedAnswer, waitQuery, waitOpts);
     if (waitJsonFields) {
       if (waitJsonFields.answer != null) waitOut.answer = waitJsonFields.answer;
       waitOut.answerJson = waitJsonFields.answerJson;
@@ -417,7 +424,21 @@ ${trustDrainBlock}    var existing = h.getAssistantMessages();
     }
 ${trustDrainBlock}  }
 
-  if (newChat && h.getAssistantMessagesSinceLastUser().length > 0) {
+  if (newChat && h.isStaleChatThread()) {
+    var reclear = await h.ensureNewChatView();
+    if (!reclear.ok) {
+      if (reclear.needsRetry) {
+        return {
+          error: reclear.error || 'Navigation required',
+          hint: reclear.hint || 'Re-run the same command after Notion finishes loading.',
+          action: reclear.action || 'retry same command'
+        };
+      }
+      return reclear;
+    }
+  }
+
+  if (newChat && h.isStaleChatThread()) {
     return {
       error: 'Stale chat thread still visible',
       kind: 'stale_thread',
@@ -463,7 +484,7 @@ ${trustDrainBlock}
   var answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
   if (!answer) {
 ${emptyAnswerRecoveryBlock}  }
-${modelFallbackChatBlock}  if (!answer) {
+${incompleteJsonRejectBlock}${modelFallbackChatBlock}  if (!answer) {
     var answerAbnormal = h.getLastWaitAbnormal();
     if (answerAbnormal) return answerAbnormal;
     if (h.wasLastWaitPending()) {
@@ -483,7 +504,7 @@ ${modelFallbackChatBlock}  if (!answer) {
   if (attachedItems) out.attachments = attachedItems;
   var trustAccepted = h.getLastUrlTrustAccepts();
   if (trustAccepted.length) out.urlTrustAccepted = trustAccepted;
-  var jsonFields = h.buildJsonAnswerFields(answer, queryText);
+  var jsonFields = h.buildJsonAnswerFields(answer, queryText, waitOpts);
   if (jsonFields) {
     if (jsonFields.answer != null) out.answer = jsonFields.answer;
     out.answerJson = jsonFields.answerJson;
@@ -519,7 +540,7 @@ writeFileSync(
     "files": {"required": false, "description": "JSON array of {fileName, fileContent|fileBase64} for multiple files"},
     "pages": {"required": false, "description": "Comma-separated Notion page titles or URLs to mention"},
     "page": {"required": false, "description": "Single Notion page title or URL to mention"},
-    "modelFallback": {"required": false, "description": "Retry with fallback model when Opus JSON stalls or premium models return a single-char failure (default true)"},
+    "modelFallback": {"required": false, "description": "Retry with fallback model when --json/expectJson incomplete JSON, Opus JSON stalls, or premium models return a single-char failure (default true)"},
     "modelFallbackTo": {"required": false, "description": "Fallback model alias when Opus JSON is stuck (default auto)"},
     "modelFallbackStuckMs": {"required": false, "description": "Ms of unchanged incomplete JSON before Opus fallback (default 5000)"}
   },
@@ -567,6 +588,9 @@ ${trustDrainBlock}    var existing = h.getAssistantMessages();
     var waitedAnswer = await h.waitForAssistantAnswer(pollBeforeCount, pollBeforeText, waitOpts);
     if (!waitedAnswer) {
       waitedAnswer = h.recoverCompletedAnswer(pollBeforeCount, pollBeforeText, waitOpts);
+    }
+    if (waitedAnswer) {
+      waitedAnswer = h.rejectIncompleteJsonFailedAnswer(waitedAnswer, waitOpts);
     }
     if (!waitedAnswer) {
       if (h.wasLastWaitPending()) {
@@ -661,7 +685,7 @@ ${trustDrainBlock}
   var answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
   if (!answer) {
 ${emptyAnswerRecoveryBlock}  }
-${modelFallbackChatfollowBlock}  if (!answer) {
+${incompleteJsonRejectBlock}${modelFallbackChatfollowBlock}  if (!answer) {
     var answerAbnormal = h.getLastWaitAbnormal();
     if (answerAbnormal) return answerAbnormal;
     if (h.wasLastWaitPending()) {
@@ -683,7 +707,7 @@ ${modelFallbackChatfollowBlock}  if (!answer) {
   if (attachedItems) out.attachments = attachedItems;
   var followTrustAccepted = h.getLastUrlTrustAccepts();
   if (followTrustAccepted.length) out.urlTrustAccepted = followTrustAccepted;
-  var jsonFields = h.buildJsonAnswerFields(answer, queryText);
+  var jsonFields = h.buildJsonAnswerFields(answer, queryText, waitOpts);
   if (jsonFields) {
     if (jsonFields.answer != null) out.answer = jsonFields.answer;
     out.answerJson = jsonFields.answerJson;

@@ -1,0 +1,21 @@
+
+========== model=auto | 10 prompts | stuckMs=5000 ==========
+
+--- auto | p01-test1-baseline len=5260 maxWait=240000 ---
+  tab=8c9f
+  OK | ok | model=Auto | json=true | len=123 | helpers=v45 | no fallback
+  preview: {"url":"https://www.axios.com/2026/05/17/trump-iran-warning-harder-strikes","published_at":"2026-05-17","overlap":"medium"}
+
+--- auto | p02-financial-fed len=5100 maxWait=240000 ---
+  waitOnly poll 1/5
+  tab=8f17
+  FAIL | ok | model=Auto | json=false | len=3786 | helpers=v45 | no fallback
+  errors: missing parseable JSON
+  preview: { "is_event_from_prior_date": "unclear", "is_mostly_duplicate_content": "no", "novelty_type": "unclear", "event_date_estimate": null, "primary_event": "The provided text does not actually report on th
+
+--- auto | p03-financial-apple len=5087 maxWait=240000 ---
+  tab=ed74
+  OK | ok | model=Auto | json=true | len=202 | helpers=v45 | no fallback
+  preview: {"url":"https://www.apple.com/newsroom/2026/06/apple-intelligence-brings-powerful-ai-capabilities-into-everyday-experiences/","published_at":"2026-06 (day not confirmed in tool output)","overlap":"low
+
+--- auto | p04-financial-spacex len=5085 maxWait=240000 ---

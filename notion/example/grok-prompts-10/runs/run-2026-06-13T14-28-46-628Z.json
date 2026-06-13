@@ -1,0 +1,37 @@
+{
+  "startedAt": "2026-06-13T14:28:46.628Z",
+  "finishedAt": "2026-06-13T14:28:57.906Z",
+  "model": "opus",
+  "modelFallbackStuckMs": 5000,
+  "passCount": 0,
+  "fallbackCount": 0,
+  "jsonSuccessCount": 0,
+  "errorCount": 0,
+  "emptyCount": 1,
+  "results": [
+    {
+      "id": "p01-test1-baseline",
+      "kind": "financial-temporal",
+      "tab": "470f",
+      "promptLen": 5260,
+      "maxWaitMs": 180000,
+      "elapsedMs": 1396,
+      "errors": [
+        "answer too short (<=1 char)",
+        "missing parseable JSON"
+      ],
+      "error": null,
+      "hint": null,
+      "model": "Opus 4.7",
+      "modeLabel": "Opus 4.7",
+      "modelFallback": null,
+      "hasAnswerJson": false,
+      "jsonRecovered": false,
+      "answerLen": 0,
+      "wasEmpty": true,
+      "timedOut": false,
+      "helpersVersion": 43,
+      "answerPreview": null
+    }
+  ]
+}
