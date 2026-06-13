@@ -3,7 +3,7 @@
  * Inlined by notion/chat.js and notion/chatfollow.js — keep in sync.
  */
 function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 52;
+  var HELPERS_VERSION = 55;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 200;
   var NOTION_REVEAL_THROTTLE_MS = 2000;
@@ -76,10 +76,9 @@ function installNotionAiChatHelpers() {
     };
   }
 
-  function clickElement(el) {
+  function dispatchElementClick(el) {
     if (!el) return;
-    try { el.focus(); } catch (e) {}
-    el.click();
+    try { el.click(); } catch (e) {}
     var rect = el.getBoundingClientRect();
     var x = rect.left + rect.width / 2;
     var y = rect.top + rect.height / 2;
@@ -92,6 +91,12 @@ function installNotionAiChatHelpers() {
         clientY: y
       }));
     });
+  }
+
+  function clickElement(el) {
+    if (!el) return;
+    try { el.focus(); } catch (e) {}
+    dispatchElementClick(el);
   }
 
   function isElementVisible(el) {
@@ -2043,8 +2048,19 @@ function installNotionAiChatHelpers() {
     return false;
   }
 
+  function blurModelPicker(picker) {
+    picker = picker || findModelPickerButton();
+    if (!picker) return;
+    try {
+      if (document.activeElement === picker || picker.contains(document.activeElement)) {
+        picker.blur();
+      }
+    } catch (e) {}
+  }
+
   async function closeModelPickerSurface(picker) {
     picker = picker || findModelPickerButton();
+
     for (var round = 0; round < 4; round++) {
       if (!isModelPickerMenuOpen(picker)) break;
       document.dispatchEvent(new KeyboardEvent('keydown', {
@@ -2059,11 +2075,21 @@ function installNotionAiChatHelpers() {
         keyCode: 27,
         bubbles: true
       }));
-      if (picker && picker.getAttribute('aria-expanded') === 'true') {
-        clickElement(picker);
-      }
-      await sleep(round === 0 ? 120 : 180);
+      await sleep(300);
     }
+
+    var editor = getChatInput();
+    if (editor && isModelPickerMenuOpen(picker)) {
+      dispatchElementClick(editor);
+      await sleep(250);
+    }
+
+    if (picker && picker.getAttribute('aria-expanded') === 'true') {
+      dispatchElementClick(picker);
+      await sleep(300);
+    }
+
+    blurModelPicker(picker);
     focusChatInput();
   }
 
@@ -3326,6 +3352,7 @@ function installNotionAiChatHelpers() {
     isModelTitleMapped: isModelTitleMapped,
     isLikelyModelMenuTitle: isLikelyModelMenuTitle,
     findModelPickerButton: findModelPickerButton,
+    blurModelPicker: blurModelPicker,
     isModelPickerMenuOpen: isModelPickerMenuOpen,
     closeModelPickerSurface: closeModelPickerSurface,
     findModelPickerSurface: findModelPickerSurface,

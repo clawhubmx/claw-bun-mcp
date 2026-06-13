@@ -944,9 +944,9 @@ Loaded web page: api.llama.fi/chains</div>
     expect(giveBtn.getAttribute("aria-expanded")).not.toBe("true");
   });
 
-  test("helpers version is 52", () => {
+  test("helpers version is 55", () => {
     const h = installHelpers();
-    expect(h.version).toBe(52);
+    expect(h.version).toBe(55);
   });
 
   test("isStaleChatThread detects assistant messages and reply toolbar", () => {
@@ -1784,7 +1784,7 @@ Loaded web page: api.llama.fi/chains</div>
     const h = installHelpersAt("https://app.notion.com/ai");
     document.body.innerHTML = `
       <div contenteditable="true" role="textbox" id="editor"></div>
-      <div role="button" data-testid="unified-chat-model-button" aria-expanded="true">Auto</div>
+      <div role="button" tabindex="0" data-testid="unified-chat-model-button" aria-expanded="true">Auto</div>
       <div id="models" role="dialog">
         <div role="menuitem"><div role="presentation">Auto</div></div>
         <div role="menuitem"><div role="presentation">Sonnet 4.6</div></div>
@@ -1807,10 +1807,13 @@ Loaded web page: api.llama.fi/chains</div>
       });
     }
     expect(h.isModelPickerMenuOpen(picker)).toBe(true);
+    picker.focus();
+    expect(document.activeElement).toBe(picker);
     await h.closeModelPickerSurface(picker);
     picker.setAttribute("aria-expanded", "false");
     models.remove();
     expect(h.isModelPickerMenuOpen(picker)).toBe(false);
+    expect(document.activeElement).not.toBe(picker);
     expect(document.activeElement).toBe(editor);
   });
 });

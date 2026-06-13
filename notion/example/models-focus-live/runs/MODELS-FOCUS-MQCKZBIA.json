@@ -1,0 +1,54 @@
+{
+  "runId": "MODELS-FOCUS-MQCKZBIA",
+  "at": "2026-06-13T16:39:45.154Z",
+  "helpersVersion": 53,
+  "synced": true,
+  "steps": [
+    {
+      "name": "sync-adapters",
+      "status": "pass",
+      "installDir": "/Users/hesdx/.bun-browser/claw-bun-mcp/notion"
+    },
+    {
+      "name": "resolve-tab",
+      "status": "pass",
+      "tab": "791b"
+    },
+    {
+      "name": "notion/models",
+      "status": "pass",
+      "errors": [],
+      "modelCount": 13,
+      "current": "Auto",
+      "argv": "bun /Users/hesdx/Documents/toolings/bun-browser/dist/cli.js site notion/models --json --tab 791b"
+    },
+    {
+      "name": "focus-probe",
+      "status": "fail",
+      "errors": [
+        "helpersVersion expected 53, got undefined"
+      ],
+      "probe": {
+        "result": {
+          "helpersVersion": 53,
+          "menuOpen": true,
+          "pickerFocused": false,
+          "editorFocused": true,
+          "hasPicker": true,
+          "hasEditor": true,
+          "activeTag": "DIV",
+          "activeTestId": null,
+          "pickerExpanded": "true",
+          "url": "https://app.notion.com/ai"
+        },
+        "tab": "791b",
+        "seq": 161609
+      },
+      "argv": "bun /Users/hesdx/Documents/toolings/bun-browser/dist/cli.js eval (function() {\n  var h = globalThis.__notionAiChatHelpers;\n  var picker = h && h.findModelPickerButton ? h.findModelPickerButton() : document.querySelector('[data-testid=\"unified-chat-model-button\"]');\n  var editor = h && h.getChatInput ? h.getChatInput() : null;\n  var active = document.activeElement;\n  var pickerFocused = !!(picker && (active === picker || picker.contains(active)));\n  var editorFocused = !!(editor && (active === editor || editor.contains(active)));\n  var menuOpen = h && h.isModelPickerMenuOpen ? h.isModelPickerMenuOpen(picker) : false;\n  return {\n    helpersVersion: h ? h.version : null,\n    menuOpen: menuOpen,\n    pickerFocused: pickerFocused,\n    editorFocused: editorFocused,\n    hasPicker: !!picker,\n    hasEditor: !!editor,\n    activeTag: active ? active.tagName : null,\n    activeTestId: active ? active.getAttribute('data-testid') : null,\n    pickerExpanded: picker ? picker.getAttribute('aria-expanded') : null,\n    url: location.href\n  };\n})() --json --tab 791b"
+    }
+  ],
+  "tab": "791b",
+  "ok": false,
+  "error": "helpersVersion expected 53, got undefined",
+  "summary": "live focus test failed"
+}
