@@ -944,9 +944,9 @@ Loaded web page: api.llama.fi/chains</div>
     expect(giveBtn.getAttribute("aria-expanded")).not.toBe("true");
   });
 
-  test("helpers version is 51", () => {
+  test("helpers version is 52", () => {
     const h = installHelpers();
-    expect(h.version).toBe(51);
+    expect(h.version).toBe(52);
   });
 
   test("isStaleChatThread detects assistant messages and reply toolbar", () => {
@@ -1760,18 +1760,40 @@ Loaded web page: api.llama.fi/chains</div>
     });
   });
 
-  test("closeModelPickerSurface dismisses open model menu", async () => {
+  test("focusChatInput focuses visible composer", () => {
+    const h = installHelpersAt("https://app.notion.com/ai");
+    document.body.innerHTML =
+      '<div contenteditable="true" role="textbox" id="editor"></div>';
+    const editor = document.getElementById("editor");
+    Object.defineProperty(editor, "offsetParent", { value: document.body, configurable: true });
+    editor.getBoundingClientRect = () => ({
+      left: 100,
+      top: 300,
+      width: 400,
+      height: 40,
+      right: 500,
+      bottom: 340,
+      x: 100,
+      y: 300,
+    });
+    expect(h.focusChatInput()).toBe(true);
+    expect(document.activeElement).toBe(editor);
+  });
+
+  test("closeModelPickerSurface dismisses open model menu and restores composer focus", async () => {
     const h = installHelpersAt("https://app.notion.com/ai");
     document.body.innerHTML = `
+      <div contenteditable="true" role="textbox" id="editor"></div>
       <div role="button" data-testid="unified-chat-model-button" aria-expanded="true">Auto</div>
       <div id="models" role="dialog">
         <div role="menuitem"><div role="presentation">Auto</div></div>
         <div role="menuitem"><div role="presentation">Sonnet 4.6</div></div>
         <div role="menuitem"><div role="presentation">Opus 4.7</div></div>
       </div>`;
+    const editor = document.getElementById("editor");
     const picker = document.querySelector('[data-testid="unified-chat-model-button"]');
     const models = document.getElementById("models");
-    for (const el of [picker, models]) {
+    for (const el of [editor, picker, models]) {
       Object.defineProperty(el, "offsetParent", { value: document.body, configurable: true });
       el.getBoundingClientRect = () => ({
         left: 580,
@@ -1789,6 +1811,7 @@ Loaded web page: api.llama.fi/chains</div>
     picker.setAttribute("aria-expanded", "false");
     models.remove();
     expect(h.isModelPickerMenuOpen(picker)).toBe(false);
+    expect(document.activeElement).toBe(editor);
   });
 });
 

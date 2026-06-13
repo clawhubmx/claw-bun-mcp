@@ -54,7 +54,7 @@ async function(args) {
 
 
   var h = (function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 51;
+  var HELPERS_VERSION = 52;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 200;
   var NOTION_REVEAL_THROTTLE_MS = 2000;
@@ -687,11 +687,18 @@ async function(args) {
     return null;
   }
 
+  function focusChatInput() {
+    var editor = getChatInput();
+    if (!editor) return false;
+    try { editor.focus(); } catch (e) {}
+    try { editor.click(); } catch (e) {}
+    return document.activeElement === editor || editor.contains(document.activeElement);
+  }
+
   function setChatInput(value) {
     var editor = getChatInput();
     if (!editor) return false;
-    editor.focus();
-    try { editor.click(); } catch (e) {}
+    if (!focusChatInput()) return false;
 
     document.execCommand('selectAll', false, null);
     var execOk = document.execCommand('insertText', false, value);
@@ -2108,11 +2115,7 @@ async function(args) {
       }
       await sleep(round === 0 ? 120 : 180);
     }
-    try {
-      if (document.activeElement && document.activeElement !== document.body) {
-        document.activeElement.blur();
-      }
-    } catch (e) {}
+    focusChatInput();
   }
 
   function isLikelyModelMenuTitle(title) {
@@ -3305,6 +3308,7 @@ async function(args) {
     hasNotionChatShell: hasNotionChatShell,
     isStaleChatThread: isStaleChatThread,
     getChatInput: getChatInput,
+    focusChatInput: focusChatInput,
     setChatInput: setChatInput,
     getSubmitButton: getSubmitButton,
     clickSubmit: clickSubmit,
