@@ -29,6 +29,10 @@ function installHelpers() {
   globalThis.document = dom.window.document;
   globalThis.window = dom.window;
   globalThis.Node = dom.window.Node;
+  globalThis.Event = dom.window.Event;
+  globalThis.InputEvent = dom.window.InputEvent;
+  globalThis.ClipboardEvent = dom.window.ClipboardEvent;
+  globalThis.DataTransfer = dom.window.DataTransfer;
   globalThis.sessionStorage = dom.window.sessionStorage;
   const loadHelpers = new Function(`${helpersSource}\nreturn installGrokChatHelpers;`);
   return loadHelpers()();
@@ -218,6 +222,62 @@ describe("grok chat completion detection", () => {
     const check = h.verifyChatInput(expected);
     expect(check.ok).toBe(false);
     expect(check.kind).toBe("truncated");
+  });
+
+  test("setChatInput fills test1-length prompt via textContent fallback", () => {
+    installChatInput("");
+    const test1 = readFileSync(join(__dirname, "example/test1.txt"), "utf8");
+    expect(h.setChatInput(test1)).toBe(true);
+    expect(h.verifyChatInput(test1).ok).toBe(true);
+  });
+
+  test("fillChatInput accepts test1-length prompt", async () => {
+    installChatInput("");
+    const test1 = readFileSync(join(__dirname, "example/test1.txt"), "utf8");
+    const fill = await h.fillChatInput(test1);
+    expect(fill.ok).toBe(true);
+    expect(fill.inputCheck.ok).toBe(true);
+  });
+
+  test("setChatInput uses chunked insert when single insertText truncates", () => {
+    installChatInput("");
+    const long = "HEAD_" + "z".repeat(5200) + "_TAIL";
+    const originalExec = document.execCommand;
+    let insertCalls = 0;
+    document.execCommand = (cmd, _showUi, arg) => {
+      if (cmd === "selectAll" || cmd === "delete") return true;
+      if (cmd !== "insertText") return false;
+      insertCalls += 1;
+      const editor = h.getChatInput();
+      if (!editor) return false;
+      if (typeof arg === "string" && arg.length > 600) {
+        editor.textContent = (editor.textContent || "") + arg.slice(0, 450);
+        return true;
+      }
+      editor.textContent = (editor.textContent || "") + arg;
+      return true;
+    };
+
+    expect(h.setChatInput(long)).toBe(true);
+    expect(insertCalls).toBeGreaterThan(1);
+    expect(h.verifyChatInput(long).ok).toBe(true);
+
+    if (originalExec) document.execCommand = originalExec;
+    else delete document.execCommand;
+  });
+
+  test("verifyChatInput accepts NBSP-only blank lines after composer collapse", () => {
+    const editor = document.createElement("div");
+    editor.setAttribute("contenteditable", "true");
+    const host = document.createElement("div");
+    host.setAttribute("data-testid", "chat-input");
+    host.appendChild(editor);
+    document.body.appendChild(host);
+
+    const expected = "Line one.\n\u00a0\nLine two.\n\u00a0\n\"\"\"";
+    editor.textContent = "Line one.  Line two.  \"\"\"";
+    const check = h.verifyChatInput(expected);
+    expect(check.ok).toBe(true);
   });
 
   test("checkGrokAnswerBlocked detects unable-to-reply from page text without assistant-message", () => {

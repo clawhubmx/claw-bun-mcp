@@ -39,7 +39,7 @@ async function(args) {
   }
 
                 var h = (function installGrokChatHelpers() {
-var HELPERS_VERSION = 26;
+var HELPERS_VERSION = 27;
 
   // Default wait when mode is unrecognized (fast/auto)
   var GROK_CHAT_WAIT_MS = 15 * 60 * 1000;
@@ -396,13 +396,18 @@ var HELPERS_VERSION = 26;
   function normalizePromptText(text) {
     return String(text || '')
       .replace(/\r\n/g, '\n')
+      .replace(/\u00a0/g, ' ')
       .replace(/\u2013|\u2014/g, '-')
       .replace(/\u2018|\u2019/g, "'")
       .replace(/\u201c|\u201d/g, '"')
+      .replace(/[ \t]+\n/g, '\n')
+      .replace(/\n[ \t]+/g, '\n')
       .replace(/\n+$/, '');
   }
 
-
+  function collapsePromptWhitespace(text) {
+    return normalizePromptText(text).replace(/\s+/g, ' ').trim();
+  }
   async function waitForChatInput(maxMs) {
     var deadline = Date.now() + (maxMs || 10000);
     while (Date.now() < deadline) {
@@ -423,6 +428,7 @@ var HELPERS_VERSION = 26;
     got = normalizePromptText(got);
     expected = normalizePromptText(expected);
     if (got === expected) return true;
+    if (collapsePromptWhitespace(got) === collapsePromptWhitespace(expected)) return true;
     if (got.length < Math.floor(expected.length * 0.98)) return false;
     if (expected.length >= 40 && got.slice(0, 40) !== expected.slice(0, 40)) return false;
     if (expected.length >= 40 && got.slice(-40) !== expected.slice(-40)) return false;
@@ -448,36 +454,132 @@ var HELPERS_VERSION = 26;
     return out;
   }
 
+  var CHAT_INPUT_CHUNK_SIZE = 512;
+  var CHAT_INPUT_SINGLE_INSERT_MAX = 3000;
+
+  function focusChatInputEditor(editor) {
+    editor.focus();
+    try { editor.click(); } catch (e) {}
+  }
+
+  function clearChatInputEditor(editor) {
+    focusChatInputEditor(editor);
+    if (typeof document.execCommand === 'function') {
+      document.execCommand('selectAll', false, null);
+      document.execCommand('delete', false, null);
+    }
+    editor.textContent = '';
+  }
+
+  function canExecCommand() {
+    return typeof document.execCommand === 'function';
+  }
+
+  function dispatchChatInputEvents(editor, value, inputType) {
+    try {
+      if (typeof InputEvent === 'function') {
+        editor.dispatchEvent(new InputEvent('input', {
+          bubbles: true,
+          inputType: inputType || 'insertText',
+          data: value
+        }));
+      } else {
+        editor.dispatchEvent(new Event('input', {bubbles: true}));
+      }
+    } catch (e) {
+      editor.dispatchEvent(new Event('input', {bubbles: true}));
+    }
+    editor.dispatchEvent(new Event('change', {bubbles: true}));
+  }
+
+  function insertChatInputSingle(editor, value) {
+    if (!canExecCommand()) return false;
+    clearChatInputEditor(editor);
+    if (!document.execCommand('insertText', false, value)) return false;
+    if (!inputMatchesExpected(getChatInputText(), value)) return false;
+    dispatchChatInputEvents(editor, value, 'insertText');
+    return true;
+  }
+
+  function insertChatInputChunked(editor, value, chunkSize) {
+    if (!canExecCommand()) return false;
+    clearChatInputEditor(editor);
+    chunkSize = chunkSize || CHAT_INPUT_CHUNK_SIZE;
+    for (var i = 0; i < value.length; i += chunkSize) {
+      var chunk = value.slice(i, i + chunkSize);
+      if (!document.execCommand('insertText', false, chunk)) return false;
+    }
+    if (!inputMatchesExpected(getChatInputText(), value)) return false;
+    dispatchChatInputEvents(editor, value, 'insertText');
+    return true;
+  }
+
+  function insertChatInputPaste(editor, value) {
+    clearChatInputEditor(editor);
+    try {
+      if (typeof ClipboardEvent === 'function' && typeof DataTransfer === 'function') {
+        var dt = new DataTransfer();
+        dt.setData('text/plain', value);
+        editor.dispatchEvent(new ClipboardEvent('paste', {
+          bubbles: true,
+          cancelable: true,
+          clipboardData: dt
+        }));
+      }
+    } catch (e) {}
+    if (!inputMatchesExpected(getChatInputText(), value)) return false;
+    dispatchChatInputEvents(editor, value, 'insertFromPaste');
+    return true;
+  }
+
+  function insertChatInputTextContent(editor, value) {
+    clearChatInputEditor(editor);
+    try {
+      if (typeof InputEvent === 'function') {
+        var beforeInput = new InputEvent('beforeinput', {
+          bubbles: true,
+          cancelable: true,
+          inputType: 'insertText',
+          data: value
+        });
+        editor.dispatchEvent(beforeInput);
+        if (!beforeInput.defaultPrevented) {
+          editor.textContent = value;
+        }
+      } else {
+        editor.textContent = value;
+      }
+    } catch (e) {
+      editor.textContent = value;
+    }
+    if (!inputMatchesExpected(getChatInputText(), value)) return false;
+    dispatchChatInputEvents(editor, value, 'insertText');
+    return true;
+  }
+
   function setChatInput(value) {
     value = String(value == null ? '' : value);
     var editor = getChatInput();
     if (!editor) return false;
-    editor.focus();
-    try { editor.click(); } catch (e) {}
 
     if (editor.getAttribute('contenteditable') === 'true' || editor.isContentEditable) {
-      document.execCommand('selectAll', false, null);
-      document.execCommand('insertText', false, value);
-      if (inputMatchesExpected(getChatInputText(), value)) {
-        editor.dispatchEvent(new InputEvent('input', {bubbles: true, inputType: 'insertText', data: value}));
-        return true;
+      var strategies = [];
+      if (value.length <= CHAT_INPUT_SINGLE_INSERT_MAX) {
+        strategies.push(function() { return insertChatInputSingle(editor, value); });
       }
-      editor.textContent = '';
-      var beforeInput = new InputEvent('beforeinput', {
-        bubbles: true,
-        cancelable: true,
-        inputType: 'insertText',
-        data: value
-      });
-      editor.dispatchEvent(beforeInput);
-      if (!beforeInput.defaultPrevented) {
-        editor.textContent = value;
+      strategies.push(function() { return insertChatInputChunked(editor, value, CHAT_INPUT_CHUNK_SIZE); });
+      if (value.length > 1000) {
+        strategies.push(function() { return insertChatInputPaste(editor, value); });
       }
-      editor.dispatchEvent(new InputEvent('input', {bubbles: true, inputType: 'insertText', data: value}));
-      editor.dispatchEvent(new Event('change', {bubbles: true}));
-      return inputMatchesExpected(getChatInputText(), value);
+      strategies.push(function() { return insertChatInputTextContent(editor, value); });
+
+      for (var s = 0; s < strategies.length; s++) {
+        if (strategies[s]()) return true;
+      }
+      return false;
     }
 
+    focusChatInputEditor(editor);
     var setter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value');
     if (setter && setter.set) setter.set.call(editor, value);
     else editor.value = value;
@@ -491,11 +593,12 @@ var HELPERS_VERSION = 26;
     if (!getChatInput()) {
       return { ok: false, error: 'Chat input not found', kind: 'composer_missing' };
     }
+    var maxAttempts = value.length > 4000 ? 3 : 2;
     var lastCheck = null;
-    for (var attempt = 0; attempt < 2; attempt++) {
-      if (attempt > 0) await sleep(250);
+    for (var attempt = 0; attempt < maxAttempts; attempt++) {
+      if (attempt > 0) await sleep(value.length > 4000 ? 400 : 250);
       if (!setChatInput(value)) continue;
-      await sleep(attempt === 0 ? 200 : 350);
+      await sleep(attempt === 0 ? (value.length > 4000 ? 350 : 200) : 400);
       lastCheck = verifyChatInput(value);
       if (lastCheck.ok) {
         return { ok: true, inputCheck: lastCheck, attempts: attempt + 1 };
@@ -505,9 +608,11 @@ var HELPERS_VERSION = 26;
     return {
       ok: false,
       kind: lastCheck.kind || 'input_truncated',
-      error: 'Prompt truncated in composer',
+      error: lastCheck.kind === 'mismatch'
+        ? 'Prompt mismatch in composer'
+        : 'Prompt truncated in composer',
       inputCheck: lastCheck,
-      attempts: 2
+      attempts: maxAttempts
     };
   }
 
