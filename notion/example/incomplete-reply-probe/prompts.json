@@ -1,0 +1,81 @@
+{
+  "suite": "incomplete-reply-probe",
+  "description": "Five prompts to probe remote notion/chat behavior around truncated JSON, Still generating loops, waitOnly polling, and HELPERS_VERSION 25+ incomplete-JSON guards.",
+  "defaults": {
+    "model": "auto",
+    "pollMaxWaitMs": 30000,
+    "maxPolls": 3,
+    "pauseMs": 2000
+  },
+  "prompts": [
+    {
+      "id": "p01-control",
+      "file": "prompt-01-control-json.txt",
+      "purpose": "Baseline: tiny JSON-only reply should finish in seconds with valid parsed JSON.",
+      "expectJson": true,
+      "maxWaitMs": 30000,
+      "pollMaxWaitMs": 30000,
+      "passCriteria": [
+        "Initial submit or waitOnly poll returns answer (not Still generating) within 1 poll",
+        "answerJson or parseAnswerJson succeeds",
+        "probe.looksFinal is true when answer is returned",
+        "No identical-answer-stuck pattern across polls"
+      ]
+    },
+    {
+      "id": "p02-json-guard",
+      "file": "prompt-02-json-guard.txt",
+      "purpose": "Medium JSON schema: truncated streaming JSON must yield Still generating, never partial success with invalid JSON.",
+      "expectJson": true,
+      "maxWaitMs": 45000,
+      "pollMaxWaitMs": 30000,
+      "passCriteria": [
+        "If DOM answer is incomplete JSON, chat returns error Still generating (not answer with truncated text)",
+        "When complete, answerJson.planets is a non-empty array",
+        "probe.looksFinal false while JSON is truncated",
+        "No identical-answer-stuck: same hash across polls while Still generating"
+      ]
+    },
+    {
+      "id": "p03-streaming-stress",
+      "file": "prompt-03-streaming-news.txt",
+      "purpose": "News-style unique_topics JSON (search + long output): main repro candidate for identical incomplete reply loops.",
+      "expectJson": true,
+      "maxWaitMs": 60000,
+      "pollMaxWaitMs": 30000,
+      "passCriteria": [
+        "Eventually completes with parseable JSON containing unique_topics array OR",
+        "While incomplete, each poll returns Still generating (not frozen partial answer)",
+        "If stuck: flag identicalAnswerHashAcrossPolls with looksFinal false",
+        "helpersVersion >= 25 should treat incomplete JSON as in-flight"
+      ]
+    },
+    {
+      "id": "p04-prose-control",
+      "file": "prompt-04-prose-token.txt",
+      "purpose": "Non-JSON exact token reply: prose path must still complete without JSON guards interfering.",
+      "expectJson": false,
+      "maxWaitMs": 30000,
+      "pollMaxWaitMs": 30000,
+      "expectedToken": "OK-NOTION-FLOW",
+      "passCriteria": [
+        "Answer contains exact token OK-NOTION-FLOW",
+        "probe.looksFinal true when toolbar complete",
+        "No Still generating loop after toolbar shows complete"
+      ]
+    },
+    {
+      "id": "p05-preamble-edge",
+      "file": "prompt-05-preamble-json.txt",
+      "purpose": "JSON with preamble risk: model may add prose before JSON; tests parseAnswerJson and looksLikeFinalAnswer recovery.",
+      "expectJson": true,
+      "maxWaitMs": 45000,
+      "pollMaxWaitMs": 30000,
+      "passCriteria": [
+        "When complete, parseAnswerJson extracts {probe:preamble, ok:true} despite optional leading sentence",
+        "Incomplete preamble+partial JSON returns Still generating, not partial success",
+        "jsonRecovered true is acceptable when raw differs from compact JSON"
+      ]
+    }
+  ]
+}

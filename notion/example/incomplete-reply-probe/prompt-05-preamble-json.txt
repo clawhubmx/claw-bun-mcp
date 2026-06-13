@@ -1,0 +1,6 @@
+First write one short sentence (under 12 words) explaining what JSON is. Then on the next line output JSON only with no markdown fences.
+
+Required JSON object exactly:
+{"probe":"preamble","ok":true,"note":"edge-case"}
+
+json format only for the JSON line; NO markdown; the sentence may precede the JSON.

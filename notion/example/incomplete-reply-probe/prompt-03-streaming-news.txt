@@ -1,0 +1,5 @@
+You are a news research assistant. Search the listed publisher domains for recent coverage. Return JSON only. json format only; NO markdown format; NO bold formatting; NO pretty format
+
+Based on user query: "Fed interest rate decision June 2026" as the intent, go find out from the given publishers:reuters.com;apnews.com;bloomberg.com;cnbc.com;bbc.com;nytimes.com;wsj.com;ft.com;axios.com;marketwatch.com;finance.yahoo.com;theguardian.com;washingtonpost.com;politico.com;forbes.com;fortune.com;investing.com;barrons.com;economist.com;aljazeera.com;From the pool of the publisher look for the the latest topics ± 3 days for the most relevant news topics, and then deduplicate them and show me the unique topics in JSON format only. if there is no result is falling into the give date range but only found that event topics that out of the range, still shown them in the list.
+format in{  "query": <text>,  "time_period": <text>,  "unique_topics": <array of strings>,  "sources": <text>}
+Use coverage window roughly 2026-06-09 to 2026-06-15. time_period use this format from: 2026-06-10T14:30:00Z. json format only; NO markdown format; NO bold formatting; NO pretty format

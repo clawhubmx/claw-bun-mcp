@@ -1,0 +1,130 @@
+{
+  "startedAt": "2026-06-13T09:28:03.690Z",
+  "host": "staging1 (hub.msbit.cn)",
+  "container": "bunbrowser",
+  "tabId": "8922",
+  "helpersVersionTarget": 36,
+  "selectedPrompts": [
+    "p02-json-guard",
+    "p03-streaming-stress",
+    "p05-preamble-edge",
+    "p02-json-guard-short-wait"
+  ],
+  "skippedPrompts": [
+    "p01-control",
+    "p04-prose-control"
+  ],
+  "method": "short submit maxWaitMs + up to 3 waitOnly polls (pollMaxWaitMs 30000)",
+  "runs": [
+    {
+      "id": "p02-json-guard",
+      "promptFile": "prompt-02-json-guard.txt",
+      "expectJson": true,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 1,
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "submitMaxWaitMs": 8000,
+          "pollMaxWaitMs": null,
+          "elapsedMs": 1384,
+          "timedOut": false,
+          "chatError": null,
+          "chatKind": null,
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "hasParsedJson": false,
+          "helpersVersion": null,
+          "isGenerating": null,
+          "answerPreview": ""
+        }
+      ]
+    },
+    {
+      "id": "p03-streaming-stress",
+      "promptFile": "prompt-03-streaming-news.txt",
+      "expectJson": true,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 1,
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "submitMaxWaitMs": 5000,
+          "pollMaxWaitMs": null,
+          "elapsedMs": 2159,
+          "timedOut": false,
+          "chatError": "Missing argument: query",
+          "chatKind": null,
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "hasParsedJson": false,
+          "helpersVersion": null,
+          "isGenerating": null,
+          "answerPreview": ""
+        }
+      ]
+    },
+    {
+      "id": "p05-preamble-edge",
+      "promptFile": "prompt-05-preamble-json.txt",
+      "expectJson": true,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 1,
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "submitMaxWaitMs": 8000,
+          "pollMaxWaitMs": null,
+          "elapsedMs": 1459,
+          "timedOut": false,
+          "chatError": null,
+          "chatKind": null,
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "hasParsedJson": false,
+          "helpersVersion": null,
+          "isGenerating": null,
+          "answerPreview": ""
+        }
+      ]
+    },
+    {
+      "id": "p02-json-guard-short-wait",
+      "promptFile": "prompt-02-json-guard.txt",
+      "expectJson": true,
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 1,
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "submitMaxWaitMs": 3000,
+          "pollMaxWaitMs": null,
+          "elapsedMs": 1335,
+          "timedOut": false,
+          "chatError": null,
+          "chatKind": null,
+          "answerLen": 0,
+          "answerHash": "e3b0c44298fc1c14",
+          "looksFinal": null,
+          "hasParsedJson": false,
+          "helpersVersion": null,
+          "isGenerating": null,
+          "answerPreview": ""
+        }
+      ]
+    }
+  ],
+  "finishedAt": "2026-06-13T09:28:54.918Z",
+  "stuckCount": 0
+}

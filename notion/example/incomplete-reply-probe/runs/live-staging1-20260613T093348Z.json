@@ -1,0 +1,197 @@
+{
+  "startedAt": "2026-06-13T09:18:04Z",
+  "finishedAt": "2026-06-13T09:33:48Z",
+  "host": "staging1 (hub.msbit.cn)",
+  "container": "bunbrowser",
+  "tabId": "8922",
+  "helpersVersionObserved": 36,
+  "selectedPrompts": [
+    "p02-json-guard",
+    "p03-streaming-stress",
+    "p05-preamble-edge",
+    "p02-json-guard-short-wait"
+  ],
+  "skippedPrompts": [
+    "p01-control",
+    "p04-prose-control"
+  ],
+  "executedStandardFullWait": [
+    "p02-json-guard",
+    "p03-streaming-stress",
+    "p05-preamble-edge"
+  ],
+  "fourthPromptNote": "p02-json-guard-short-wait (3s submit + waitOnly) attempted; submit returned empty_stdout and waitOnly timed out at 120s \u2014 tab likely left in-flight. Omitted from executedStandardFullWait.",
+  "standardFullWaitRuns": [
+    {
+      "id": "p02-json-guard",
+      "purpose": "Medium JSON schema: truncated streaming JSON must yield Still generating, never partial success with invalid JSON.",
+      "expectJson": true,
+      "maxWaitMs": 45000,
+      "pollMaxWaitMs": 30000,
+      "pass": true,
+      "issues": [],
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 4029,
+          "timedOut": false,
+          "chatError": null,
+          "chatKind": null,
+          "answerLen": 549,
+          "answerHash": "1335c17db98b19d7",
+          "looksFinal": true,
+          "hasParsedJson": true,
+          "helpersVersion": 36,
+          "answerFormat": "json",
+          "jsonRecovered": true,
+          "answerPreview": "{\"name\":\"Vespera Nix\",\"mass_earth\":1.34,\"moon_count\":2,\"atmosphere\":\"Nitrogen-oxygen with high-altitude noctilucent ice clouds and trace ozone\",\"habitability_score\":0.72}"
+        }
+      ],
+      "final": {
+        "chatError": null,
+        "answer": "{\"name\":\"Vespera Nix\",\"mass_earth\":1.34,\"moon_count\":2,\"atmosphere\":\"Nitrogen-oxygen with high-altitude noctilucent ice clouds and trace ozone\",\"habitability_score\":0.72}",
+        "answerJson": {
+          "name": "Vespera Nix",
+          "mass_earth": 1.34,
+          "moon_count": 2,
+          "atmosphere": "Nitrogen-oxygen with high-altitude noctilucent ice clouds and trace ozone",
+          "habitability_score": 0.72
+        },
+        "helpersVersion": 36,
+        "looksFinal": true
+      },
+      "passCriteria": [
+        "If DOM answer is incomplete JSON, chat returns error Still generating (not answer with truncated text)",
+        "When complete, answerJson.planets is a non-empty array",
+        "probe.looksFinal false while JSON is truncated",
+        "No identical-answer-stuck: same hash across polls while Still generating"
+      ]
+    },
+    {
+      "id": "p03-streaming-stress",
+      "purpose": "News-style unique_topics JSON (search + long output): main repro candidate for identical incomplete reply loops.",
+      "expectJson": true,
+      "maxWaitMs": 60000,
+      "pollMaxWaitMs": 30000,
+      "pass": true,
+      "issues": [],
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 28326,
+          "timedOut": false,
+          "chatError": null,
+          "chatKind": null,
+          "answerLen": 3151,
+          "answerHash": "4254801c72d8584f",
+          "looksFinal": true,
+          "hasParsedJson": true,
+          "helpersVersion": 36,
+          "answerFormat": "json",
+          "jsonRecovered": true,
+          "answerPreview": "{\"query\":\"Fed interest rate decision June 2026\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Reuters poll: economists see Fed holding rates through 2026; June 16-17 meet"
+        }
+      ],
+      "final": {
+        "chatError": null,
+        "answer": "{\"query\":\"Fed interest rate decision June 2026\",\"time_period\":\"2026-06-09T00:00:00Z/2026-06-15T23:59:59Z\",\"unique_topics\":[\"Reuters poll: economists see Fed holding rates through 2026; June 16-17 meeting expected unchanged under new chair Kevin Warsh\",\"Bond market reprices for possible Fed hike later in 2026 after strong jobs data (bond yields up; swaps/futures price hike odds)\",\"Inflation/CPI data shifts rate expectations but traders still bet on a 2026 hike (hike odds pushed toward Oct/Dec meetings)\",\"Fed officials signal removing 'easing bias' language; discussion shifts from cuts to potential hikes later in 2026\",\"Personal-finance angle: higher-for-longer rates and what it means for borrowers/savers ahead of June meeting\",\"Axios: December 2026 rate-cut expectations look more questionable ahead of next week\u2019s Fed meeting\",\"Trump political pressure on Fed/Warsh; public messaging that a rate increase would be wrong ahead of Warsh\u2019s debut meeting\",\"Economist commentary: Warsh dilemma\u2014Trump wants cuts while conditions may require tighter policy\",\"MarketWatch previews: what to watch at the upcoming Fed meeting and how Warsh reacts to market hints of a hike\",\"FOMC minutes coverage (late May): policymakers open to hikes if inflation persists (context for June 2026 decision)\",\"Out-of-range but related: Politico analysis on Warsh, Trump, and bond investors testing the new Fed chair (May 2026)\"],\"sources\":\"reuters.com;bloomberg.com;cnbc.com;axios.com;fortune.com;economist.com;marketwatch.com;wsj.com;investing.com;politico.com;forbes.com;finance.yahoo.com\"}",
+        "answerJson": {
+          "query": "Fed interest rate decision June 2026",
+          "time_period": "2026-06-09T00:00:00Z/2026-06-15T23:59:59Z",
+          "unique_topics": [
+            "Reuters poll: economists see Fed holding rates through 2026; June 16-17 meeting expected unchanged under new chair Kevin Warsh",
+            "Bond market reprices for possible Fed hike later in 2026 after strong jobs data (bond yields up; swaps/futures price hike odds)",
+            "Inflation/CPI data shifts rate expectations but traders still bet on a 2026 hike (hike odds pushed toward Oct/Dec meetings)",
+            "Fed officials signal removing 'easing bias' language; discussion shifts from cuts to potential hikes later in 2026",
+            "Personal-finance angle: higher-for-longer rates and what it means for borrowers/savers ahead of June meeting",
+            "Axios: December 2026 rate-cut expectations look more questionable ahead of next week\u2019s Fed meeting",
+            "Trump political pressure on Fed/Warsh; public messaging that a rate increase would be wrong ahead of Warsh\u2019s debut meeting",
+            "Economist commentary: Warsh dilemma\u2014Trump wants cuts while conditions may require tighter policy",
+            "MarketWatch previews: what to watch at the upcoming Fed meeting and how Warsh reacts to market hints of a hike",
+            "FOMC minutes coverage (late May): policymakers open to hikes if inflation persists (context for June 2026 decision)",
+            "Out-of-range but related: Politico analysis on Warsh, Trump, and bond investors testing the new Fed chair (May 2026)"
+          ],
+          "sources": "reuters.com;bloomberg.com;cnbc.com;axios.com;fortune.com;economist.com;marketwatch.com;wsj.com;investing.com;politico.com;forbes.com;finance.yahoo.com"
+        },
+        "helpersVersion": 36,
+        "looksFinal": true
+      },
+      "passCriteria": [
+        "Eventually completes with parseable JSON containing unique_topics array OR",
+        "While incomplete, each poll returns Still generating (not frozen partial answer)",
+        "If stuck: flag identicalAnswerHashAcrossPolls with looksFinal false",
+        "helpersVersion >= 25 should treat incomplete JSON as in-flight"
+      ]
+    },
+    {
+      "id": "p05-preamble-edge",
+      "purpose": "JSON with preamble risk: model may add prose before JSON; tests parseAnswerJson and looksLikeFinalAnswer recovery.",
+      "expectJson": true,
+      "maxWaitMs": 45000,
+      "pollMaxWaitMs": 30000,
+      "pass": true,
+      "issues": [],
+      "identicalAnswerStuck": false,
+      "identicalAnswerHash": null,
+      "identicalPollCount": 0,
+      "steps": [
+        {
+          "mode": "submit",
+          "pollIndex": null,
+          "elapsedMs": 3222,
+          "timedOut": false,
+          "chatError": null,
+          "chatKind": null,
+          "answerLen": 233,
+          "answerHash": "be82256d019d92be",
+          "looksFinal": true,
+          "hasParsedJson": true,
+          "helpersVersion": 36,
+          "answerFormat": "json",
+          "jsonRecovered": true,
+          "answerPreview": "{\"probe\":\"preamble\",\"ok\":true,\"note\":\"edge-case\"}"
+        }
+      ],
+      "final": {
+        "chatError": null,
+        "answer": "{\"probe\":\"preamble\",\"ok\":true,\"note\":\"edge-case\"}",
+        "answerJson": {
+          "probe": "preamble",
+          "ok": true,
+          "note": "edge-case"
+        },
+        "helpersVersion": 36,
+        "looksFinal": true
+      },
+      "passCriteria": [
+        "When complete, parseAnswerJson extracts {probe:preamble, ok:true} despite optional leading sentence",
+        "Incomplete preamble+partial JSON returns Still generating, not partial success",
+        "jsonRecovered true is acceptable when raw differs from compact JSON"
+      ]
+    }
+  ],
+  "initialInvalidRuns": {
+    "cause": "Stale chat thread still visible on https://app.notion.com/chat before reset to /ai",
+    "symptom": "All four probe IDs returned error Stale chat thread still visible, answerLen=1393 (prior p03 DOM), identicalStuck=false",
+    "durationSec": 15
+  },
+  "shortSubmitWaitOnlyAttempts": {
+    "status": "partial_failure",
+    "details": [
+      "Bash pipe submit succeeded manually for p05; automated short-poll logging hit JSON embed errors",
+      "p02 short-wait waitOnly poll blocked >120s (TimeoutExpired) after empty submit stdout via Python ssh wrapper"
+    ]
+  },
+  "stuckCountStandard": 0,
+  "stuckCountShort": 0,
+  "stuckCountTotal": 0,
+  "taxonomyProcessorAssessment": "Bug not reproduced on adapter v36: all standard runs completed on first submit with looksFinal=true, parseable JSON, no Still generating loop, no identical incomplete hash across polls (maxPolls never triggered). Client-side identical-hash stuck would require 3+ waitOnly observations of the same truncated preview while chatError=Still generating or looksFinal=false \u2014 not observed."
+}
