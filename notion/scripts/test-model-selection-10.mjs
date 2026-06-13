@@ -1,13 +1,16 @@
 #!/usr/bin/env bun
 /**
- * Exercise unified-chat-model-button selection: 10 prompts, one distinct model each run.
- * Opens a fresh Notion AI tab per model to avoid stale-thread guards.
+ * Model selection batch: 10 models, fresh Notion AI tab each.
+ *
+ * Default (--selectOnly, implicit): open chat, select model, validate modeLabel only.
+ * Optional --withChat: after selection, submit a prompt and check answer token (uses positional maxWaitMs).
  *
  * Usage:
  *   bun notion/scripts/test-model-selection-10.mjs
+ *   bun notion/scripts/test-model-selection-10.mjs --maxWaitMs 5000 --withChat
  *   bun notion/scripts/test-model-selection-10.mjs --dry-run
  */
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
@@ -17,6 +20,9 @@ const ROOT = join(__dirname, "..");
 const CLI = "/Users/hesdx/Documents/toolings/bun-browser/dist/cli.js";
 const OUT_DIR = join(ROOT, "example/model-selection-runs");
 const AI_URL = "https://app.notion.com/ai";
+const HELPERS_VERSION = Number(
+  readFileSync(join(ROOT, "chat-helpers.js"), "utf8").match(/HELPERS_VERSION = (\d+)/)?.[1] || 0,
+);
 
 const MODELS = [
   { alias: "auto", title: "Auto" },
@@ -33,6 +39,7 @@ const MODELS = [
 
 const args = process.argv.slice(2);
 const dryRun = args.includes("--dry-run");
+const withChat = args.includes("--withChat");
 const maxWaitMs = args.includes("--maxWaitMs") ? Number(args[args.indexOf("--maxWaitMs") + 1]) : 90000;
 const pauseMs = args.includes("--pauseMs") ? Number(args[args.indexOf("--pauseMs") + 1]) : 1500;
 
@@ -87,12 +94,22 @@ function answerContainsToken(answer, token) {
   return text.includes(want);
 }
 
-function validateRun(data, expectedTitle, token) {
+function validateSelectOnly(data, expectedTitle) {
+  const errors = [];
+  if (data?.error) errors.push(String(data.error));
+  if (!data?.selected) errors.push("selected missing");
+  if (expectedTitle && data?.modeLabel !== expectedTitle) {
+    errors.push(`modeLabel must be "${expectedTitle}", got "${data?.modeLabel}"`);
+  }
+  return { ok: errors.length === 0, errors };
+}
+
+function validateChat(data, expectedTitle, token) {
   const errors = [];
   if (data?.error) errors.push(String(data.error));
   if (!data?.answer) errors.push("answer missing");
   if (expectedTitle && data?.modeLabel !== expectedTitle) {
-    errors.push(`modeLabel must be "${expectedTitle}", got "${data.modeLabel}"`);
+    errors.push(`modeLabel must be "${expectedTitle}", got "${data?.modeLabel}"`);
   }
   if (!answerContainsToken(data?.answer, token)) {
     errors.push(`answer must contain token "${token}"`);
@@ -100,11 +117,25 @@ function validateRun(data, expectedTitle, token) {
   return { ok: errors.length === 0, errors };
 }
 
+function runSelectOnly(tab, alias) {
+  // query → model → newChat → selectOnly → waitOnly
+  return run(["site", "notion/chat", "", alias, "true", "true", "false"], 120000, tab);
+}
+
+function runChat(tab, prompt, alias) {
+  // maxWaitMs at positional index 6 (index 5 reserved empty)
+  return run(
+    ["site", "notion/chat", prompt, alias, "true", "false", "false", "", String(maxWaitMs)],
+    maxWaitMs + 120000,
+    tab,
+  );
+}
+
 if (dryRun) {
   mkdirSync(OUT_DIR, { recursive: true });
-  console.log(`Dry run (${RUN_ID}) — ${MODELS.length} models (fresh tab each)\n`);
+  console.log(`Dry run (${RUN_ID}) — ${MODELS.length} models, selectOnly=${!withChat ? "yes" : "with --withChat"}\n`);
   for (const [i, m] of MODELS.entries()) {
-    console.log(`${i + 1}. ${m.alias} (${m.title}) → "OK-${String(i + 1).padStart(2, "0")}"`);
+    console.log(`${i + 1}. ${m.alias} (${m.title})${withChat ? ` → "OK-${String(i + 1).padStart(2, "0")}"` : ""}`);
   }
   process.exit(0);
 }
@@ -119,7 +150,9 @@ mkdirSync(OUT_DIR, { recursive: true });
 const startedAt = new Date().toISOString();
 const results = [];
 
-console.log(`Model selection batch (${RUN_ID}) maxWaitMs=${maxWaitMs}\n`);
+console.log(
+  `Model selection batch (${RUN_ID}) selectOnly=${withChat ? "no+chat" : "yes"} maxWaitMs=${withChat ? maxWaitMs : "n/a"}\n`,
+);
 
 for (let i = 0; i < MODELS.length; i++) {
   const m = MODELS[i];
@@ -129,8 +162,9 @@ for (let i = 0; i < MODELS.length; i++) {
     index: i + 1,
     alias: m.alias,
     expectedTitle: m.title,
-    token,
+    token: withChat ? token : null,
     tab: null,
+    select: null,
     chat: null,
     ok: false,
   };
@@ -138,22 +172,40 @@ for (let i = 0; i < MODELS.length; i++) {
   console.log(`[${i + 1}/${MODELS.length}] ${m.alias} — opening tab`);
   row.tab = openFreshNotionTab();
 
-  console.log(`[${i + 1}/${MODELS.length}] ${m.alias} — chat + select (${row.tab})`);
-  const chatRun = run(
-    ["site", "notion/chat", prompt, m.alias, "true", "false", "false", "--maxWaitMs", String(maxWaitMs)],
-    maxWaitMs + 60000,
-    row.tab,
+  console.log(`[${i + 1}/${MODELS.length}] ${m.alias} — selectOnly (${row.tab})`);
+  const selectRun = runSelectOnly(row.tab, m.alias);
+  const selectVal = validateSelectOnly(
+    selectRun.data || { error: selectRun.timedOut ? "timeout" : "empty" },
+    m.title,
   );
-  const chatVal = validateRun(chatRun.data || { error: chatRun.timedOut ? "timeout" : "empty" }, m.title, token);
-  row.chat = {
-    modeLabel: chatRun.data?.modeLabel,
-    modeTitle: chatRun.data?.modeTitle,
-    answer: chatRun.data?.answer?.slice?.(0, 200) || chatRun.data?.answer,
-    error: chatRun.data?.error || (chatRun.timedOut ? "timeout" : null),
-    errors: chatVal.errors,
+  row.select = {
+    modeLabel: selectRun.data?.modeLabel,
+    modeTitle: selectRun.data?.modeTitle,
+    selected: selectRun.data?.selected,
+    error: selectRun.data?.error || (selectRun.timedOut ? "timeout" : null),
+    errors: selectVal.errors,
   };
-  row.ok = chatVal.ok;
-  console.log(`  ${row.ok ? "PASS" : "FAIL"} mode=${row.chat.modeLabel || "?"} answer=${row.chat.error || row.chat.answer || ""}\n`);
+
+  let chatVal = { ok: true, errors: [] };
+  if (withChat) {
+    console.log(`[${i + 1}/${MODELS.length}] ${m.alias} — chat (${row.tab})`);
+    const chatRun = runChat(row.tab, prompt, m.alias);
+    chatVal = validateChat(
+      chatRun.data || { error: chatRun.timedOut ? "timeout" : "empty" },
+      m.title,
+      token,
+    );
+    row.chat = {
+      modeLabel: chatRun.data?.modeLabel,
+      answer: chatRun.data?.answer?.slice?.(0, 200) || chatRun.data?.answer,
+      error: chatRun.data?.error || (chatRun.timedOut ? "timeout" : null),
+      errors: chatVal.errors,
+    };
+  }
+
+  row.ok = selectVal.ok && chatVal.ok;
+  const detail = row.select.error || row.chat?.error || row.select.modeLabel || row.chat?.answer || "";
+  console.log(`  ${row.ok ? "PASS" : "FAIL"} select=${row.select.modeLabel || "?"}${withChat ? ` chat=${row.chat?.modeLabel || "?"}` : ""} ${detail}\n`);
 
   results.push(row);
   if (pauseMs > 0 && i < MODELS.length - 1) spawnSync("sleep", [String(Math.ceil(pauseMs / 1000))]);
@@ -163,7 +215,9 @@ const summary = {
   runId: RUN_ID,
   startedAt,
   finishedAt: new Date().toISOString(),
-  helpersVersion: 40,
+  helpersVersion: HELPERS_VERSION,
+  withChat,
+  maxWaitMs: withChat ? maxWaitMs : null,
   totals: {
     pass: results.filter((r) => r.ok).length,
     total: results.length,

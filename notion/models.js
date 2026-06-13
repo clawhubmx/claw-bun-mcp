@@ -30,7 +30,7 @@ async function(args) {
 
 
   var h = (function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 49;
+  var HELPERS_VERSION = 50;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 200;
   var NOTION_REVEAL_THROTTLE_MS = 2000;
@@ -1594,9 +1594,18 @@ async function(args) {
     return validateExtractedAnswer(full, opts, false) || '';
   }
 
+  function pickPositionalArg(args, index) {
+    if (!args || !args._positional || args._positional.length <= index) return undefined;
+    var val = args._positional[index];
+    if (val === undefined || val === null || val === '') return undefined;
+    return val;
+  }
+
   function buildWaitOpts(args) {
     args = args || {};
-    var maxWaitMs = Number(args.maxWaitMs) || NOTION_CHAT_WAIT_MS;
+    var maxWaitRaw = args.maxWaitMs;
+    if (maxWaitRaw == null || maxWaitRaw === '') maxWaitRaw = pickPositionalArg(args, 6);
+    var maxWaitMs = Number(maxWaitRaw) || NOTION_CHAT_WAIT_MS;
     if (args.graceWaitMs != null && args.graceWaitMs !== '') {
       maxWaitMs += Math.max(0, Number(args.graceWaitMs));
     }

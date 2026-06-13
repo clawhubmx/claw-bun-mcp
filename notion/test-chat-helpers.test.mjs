@@ -944,9 +944,9 @@ Loaded web page: api.llama.fi/chains</div>
     expect(giveBtn.getAttribute("aria-expanded")).not.toBe("true");
   });
 
-  test("helpers version is 49", () => {
+  test("helpers version is 50", () => {
     const h = installHelpers();
-    expect(h.version).toBe(49);
+    expect(h.version).toBe(50);
   });
 
   test("isStaleChatThread detects assistant messages and reply toolbar", () => {
@@ -1552,6 +1552,23 @@ Loaded web page: api.llama.fi/chains</div>
     const h = installHelpers();
     const opts = h.buildWaitOpts({ json: true, query: "Summarize this article" });
     expect(opts.expectJson).toBe(true);
+  });
+
+  test("buildWaitOpts reads maxWaitMs from positional index 6", () => {
+    const h = installHelpers();
+    const opts = h.buildWaitOpts({
+      _positional: ["Reply", "auto", "true", "false", "false", "", "5000"],
+    });
+    expect(opts.maxWaitMs).toBe(5000);
+  });
+
+  test("buildWaitOpts prefers named maxWaitMs over positional", () => {
+    const h = installHelpers();
+    const opts = h.buildWaitOpts({
+      maxWaitMs: 8000,
+      _positional: ["Reply", "auto", "true", "false", "false", "", "5000"],
+    });
+    expect(opts.maxWaitMs).toBe(8000);
   });
 
   test("buildJsonAnswerFields honors expectJson without JSON phrasing in query", () => {
