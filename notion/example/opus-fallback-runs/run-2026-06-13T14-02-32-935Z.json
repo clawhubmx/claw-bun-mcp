@@ -1,0 +1,71 @@
+{
+  "startedAt": "2026-06-13T14:02:32.935Z",
+  "finishedAt": "2026-06-13T14:19:24.980Z",
+  "model": "opus",
+  "modelFallbackStuckMs": 5000,
+  "fallbackCount": 0,
+  "jsonSuccessCount": 0,
+  "errorCount": 0,
+  "results": [
+    {
+      "id": "p01-control",
+      "tab": "0b83",
+      "elapsedMs": 240019,
+      "error": null,
+      "model": null,
+      "modeLabel": null,
+      "modelFallback": null,
+      "hasAnswerJson": false,
+      "answerLen": 0,
+      "answerPreview": null
+    },
+    {
+      "id": "p02-json-guard",
+      "tab": "6cf2",
+      "elapsedMs": 240016,
+      "error": null,
+      "model": null,
+      "modeLabel": null,
+      "modelFallback": null,
+      "hasAnswerJson": false,
+      "answerLen": 0,
+      "answerPreview": null
+    },
+    {
+      "id": "p03-streaming-stress",
+      "tab": "0359",
+      "elapsedMs": 240015,
+      "error": null,
+      "model": null,
+      "modeLabel": null,
+      "modelFallback": null,
+      "hasAnswerJson": false,
+      "answerLen": 0,
+      "answerPreview": null
+    },
+    {
+      "id": "p04-prose-control",
+      "tab": "6318",
+      "elapsedMs": 3358,
+      "error": null,
+      "model": "Opus 4.7",
+      "modeLabel": "Opus 4.7",
+      "modelFallback": null,
+      "hasAnswerJson": false,
+      "answerLen": 27,
+      "answerPreview": "OK-NOTION-FLO\nOK-NOTION-FLO"
+    },
+    {
+      "id": "p05-preamble-edge",
+      "tab": "f7c9",
+      "elapsedMs": 240016,
+      "error": null,
+      "model": null,
+      "modeLabel": null,
+      "modelFallback": null,
+      "hasAnswerJson": false,
+      "answerLen": 0,
+      "answerPreview": null
+    }
+  ]
+}

@@ -115,6 +115,164 @@ const captureWarningHelper = `  function attachCaptureWarning(obj, isFailure) {
 const emptyAnswerRecoveryBlock = `    answer = h.recoverCompletedAnswer(beforeCount, beforeText, waitOpts);
 `;
 
+const modelFallbackOutField = `  if (modelFallbackMeta) out.modelFallback = modelFallbackMeta;
+`;
+
+const modelFallbackSharedRetry = `    var fallbackModeResult = await h.setNotionMode(fallbackTo);
+    if (!fallbackModeResult.ok) {
+      var fallbackFailMeta = {
+        from: fallbackFromTitle,
+        fromAlias: fallbackFromMode,
+        to: fallbackTo,
+        reason: fallbackReason,
+        failed: true
+      };
+      if (fallbackReason === 'incomplete_json_stuck') {
+        fallbackFailMeta.stuckMs = waitOpts.modelFallbackStuckMs || h.INCOMPLETE_JSON_STUCK_MS;
+      }
+      return {
+        error: 'Mode selection failed',
+        hint: fallbackModeResult.hint || fallbackModeResult.error || ('Could not select fallback model "' + fallbackTo + '"'),
+        requestedMode: fallbackTo,
+        modelFallback: fallbackFailMeta,
+        action: 'bun-browser site notion/models'
+      };
+    }
+    modeId = fallbackTo;
+    modeResult = fallbackModeResult;
+    waitOpts.mode = modeId;
+    beforeCount = h.getAssistantMessagesSinceLastUser().length;
+    beforeText = h.getAssistantMessagesSinceLastUser().map(h.getAssistantText).join('\\n');
+    submitResult = await h.submitChatPrompt(queryText, beforeCount, beforeText, waitOpts);
+    if (!submitResult.ok) {
+      if (submitResult.kind) return submitResult;
+      var fallbackSubmitMeta = {
+        from: fallbackFromTitle,
+        fromAlias: fallbackFromMode,
+        to: fallbackTo,
+        reason: fallbackReason,
+        submitFailed: true
+      };
+      if (fallbackReason === 'incomplete_json_stuck') {
+        fallbackSubmitMeta.stuckMs = waitOpts.modelFallbackStuckMs || h.INCOMPLETE_JSON_STUCK_MS;
+      }
+      return {
+        error: submitResult.error || 'Submit failed',
+        hint: submitResult.hint || 'Could not resubmit after model fallback.',
+        action: submitResult.action || 'bun-browser open https://app.notion.com/ai',
+        modelFallback: fallbackSubmitMeta
+      };
+    }
+    answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
+    if (!answer) {
+      answer = h.recoverCompletedAnswer(beforeCount, beforeText, waitOpts);
+    }
+    if (answer) {
+      modelFallbackMeta = {
+        from: fallbackFromTitle,
+        fromAlias: fallbackFromMode,
+        to: fallbackTo,
+        reason: fallbackReason
+      };
+      if (fallbackReason === 'incomplete_json_stuck') {
+        modelFallbackMeta.stuckMs = waitOpts.modelFallbackStuckMs || h.INCOMPLETE_JSON_STUCK_MS;
+      }
+    }
+`;
+
+const modelFallbackChatBlock = `  var modelFallbackMeta = null;
+  if (!answer && h.shouldRetryModelFallback(modeId, queryText, waitOpts)) {
+    var fallbackReason = h.getModelFallbackTriggerReason();
+    var fallbackFromMode = modeId;
+    var fallbackFromTitle = modeResult.modeTitle || modeResult.label || modeId;
+    var fallbackTo = h.resolveModelFallbackTarget(modeId, waitOpts);
+    var fallbackNav = await h.ensureNewChatView();
+    if (!fallbackNav.ok) {
+      if (fallbackNav.needsRetry) {
+        return {
+          error: fallbackNav.error || 'Navigation required',
+          hint: fallbackNav.hint || 'Re-run the same command after Notion finishes loading.',
+          action: fallbackNav.action || 'retry same command'
+        };
+      }
+      return fallbackNav;
+    }
+${modelFallbackSharedRetry}  }
+`;
+
+const modelFallbackSharedRetryChatfollow = `    var fallbackModeResult = await h.setNotionMode(fallbackTo);
+    if (!fallbackModeResult.ok) {
+      var fallbackFailMeta = {
+        from: fallbackFromTitle,
+        fromAlias: fallbackFromMode,
+        to: fallbackTo,
+        reason: fallbackReason,
+        failed: true
+      };
+      if (fallbackReason === 'incomplete_json_stuck') {
+        fallbackFailMeta.stuckMs = waitOpts.modelFallbackStuckMs || h.INCOMPLETE_JSON_STUCK_MS;
+      }
+      return {
+        error: 'Mode selection failed',
+        hint: fallbackModeResult.hint || fallbackModeResult.error || ('Could not select fallback model "' + fallbackTo + '"'),
+        requestedMode: fallbackTo,
+        conversationId: conversationId,
+        modelFallback: fallbackFailMeta,
+        action: 'bun-browser site notion/models'
+      };
+    }
+    modeId = fallbackTo;
+    modeResult = fallbackModeResult;
+    waitOpts.mode = modeId;
+    beforeCount = h.getAssistantMessagesSinceLastUser().length;
+    beforeText = h.getAssistantMessagesSinceLastUser().map(h.getAssistantText).join('\\n');
+    submitResult = await h.submitChatPrompt(queryText, beforeCount, beforeText, waitOpts);
+    if (!submitResult.ok) {
+      if (submitResult.kind) return submitResult;
+      var fallbackSubmitMeta = {
+        from: fallbackFromTitle,
+        fromAlias: fallbackFromMode,
+        to: fallbackTo,
+        reason: fallbackReason,
+        submitFailed: true
+      };
+      if (fallbackReason === 'incomplete_json_stuck') {
+        fallbackSubmitMeta.stuckMs = waitOpts.modelFallbackStuckMs || h.INCOMPLETE_JSON_STUCK_MS;
+      }
+      return {
+        error: submitResult.error || 'Submit failed',
+        hint: submitResult.hint || 'Could not resubmit after model fallback.',
+        action: submitResult.action || ('bun-browser open ' + h.buildConversationUrl(conversationId)),
+        conversationId: conversationId,
+        modelFallback: fallbackSubmitMeta
+      };
+    }
+    answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
+    if (!answer) {
+      answer = h.recoverCompletedAnswer(beforeCount, beforeText, waitOpts);
+    }
+    if (answer) {
+      modelFallbackMeta = {
+        from: fallbackFromTitle,
+        fromAlias: fallbackFromMode,
+        to: fallbackTo,
+        reason: fallbackReason
+      };
+      if (fallbackReason === 'incomplete_json_stuck') {
+        modelFallbackMeta.stuckMs = waitOpts.modelFallbackStuckMs || h.INCOMPLETE_JSON_STUCK_MS;
+      }
+    }
+`;
+
+const modelFallbackChatfollowBlock = `  var modelFallbackMeta = null;
+  if (!answer && h.shouldRetryModelFallback(modeId, queryText, waitOpts)) {
+    var fallbackReason = h.getModelFallbackTriggerReason();
+    var fallbackFromMode = modeId;
+    var fallbackFromTitle = modeResult.modeTitle || modeResult.label || modeId;
+    var fallbackTo = h.resolveModelFallbackTarget(modeId, waitOpts);
+${modelFallbackSharedRetryChatfollow}  }
+`;
+
 writeFileSync(
   join(root, "chat.js"),
   makeFile(
@@ -138,7 +296,10 @@ writeFileSync(
     "fileBase64": {"required": false, "description": "Base64-encoded file bytes to attach via Give context"},
     "files": {"required": false, "description": "JSON array of {fileName, fileContent|fileBase64} for multiple files"},
     "pages": {"required": false, "description": "Comma-separated Notion page titles or URLs to mention"},
-    "page": {"required": false, "description": "Single Notion page title or URL to mention"}
+    "page": {"required": false, "description": "Single Notion page title or URL to mention"},
+    "modelFallback": {"required": false, "description": "Retry with fallback model when Opus JSON stalls or premium models return a single-char failure (default true)"},
+    "modelFallbackTo": {"required": false, "description": "Fallback model alias when Opus JSON is stuck (default auto)"},
+    "modelFallbackStuckMs": {"required": false, "description": "Ms of unchanged incomplete JSON before Opus fallback (default 5000)"}
   },
   "capabilities": ["network"],
   "readOnly": true,
@@ -282,6 +443,7 @@ ${trustDrainBlock}  }
       action: 'bun-browser site notion/models'
     };
   }
+  waitOpts.mode = modeId;
 ${trustDrainBlock}
 ${attachBlock}
   var beforeCount = h.getAssistantMessagesSinceLastUser().length;
@@ -301,7 +463,7 @@ ${trustDrainBlock}
   var answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
   if (!answer) {
 ${emptyAnswerRecoveryBlock}  }
-  if (!answer) {
+${modelFallbackChatBlock}  if (!answer) {
     var answerAbnormal = h.getLastWaitAbnormal();
     if (answerAbnormal) return answerAbnormal;
     if (h.wasLastWaitPending()) {
@@ -331,7 +493,7 @@ ${emptyAnswerRecoveryBlock}  }
     var answerJson = h.parseAnswerJson(answer);
     if (answerJson) { out.answerJson = answerJson; out.answerFormat = 'json'; }
   }
-  return attachCaptureWarning(out, false);`
+${modelFallbackOutField}  return attachCaptureWarning(out, false);`
   )
 );
 
@@ -356,7 +518,10 @@ writeFileSync(
     "fileBase64": {"required": false, "description": "Base64-encoded file bytes to attach via Give context"},
     "files": {"required": false, "description": "JSON array of {fileName, fileContent|fileBase64} for multiple files"},
     "pages": {"required": false, "description": "Comma-separated Notion page titles or URLs to mention"},
-    "page": {"required": false, "description": "Single Notion page title or URL to mention"}
+    "page": {"required": false, "description": "Single Notion page title or URL to mention"},
+    "modelFallback": {"required": false, "description": "Retry with fallback model when Opus JSON stalls or premium models return a single-char failure (default true)"},
+    "modelFallbackTo": {"required": false, "description": "Fallback model alias when Opus JSON is stuck (default auto)"},
+    "modelFallbackStuckMs": {"required": false, "description": "Ms of unchanged incomplete JSON before Opus fallback (default 5000)"}
   },
   "capabilities": ["network"],
   "readOnly": true,
@@ -476,6 +641,7 @@ ${trustDrainBlock}
       action: 'bun-browser site notion/models'
     };
   }
+  waitOpts.mode = modeId;
 ${trustDrainBlock}
 ${attachBlock}
   var beforeCount = h.getAssistantMessagesSinceLastUser().length;
@@ -495,7 +661,7 @@ ${trustDrainBlock}
   var answer = await h.waitForAssistantAnswer(beforeCount, beforeText, waitOpts);
   if (!answer) {
 ${emptyAnswerRecoveryBlock}  }
-  if (!answer) {
+${modelFallbackChatfollowBlock}  if (!answer) {
     var answerAbnormal = h.getLastWaitAbnormal();
     if (answerAbnormal) return answerAbnormal;
     if (h.wasLastWaitPending()) {
@@ -527,7 +693,7 @@ ${emptyAnswerRecoveryBlock}  }
     var answerJson = h.parseAnswerJson(answer);
     if (answerJson) { out.answerJson = answerJson; out.answerFormat = 'json'; }
   }
-  return attachCaptureWarning(out, false);`
+${modelFallbackOutField}  return attachCaptureWarning(out, false);`
   )
 );
 

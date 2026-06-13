@@ -21,6 +21,9 @@ const helpersSource = readFileSync(join(__dirname, "chat-helpers.js"), "utf8");
 const REPLY_ACTION_BUTTONS =
   '<button aria-label="Copy response"><svg></svg></button>' +
   '<button aria-label="Save to private pages"><svg></svg></button>';
+const REPLY_ACTION_BUTTONS_UNIFIED =
+  '<button aria-label="Copy response"><svg></svg></button>' +
+  '<div role="button" tabindex="0" aria-label="Save"><svg></svg></div>';
 const REPLY_ACTION_BUTTONS_WITH_FEEDBACK =
   REPLY_ACTION_BUTTONS +
   '<button aria-label="Share positive feedback"><svg></svg></button>' +
@@ -67,6 +70,26 @@ function installHelpersAt(url, opts = {}) {
 
 function installHelpers() {
   return installHelpersAt("https://app.notion.com/ai");
+}
+
+function makeElementVisible(el) {
+  if (!el) return;
+  el.getBoundingClientRect = () => ({
+    width: 32,
+    height: 32,
+    top: 10,
+    left: 10,
+    bottom: 42,
+    right: 42,
+  });
+  Object.defineProperty(el, "offsetParent", { configurable: true, value: document.body });
+}
+
+function makeReplyToolbarVisible(root = document) {
+  const nodes = root.querySelectorAll(
+    '[aria-label="Copy response"], [aria-label="Save to private pages"], [aria-label="Save"], [aria-label="Share positive feedback"], [aria-label="Share negative feedback"]',
+  );
+  for (const el of nodes) makeElementVisible(el);
 }
 
 describe("notion chat helpers", () => {
@@ -405,6 +428,49 @@ describe("notion chat helpers", () => {
       '<button aria-label="Share negative feedback"></button>' +
       '</div></div>';
     expect(h.hasCompletedReplyActions()).toBe(false);
+  });
+
+  test("hasCompletedReplyActions accepts unified Save div with Copy response", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">Question here.</div>' +
+      '<div class="assistant-turn" id="unified-save-scope">' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Answer with enough detail here.</div></div>' +
+      '<div class="reply-toolbar">' + REPLY_ACTION_BUTTONS_UNIFIED + '</div>' +
+      '</div></div>';
+    makeReplyToolbarVisible();
+    expect(h.findReplyActionButton(document.getElementById("unified-save-scope"), "save to private pages")).not.toBeNull();
+    expect(h.hasCompletedReplyActions()).toBe(true);
+    expect(h.getLatestAssistantReplyScope()?.id).toBe("unified-save-scope");
+  });
+
+  test("getLatestAssistantReplyScope prefers Save anchor over copy-only outer scope", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">Question here.</div>' +
+      '<div class="assistant-turn" id="outer-scope">' +
+      '<button aria-label="Copy response"><svg></svg></button>' +
+      '<div class="assistant-turn" id="inner-save-scope">' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Nested answer text.</div></div>' +
+      '<div role="button" tabindex="0" aria-label="Save"><svg></svg></div>' +
+      '</div></div></div>';
+    makeReplyToolbarVisible();
+    expect(h.getLatestAssistantReplyScope()?.id).toBe("inner-save-scope");
+    expect(h.findReplyActionButton(h.getLatestAssistantReplyScope(), "save to private pages")?.getAttribute("aria-label")).toBe("Save");
+  });
+
+  test("findUnifiedReplySaveButton prefers last visible Save in DOM", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div role="button" tabindex="0" aria-label="Save" id="save-old"><svg></svg></div>' +
+      '<div role="button" tabindex="0" aria-label="Save" id="save-new"><svg></svg></div>' +
+      '</div>';
+    makeReplyToolbarVisible(document.querySelector(".layout-chat"));
+    expect(h.findUnifiedReplySaveButton(document.querySelector(".layout-chat"))?.id).toBe("save-new");
+    expect(h.REPLY_SAVE_SELECTOR).toBe('[role="button"][tabindex="0"][aria-label="Save"]');
   });
 
   test("hasCompletedReplyActions finds sibling toolbar outside text block", () => {
@@ -878,9 +944,9 @@ Loaded web page: api.llama.fi/chains</div>
     expect(giveBtn.getAttribute("aria-expanded")).not.toBe("true");
   });
 
-  test("helpers version is 40", () => {
+  test("helpers version is 43", () => {
     const h = installHelpers();
-    expect(h.version).toBe(40);
+    expect(h.version).toBe(43);
   });
 
   test("shouldRunRevealSideEffect throttles reveal side effects during wait polling", () => {
@@ -1382,6 +1448,89 @@ Loaded web page: api.llama.fi/chains</div>
     expect(h.queryExpectsJson("Return JSON only. json format only")).toBe(true);
     expect(h.queryExpectsJson("show me the unique topics in JSON format only")).toBe(true);
     expect(h.queryExpectsJson("Say hello in three words")).toBe(false);
+  });
+
+  test("isOpusMode recognizes opus aliases and titles", () => {
+    const h = installHelpers();
+    expect(h.isOpusMode("opus")).toBe(true);
+    expect(h.isOpusMode("opus-4.7")).toBe(true);
+    expect(h.isOpusMode("Opus 4.7")).toBe(true);
+    expect(h.isOpusMode("sonnet")).toBe(false);
+    expect(h.isOpusMode("auto")).toBe(false);
+  });
+
+  test("shouldModelFallbackOnJsonStuck requires opus JSON and enabled fallback", () => {
+    const h = installHelpers();
+    const jsonQuery = "Return ONLY valid JSON with this structure";
+    expect(h.shouldModelFallbackOnJsonStuck("opus", jsonQuery, {})).toBe(true);
+    expect(h.shouldModelFallbackOnJsonStuck("sonnet", jsonQuery, {})).toBe(false);
+    expect(h.shouldModelFallbackOnJsonStuck("opus", "plain prose please", {})).toBe(false);
+    expect(h.shouldModelFallbackOnJsonStuck("opus", jsonQuery, { modelFallback: false })).toBe(false);
+    expect(h.resolveModelFallbackTarget("opus", {})).toBe("Auto");
+    expect(h.resolveModelFallbackTarget("opus", { modelFallbackTo: "sonnet" })).toBe("Sonnet 4.6");
+  });
+
+  test("single-char failed response triggers fallback for opus sonnet fable only", () => {
+    const h = installHelpers();
+    expect(h.isSingleCharModelResponse("x")).toBe(true);
+    expect(h.isSingleCharModelResponse("OK")).toBe(false);
+    expect(h.isSingleCharModelResponse(" ")).toBe(false);
+    expect(h.isPremiumFallbackModel("opus")).toBe(true);
+    expect(h.isPremiumFallbackModel("sonnet")).toBe(true);
+    expect(h.isPremiumFallbackModel("fable")).toBe(true);
+    expect(h.isPremiumFallbackModel("auto")).toBe(false);
+    expect(h.shouldModelFallbackOnSingleCharFailed("opus", {})).toBe(true);
+    expect(h.shouldModelFallbackOnSingleCharFailed("auto", {})).toBe(false);
+    expect(h.rejectSingleCharFailedAnswer("?", { mode: "opus" })).toBe("");
+    expect(h.wasLastWaitSingleCharFailed()).toBe(true);
+    expect(h.getModelFallbackTriggerReason()).toBe("single_char_failed");
+    expect(h.shouldRetryModelFallback("opus", "plain", { modelFallback: true })).toBe(true);
+    expect(h.rejectSingleCharFailedAnswer("?", { mode: "auto" })).toBe("?");
+    expect(h.shouldRetryModelFallback("auto", "plain", {})).toBe(false);
+  });
+
+  test("waitForAssistantAnswer rejects single-char premium model reply for fallback", async () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">hello</div>' +
+      '<div class="assistant-turn">' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">?</div></div>' +
+      '<div class="reply-toolbar">' +
+      REPLY_ACTION_BUTTONS_UNIFIED +
+      "</div></div></div>";
+    makeReplyToolbarVisible();
+    const pending = h.waitForAssistantAnswer(0, "", {
+      pollMs: 50,
+      maxWaitMs: 1000,
+      mode: "sonnet",
+    });
+    await new Promise((resolve) => setTimeout(resolve, 120));
+    const answer = await pending;
+    expect(answer).toBe("");
+    expect(h.wasLastWaitSingleCharFailed()).toBe(true);
+  });
+
+  test("waitForAssistantAnswer flags incomplete JSON stuck after stable threshold", async () => {
+    const h = installHelpers();
+    const partial = '{"query":"Fed interest rate';
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">Return ONLY valid JSON</div>' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">' +
+      partial +
+      "</div></div></div>";
+    const pending = h.waitForAssistantAnswer(0, "", {
+      pollMs: 50,
+      maxWaitMs: 5000,
+      expectJson: true,
+      query: "Return ONLY valid JSON",
+      modelFallbackStuckMs: 200,
+    });
+    await new Promise((resolve) => setTimeout(resolve, 280));
+    const answer = await pending;
+    expect(answer).toBe("");
+    expect(h.wasLastWaitIncompleteJsonStuck()).toBe(true);
   });
 
   test("looksLikeFinalAnswer rejects incomplete streaming JSON", () => {

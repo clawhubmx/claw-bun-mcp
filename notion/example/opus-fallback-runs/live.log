@@ -1,0 +1,23 @@
+Opus JSON fallback test: 5 prompts, stuckMs=5000
+
+--- p01-control tab=0b83 ---
+  ok | model=? | json=false | len=0 | no fallback
+
+--- p02-json-guard tab=6cf2 ---
+  ok | model=? | json=false | len=0 | no fallback
+
+--- p03-streaming-stress tab=0359 ---
+  ok | model=? | json=false | len=0 | no fallback
+
+--- p04-prose-control tab=6318 ---
+  ok | model=Opus 4.7 | json=false | len=27 | no fallback
+  preview: OK-NOTION-FLO OK-NOTION-FLO
+
+--- p05-preamble-edge tab=f7c9 ---
+  ok | model=? | json=false | len=0 | no fallback
+
+=== Summary ===
+  fallback triggered: 0/5
+  parseable JSON:   0/5
+  errors:           0/5
+  report: /Users/hesdx/Documents/clawhost/claw-bun-mcp/notion/example/opus-fallback-runs/run-2026-06-13T14-02-32-935Z.json

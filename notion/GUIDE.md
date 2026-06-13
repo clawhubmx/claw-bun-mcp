@@ -379,6 +379,11 @@ Flags: `--poolSize N`, `--topics "A,B,..."`, `--full` (full test2 template), `--
 | `allowBusyTab` | `false` | 允许在仍生成的 tab 上执行 `newChat`（默认拒绝并返回 `Tab busy`） |
 | `maxWaitMs` | 15 分钟 | 最长等待时间 |
 | `graceWaitMs` | — | 额外等待毫秒数 |
+| `modelFallback` | `true` | Opus JSON 卡住，或 Opus/Sonnet/Fable 仅返回单字符失败回复时，自动换模型重试 |
+| `modelFallbackTo` | `auto` | 回退模型别名 |
+| `modelFallbackStuckMs` | `5000` | Opus JSON 判定卡住的 unchanged incomplete JSON 毫秒数 |
+
+当 `--model opus`（或 Opus 4.7/4.8）且提示词要求 JSON 时，若回复在页面上显示为**同一截断 JSON** 且持续约 5 秒不变，`notion/chat` 会新开对话、切换到 Auto 并重发一次；`notion/chatfollow` 在同一线程内切到 Auto 并重发。当 **Opus、Sonnet 或 Fable** 的回复仅为**一个字符**（常见于限速或模型失败）时，也会触发同样的回退重试。成功时响应含 `modelFallback` 字段（`reason`: `incomplete_json_stuck` 或 `single_char_failed`）。禁用：`--modelFallback false`。
 
 ### notion/create-article
 
@@ -407,6 +412,9 @@ Flags: `--poolSize N`, `--topics "A,B,..."`, `--full` (full test2 template), `--
 | `query` | 必填 | 跟进提示词 |
 | `model` | `auto` | 模型 |
 | `waitOnly` | `false` | 只轮询（**请用位置参数** `... true false true`，见「多标签页与长时间生成」） |
+| `modelFallback` | `true` | 同 `notion/chat`：Opus JSON 卡住或 premium 单字符失败时自动换模型重试（线程内重发，不 New chat） |
+| `modelFallbackTo` | `auto` | 回退模型别名 |
+| `modelFallbackStuckMs` | `5000` | unchanged incomplete JSON 阈值（毫秒） |
 
 ## 错误与处理
 

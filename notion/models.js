@@ -30,12 +30,13 @@ async function(args) {
 
 
   var h = (function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 40;
+  var HELPERS_VERSION = 43;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 200;
   var NOTION_REVEAL_THROTTLE_MS = 2000;
   var NOTION_SUBMIT_ACK_MS = 8000;
   var NOTION_SUBMIT_MAX_ATTEMPTS = 3;
+  var INCOMPLETE_JSON_STUCK_MS = 5000;
 
   if (globalThis.__notionAiChatHelpers && globalThis.__notionAiChatHelpers.version === HELPERS_VERSION) {
     return globalThis.__notionAiChatHelpers;
@@ -73,6 +74,8 @@ async function(args) {
 
   var lastWaitPending = false;
   var lastWaitAbnormal = null;
+  var lastWaitIncompleteJsonStuck = false;
+  var lastWaitSingleCharFailed = false;
   var lastCaptureWarning = null;
   var lastUrlTrustAccepts = [];
 
@@ -882,9 +885,15 @@ async function(args) {
     return false;
   }
 
+  function isSaveReplyActionLabel(label) {
+    var normalized = normalizeReplyActionLabel(label);
+    return normalized === 'save' || normalized === 'save to private pages';
+  }
+
   function isReplyToolbarButton(el) {
     if (!el) return false;
     var label = normalizeReplyActionLabel(el.getAttribute('aria-label') || '');
+    if (isSaveReplyActionLabel(label)) return true;
     for (var i = 0; i < REPLY_ACTION_REQUIRED.length; i++) {
       if (label === normalizeReplyActionLabel(REPLY_ACTION_REQUIRED[i])) return true;
     }
@@ -1022,9 +1031,13 @@ async function(args) {
     var scope = getLatestAssistantReplyScope();
     if (!scope) {
       var chatRoot = document.querySelector('.layout-chat');
-      var copyBtn = chatRoot ? chatRoot.querySelector('[aria-label="Copy response"]') : null;
-      if (copyBtn) {
-        scope = copyBtn.closest('.assistant-turn') || copyBtn.parentElement;
+      if (chatRoot) {
+        var anchorBtn = chatRoot.querySelector('[aria-label="Copy response"]') ||
+          findUnifiedReplySaveButton(chatRoot) ||
+          chatRoot.querySelector('[aria-label="Save to private pages"]');
+        if (anchorBtn) {
+          scope = anchorBtn.closest('.assistant-turn') || anchorBtn.parentElement;
+        }
       }
     }
     if (!scope) return '';
@@ -1128,9 +1141,11 @@ async function(args) {
     'share negative feedback'
   ];
 
+  var REPLY_SAVE_SELECTOR = '[role="button"][tabindex="0"][aria-label="Save"]';
+
   var REPLY_ACTION_ATTR = {
     'copy response': 'Copy response',
-    'save to private pages': 'Save to private pages',
+    'save to private pages': ['Save', 'Save to private pages'],
     'share positive feedback': 'Share positive feedback',
     'share negative feedback': 'Share negative feedback'
   };
@@ -1147,10 +1162,21 @@ async function(args) {
     return role === 'button';
   }
 
-  function findReplyActionButton(scope, label) {
-    if (!scope) return null;
-    var attr = REPLY_ACTION_ATTR[normalizeReplyActionLabel(label)];
-    if (!attr) return null;
+  function findUnifiedReplySaveButton(root) {
+    root = root || document;
+    var nodes = Array.prototype.slice.call(root.querySelectorAll(REPLY_SAVE_SELECTOR));
+    var best = null;
+    for (var i = 0; i < nodes.length; i++) {
+      var node = nodes[i];
+      if (!isElementVisible(node)) continue;
+      if (!node.querySelector('svg')) continue;
+      if (!isReplyActionElement(node)) continue;
+      best = node;
+    }
+    return best;
+  }
+
+  function findReplyActionButtonByAria(scope, attr) {
     var nodes = scope.querySelectorAll('[aria-label="' + attr + '"]');
     var fallback = null;
     for (var i = 0; i < nodes.length; i++) {
@@ -1162,11 +1188,36 @@ async function(args) {
     return fallback;
   }
 
+  function findReplyActionButton(scope, label) {
+    if (!scope) return null;
+    var normalized = normalizeReplyActionLabel(label);
+    if (normalized === 'save to private pages') {
+      var unified = findUnifiedReplySaveButton(scope);
+      if (unified) return unified;
+      return findReplyActionButtonByAria(scope, 'Save to private pages');
+    }
+    var attr = REPLY_ACTION_ATTR[normalized];
+    if (!attr) return null;
+    if (Array.isArray(attr)) {
+      for (var a = 0; a < attr.length; a++) {
+        var found = findReplyActionButtonByAria(scope, attr[a]);
+        if (found) return found;
+      }
+      return null;
+    }
+    return findReplyActionButtonByAria(scope, attr);
+  }
+
   function getLatestAssistantReplyScope() {
     var msgs = getAssistantMessagesSinceLastUser();
     if (!msgs.length) return null;
     var latest = msgs[msgs.length - 1];
     var el = latest;
+    while (el && el !== document.body) {
+      if (findReplyActionButton(el, 'save to private pages')) return el;
+      el = el.parentElement;
+    }
+    el = latest;
     while (el && el !== document.body) {
       if (findReplyActionButton(el, 'copy response')) return el;
       el = el.parentElement;
@@ -1334,6 +1385,85 @@ async function(args) {
     return lastWaitPending;
   }
 
+  function wasLastWaitIncompleteJsonStuck() {
+    return lastWaitIncompleteJsonStuck;
+  }
+
+  function wasLastWaitSingleCharFailed() {
+    return lastWaitSingleCharFailed;
+  }
+
+  function parseBoolish(val, defaultVal) {
+    if (val === undefined || val === null || val === '') return defaultVal;
+    if (val === true || val === false) return val;
+    var s = String(val).toLowerCase();
+    if (s === 'true' || s === '1') return true;
+    if (s === 'false' || s === '0') return false;
+    return defaultVal;
+  }
+
+  function isOpusMode(modeRaw) {
+    var resolved = resolveNotionMode(modeRaw);
+    if (/^opus/i.test(resolved)) return true;
+    var raw = String(modeRaw || '').trim().toLowerCase();
+    return /^opus(-|$)/.test(raw);
+  }
+
+  function isPremiumFallbackModel(modeRaw) {
+    var resolved = resolveNotionMode(modeRaw);
+    if (/^(opus|sonnet|fable)/i.test(resolved)) return true;
+    var raw = String(modeRaw || '').trim().toLowerCase();
+    return /^(opus|sonnet|fable)(-|$)/.test(raw);
+  }
+
+  function isSingleCharModelResponse(text) {
+    return String(text || '').trim().length === 1;
+  }
+
+  function getModelFallbackTriggerReason() {
+    if (lastWaitSingleCharFailed) return 'single_char_failed';
+    if (lastWaitIncompleteJsonStuck) return 'incomplete_json_stuck';
+    return null;
+  }
+
+  function shouldModelFallbackOnSingleCharFailed(modeRaw, opts) {
+    opts = opts || {};
+    if (!parseBoolish(opts.modelFallback, true)) return false;
+    return isPremiumFallbackModel(modeRaw);
+  }
+
+  function shouldRetryModelFallback(modeRaw, query, opts) {
+    opts = opts || {};
+    if (!parseBoolish(opts.modelFallback, true)) return false;
+    if (lastWaitSingleCharFailed) return shouldModelFallbackOnSingleCharFailed(modeRaw, opts);
+    if (lastWaitIncompleteJsonStuck) return shouldModelFallbackOnJsonStuck(modeRaw, query, opts);
+    return false;
+  }
+
+  function rejectSingleCharFailedAnswer(answer, opts) {
+    if (!answer || !isSingleCharModelResponse(answer)) return answer;
+    opts = opts || {};
+    if (!shouldModelFallbackOnSingleCharFailed(opts.mode || opts.model, opts)) return answer;
+    lastWaitSingleCharFailed = true;
+    lastWaitPending = true;
+    return '';
+  }
+
+  function resolveModelFallbackTarget(modeRaw, opts) {
+    opts = opts || {};
+    var target = opts.modelFallbackTo != null && String(opts.modelFallbackTo).trim()
+      ? String(opts.modelFallbackTo).trim()
+      : 'auto';
+    return resolveNotionMode(target);
+  }
+
+  function shouldModelFallbackOnJsonStuck(modeRaw, query, opts) {
+    opts = opts || {};
+    if (!parseBoolish(opts.modelFallback, true)) return false;
+    if (!queryExpectsJson(query)) return false;
+    return isOpusMode(modeRaw);
+  }
+
   function getLastWaitAbnormal() {
     return lastWaitAbnormal;
   }
@@ -1427,6 +1557,16 @@ async function(args) {
       }
     }
     if (args.expectJson) opts.expectJson = true;
+    opts.modelFallback = parseBoolish(args.modelFallback, true);
+    if (args.modelFallbackTo != null && String(args.modelFallbackTo).trim()) {
+      opts.modelFallbackTo = String(args.modelFallbackTo).trim();
+    }
+    if (args.modelFallbackStuckMs != null && args.modelFallbackStuckMs !== '') {
+      opts.modelFallbackStuckMs = Math.max(500, Number(args.modelFallbackStuckMs));
+    }
+    if (args.model != null && String(args.model).trim()) {
+      opts.mode = String(args.model).trim();
+    }
     return opts;
   }
 
@@ -1443,10 +1583,15 @@ async function(args) {
     var lastMessageCount = beforeCount;
     var sawInFlight = false;
     var pollCount = 0;
+    var lastIncompleteJsonText = '';
+    var incompleteJsonStableSince = 0;
+    var stuckMs = Math.max(500, Number(opts.modelFallbackStuckMs) || INCOMPLETE_JSON_STUCK_MS);
     var revealThrottle = { lastAt: 0 };
     var captureOpts = Object.assign({}, opts, { revealThrottle: revealThrottle });
     lastWaitPending = false;
     lastWaitAbnormal = null;
+    lastWaitIncompleteJsonStuck = false;
+    lastWaitSingleCharFailed = false;
     lastCaptureWarning = null;
     var tabState = getTabCaptureState();
     if (!tabState.captureReliable) {
@@ -1478,8 +1623,10 @@ async function(args) {
       var toolbarAnswer = tryExtractCompletedAnswer(messages, beforeCount, beforeText, captureOpts);
       if (toolbarAnswer === '') return '';
       if (toolbarAnswer) {
+        var rejectedToolbar = rejectSingleCharFailedAnswer(toolbarAnswer, opts);
+        if (!rejectedToolbar) return '';
         lastWaitPending = false;
-        return toolbarAnswer;
+        return rejectedToolbar;
       }
 
       var generating = isGeneratingForTurn(beforeCount, beforeText);
@@ -1487,10 +1634,30 @@ async function(args) {
       if (pending) sawInFlight = true;
 
       answer = getAssistantAnswerSince(messages, beforeCount, beforeText, captureOpts);
+      if (hasCompletedReplyActions() && isSingleCharModelResponse(answer)) {
+        var rejectedSingleChar = rejectSingleCharFailedAnswer(answer, opts);
+        if (!rejectedSingleChar) return '';
+      }
       if (messages.length > lastMessageCount) {
         lastMessageCount = messages.length;
         stableRounds = 0;
         lastText = '';
+        lastIncompleteJsonText = '';
+        incompleteJsonStableSince = 0;
+        sawInFlight = true;
+      }
+
+      if (waitExpectsJson(opts) && looksLikeJsonAnswerAttempt(answer) && !hasParsedJsonAnswer(answer)) {
+        if (answer && answer === lastIncompleteJsonText) {
+          if (incompleteJsonStableSince && Date.now() - incompleteJsonStableSince >= stuckMs) {
+            lastWaitIncompleteJsonStuck = true;
+            lastWaitPending = true;
+            return '';
+          }
+        } else {
+          lastIncompleteJsonText = answer || '';
+          incompleteJsonStableSince = Date.now();
+        }
         sawInFlight = true;
       }
 
@@ -1505,8 +1672,10 @@ async function(args) {
             }
             answer = getAssistantAnswerSince(messages, beforeCount, beforeText, captureOpts);
             if (hasParsedJsonAnswer(answer)) {
+              var rejectedJson = rejectSingleCharFailedAnswer(answer, opts);
+              if (!rejectedJson) return '';
               lastWaitPending = false;
-              return answer;
+              return rejectedJson;
             }
           }
           sawInFlight = true;
@@ -1515,8 +1684,10 @@ async function(args) {
           else stableRounds = 0;
           lastText = answer;
           if (stableRounds >= stableNeeded - 1) {
+            var rejectedStable = rejectSingleCharFailedAnswer(answer, opts);
+            if (!rejectedStable) return '';
             lastWaitPending = false;
-            return answer;
+            return rejectedStable;
           }
         }
       }
@@ -1525,8 +1696,10 @@ async function(args) {
     var incompleteJson = waitExpectsJson(opts) && looksLikeJsonAnswerAttempt(answer) && !hasParsedJsonAnswer(answer);
     var recovered = recoverCompletedAnswer(beforeCount, beforeText, opts);
     if (recovered) {
+      var rejectedRecovered = rejectSingleCharFailedAnswer(recovered, opts);
+      if (!rejectedRecovered) return '';
       lastWaitPending = false;
-      return recovered;
+      return rejectedRecovered;
     }
     lastWaitPending = sawInFlight || incompleteJson;
     if (incompleteJson) return '';
@@ -2927,6 +3100,8 @@ async function(args) {
     looksLikeThoughtBlock: looksLikeThoughtBlock,
     REPLY_ACTION_LABELS: REPLY_ACTION_LABELS,
     REPLY_ACTION_REQUIRED: REPLY_ACTION_REQUIRED,
+    REPLY_SAVE_SELECTOR: REPLY_SAVE_SELECTOR,
+    findUnifiedReplySaveButton: findUnifiedReplySaveButton,
     findReplyActionButton: findReplyActionButton,
     getLatestAssistantReplyScope: getLatestAssistantReplyScope,
     isReplyFinishBlocked: isReplyFinishBlocked,
@@ -2939,6 +3114,18 @@ async function(args) {
     isChatInProgress: isChatInProgress,
     looksLikeFinalAnswer: looksLikeFinalAnswer,
     wasLastWaitPending: wasLastWaitPending,
+    wasLastWaitIncompleteJsonStuck: wasLastWaitIncompleteJsonStuck,
+    wasLastWaitSingleCharFailed: wasLastWaitSingleCharFailed,
+    INCOMPLETE_JSON_STUCK_MS: INCOMPLETE_JSON_STUCK_MS,
+    isOpusMode: isOpusMode,
+    isPremiumFallbackModel: isPremiumFallbackModel,
+    isSingleCharModelResponse: isSingleCharModelResponse,
+    getModelFallbackTriggerReason: getModelFallbackTriggerReason,
+    resolveModelFallbackTarget: resolveModelFallbackTarget,
+    shouldModelFallbackOnJsonStuck: shouldModelFallbackOnJsonStuck,
+    shouldModelFallbackOnSingleCharFailed: shouldModelFallbackOnSingleCharFailed,
+    shouldRetryModelFallback: shouldRetryModelFallback,
+    rejectSingleCharFailedAnswer: rejectSingleCharFailedAnswer,
     getLastWaitAbnormal: getLastWaitAbnormal,
     getTabCaptureState: getTabCaptureState,
     getLastCaptureWarning: getLastCaptureWarning,
