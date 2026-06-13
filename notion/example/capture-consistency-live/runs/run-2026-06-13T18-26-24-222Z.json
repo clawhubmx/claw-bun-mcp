@@ -1,0 +1,123 @@
+{
+  "startedAt": "2026-06-13T18:26:24.222Z",
+  "tab": "5b52",
+  "model": "auto",
+  "jsonControlRuns": 3,
+  "jsonHashUnique": 1,
+  "jsonHashes": [
+    "e3b0c44298fc"
+  ],
+  "jsonCaptureSources": [],
+  "allCaptureSources": [],
+  "passCount": 0,
+  "totalRuns": 5,
+  "runs": [
+    {
+      "id": "json-control-1-r1",
+      "promptFile": "prompt-01-control-json.txt",
+      "expectJson": true,
+      "elapsedMs": 2793,
+      "error": "Navigation required",
+      "answerFormat": null,
+      "captureSource": null,
+      "jsonRecovered": false,
+      "answerLen": 0,
+      "answerHash": "e3b0c44298fc",
+      "answerPreview": null,
+      "answerJson": null,
+      "helpersAfter": {
+        "result": {
+          "captureSource": null
+        },
+        "tab": "5b52",
+        "seq": 169535
+      }
+    },
+    {
+      "id": "json-control-1-r2",
+      "promptFile": "prompt-01-control-json.txt",
+      "expectJson": true,
+      "elapsedMs": 5162,
+      "error": null,
+      "answerFormat": null,
+      "captureSource": null,
+      "jsonRecovered": false,
+      "answerLen": 0,
+      "answerHash": "e3b0c44298fc",
+      "answerPreview": null,
+      "answerJson": null,
+      "helpersAfter": {
+        "result": {
+          "version": 58,
+          "captureSource": "dom"
+        },
+        "tab": "5b52",
+        "seq": 170289
+      }
+    },
+    {
+      "id": "json-control-1-r3",
+      "promptFile": "prompt-01-control-json.txt",
+      "expectJson": true,
+      "elapsedMs": 2152,
+      "error": "Navigation required",
+      "answerFormat": null,
+      "captureSource": null,
+      "jsonRecovered": false,
+      "answerLen": 0,
+      "answerHash": "e3b0c44298fc",
+      "answerPreview": null,
+      "answerJson": null,
+      "helpersAfter": {
+        "result": {
+          "captureSource": null
+        },
+        "tab": "5b52",
+        "seq": 170301
+      }
+    },
+    {
+      "id": "prose-token",
+      "promptFile": "prompt-04-prose-token.txt",
+      "expectJson": false,
+      "elapsedMs": 3113,
+      "error": null,
+      "answerFormat": null,
+      "captureSource": null,
+      "jsonRecovered": false,
+      "answerLen": 0,
+      "answerHash": "e3b0c44298fc",
+      "answerPreview": null,
+      "answerJson": null,
+      "helpersAfter": {
+        "result": {
+          "version": 58,
+          "captureSource": "dom"
+        },
+        "tab": "5b52",
+        "seq": 171058
+      }
+    },
+    {
+      "id": "json-preamble",
+      "promptFile": "prompt-05-preamble-json.txt",
+      "expectJson": true,
+      "elapsedMs": 2021,
+      "error": "Navigation required",
+      "answerFormat": null,
+      "captureSource": null,
+      "jsonRecovered": false,
+      "answerLen": 0,
+      "answerHash": "e3b0c44298fc",
+      "answerPreview": null,
+      "answerJson": null,
+      "helpersAfter": {
+        "result": {
+          "captureSource": null
+        },
+        "tab": "5b52",
+        "seq": 171150
+      }
+    }
+  ]
+}

@@ -54,7 +54,7 @@ async function(args) {
 
 
   var h = (function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 58;
+  var HELPERS_VERSION = 59;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 200;
   var NOTION_REVEAL_THROTTLE_MS = 2000;
@@ -1463,22 +1463,121 @@ async function(args) {
     return text;
   }
 
-  async function captureAnswerViaCopyEvent(copyBtn) {
-    if (!copyBtn) return '';
-    var captured = '';
-    function onCopy(e) {
-      if (!e.clipboardData) return;
-      captured = e.clipboardData.getData('text/plain') || '';
-      if (captured) e.preventDefault();
+  var COPY_DIALOG_EXCLUDE_IDS = ['models', 'settingsMenu', 'giveMenu', 'pagePicker'];
+
+  function isKnownNonCopyDialog(dialog) {
+    if (!dialog) return true;
+    var id = dialog.id || '';
+    if (COPY_DIALOG_EXCLUDE_IDS.indexOf(id) >= 0) return true;
+    var role = dialog.getAttribute('role') || '';
+    if (role === 'menu' || role === 'listbox') return true;
+    if (dialog.querySelector('[role=menuitem]')) {
+      var menuItems = dialog.querySelectorAll('[role=menuitem]');
+      if (menuItems.length >= 3) return true;
     }
-    document.addEventListener('copy', onCopy, true);
-    clickElement(copyBtn);
-    await sleep(80);
-    document.removeEventListener('copy', onCopy, true);
-    captured = cleanAssistantText(captured).trim();
-    if (captured) lastCaptureSource = 'copy';
-    return captured;
+    var haystack = (dialog.getAttribute('aria-label') || dialog.innerText || '').toLowerCase();
+    if (/model|settings|give context|attach|trust this link|url trust|private pages/.test(haystack)) {
+      return true;
+    }
+    return false;
   }
+
+  function looksLikeCopyFallbackDialog(dialog) {
+    if (!dialog || isKnownNonCopyDialog(dialog)) return false;
+    var haystack = (dialog.innerText || dialog.textContent || '').toLowerCase();
+    if (/copy|clipboard|select all|copied/.test(haystack)) return true;
+    var textarea = dialog.querySelector('textarea');
+    if (textarea && String(textarea.value || '').trim().length > 20) return true;
+    var pre = dialog.querySelector('pre, code');
+    if (pre && String(pre.innerText || pre.textContent || '').trim().length > 20) return true;
+    var blocks = dialog.querySelectorAll('.notion-text-block, .content-editable-leaf-rtl');
+    if (blocks.length) {
+      var combined = '';
+      for (var bi = 0; bi < blocks.length; bi++) {
+        combined += (blocks[bi].innerText || blocks[bi].textContent || '') + '\n';
+      }
+      if (combined.trim().length > 20) return true;
+    }
+    return false;
+  }
+
+  function extractCopyDialogText(dialog) {
+    if (!dialog) return '';
+    var textarea = dialog.querySelector('textarea');
+    if (textarea && textarea.value) {
+      return cleanAssistantText(String(textarea.value)).trim();
+    }
+    var pre = dialog.querySelector('pre');
+    if (pre) {
+      return cleanAssistantText(pre.innerText || pre.textContent || '').trim();
+    }
+    var blocks = dialog.querySelectorAll('.notion-text-block, .content-editable-leaf-rtl');
+    if (blocks.length) {
+      var parts = [];
+      var seen = [];
+      for (var bi = 0; bi < blocks.length; bi++) {
+        var text = cleanAssistantText(blocks[bi].innerText || blocks[bi].textContent || '');
+        if (!text || seen.indexOf(text) >= 0) continue;
+        seen.push(text);
+        parts.push(text);
+      }
+      if (parts.length) return parts.join('\n').trim();
+    }
+    return cleanAssistantText(dialog.innerText || dialog.textContent || '').trim();
+  }
+
+  function dismissCopyFallbackDialog(dialog) {
+    if (!dialog) return;
+    var selectors = ['[aria-label="Close"]', '[aria-label="Done"]', '[aria-label="Dismiss"]'];
+    for (var si = 0; si < selectors.length; si++) {
+      var btn = dialog.querySelector(selectors[si]);
+      if (btn && isElementVisible(btn)) {
+        clickElement(btn);
+        return;
+      }
+    }
+  }
+
+  function captureAnswerFromCopyDialog() {
+    var dialogs = Array.prototype.slice.call(document.querySelectorAll('[role=dialog]'));
+    for (var di = dialogs.length - 1; di >= 0; di--) {
+      var dialog = dialogs[di];
+      if (!isElementVisible(dialog)) continue;
+      if (!looksLikeCopyFallbackDialog(dialog)) continue;
+      var text = extractCopyDialogText(dialog);
+      if (!text) continue;
+      dismissCopyFallbackDialog(dialog);
+      return text;
+    }
+    return '';
+  }
+
+  async function captureAnswerViaCopy(copyBtn) {
+    if (!copyBtn) return '';
+    clickElement(copyBtn);
+    await sleep(120);
+    var answer = '';
+    try {
+      if (navigator.clipboard && typeof navigator.clipboard.readText === 'function') {
+        answer = await navigator.clipboard.readText();
+      }
+    } catch (e) {
+      answer = '';
+    }
+    answer = cleanAssistantText(answer).trim();
+    if (answer) {
+      lastCaptureSource = 'copy';
+      return answer;
+    }
+    answer = captureAnswerFromCopyDialog();
+    if (answer) {
+      lastCaptureSource = 'copy-dialog';
+      return answer;
+    }
+    return '';
+  }
+
+  var captureAnswerViaCopyEvent = captureAnswerViaCopy;
 
   async function extractCompletedAnswer(messages, beforeCount, beforeText, opts) {
     opts = opts || {};
@@ -1488,7 +1587,7 @@ async function(args) {
     if (!hasCompletedReplyActionsForTurn(beforeCount, beforeText)) return null;
     var answer = '';
     var copyBtn = findCopyButtonForTurn(beforeCount, beforeText);
-    if (copyBtn) answer = await captureAnswerViaCopyEvent(copyBtn);
+    if (copyBtn) answer = await captureAnswerViaCopy(copyBtn);
     if (!answer) answer = captureAnswerFromTurnDom(beforeCount, beforeText, opts);
     if (!answer) {
       answer = getAssistantAnswerSince(messages, beforeCount, beforeText, Object.assign({}, opts, { skipScopeReady: true }));
@@ -3573,7 +3672,9 @@ async function(args) {
     NOTION_REVEAL_THROTTLE_MS: NOTION_REVEAL_THROTTLE_MS,
     getAssistantTextFromReplyScope: getAssistantTextFromReplyScope,
     captureAnswerFromTurnDom: captureAnswerFromTurnDom,
+    captureAnswerViaCopy: captureAnswerViaCopy,
     captureAnswerViaCopyEvent: captureAnswerViaCopyEvent,
+    captureAnswerFromCopyDialog: captureAnswerFromCopyDialog,
     extractCompletedAnswer: extractCompletedAnswer,
     findCopyButtonForTurn: findCopyButtonForTurn,
     findReplyToolbarRow: findReplyToolbarRow,

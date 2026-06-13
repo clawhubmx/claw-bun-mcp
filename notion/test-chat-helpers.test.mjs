@@ -965,9 +965,9 @@ Loaded web page: api.llama.fi/chains</div>
     expect(giveBtn.getAttribute("aria-expanded")).not.toBe("true");
   });
 
-  test("helpers version is 58", () => {
+  test("helpers version is 59", () => {
     const h = installHelpers();
-    expect(h.version).toBe(58);
+    expect(h.version).toBe(59);
   });
 
   test("isStaleChatThread detects assistant messages and reply toolbar", () => {
@@ -1737,17 +1737,40 @@ Loaded web page: api.llama.fi/chains</div>
     expect(fields.jsonRecovered).toBeUndefined();
   });
 
-  test("captureAnswerViaCopyEvent intercepts copy event text", async () => {
+  test("captureAnswerViaCopy reads clipboard after copy click", async () => {
     const h = installHelpers();
     document.body.innerHTML =
       '<button id="copyBtn" aria-label="Copy response"><svg></svg></button>';
     const btn = document.getElementById("copyBtn");
-    btn.addEventListener("click", () => {
-      dispatchCopyEvent("[Label](https://x.com)");
-    });
-    const text = await h.captureAnswerViaCopyEvent(btn);
+    globalThis.navigator.clipboard = {
+      readText: async () => "[Label](https://x.com)",
+    };
+    const text = await h.captureAnswerViaCopy(btn);
     expect(text).toBe("[Label](https://x.com)");
     expect(h.getLastCaptureSource()).toBe("copy");
+  });
+
+  test("captureAnswerViaCopy falls back to copy dialog when clipboard fails", async () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<button id="copyBtn" aria-label="Copy response"><svg></svg></button>' +
+      '<div role="dialog" id="copyFallback">' +
+      '<div>Copy to clipboard</div>' +
+      '<textarea readonly>{"status":"dialog"}</textarea>' +
+      '<button aria-label="Close">Close</button>' +
+      "</div>";
+    const btn = document.getElementById("copyBtn");
+    const dialog = document.getElementById("copyFallback");
+    makeElementVisible(btn);
+    makeElementVisible(dialog);
+    globalThis.navigator.clipboard = {
+      readText: async () => {
+        throw new Error("denied");
+      },
+    };
+    const text = await h.captureAnswerViaCopy(btn);
+    expect(text).toBe('{"status":"dialog"}');
+    expect(h.getLastCaptureSource()).toBe("copy-dialog");
   });
 
   test("captureAnswerFromTurnDom dedupes nested block and leaf text", () => {
@@ -1792,9 +1815,9 @@ Loaded web page: api.llama.fi/chains</div>
       "</div></div></div>";
     makeReplyToolbarVisible();
     const copyBtn = document.querySelector('[aria-label="Copy response"]');
-    copyBtn.addEventListener("click", () => {
-      dispatchCopyEvent('{"status":"copy"}');
-    });
+    globalThis.navigator.clipboard = {
+      readText: async () => '{"status":"copy"}',
+    };
     const msgs = h.getAssistantMessagesSinceLastUser();
     const answer = await h.extractCompletedAnswer(msgs, 0, "");
     expect(answer).toBe('{"status":"copy"}');

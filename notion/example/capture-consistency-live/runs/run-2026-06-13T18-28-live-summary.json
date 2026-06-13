@@ -1,0 +1,59 @@
+{
+  "startedAt": "2026-06-13T18:28:00.000Z",
+  "helpersVersion": 58,
+  "model": "auto",
+  "method": "Fresh tab per prompt via `bun-browser tab new https://app.notion.com/ai`",
+  "jsonControlRuns": 3,
+  "jsonHashUnique": 1,
+  "jsonAnswer": "{\"status\":\"ok\",\"code\":\"PING-1\",\"ts\":\"2026-06-13\"}",
+  "allCaptureSources": ["dom"],
+  "passCount": 5,
+  "totalRuns": 5,
+  "runs": [
+    {
+      "id": "json-control-1",
+      "captureSource": "dom",
+      "answerFormat": "json",
+      "jsonRecovered": false,
+      "answer": "{\"status\":\"ok\",\"code\":\"PING-1\",\"ts\":\"2026-06-13\"}",
+      "pass": true
+    },
+    {
+      "id": "json-control-2",
+      "captureSource": "dom",
+      "answerFormat": "json",
+      "jsonRecovered": false,
+      "answer": "{\"status\":\"ok\",\"code\":\"PING-1\",\"ts\":\"2026-06-13\"}",
+      "pass": true
+    },
+    {
+      "id": "json-control-3",
+      "captureSource": "dom",
+      "answerFormat": "json",
+      "jsonRecovered": false,
+      "answer": "{\"status\":\"ok\",\"code\":\"PING-1\",\"ts\":\"2026-06-13\"}",
+      "pass": true
+    },
+    {
+      "id": "prose-token",
+      "captureSource": "dom",
+      "answerFormat": "text",
+      "answer": "OK-NOTION-FLOW",
+      "pass": true
+    },
+    {
+      "id": "json-preamble",
+      "captureSource": "dom",
+      "answerFormat": "json",
+      "jsonRecovered": true,
+      "answer": "{\"probe\":\"preamble\",\"ok\":true,\"note\":\"edge-case\"}",
+      "pass": true
+    }
+  ],
+  "notes": [
+    "Copy-response intercept never fired (captureSource always dom); Notion likely uses Clipboard API without a copy event.",
+    "Reusing same tab with newChat=true hit Navigation required when prior reply toolbar still visible; fresh tabs avoid this.",
+    "JSON control: 3/3 identical compact JSON, answerLen 49.",
+    "Preamble prompt: jsonRecovered true — prose sentence stripped, JSON object extracted correctly."
+  ]
+}
