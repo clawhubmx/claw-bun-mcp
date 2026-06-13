@@ -816,14 +816,39 @@ function installNotionAiChatHelpers() {
     return /scroll.*bottom|jump.*bottom|see.*latest|scroll.*down|latest.*message/i.test(String(label || ''));
   }
 
-  function isDownArrowSvg(svg) {
+  function isPlusIconSvg(svg) {
     if (!svg) return false;
+    var paths = svg.querySelectorAll('path, polygon, polyline');
+    var hasVertical = false;
+    var hasHorizontal = false;
+    for (var i = 0; i < paths.length; i++) {
+      var d = (paths[i].getAttribute('d') || paths[i].getAttribute('points') || '').toLowerCase();
+      if (!d) continue;
+      if (/\bv\d+/i.test(d)) hasVertical = true;
+      if (/\bh\d+/i.test(d)) hasHorizontal = true;
+    }
+    return hasVertical && hasHorizontal;
+  }
+
+  function isDownArrowSvg(svg) {
+    if (!svg || isPlusIconSvg(svg)) return false;
     var paths = svg.querySelectorAll('path, polygon, polyline');
     for (var i = 0; i < paths.length; i++) {
       var d = (paths[i].getAttribute('d') || paths[i].getAttribute('points') || '').toLowerCase();
       if (!d) continue;
-      if (/v\s*\d|m\d.*l.*\d|down|chevron/i.test(d)) return true;
+      if (/down|chevron/i.test(d)) return true;
+      if (/m[\d.]+\s+[\d.]+\s*l[\d.\s-]+/i.test(d) && !/\bv\d+/i.test(d) && !/\bh\d+/i.test(d)) return true;
     }
+    return false;
+  }
+
+  function isComposerControlButton(el) {
+    if (!el) return false;
+    var label = normalizeReplyActionLabel(el.getAttribute('aria-label') || '');
+    if (label === 'give context') return true;
+    if (label === 'new chat') return true;
+    if (label === 'submit ai message') return true;
+    if (label === 'add photos and files') return true;
     return false;
   }
 
@@ -847,6 +872,7 @@ function installNotionAiChatHelpers() {
       var el = candidates[i];
       if (!isElementVisible(el)) continue;
       if (isReplyToolbarButton(el)) continue;
+      if (isComposerControlButton(el)) continue;
       var label = el.getAttribute('aria-label') || '';
       var score = 0;
       if (isScrollToBottomLabel(label)) score += 100;
@@ -940,8 +966,15 @@ function installNotionAiChatHelpers() {
     return { scrolled: scrolled, clicks: clicks };
   }
 
-  function getAssistantTextFromReplyScope() {
-    if (hasCompletedReplyActions()) revealLatestReplyInView();
+  function shouldRevealReplyScope(beforeCount, beforeText) {
+    if (arguments.length >= 2) {
+      return hasCompletedReplyActionsForTurn(beforeCount, beforeText);
+    }
+    return hasCompletedReplyActions() && !isGenerating();
+  }
+
+  function getAssistantTextFromReplyScope(beforeCount, beforeText) {
+    if (shouldRevealReplyScope(beforeCount, beforeText)) revealLatestReplyInView();
     var scope = getLatestAssistantReplyScope();
     if (!scope) {
       var chatRoot = document.querySelector('.layout-chat');
@@ -963,9 +996,13 @@ function installNotionAiChatHelpers() {
     return parts.join('\n').trim();
   }
 
-  function getAssistantAnswerSince(messages, beforeCount) {
+  function getAssistantAnswerSince(messages, beforeCount, beforeText) {
     if (!messages || messages.length < beforeCount) return '';
     beforeCount = Math.max(0, Number(beforeCount) || 0);
+    beforeText = beforeText != null ? String(beforeText) : '';
+    var scopeReady = arguments.length >= 3
+      ? hasCompletedReplyActionsForTurn(beforeCount, beforeText)
+      : hasCompletedReplyActions() && !isGenerating();
     var parts = [];
     if (messages.length > beforeCount) {
       for (var i = beforeCount; i < messages.length; i++) {
@@ -978,8 +1015,8 @@ function installNotionAiChatHelpers() {
       if (inPlace && !looksLikeThoughtBlock(inPlace)) parts.push(inPlace);
     }
     var result = parts.join('\n').trim();
-    if (hasCompletedReplyActions()) {
-      var scopeText = getAssistantTextFromReplyScope();
+    if (scopeReady) {
+      var scopeText = getAssistantTextFromReplyScope(beforeCount, beforeText);
       if (scopeText && scopeText.length > result.length) {
         var extraLen = scopeText.replace(result, '').trim().length;
         if (extraLen > 8 || (hasParsedJsonAnswer(scopeText) && !hasParsedJsonAnswer(result))) {
@@ -987,8 +1024,8 @@ function installNotionAiChatHelpers() {
         }
       }
     }
-    if (!result && hasCompletedReplyActions()) {
-      var scopeFallback = getAssistantTextFromReplyScope();
+    if (!result && scopeReady) {
+      var scopeFallback = getAssistantTextFromReplyScope(beforeCount, beforeText);
       if (scopeFallback) return scopeFallback;
     }
     return result;
@@ -1121,9 +1158,12 @@ function installNotionAiChatHelpers() {
   function hasNewTurnContent(messages, beforeCount, beforeText) {
     if (!messages) messages = getAssistantMessagesSinceLastUser();
     if (messages.length > beforeCount) return true;
-    var answer = getAssistantAnswerSince(messages, beforeCount);
     var prior = String(beforeText || '').trim();
-    return !!answer && answer !== prior;
+    if (messages.length === beforeCount && beforeCount > 0) {
+      var inPlace = getAssistantText(messages[messages.length - 1]);
+      if (inPlace && !looksLikeThoughtBlock(inPlace) && inPlace !== prior) return true;
+    }
+    return false;
   }
 
   function hasCompletedReplyActionsForTurn(beforeCount, beforeText) {
@@ -1274,7 +1314,7 @@ function installNotionAiChatHelpers() {
     beforeText = beforeText != null ? String(beforeText) : '';
     if (!hasNewTurnContent(messages, beforeCount, beforeText)) return null;
     if (!hasCompletedReplyActionsForTurn(beforeCount, beforeText)) return null;
-    var answer = getAssistantAnswerSince(messages, beforeCount);
+    var answer = getAssistantAnswerSince(messages, beforeCount, beforeText);
     return validateExtractedAnswer(answer, opts, false);
   }
 
@@ -1287,13 +1327,13 @@ function installNotionAiChatHelpers() {
     if (!hasCompletedReplyActions()) return '';
     if (!hasNewTurnContent(messages, beforeCount, beforeText)) return '';
     revealLatestReplyInView();
-    var full = getAssistantAnswerSince(messages, 0);
-    if (!full) full = getAssistantTextFromReplyScope();
+    var full = getAssistantAnswerSince(messages, 0, beforeText);
+    if (!full) full = getAssistantTextFromReplyScope(beforeCount, beforeText);
     var validated = validateExtractedAnswer(full, opts, false);
     if (validated) return validated;
     revealLatestReplyInView();
-    full = getAssistantAnswerSince(messages, beforeCount);
-    if (!full) full = getAssistantTextFromReplyScope();
+    full = getAssistantAnswerSince(messages, beforeCount, beforeText);
+    if (!full) full = getAssistantTextFromReplyScope(beforeCount, beforeText);
     return validateExtractedAnswer(full, opts, false) || '';
   }
 
@@ -1376,7 +1416,7 @@ function installNotionAiChatHelpers() {
       var pending = generating || !hasNewTurnContent(messages, beforeCount, beforeText);
       if (pending) sawInFlight = true;
 
-      answer = getAssistantAnswerSince(messages, beforeCount);
+      answer = getAssistantAnswerSince(messages, beforeCount, beforeText);
       if (messages.length > lastMessageCount) {
         lastMessageCount = messages.length;
         stableRounds = 0;
@@ -1391,7 +1431,7 @@ function installNotionAiChatHelpers() {
         if (expectsJson && answer && !hasParsedJsonAnswer(answer)) {
           if (hasCompletedReplyActionsForTurn(beforeCount, beforeText)) {
             await scrollToLatestReply({ maxClicks: 2, pauseMs: 120 });
-            answer = getAssistantAnswerSince(messages, beforeCount);
+            answer = getAssistantAnswerSince(messages, beforeCount, beforeText);
             if (hasParsedJsonAnswer(answer)) {
               lastWaitPending = false;
               return answer;

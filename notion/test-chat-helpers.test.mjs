@@ -787,6 +787,80 @@ Loaded web page: api.llama.fi/chains</div>
     expect(result.scrolled).toBe(false);
   });
 
+  test("findScrollToBottomButton must not match Give context plus button", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div contenteditable="true" role="textbox" id="editor" style="position:fixed;bottom:80px;left:40px;width:600px;height:40px">draft</div>' +
+      '<button aria-label="Submit AI message" id="submit" style="position:fixed;bottom:80px;right:120px;width:36px;height:36px">Send</button>' +
+      '<button aria-label="Give context" id="giveCtx" style="position:fixed;bottom:80px;right:72px;width:36px;height:36px">' +
+      '<svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"></path></svg></button>' +
+      "</div>";
+    const giveBtn = document.getElementById("giveCtx");
+    giveBtn.getBoundingClientRect = () => ({
+      left: 900,
+      top: 764,
+      width: 36,
+      height: 36,
+      right: 936,
+      bottom: 800,
+      x: 900,
+      y: 764,
+    });
+    Object.defineProperty(giveBtn, "offsetParent", { configurable: true, value: document.body });
+    Object.defineProperty(window, "innerHeight", { configurable: true, value: 800 });
+    expect(h.findScrollToBottomButton()).toBeNull();
+  });
+
+  test("getAssistantAnswerSince must not open Give context during prior-turn toolbar poll", () => {
+    const h = installHelpers();
+    let giveContextClicked = 0;
+    Object.defineProperty(window, "innerHeight", { configurable: true, value: 800 });
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="content-editable-leaf-rtl">Follow-up user prompt</div>' +
+      '<div class="assistant-turn">' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Prior completed answer.</div></div>' +
+      '<div class="reply-toolbar">' + REPLY_ACTION_BUTTONS + "</div>" +
+      "</div>" +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">Thinking</div></div>' +
+      '<div contenteditable="true" role="textbox" id="editor" style="position:fixed;bottom:80px;left:40px;width:600px;height:40px">draft</div>' +
+      '<button aria-label="Submit AI message" id="submit" style="position:fixed;bottom:80px;right:120px;width:36px;height:36px">Send</button>' +
+      '<button aria-label="Give context" id="giveCtx" style="position:fixed;bottom:80px;right:72px;width:36px;height:36px">' +
+      '<svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"></path></svg></button>' +
+      "</div>";
+    const giveBtn = document.getElementById("giveCtx");
+    giveBtn.getBoundingClientRect = () => ({
+      left: 900,
+      top: 764,
+      width: 36,
+      height: 36,
+      right: 936,
+      bottom: 800,
+      x: 900,
+      y: 764,
+    });
+    Object.defineProperty(giveBtn, "offsetParent", { configurable: true, value: document.body });
+    giveBtn.addEventListener("click", () => {
+      giveContextClicked++;
+      giveBtn.setAttribute("aria-expanded", "true");
+    });
+
+    const beforeCount = h.getCurrentReplyAssistantStartCount();
+    const msgs = h.getAssistantMessagesSinceLastUser();
+    const existing = h.getAssistantMessages();
+    const beforeText =
+      beforeCount < existing.length ? h.getAssistantText(existing[beforeCount]) : "Prior completed answer.";
+    expect(h.hasCompletedReplyActions()).toBe(true);
+
+    for (let i = 0; i < 3; i++) {
+      h.getAssistantAnswerSince(msgs, beforeCount, beforeText);
+    }
+
+    expect(giveContextClicked).toBe(0);
+    expect(giveBtn.getAttribute("aria-expanded")).not.toBe("true");
+  });
+
   test("helpers version is 36", () => {
     const h = installHelpers();
     expect(h.version).toBe(36);
