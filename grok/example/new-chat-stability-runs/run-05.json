@@ -1,0 +1,14 @@
+{
+  "run": 5,
+  "kind": "test1-full",
+  "promptLen": 5260,
+  "elapsedMs": 1219,
+  "captureStatus": "error",
+  "ok": false,
+  "answerLen": 0,
+  "hasAnswerJson": false,
+  "conversationId": null,
+  "error": "Prompt truncated in composer",
+  "hint": "Grok composer did not accept the full prompt (5260/5260 chars).",
+  "timedOut": false
+}

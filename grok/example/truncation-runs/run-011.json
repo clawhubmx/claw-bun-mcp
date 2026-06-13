@@ -11,5 +11,11 @@
     "actualLen": 2114,
     "timedOut": false
   },
-  "e2e": null
+  "e2e": {
+    "classification": "error:Chat input not found",
+    "answerLen": 0,
+    "hasAnswerJson": false,
+    "error": "Chat input not found",
+    "timedOut": false
+  }
 }

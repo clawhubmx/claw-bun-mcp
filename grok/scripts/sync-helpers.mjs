@@ -15,7 +15,7 @@ if (fnStart < 0 || fnEnd < 0) {
   console.error("Could not locate installGrokChatHelpers in chat-helpers.js");
   process.exit(1);
 }
-const inner = helpersSource.slice(fnStart + "function installGrokChatHelpers()".length, fnEnd).trim();
+const inner = helpersSource.slice(fnStart + "function installGrokChatHelpers()".length, fnEnd).trim().replace(/^\{/, "").trim();
 
 for (const name of targets) {
   const path = join(root, name);

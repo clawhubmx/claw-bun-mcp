@@ -1,0 +1,14 @@
+{
+  "run": 7,
+  "kind": "short-yesno",
+  "promptLen": 35,
+  "elapsedMs": 4433,
+  "captureStatus": "captured",
+  "ok": true,
+  "answerLen": 2,
+  "hasAnswerJson": false,
+  "conversationId": "6bdcd5c9-d9a2-41cc-8f25-0a25405f49c0",
+  "error": null,
+  "hint": null,
+  "timedOut": false
+}

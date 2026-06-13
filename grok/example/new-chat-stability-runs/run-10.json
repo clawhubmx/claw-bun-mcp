@@ -1,0 +1,14 @@
+{
+  "run": 10,
+  "kind": "medium-prose",
+  "promptLen": 48,
+  "elapsedMs": 4852,
+  "captureStatus": "captured",
+  "ok": true,
+  "answerLen": 490,
+  "hasAnswerJson": false,
+  "conversationId": "9ee5185a-3049-43df-b021-2d17499dd68b",
+  "error": null,
+  "hint": null,
+  "timedOut": false
+}

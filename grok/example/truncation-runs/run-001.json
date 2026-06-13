@@ -2,14 +2,19 @@
   "run": 1,
   "kind": "prompt21-full",
   "model": "fast",
-  "command": "chat",
+  "command": "chatfollow",
   "promptLen": 3475,
   "input": {
-    "classification": "set_failed",
-    "setOk": false,
+    "classification": "input_ok",
+    "setOk": true,
     "expectedLen": 3475,
     "actualLen": 3478,
     "timedOut": false
   },
-  "e2e": null
+  "e2e": {
+    "classification": "answer_ok",
+    "answerLen": 879,
+    "hasAnswerJson": true,
+    "timedOut": false
+  }
 }

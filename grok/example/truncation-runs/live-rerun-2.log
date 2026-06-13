@@ -1,0 +1,45 @@
+Grok truncation probe: 15 input checks, up to 15 e2e (tab 25fe)
+
+Starting conversationId: d28f5a44-af29-479d-92e0-feacf43e78e0
+
+--- Run 1/15 | fast | chatfollow | prompt21-full | len 3475 ---
+  input: input_ok | e2e: answer_ok
+--- Run 2/15 | auto | chat | short | len 42 ---
+  input: input_ok | e2e: error:Chat input not found
+--- Run 3/15 | expert | chat | short | len 44 ---
+  input: input_ok | e2e: error:Chat input not found
+--- Run 4/15 | heavy | chatfollow | short | len 31 ---
+  input: input_ok | e2e: error:Daemon HTTP 400: {"success":false,"error":"Runtime.evaluate: Inspected target navigated or closed"}
+--- Run 5/15 | beta | chat | short | len 46 ---
+  input: input_ok | e2e: error:Mode selection failed
+--- Run 6/15 | fast | chat | long-json | len 2110 ---
+  input: input_ok | e2e: error:Chat input not found
+--- Run 7/15 | auto | chatfollow | short | len 35 ---
+  input: input_ok | e2e: error:Daemon HTTP 400: {"success":false,"error":"Runtime.evaluate: Inspected target navigated or closed"}
+--- Run 8/15 | expert | chat | news-json | len 309 ---
+  input: input_ok | e2e: error:Chat input not found
+--- Run 9/15 | heavy | chat | short | len 34 ---
+  input: input_ok | e2e: error:Chat input not found
+--- Run 10/15 | beta | chatfollow | short | len 29 ---
+  input: input_ok | e2e: error:Daemon HTTP 400: {"success":false,"error":"Runtime.evaluate: Inspected target navigated or closed"}
+--- Run 11/15 | fast | chat | long-json | len 2113 ---
+  input: input_ok | e2e: error:Chat input not found
+--- Run 12/15 | auto | chat | structural-json | len 451 ---
+  input: input_ok | e2e: error:Chat input not found
+--- Run 13/15 | expert | chatfollow | short | len 44 ---
+  input: input_ok | e2e: error:Daemon HTTP 400: {"success":false,"error":"Runtime.evaluate: Inspected target navigated or closed"}
+--- Run 14/15 | heavy | chat | short | len 31 ---
+  input: input_ok | e2e: error:Chat input not found
+--- Run 15/15 | beta | chat | news-json | len 314 ---
+  input: input_ok | e2e: error:Mode selection failed
+
+=== Input classification ===
+  input_ok: 15
+
+=== E2E classification ===
+  answer_ok: 1
+  error:Chat input not found: 8
+  error:Daemon HTTP 400: {"success":false,"error":"Runtime.evaluate: Inspected target navigated or closed"}: 4
+  error:Mode selection failed: 2
+
+Results: /Users/hesdx/Documents/clawhost/claw-bun-mcp/grok/example/truncation-runs/summary.json

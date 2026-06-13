@@ -752,6 +752,41 @@ Loaded web page: api.llama.fi/chains</div>
     expect(result.scrolled).toBe(true);
   });
 
+  test("scrollToLatestReply does not click New chat plus when no scroll FAB", async () => {
+    const h = installHelpers();
+    let newChatClicked = false;
+    document.body.innerHTML =
+      '<div class="layout-chat">' +
+      '<div class="assistant-turn">' +
+      '<div class="notion-text-block"><div class="content-editable-leaf-rtl">completed answer</div></div>' +
+      '<div class="reply-toolbar">' + REPLY_ACTION_BUTTONS + '</div>' +
+      '</div>' +
+      '<button aria-label="New chat" style="position:fixed;bottom:24px;right:24px;width:36px;height:36px">' +
+      '<svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"></path></svg></button>' +
+      '</div>';
+    const newBtn = document.querySelector('[aria-label="New chat"]');
+    newBtn.getBoundingClientRect = () => ({
+      left: 900,
+      top: 720,
+      width: 36,
+      height: 36,
+      right: 936,
+      bottom: 756,
+      x: 900,
+      y: 720,
+    });
+    Object.defineProperty(newBtn, "offsetParent", { configurable: true, value: document.body });
+    Object.defineProperty(window, "innerHeight", { configurable: true, value: 800 });
+    newBtn.addEventListener("click", () => {
+      newChatClicked = true;
+    });
+    expect(h.findScrollToBottomButton()).toBeNull();
+    const result = await h.scrollToLatestReply({ maxClicks: 2, pauseMs: 0 });
+    expect(newChatClicked).toBe(false);
+    expect(result.clicks).toBe(0);
+    expect(result.scrolled).toBe(false);
+  });
+
   test("helpers version is 36", () => {
     const h = installHelpers();
     expect(h.version).toBe(36);

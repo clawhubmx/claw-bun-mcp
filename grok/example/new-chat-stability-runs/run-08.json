@@ -1,0 +1,14 @@
+{
+  "run": 8,
+  "kind": "short-json",
+  "promptLen": 44,
+  "elapsedMs": 3369,
+  "captureStatus": "captured_json",
+  "ok": true,
+  "answerLen": 26,
+  "hasAnswerJson": true,
+  "conversationId": "cf739c8f-d046-4902-ac4c-cf6fa42b7602",
+  "error": null,
+  "hint": null,
+  "timedOut": false
+}

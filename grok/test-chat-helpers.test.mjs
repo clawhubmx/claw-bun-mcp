@@ -1,6 +1,6 @@
 /**
  * Unit tests for grok chat completion heuristics (stuck-at-96% scenarios).
- * Run: bun test grok/test-chat-helpers.mjs
+ * Run: bun test grok/test-chat-helpers.test.mjs
  */
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -60,6 +60,34 @@ function stopButton(enabled = true) {
   document.body.appendChild(btn);
   return btn;
 }
+
+function grokActionButton(label, withSvg = true) {
+  const btn = document.createElement("button");
+  btn.setAttribute("aria-label", label);
+  if (withSvg) {
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    btn.appendChild(svg);
+  }
+  return btn;
+}
+
+function appendGrokActionBar(el, labels) {
+  const bar = document.createElement("div");
+  for (const label of labels) {
+    bar.appendChild(grokActionButton(label));
+  }
+  el.appendChild(bar);
+  return bar;
+}
+
+const GROK_ACTION_LABELS = [
+  "Copy",
+  "Create share link",
+  "Like",
+  "Dislike",
+  "Regenerate",
+  "More actions",
+];
 
 describe("grok chat completion detection", () => {
   let h;
@@ -207,4 +235,229 @@ describe("grok chat completion detection", () => {
     expect(block.kind).toBe("transient_error");
     expect(block.canRetry).toBe(true);
   });
+
+  test("hasGrokReplyActionBar is true when all six action buttons with svg are present", () => {
+    const el = assistantMessage({
+      innerHTML: "<p>Done.</p>",
+      innerText: "Done.",
+    });
+    appendGrokActionBar(el, GROK_ACTION_LABELS);
+    expect(h.hasGrokReplyActionBar(el)).toBe(true);
+    expect(h.hasGrokReplyActionBar()).toBe(true);
+  });
+
+  test("hasGrokReplyActionBar accepts share/regenerate label variants", () => {
+    const el = assistantMessage({ innerHTML: "<p>Done.</p>", innerText: "Done." });
+    appendGrokActionBar(el, [
+      "copy",
+      "Share link",
+      "Like response",
+      "Dislike response",
+      "Regenerate response",
+      "More actions",
+    ]);
+    expect(h.hasGrokReplyActionBar(el)).toBe(true);
+  });
+
+  test("hasGrokReplyActionBar is false when buttons lack svg", () => {
+    const el = assistantMessage({ innerHTML: "<p>Done.</p>", innerText: "Done." });
+    const bar = document.createElement("div");
+    for (const label of GROK_ACTION_LABELS) {
+      bar.appendChild(grokActionButton(label, false));
+    }
+    el.appendChild(bar);
+    expect(h.hasGrokReplyActionBar(el)).toBe(false);
+  });
+
+  test("hasGrokReplyActionBar is false when only partial actions are present", () => {
+    const el = assistantMessage({ innerHTML: "<p>Done.</p>", innerText: "Done." });
+    appendGrokActionBar(el, GROK_ACTION_LABELS.slice(0, 4));
+    expect(h.hasGrokReplyActionBar(el)).toBe(false);
+  });
+
+  test("isGrokReplyPending is false when action bar present despite streaming UI", () => {
+    const el = assistantMessage({
+      innerHTML: "<p>Here is the final answer with enough detail.</p>",
+      innerText: "Here is the final answer with enough detail.",
+      streaming: true,
+    });
+    appendGrokActionBar(el, GROK_ACTION_LABELS);
+    stopButton(true);
+    expect(h.isGrokGenerating()).toBe(false);
+    expect(h.isGrokReplyPending(0, "")).toBe(false);
+  });
+
+  test("waitForAssistantAnswer returns prose when action bar present with streaming UI", async () => {
+    const prose = "Here is the final answer with enough detail.";
+    assistantMessage({
+      innerHTML: "<p>" + prose + "</p>",
+      innerText: prose,
+      streaming: true,
+    });
+    appendGrokActionBar(document.querySelector('[data-testid="assistant-message"]'), GROK_ACTION_LABELS);
+    stopButton(true);
+
+    const answer = await h.waitForAssistantAnswer(0, "", {
+      pollMs: 20,
+      maxWaitMs: 500,
+      stableNeeded: 2,
+    });
+
+    expect(answer).toBe(prose);
+    expect(h.wasLastWaitPending()).toBe(false);
+  });
+});
+
+function pad(len, ch = "x") {
+  return ch.repeat(Math.max(0, len));
+}
+
+function buildLongPrompt(run, marker) {
+  const head = `RUN_${run}_HEAD_${marker}_ `;
+  const tail = ` _TAIL_${run}_${marker}`;
+  const bodyLen = 800 + (run % 5) * 1200;
+  return (
+    head +
+    pad(bodyLen) +
+    tail +
+    '\nRespond ONLY with JSON: {"run":' +
+    run +
+    ',"marker":"' +
+    marker +
+    '","body_len":' +
+    bodyLen +
+    '}. No markdown.'
+  );
+}
+
+function buildLongJsonAnswer(run, marker, bodyLen) {
+  const itemCount = 5 + (run % 8);
+  const items = Array.from({ length: itemCount }, (_, i) => ({
+    id: `item-${run}-${i}`,
+    text: pad(50 + ((i * 17) % 200), "a"),
+    tags: [`tag-${i}`, `run-${run}`],
+  }));
+  return JSON.stringify({
+    run,
+    marker,
+    body_len: bodyLen,
+    padding: pad(300 + (run % 5) * 500, "z"),
+    items,
+    meta: { generated: true, index: run },
+  });
+}
+
+function wrapReplyText(json, format) {
+  switch (format) {
+    case 0:
+      return json;
+    case 1:
+      return "```json\n" + json + "\n```";
+    case 2:
+      return "Thought for 12s\n" + json;
+    case 3:
+      return "Searched web\n3 results\nEvaluating data • 2s\n" + json;
+    default:
+      return json;
+  }
+}
+
+function replyDomHtml(json) {
+  return `<pre><code>${json}</code></pre>`;
+}
+
+function installChatInput(text) {
+  const editor = document.createElement("div");
+  editor.setAttribute("contenteditable", "true");
+  editor.textContent = text;
+  const host = document.createElement("div");
+  host.setAttribute("data-testid", "chat-input");
+  host.appendChild(editor);
+  document.body.appendChild(host);
+  return editor;
+}
+
+describe("long prompt reply capture (100 runs)", () => {
+  let h;
+
+  beforeEach(() => {
+    h = installHelpers();
+    document.body.innerHTML = "";
+  });
+
+  test("verifyChatInput accepts all 100 long prompts", () => {
+    installChatInput("");
+    for (let run = 1; run <= 100; run++) {
+      const marker = `M${String(run).padStart(3, "0")}`;
+      const prompt = buildLongPrompt(run, marker);
+      const editor = h.getChatInput();
+      editor.textContent = prompt;
+      const check = h.verifyChatInput(prompt);
+      expect(check.ok).toBe(true);
+      expect(check.actualLen).toBeGreaterThanOrEqual(prompt.length - 3);
+    }
+  });
+
+  for (let run = 1; run <= 100; run++) {
+    const marker = `M${String(run).padStart(3, "0")}`;
+    const bodyLen = 800 + (run % 5) * 1200;
+    const prompt = buildLongPrompt(run, marker);
+    const answerJson = buildLongJsonAnswer(run, marker, bodyLen);
+    const format = run % 4;
+
+    test(`run ${run}: captures long JSON reply (${prompt.length} char prompt, format ${format})`, () => {
+      const wrapped = wrapReplyText(answerJson, format);
+      expect(h.extractJsonBlock(wrapped)).toBe(answerJson);
+      expect(h.parseAnswerJson(wrapped)).toEqual(JSON.parse(answerJson));
+      expect(h.hasParsedJsonAnswer(wrapped)).toBe(true);
+
+      const el = assistantMessage({
+        innerHTML: replyDomHtml(answerJson),
+        innerText: wrapped,
+      });
+      appendGrokActionBar(el, GROK_ACTION_LABELS);
+
+      const captured = h.getAssistantText(el);
+      expect(captured).toBe(answerJson);
+      expect(h.looksLikeFinalAnswer(captured)).toBe(true);
+      expect(h.isGrokReplyPending(0, "")).toBe(false);
+      expect(h.cleanAssistantText(wrapped)).toBe(answerJson);
+    });
+  }
+
+  for (const run of [1, 11, 21, 31, 41, 51, 61, 71, 81, 91]) {
+    const marker = `M${String(run).padStart(3, "0")}`;
+    const bodyLen = 800 + (run % 5) * 1200;
+    const answerJson = buildLongJsonAnswer(run, marker, bodyLen);
+
+    test(`run ${run}: waitForAssistantAnswer completes after streaming long JSON`, async () => {
+      const partial = answerJson.slice(0, Math.floor(answerJson.length * 0.35));
+      const el = assistantMessage({
+        innerHTML: replyDomHtml(partial),
+        innerText: "Thought for 5s\n" + partial,
+        streaming: true,
+      });
+      stopButton(true);
+
+      const waitPromise = h.waitForAssistantAnswer(0, "", {
+        pollMs: 15,
+        maxWaitMs: 900,
+        stableNeeded: 2,
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 60));
+      el.innerHTML = replyDomHtml(answerJson);
+      Object.defineProperty(el, "innerText", {
+        configurable: true,
+        get: () => "Thought for 5s\n" + answerJson,
+      });
+      el.querySelector(".animate-pulse")?.remove();
+      appendGrokActionBar(el, GROK_ACTION_LABELS);
+      document.querySelector('[aria-label="Stop generating"]').disabled = true;
+
+      const answer = await waitPromise;
+      expect(answer).toBe(answerJson);
+      expect(h.wasLastWaitPending()).toBe(false);
+    });
+  }
 });

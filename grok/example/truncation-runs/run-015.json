@@ -11,5 +11,11 @@
     "actualLen": 317,
     "timedOut": false
   },
-  "e2e": null
+  "e2e": {
+    "classification": "error:Mode selection failed",
+    "answerLen": 0,
+    "hasAnswerJson": false,
+    "error": "Mode selection failed",
+    "timedOut": false
+  }
 }

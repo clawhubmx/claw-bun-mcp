@@ -11,5 +11,11 @@
     "actualLen": 44,
     "timedOut": false
   },
-  "e2e": null
+  "e2e": {
+    "classification": "error:Daemon HTTP 400: {\"success\":false,\"error\":\"Runtime.evaluate: Inspected target navigated or closed\"}",
+    "answerLen": 0,
+    "hasAnswerJson": false,
+    "error": "Daemon HTTP 400: {\"success\":false,\"error\":\"Runtime.evaluate: Inspected target navigated or closed\"}",
+    "timedOut": false
+  }
 }

@@ -1,0 +1,36 @@
+Grok new-chat stability: 10 sequential runs (tab 25fe, model fast)
+
+--- Run 1/10 | short-json | len 58 ---
+  wait: 2.9s | captured_json | answer 21 chars
+--- Run 2/10 | short-math | len 42 ---
+  wait: 2.8s | captured | answer 2 chars
+--- Run 3/10 | short-word | len 32 ---
+  wait: 2.8s | captured | answer 5 chars
+--- Run 4/10 | structural-json | len 107 ---
+  wait: 2.9s | captured_json | answer 62 chars
+--- Run 5/10 | test1-full | len 5260 ---
+  wait: 1.2s | error (Prompt truncated in composer) | answer 0 chars
+--- Run 6/10 | long-json | len 2483 ---
+  wait: 3.8s | captured_json | answer 25 chars
+--- Run 7/10 | short-yesno | len 35 ---
+  wait: 4.4s | captured | answer 2 chars
+--- Run 8/10 | short-json | len 44 ---
+  wait: 3.4s | captured_json | answer 26 chars
+--- Run 9/10 | short-list | len 42 ---
+  wait: 2.9s | captured | answer 4 chars
+--- Run 10/10 | medium-prose | len 48 ---
+  wait: 4.9s | captured | answer 490 chars
+
+=== Pass rate: 9/10 ===
+  #1 short-json       len=   58 wait=   2.9s OK captured_json
+  #2 short-math       len=   42 wait=   2.8s OK captured
+  #3 short-word       len=   32 wait=   2.8s OK captured
+  #4 structural-json  len=  107 wait=   2.9s OK captured_json
+  #5 test1-full       len= 5260 wait=   1.2s FAIL error
+  #6 long-json        len= 2483 wait=   3.8s OK captured_json
+  #7 short-yesno      len=   35 wait=   4.4s OK captured
+  #8 short-json       len=   44 wait=   3.4s OK captured_json
+  #9 short-list       len=   42 wait=   2.9s OK captured
+  #10 medium-prose     len=   48 wait=   4.9s OK captured
+
+Results: /Users/hesdx/Documents/clawhost/claw-bun-mcp/grok/example/new-chat-stability-runs/summary.json

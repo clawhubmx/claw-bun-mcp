@@ -12,9 +12,10 @@
     "timedOut": false
   },
   "e2e": {
-    "classification": "error:unknown",
+    "classification": "error:Chat input not found",
     "answerLen": 0,
     "hasAnswerJson": false,
-    "timedOut": true
+    "error": "Chat input not found",
+    "timedOut": false
   }
 }

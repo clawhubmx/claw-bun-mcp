@@ -1,0 +1,12 @@
+Grok truncation probe: 15 input checks, up to 15 e2e (tab 25fe)
+
+Starting conversationId: 75a16c64-4d3a-44ed-b430-45cc5fdb6ac6
+
+--- Run 1/15 | fast | chatfollow | prompt21-full | len 3475 ---
+  input: input_ok | e2e: answer_ok
+--- Run 2/15 | auto | chat | short | len 42 ---
+Grok truncation probe: 15 input checks, up to 15 e2e (tab 25fe)
+
+Starting conversationId: d28f5a44-af29-479d-92e0-feacf43e78e0
+
+--- Run 1/15 | fast | chatfollow | prompt21-full | len 3475 ---

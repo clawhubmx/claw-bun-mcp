@@ -1,0 +1,14 @@
+{
+  "run": 4,
+  "kind": "structural-json",
+  "promptLen": 107,
+  "elapsedMs": 2921,
+  "captureStatus": "captured_json",
+  "ok": true,
+  "answerLen": 62,
+  "hasAnswerJson": true,
+  "conversationId": "1e5ba6a9-cc32-42a0-b046-c3bb3291a44d",
+  "error": null,
+  "hint": null,
+  "timedOut": false
+}

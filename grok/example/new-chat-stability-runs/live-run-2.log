@@ -1,0 +1,36 @@
+Grok new-chat stability: 10 sequential runs (tab 25fe, model fast)
+
+--- Run 1/10 | short-json | len 58 ---
+  wait: 5.2s | captured_json | answer 21 chars
+--- Run 2/10 | short-math | len 42 ---
+  wait: 210.0s | error (unknown) | answer 0 chars
+--- Run 3/10 | short-word | len 32 ---
+  wait: 210.0s | error (unknown) | answer 0 chars
+--- Run 4/10 | structural-json | len 107 ---
+  wait: 7.2s | captured_json | answer 62 chars
+--- Run 5/10 | test1-full | len 5260 ---
+  wait: 14.4s | captured_json | answer 1916 chars
+--- Run 6/10 | long-json | len 2483 ---
+  wait: 6.4s | captured_json | answer 25 chars
+--- Run 7/10 | short-yesno | len 35 ---
+  wait: 210.0s | error (unknown) | answer 0 chars
+--- Run 8/10 | short-json | len 44 ---
+  wait: 6.0s | captured_json | answer 26 chars
+--- Run 9/10 | short-list | len 42 ---
+  wait: 210.0s | error (unknown) | answer 0 chars
+--- Run 10/10 | medium-prose | len 48 ---
+  wait: 5.4s | captured | answer 456 chars
+
+=== Pass rate: 6/10 ===
+  #1 short-json       len=   58 wait=   5.2s OK captured_json
+  #2 short-math       len=   42 wait= 210.0s FAIL error
+  #3 short-word       len=   32 wait= 210.0s FAIL error
+  #4 structural-json  len=  107 wait=   7.2s OK captured_json
+  #5 test1-full       len= 5260 wait=  14.4s OK captured_json
+  #6 long-json        len= 2483 wait=   6.4s OK captured_json
+  #7 short-yesno      len=   35 wait= 210.0s FAIL error
+  #8 short-json       len=   44 wait=   6.0s OK captured_json
+  #9 short-list       len=   42 wait= 210.0s FAIL error
+  #10 medium-prose     len=   48 wait=   5.4s OK captured
+
+Results: /Users/hesdx/Documents/clawhost/claw-bun-mcp/grok/example/new-chat-stability-runs/summary.json
