@@ -1,0 +1,139 @@
+{
+  "startedAt": "2026-06-14T00:56:34.310Z",
+  "tab": null,
+  "model": "auto",
+  "jsonControlRuns": 3,
+  "jsonHashUnique": 1,
+  "jsonHashes": [
+    "c2c169c90043"
+  ],
+  "jsonCaptureSources": [
+    "copy-dialog"
+  ],
+  "allCaptureSources": [
+    "copy-dialog",
+    "copy"
+  ],
+  "passCount": 4,
+  "totalRuns": 5,
+  "runs": [
+    {
+      "id": "json-control-1-r1",
+      "promptFile": "prompt-01-control-json.txt",
+      "expectJson": true,
+      "elapsedMs": 8565,
+      "error": null,
+      "answerFormat": "json",
+      "captureSource": "copy-dialog",
+      "jsonRecovered": false,
+      "answerLen": 49,
+      "answerHash": "c2c169c90043",
+      "answerPreview": "{\"status\":\"ok\",\"code\":\"PING-1\",\"ts\":\"2026-06-13\"}",
+      "answerJson": {
+        "status": "ok",
+        "code": "PING-1",
+        "ts": "2026-06-13"
+      },
+      "helpersAfter": {
+        "result": {
+          "version": 60,
+          "captureSource": "copy-dialog"
+        },
+        "tab": "5615",
+        "seq": 1010
+      }
+    },
+    {
+      "id": "json-control-1-r2",
+      "promptFile": "prompt-01-control-json.txt",
+      "expectJson": true,
+      "elapsedMs": 6263,
+      "error": null,
+      "answerFormat": "json",
+      "captureSource": "copy-dialog",
+      "jsonRecovered": false,
+      "answerLen": 49,
+      "answerHash": "c2c169c90043",
+      "answerPreview": "{\"status\":\"ok\",\"code\":\"PING-1\",\"ts\":\"2026-06-13\"}",
+      "answerJson": {
+        "status": "ok",
+        "code": "PING-1",
+        "ts": "2026-06-13"
+      },
+      "helpersAfter": {
+        "result": {
+          "version": 60,
+          "captureSource": "copy-dialog"
+        },
+        "tab": "1bc6",
+        "seq": 1775
+      }
+    },
+    {
+      "id": "json-control-1-r3",
+      "promptFile": "prompt-01-control-json.txt",
+      "expectJson": true,
+      "elapsedMs": 7191,
+      "error": null,
+      "answerFormat": "json",
+      "captureSource": "copy-dialog",
+      "jsonRecovered": false,
+      "answerLen": 49,
+      "answerHash": "c2c169c90043",
+      "answerPreview": "{\"status\":\"ok\",\"code\":\"PING-1\",\"ts\":\"2026-06-13\"}",
+      "answerJson": {
+        "status": "ok",
+        "code": "PING-1",
+        "ts": "2026-06-13"
+      },
+      "helpersAfter": {
+        "result": {
+          "version": 60,
+          "captureSource": "copy-dialog"
+        },
+        "tab": "0291",
+        "seq": 2538
+      }
+    },
+    {
+      "id": "prose-token",
+      "promptFile": "prompt-04-prose-token.txt",
+      "expectJson": false,
+      "elapsedMs": 5855,
+      "error": null,
+      "answerFormat": "text",
+      "captureSource": "copy",
+      "jsonRecovered": false,
+      "answerLen": 64,
+      "answerHash": "cd579c3c7e80",
+      "answerPreview": "bun notion/scripts/test-capture-consistency-live.mjs --fresh-tab",
+      "answerJson": null,
+      "helpersAfter": {
+        "result": {
+          "version": 60,
+          "captureSource": "copy"
+        },
+        "tab": "413f",
+        "seq": 3314
+      }
+    },
+    {
+      "id": "json-preamble",
+      "promptFile": "prompt-05-preamble-json.txt",
+      "expectJson": true,
+      "elapsedMs": 105008,
+      "error": "parse_failed",
+      "answerFormat": null,
+      "captureSource": null,
+      "jsonRecovered": false,
+      "answerLen": 0,
+      "answerHash": "e3b0c44298fc",
+      "answerPreview": null,
+      "answerJson": null,
+      "helpersAfter": {
+        "success": false,
+        "error": "Daemon HTTP 400: {\"success\":false,\"error\":\"Tab not found: 6147\"}"
+      }
+    }
+  ]
+}

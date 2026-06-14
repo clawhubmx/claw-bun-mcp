@@ -965,9 +965,9 @@ Loaded web page: api.llama.fi/chains</div>
     expect(giveBtn.getAttribute("aria-expanded")).not.toBe("true");
   });
 
-  test("helpers version is 60", () => {
+  test("helpers version is 61", () => {
     const h = installHelpers();
-    expect(h.version).toBe(60);
+    expect(h.version).toBe(61);
   });
 
   test("isStaleChatThread detects assistant messages and reply toolbar", () => {
@@ -1742,12 +1742,70 @@ Loaded web page: api.llama.fi/chains</div>
     document.body.innerHTML =
       '<button id="copyBtn" aria-label="Copy response"><svg></svg></button>';
     const btn = document.getElementById("copyBtn");
+    let clip = "stale shell command";
     globalThis.navigator.clipboard = {
-      readText: async () => "[Label](https://x.com)",
+      readText: async () => clip,
+      writeText: async (text) => {
+        clip = text;
+      },
     };
+    btn.addEventListener("click", () => {
+      clip = "[Label](https://x.com)";
+    });
     const text = await h.captureAnswerViaCopy(btn);
     expect(text).toBe("[Label](https://x.com)");
     expect(h.getLastCaptureSource()).toBe("copy");
+  });
+
+  test("captureAnswerFromCopyDialog ignores toolbar label noise", () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<div role="dialog" id="copyNoise">' +
+      '<div class="content-editable-leaf-rtl">Copy response</div>' +
+      "</div>";
+    const dialog = document.getElementById("copyNoise");
+    makeElementVisible(dialog);
+    expect(h.captureAnswerFromCopyDialog()).toBe("");
+  });
+
+  test("isValidCopyCaptureText rejects reply toolbar labels", () => {
+    const h = installHelpers();
+    expect(h.isValidCopyCaptureText("Copy response")).toBe(false);
+    expect(h.isValidCopyCaptureText("OK-NOTION-FLOW")).toBe(true);
+  });
+
+  test("captureAnswerViaCopy rejects unchanged stale clipboard and uses copy dialog", async () => {
+    const h = installHelpers();
+    document.body.innerHTML =
+      '<button id="copyBtn" aria-label="Copy response"><svg></svg></button>' +
+      '<div role="dialog" id="copyFallback">' +
+      '<div>Copy to clipboard</div>' +
+      '<textarea readonly>OK-NOTION-FLOW</textarea>' +
+      '<button aria-label="Close">Close</button>' +
+      "</div>";
+    const btn = document.getElementById("copyBtn");
+    const dialog = document.getElementById("copyFallback");
+    makeElementVisible(btn);
+    makeElementVisible(dialog);
+    const stale = "bun notion/scripts/test-capture-consistency-live.mjs --fresh-tab";
+    let clip = stale;
+    globalThis.navigator.clipboard = {
+      readText: async () => clip,
+      writeText: async (text) => {
+        clip = text;
+      },
+    };
+    const text = await h.captureAnswerViaCopy(btn);
+    expect(text).toBe("OK-NOTION-FLOW");
+    expect(h.getLastCaptureSource()).toBe("copy-dialog");
+  });
+
+  test("isAcceptedClipboardCapture rejects sentinel and unchanged text", () => {
+    const h = installHelpers();
+    expect(h.isAcceptedClipboardCapture("", "answer", "")).toBe(true);
+    expect(h.isAcceptedClipboardCapture("same", "same", "")).toBe(false);
+    expect(h.isAcceptedClipboardCapture("", "sentinel", "sentinel")).toBe(false);
+    expect(h.isAcceptedClipboardCapture("old", "new", "sentinel")).toBe(true);
   });
 
   test("captureAnswerViaCopy falls back to copy dialog when clipboard fails", async () => {
@@ -1765,6 +1823,9 @@ Loaded web page: api.llama.fi/chains</div>
     makeElementVisible(dialog);
     globalThis.navigator.clipboard = {
       readText: async () => {
+        throw new Error("denied");
+      },
+      writeText: async () => {
         throw new Error("denied");
       },
     };
@@ -1815,9 +1876,16 @@ Loaded web page: api.llama.fi/chains</div>
       "</div></div></div>";
     makeReplyToolbarVisible();
     const copyBtn = document.querySelector('[aria-label="Copy response"]');
+    let clip = "stale";
     globalThis.navigator.clipboard = {
-      readText: async () => '{"status":"copy"}',
+      readText: async () => clip,
+      writeText: async (text) => {
+        clip = text;
+      },
     };
+    copyBtn.addEventListener("click", () => {
+      clip = '{"status":"copy"}';
+    });
     const msgs = h.getAssistantMessagesSinceLastUser();
     const answer = await h.extractCompletedAnswer(msgs, 0, "");
     expect(answer).toBe('{"status":"copy"}');

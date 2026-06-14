@@ -30,7 +30,7 @@ async function(args) {
 
 
   var h = (function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 60;
+  var HELPERS_VERSION = 61;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 200;
   var NOTION_REVEAL_THROTTLE_MS = 2000;
@@ -1521,30 +1521,79 @@ async function(args) {
       if (!isElementVisible(dialog)) continue;
       if (!looksLikeCopyFallbackDialog(dialog)) continue;
       var text = extractCopyDialogText(dialog);
-      if (!text) continue;
+      if (!text || !isValidCopyCaptureText(text)) continue;
       dismissCopyFallbackDialog(dialog);
       return text;
     }
     return '';
   }
 
-  async function captureAnswerViaCopy(copyBtn) {
-    if (!copyBtn) return '';
-    clickElement(copyBtn);
-    await sleep(120);
-    var answer = '';
+  function buildClipboardSentinel() {
+    return '\u2063notion-ai-copy-' + Date.now() + '-' + Math.random().toString(36).slice(2, 10) + '\u2063';
+  }
+
+  async function readClipboardTextSafe() {
     try {
       if (navigator.clipboard && typeof navigator.clipboard.readText === 'function') {
-        answer = await navigator.clipboard.readText();
+        return await navigator.clipboard.readText();
       }
-    } catch (e) {
-      answer = '';
+    } catch (e) {}
+    return '';
+  }
+
+  async function writeClipboardTextSafe(text) {
+    try {
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch (e) {}
+    return false;
+  }
+
+  function isAcceptedClipboardCapture(beforeText, afterText, sentinel) {
+    afterText = cleanAssistantText(afterText).trim();
+    if (!afterText) return false;
+    if (sentinel && afterText === sentinel) return false;
+    beforeText = cleanAssistantText(beforeText).trim();
+    if (beforeText && afterText === beforeText) return false;
+    return isValidCopyCaptureText(afterText);
+  }
+
+  function isReplyToolbarLabelText(text) {
+    var t = String(text || '').trim().toLowerCase();
+    if (!t) return true;
+    for (var i = 0; i < REPLY_ACTION_LABELS.length; i++) {
+      if (t === REPLY_ACTION_LABELS[i]) return true;
     }
-    answer = cleanAssistantText(answer).trim();
-    if (answer) {
+    if (t === 'save') return true;
+    return false;
+  }
+
+  function isValidCopyCaptureText(text) {
+    text = cleanAssistantText(text).trim();
+    if (!text || isAssistantMetadataText(text)) return false;
+    if (isReplyToolbarLabelText(text)) return false;
+    if (looksLikeThoughtBlock(text)) return false;
+    return true;
+  }
+
+  async function captureAnswerViaCopy(copyBtn) {
+    if (!copyBtn) return '';
+    var beforeText = await readClipboardTextSafe();
+    var sentinel = buildClipboardSentinel();
+    var seeded = await writeClipboardTextSafe(sentinel);
+    if (!seeded) sentinel = '';
+
+    clickElement(copyBtn);
+    await sleep(150);
+
+    var answer = cleanAssistantText(await readClipboardTextSafe()).trim();
+    if (isAcceptedClipboardCapture(beforeText, answer, seeded ? sentinel : '')) {
       lastCaptureSource = 'copy';
       return answer;
     }
+
     answer = captureAnswerFromCopyDialog();
     if (answer) {
       lastCaptureSource = 'copy-dialog';
@@ -3676,6 +3725,8 @@ async function(args) {
     getAssistantTextFromReplyScope: getAssistantTextFromReplyScope,
     captureAnswerFromTurnDom: captureAnswerFromTurnDom,
     captureAnswerViaCopy: captureAnswerViaCopy,
+    isAcceptedClipboardCapture: isAcceptedClipboardCapture,
+    isValidCopyCaptureText: isValidCopyCaptureText,
     captureAnswerViaCopyEvent: captureAnswerViaCopyEvent,
     captureAnswerFromCopyDialog: captureAnswerFromCopyDialog,
     extractCompletedAnswer: extractCompletedAnswer,
