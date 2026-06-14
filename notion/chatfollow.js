@@ -54,7 +54,7 @@ async function(args) {
 
 
   var h = (function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 61;
+  var HELPERS_VERSION = 62;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 200;
   var NOTION_REVEAL_THROTTLE_MS = 2000;
@@ -1405,9 +1405,15 @@ async function(args) {
     beforeText = beforeText != null ? String(beforeText) : '';
     var messages = getAssistantMessagesSinceLastUser();
     if (!hasNewTurnContent(messages, beforeCount, beforeText)) return null;
-    if (!hasCompletedReplyActionsForTurn(beforeCount, beforeText)) return null;
+    if (!hasCompletedReplyActions()) return null;
     var resolved = resolveTurnCaptureScope(beforeCount, beforeText);
-    return resolved && resolved.copyBtn ? resolved.copyBtn : null;
+    if (!resolved || !resolved.copyBtn) return null;
+    if (messages.length) {
+      var latest = messages[messages.length - 1];
+      var turnRoot = resolved.contentRoot || resolved.scope;
+      if (turnRoot && !turnRoot.contains(latest)) return null;
+    }
+    return resolved.copyBtn;
   }
 
   function collectTurnDomText(contentRoot, toolbarRow) {
@@ -1633,7 +1639,8 @@ async function(args) {
     beforeText = beforeText != null ? String(beforeText) : '';
     if (!messages) messages = getAssistantMessagesSinceLastUser();
     if (!hasNewTurnContent(messages, beforeCount, beforeText)) return null;
-    if (!hasCompletedReplyActionsForTurn(beforeCount, beforeText)) return null;
+    if (!findCopyButtonForTurn(beforeCount, beforeText) &&
+        !hasCompletedReplyActionsForTurn(beforeCount, beforeText)) return null;
     var answer = '';
     var copyBtn = findCopyButtonForTurn(beforeCount, beforeText);
     if (copyBtn) answer = await captureAnswerViaCopy(copyBtn);
@@ -1642,6 +1649,7 @@ async function(args) {
       answer = getAssistantAnswerSince(messages, beforeCount, beforeText, Object.assign({}, opts, { skipScopeReady: true }));
       if (answer) lastCaptureSource = 'leaf';
     }
+    if (answer && !waitExpectsJson(opts) && !looksLikeFinalAnswer(answer)) return null;
     return validateExtractedAnswer(answer, opts, false);
   }
 
@@ -1717,6 +1725,7 @@ async function(args) {
 
   function isGeneratingForTurn(beforeCount, beforeText) {
     if (isUrlTrustPromptVisible()) return true;
+    if (findCopyButtonForTurn(beforeCount, beforeText)) return false;
     var messages = getAssistantMessagesSinceLastUser();
     if (hasNewTurnContent(messages, beforeCount, beforeText)) {
       var answer = getAssistantAnswerSince(messages, beforeCount, beforeText, { skipScopeReady: true });
@@ -2132,6 +2141,9 @@ async function(args) {
         if (answer && answer === lastIncompleteJsonText) {
           if (incompleteJsonStableSince && Date.now() - incompleteJsonStableSince >= stuckMs) {
             lastWaitIncompleteJsonStuck = true;
+            if (findCopyButtonForTurn(beforeCount, beforeText)) {
+              lastWaitIncompleteJsonFailed = true;
+            }
             lastWaitPending = true;
             return '';
           }

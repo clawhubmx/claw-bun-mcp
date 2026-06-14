@@ -532,7 +532,7 @@ describe("notion chat helpers", () => {
     expect(await h.tryExtractCompletedAnswer(msgs, 0, "", {})).toBeNull();
   });
 
-  test("toolbar with incomplete JSON answer is still generating", () => {
+  test("toolbar with incomplete DOM JSON still allows copy capture", async () => {
     const h = installHelpers();
     document.body.innerHTML =
       '<div class="layout-chat">' +
@@ -541,12 +541,33 @@ describe("notion chat helpers", () => {
       '<div class="notion-text-block"><div class="content-editable-leaf-rtl">{</div></div>' +
       '<div class="reply-toolbar">' + REPLY_ACTION_BUTTONS_WITH_FEEDBACK + '</div>' +
       '</div></div>';
+    makeReplyToolbarVisible();
     const msgs = h.getAssistantMessagesSinceLastUser();
     expect(h.hasCompletedReplyActions()).toBe(true);
     expect(h.hasCompletedReplyActionsForTurn(0, "")).toBe(false);
-    expect(h.isGeneratingForTurn(0, "")).toBe(true);
-    expect(h.isChatInProgress()).toBe(true);
+    expect(h.findCopyButtonForTurn(0, "")).not.toBeNull();
+    expect(h.isGeneratingForTurn(0, "")).toBe(false);
     expect(h.looksLikeFinalAnswer("{")).toBe(false);
+
+    const copyBtn = document.querySelector('[aria-label="Copy response"]');
+    const fullJson =
+      '{"query":"US-Iran Peace Deal Progress","unique_topics":["Talks continue"],"sources":"reuters.com"}';
+    let clip = "stale";
+    globalThis.navigator.clipboard = {
+      readText: async () => clip,
+      writeText: async (text) => {
+        clip = text;
+      },
+    };
+    copyBtn.addEventListener("click", () => {
+      clip = fullJson;
+    });
+    const answer = await h.extractCompletedAnswer(msgs, 0, "", {
+      query: "Return JSON only. json format only",
+      expectJson: true,
+    });
+    expect(answer).toBe(fullJson);
+    expect(h.getLastCaptureSource()).toBe("copy");
   });
 
   test("recoverCompletedAnswer returns full reply since last user", async () => {
@@ -965,9 +986,9 @@ Loaded web page: api.llama.fi/chains</div>
     expect(giveBtn.getAttribute("aria-expanded")).not.toBe("true");
   });
 
-  test("helpers version is 61", () => {
+  test("helpers version is 62", () => {
     const h = installHelpers();
-    expect(h.version).toBe(61);
+    expect(h.version).toBe(62);
   });
 
   test("isStaleChatThread detects assistant messages and reply toolbar", () => {
