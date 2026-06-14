@@ -3,7 +3,7 @@
  * Inlined by notion/chat.js and notion/chatfollow.js — keep in sync.
  */
 function installNotionAiChatHelpers() {
-  var HELPERS_VERSION = 59;
+  var HELPERS_VERSION = 60;
   var NOTION_CHAT_WAIT_MS = 15 * 60 * 1000;
   var NOTION_CHAT_POLL_MS = 200;
   var NOTION_REVEAL_THROTTLE_MS = 2000;
@@ -2319,7 +2319,10 @@ function installNotionAiChatHelpers() {
 
   function isModelPickerMenuOpen(picker) {
     picker = picker || findModelPickerButton();
-    if (picker && picker.getAttribute('aria-expanded') === 'true') return true;
+    if (picker) {
+      var surface = findModelPickerSurface(picker);
+      if (surface && isElementVisible(surface)) return true;
+    }
     var knownTitles = getKnownModelTitles();
     var dialogs = Array.prototype.slice.call(document.querySelectorAll('[role=dialog]'));
     for (var i = 0; i < dialogs.length; i++) {
@@ -2346,6 +2349,12 @@ function installNotionAiChatHelpers() {
       return true;
     }
 
+    if (!isModelPickerMenuOpen(picker)) {
+      blurModelPicker(picker);
+      focusChatInput();
+      return true;
+    }
+
     for (var attempt = 0; attempt < 10; attempt++) {
       if (!isModelPickerMenuOpen(picker)) break;
 
@@ -2364,9 +2373,14 @@ function installNotionAiChatHelpers() {
       }));
       await sleep(250);
 
-      if (isModelPickerMenuOpen(picker) && picker.getAttribute('aria-expanded') === 'true') {
-        toggleModelPickerButton(picker);
+      var surface = findModelPickerSurface(picker);
+      var expanded = picker.getAttribute('aria-expanded') === 'true';
+      if (surface && isElementVisible(surface) && expanded) {
+        clickElementOnce(picker);
         await sleep(300);
+      } else if (expanded) {
+        blurModelPicker(picker);
+        await sleep(150);
       }
 
       var editor = getChatInput();
@@ -2399,10 +2413,21 @@ function installNotionAiChatHelpers() {
     return null;
   }
 
+  function normalizeModeLabel(label) {
+    var text = String(label || '').trim();
+    if (!text) return '';
+    var firstLine = text.split('\n')[0].trim();
+    for (var key in MODE_ALIASES) {
+      if (!MODE_ALIASES.hasOwnProperty(key)) continue;
+      if (MODE_ALIASES[key] === firstLine) return MODE_ALIASES[key];
+    }
+    return firstLine;
+  }
+
   function readNotionModeLabel() {
     var picker = findModelPickerButton();
     if (picker) {
-      var text = (picker.innerText || picker.textContent || '').trim();
+      var text = normalizeModeLabel(picker.innerText || picker.textContent || '');
       if (text) return text;
     }
     return 'Auto';
@@ -2466,11 +2491,13 @@ function installNotionAiChatHelpers() {
   async function setNotionMode(modeRaw) {
     var target = resolveNotionMode(modeRaw);
     var current = readNotionModeLabel();
-    if (current === target) {
-      await closeModelPickerSurface();
+    var picker = getModePickerButton(current);
+    if (normalizeModeLabel(current) === normalizeModeLabel(target)) {
+      if (picker && isModelPickerMenuOpen(picker)) {
+        await closeModelPickerSurface(picker);
+      }
       return { ok: true, modeTitle: target, label: target };
     }
-    var picker = getModePickerButton(current);
     if (!picker) {
       return { ok: false, error: 'Model picker not found', hint: 'Open a Notion AI chat view first.' };
     }

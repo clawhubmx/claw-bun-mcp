@@ -1,0 +1,138 @@
+{
+  "startedAt": "2026-06-13T19:24:21.711Z",
+  "tab": "e3ee",
+  "model": "auto",
+  "requireVisible": true,
+  "waitForVisibleMs": null,
+  "initialVisibility": {
+    "hidden": false,
+    "visibility": "visible",
+    "hasFocus": true,
+    "url": "https://app.notion.com/ai"
+  },
+  "clipboardPathPassCount": 0,
+  "contentPassCount": 1,
+  "copyTextValidCount": 0,
+  "totalRuns": 2,
+  "chatCaptureSources": [
+    "dom"
+  ],
+  "probeCaptureSources": [
+    "dom"
+  ],
+  "captureSourceMismatches": 0,
+  "nextStep": "Activate tab before capture: bun-browser tab select --id <shortId> (see test-tab-pool-title-watch.mjs selectTab)",
+  "runs": [
+    {
+      "id": "json-control",
+      "promptFile": "prompt-01-control-json.txt",
+      "kind": "json",
+      "expectJson": true,
+      "elapsedMs": 3811,
+      "timedOut": false,
+      "error": null,
+      "captureWarning": null,
+      "answerFormat": "json",
+      "captureSource": "dom",
+      "jsonRecovered": false,
+      "answerLen": 49,
+      "answerHash": "c2c169c90043",
+      "answerPreview": "{\"status\":\"ok\",\"code\":\"PING-1\",\"ts\":\"2026-06-13\"}",
+      "answerJson": {
+        "status": "ok",
+        "code": "PING-1",
+        "ts": "2026-06-13"
+      },
+      "visibilityBefore": {
+        "hidden": false,
+        "visibility": "visible",
+        "hasFocus": true,
+        "url": "https://app.notion.com/ai"
+      },
+      "visibilityAfter": {
+        "hidden": false,
+        "visibility": "visible",
+        "hasFocus": true,
+        "url": "https://app.notion.com/chat?t=37e773dd10fd80a9a5c500a93cba07e1&wfv=chat"
+      },
+      "visibilityGate": {
+        "ok": true,
+        "visibility": {
+          "hidden": false,
+          "visibility": "visible",
+          "hasFocus": true,
+          "url": "https://app.notion.com/ai"
+        },
+        "waitedMs": 0
+      },
+      "clipboardProbe": {
+        "helpersVersion": 59,
+        "tabState": {
+          "hidden": false,
+          "visibility": "visible",
+          "captureReliable": true
+        },
+        "hasCopyBtn": true,
+        "copySource": "dom",
+        "domSourceAfterDomProbe": "dom",
+        "copyTextLen": 0,
+        "domTextLen": 49,
+        "textsMatch": false,
+        "copyPreview": "",
+        "domPreview": "{\"status\":\"ok\",\"code\":\"PING-1\",\"ts\":\"2026-06-13\"}",
+        "clipboardAvailable": true,
+        "clipboardError": null,
+        "hasCompletedReplyActions": true
+      },
+      "contentPass": true,
+      "captureSourceMismatch": false,
+      "clipboardPathPass": false,
+      "copyTextValid": false
+    },
+    {
+      "id": "prose-token",
+      "promptFile": "prompt-04-prose-token.txt",
+      "kind": "prose",
+      "expectJson": false,
+      "elapsedMs": 2249,
+      "timedOut": false,
+      "error": "Navigation required",
+      "captureWarning": null,
+      "answerFormat": null,
+      "captureSource": null,
+      "jsonRecovered": false,
+      "answerLen": 0,
+      "answerHash": "e3b0c44298fc",
+      "answerPreview": null,
+      "answerJson": null,
+      "visibilityBefore": {
+        "hidden": false,
+        "visibility": "visible",
+        "hasFocus": true,
+        "url": "https://app.notion.com/chat?t=37e773dd10fd80a9a5c500a93cba07e1&wfv=chat"
+      },
+      "visibilityAfter": {
+        "hidden": false,
+        "visibility": "visible",
+        "hasFocus": true,
+        "url": "https://app.notion.com/ai"
+      },
+      "visibilityGate": {
+        "ok": true,
+        "visibility": {
+          "hidden": false,
+          "visibility": "visible",
+          "hasFocus": true,
+          "url": "https://app.notion.com/chat?t=37e773dd10fd80a9a5c500a93cba07e1&wfv=chat"
+        },
+        "waitedMs": 0
+      },
+      "clipboardProbe": {
+        "error": "helpers not loaded"
+      },
+      "contentPass": false,
+      "clipboardPathPass": false,
+      "copyTextValid": false
+    }
+  ]
+}

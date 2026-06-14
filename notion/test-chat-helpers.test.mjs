@@ -965,9 +965,9 @@ Loaded web page: api.llama.fi/chains</div>
     expect(giveBtn.getAttribute("aria-expanded")).not.toBe("true");
   });
 
-  test("helpers version is 59", () => {
+  test("helpers version is 60", () => {
     const h = installHelpers();
-    expect(h.version).toBe(59);
+    expect(h.version).toBe(60);
   });
 
   test("isStaleChatThread detects assistant messages and reply toolbar", () => {
@@ -1914,6 +1914,77 @@ Loaded web page: api.llama.fi/chains</div>
     });
     expect(h.focusChatInput()).toBe(true);
     expect(document.activeElement).toBe(editor);
+  });
+
+  test("readNotionModeLabel uses first line when picker shows subtitle text", () => {
+    const h = installHelpersAt("https://app.notion.com/ai");
+    document.body.innerHTML =
+      '<div role="button" data-testid="unified-chat-model-button">Auto\nChange model</div>';
+    const picker = document.querySelector('[data-testid="unified-chat-model-button"]');
+    Object.defineProperty(picker, "offsetParent", { value: document.body, configurable: true });
+    picker.getBoundingClientRect = () => ({
+      width: 80,
+      height: 32,
+      top: 10,
+      left: 10,
+      bottom: 42,
+      right: 90,
+    });
+    expect(h.readNotionModeLabel()).toBe("Auto");
+  });
+
+  test("setNotionMode skips opening picker when normalized label already matches", async () => {
+    const h = installHelpersAt("https://app.notion.com/ai");
+    document.body.innerHTML =
+      '<div role="button" data-testid="unified-chat-model-button" aria-expanded="false">Auto\nChange model</div>';
+    const picker = document.querySelector('[data-testid="unified-chat-model-button"]');
+    Object.defineProperty(picker, "offsetParent", { value: document.body, configurable: true });
+    picker.getBoundingClientRect = () => ({
+      width: 80,
+      height: 32,
+      top: 10,
+      left: 10,
+      bottom: 42,
+      right: 90,
+    });
+    let clickCount = 0;
+    picker.addEventListener("click", () => {
+      clickCount += 1;
+    });
+    const result = await h.setNotionMode("auto");
+    expect(result.ok).toBe(true);
+    expect(clickCount).toBe(0);
+    expect(picker.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  test("closeModelPickerSurface does not click picker when aria-expanded is stale without visible menu", async () => {
+    const h = installHelpersAt("https://app.notion.com/ai");
+    document.body.innerHTML =
+      '<div contenteditable="true" role="textbox" id="editor"></div>' +
+      '<div role="button" tabindex="0" data-testid="unified-chat-model-button" aria-expanded="true">Auto</div>';
+    const editor = document.getElementById("editor");
+    const picker = document.querySelector('[data-testid="unified-chat-model-button"]');
+    for (const el of [editor, picker]) {
+      Object.defineProperty(el, "offsetParent", { value: document.body, configurable: true });
+      el.getBoundingClientRect = () => ({
+        left: 580,
+        top: 300,
+        width: 288,
+        height: 32,
+        right: 868,
+        bottom: 332,
+      });
+    }
+    let clickCount = 0;
+    picker.addEventListener("click", () => {
+      clickCount += 1;
+      picker.setAttribute("aria-expanded", "true");
+    });
+    expect(h.isModelPickerMenuOpen(picker)).toBe(false);
+    const closed = await h.closeModelPickerSurface(picker);
+    expect(closed).toBe(true);
+    expect(clickCount).toBe(0);
+    expect(h.isModelPickerMenuOpen(picker)).toBe(false);
   });
 
   test("closeModelPickerSurface dismisses open model menu and restores composer focus", async () => {

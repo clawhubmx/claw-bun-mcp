@@ -1,0 +1,146 @@
+{
+  "startedAt": "2026-06-13T19:16:33.308Z",
+  "tab": null,
+  "model": "auto",
+  "jsonControlRuns": 3,
+  "jsonHashUnique": 1,
+  "jsonHashes": [
+    "c2c169c90043"
+  ],
+  "jsonCaptureSources": [
+    "dom"
+  ],
+  "allCaptureSources": [
+    "dom"
+  ],
+  "passCount": 5,
+  "totalRuns": 5,
+  "runs": [
+    {
+      "id": "json-control-1-r1",
+      "promptFile": "prompt-01-control-json.txt",
+      "expectJson": true,
+      "elapsedMs": 4776,
+      "error": null,
+      "answerFormat": "json",
+      "captureSource": "dom",
+      "jsonRecovered": false,
+      "answerLen": 49,
+      "answerHash": "c2c169c90043",
+      "answerPreview": "{\"status\":\"ok\",\"code\":\"PING-1\",\"ts\":\"2026-06-13\"}",
+      "answerJson": {
+        "status": "ok",
+        "code": "PING-1",
+        "ts": "2026-06-13"
+      },
+      "helpersAfter": {
+        "result": {
+          "version": 59,
+          "captureSource": "dom"
+        },
+        "tab": "5e14",
+        "seq": 5301
+      }
+    },
+    {
+      "id": "json-control-1-r2",
+      "promptFile": "prompt-01-control-json.txt",
+      "expectJson": true,
+      "elapsedMs": 4875,
+      "error": null,
+      "answerFormat": "json",
+      "captureSource": "dom",
+      "jsonRecovered": false,
+      "answerLen": 49,
+      "answerHash": "c2c169c90043",
+      "answerPreview": "{\"status\":\"ok\",\"code\":\"PING-1\",\"ts\":\"2026-06-13\"}",
+      "answerJson": {
+        "status": "ok",
+        "code": "PING-1",
+        "ts": "2026-06-13"
+      },
+      "helpersAfter": {
+        "result": {
+          "version": 59,
+          "captureSource": "dom"
+        },
+        "tab": "0a9b",
+        "seq": 6056
+      }
+    },
+    {
+      "id": "json-control-1-r3",
+      "promptFile": "prompt-01-control-json.txt",
+      "expectJson": true,
+      "elapsedMs": 6693,
+      "error": null,
+      "answerFormat": "json",
+      "captureSource": "dom",
+      "jsonRecovered": false,
+      "answerLen": 49,
+      "answerHash": "c2c169c90043",
+      "answerPreview": "{\"status\":\"ok\",\"code\":\"PING-1\",\"ts\":\"2026-06-13\"}",
+      "answerJson": {
+        "status": "ok",
+        "code": "PING-1",
+        "ts": "2026-06-13"
+      },
+      "helpersAfter": {
+        "result": {
+          "version": 59,
+          "captureSource": "dom"
+        },
+        "tab": "d8b7",
+        "seq": 6815
+      }
+    },
+    {
+      "id": "prose-token",
+      "promptFile": "prompt-04-prose-token.txt",
+      "expectJson": false,
+      "elapsedMs": 5324,
+      "error": null,
+      "answerFormat": "text",
+      "captureSource": "dom",
+      "jsonRecovered": false,
+      "answerLen": 14,
+      "answerHash": "bb2b3b7c2de7",
+      "answerPreview": "OK-NOTION-FLOW",
+      "answerJson": null,
+      "helpersAfter": {
+        "result": {
+          "version": 59,
+          "captureSource": "dom"
+        },
+        "tab": "fe7c",
+        "seq": 7551
+      }
+    },
+    {
+      "id": "json-preamble",
+      "promptFile": "prompt-05-preamble-json.txt",
+      "expectJson": true,
+      "elapsedMs": 5517,
+      "error": null,
+      "answerFormat": "json",
+      "captureSource": "dom",
+      "jsonRecovered": true,
+      "answerLen": 49,
+      "answerHash": "d817e0f556cb",
+      "answerPreview": "{\"probe\":\"preamble\",\"ok\":true,\"note\":\"edge-case\"}",
+      "answerJson": {
+        "probe": "preamble",
+        "ok": true,
+        "note": "edge-case"
+      },
+      "helpersAfter": {
+        "result": {
+          "version": 59,
+          "captureSource": "dom"
+        },
+        "tab": "e3ee",
+        "seq": 8335
+      }
+    }
+  ]
+}

@@ -50,6 +50,19 @@ function newTab() {
   }
 }
 
+function parseCliJson(stdout) {
+  if (!stdout) return null;
+  try {
+    const parsed = JSON.parse(stdout.trim());
+    if (parsed && typeof parsed === "object" && "success" in parsed) {
+      return parsed.success ? parsed.data : { error: parsed.error, hint: parsed.hint, kind: parsed.kind };
+    }
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
 function runChat(prompt, tabId, maxWaitMs = 45000) {
   const full = [
     "bun",
@@ -73,10 +86,8 @@ function runChat(prompt, tabId, maxWaitMs = 45000) {
     timeout: maxWaitMs + 60000,
     maxBuffer: 20 * 1024 * 1024,
   });
-  let data = null;
-  try {
-    data = JSON.parse((result.stdout || "").trim());
-  } catch {
+  let data = parseCliJson(result.stdout || "");
+  if (!data) {
     data = { error: "parse_failed", stdout: (result.stdout || "").slice(0, 500) };
   }
   return {

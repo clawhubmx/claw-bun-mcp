@@ -1,0 +1,213 @@
+{
+  "startedAt": "2026-06-13T19:23:15.769Z",
+  "tab": "e3ee",
+  "model": "auto",
+  "requireVisible": true,
+  "waitForVisibleMs": null,
+  "initialVisibility": {
+    "hidden": false,
+    "visibility": "visible",
+    "hasFocus": true,
+    "url": "https://app.notion.com/ai"
+  },
+  "clipboardPathPassCount": 0,
+  "contentPassCount": 2,
+  "totalRuns": 3,
+  "chatCaptureSources": [
+    "dom"
+  ],
+  "probeCaptureSources": [
+    "copy-dialog"
+  ],
+  "captureSourceMismatches": 3,
+  "nextStep": "Activate tab before capture: bun-browser tab select --id <shortId> (see test-tab-pool-title-watch.mjs selectTab)",
+  "runs": [
+    {
+      "id": "json-control",
+      "promptFile": "prompt-01-control-json.txt",
+      "kind": "json",
+      "expectJson": true,
+      "elapsedMs": 4106,
+      "timedOut": false,
+      "error": null,
+      "captureWarning": null,
+      "answerFormat": "json",
+      "captureSource": "dom",
+      "jsonRecovered": false,
+      "answerLen": 49,
+      "answerHash": "c2c169c90043",
+      "answerPreview": "{\"status\":\"ok\",\"code\":\"PING-1\",\"ts\":\"2026-06-13\"}",
+      "answerJson": {
+        "status": "ok",
+        "code": "PING-1",
+        "ts": "2026-06-13"
+      },
+      "visibilityBefore": {
+        "hidden": false,
+        "visibility": "visible",
+        "hasFocus": true,
+        "url": "https://app.notion.com/ai"
+      },
+      "visibilityAfter": {
+        "hidden": false,
+        "visibility": "visible",
+        "hasFocus": true,
+        "url": "https://app.notion.com/chat?t=37e773dd10fd80e8840c00a96a9dfd6b&wfv=chat"
+      },
+      "visibilityGate": {
+        "ok": true,
+        "visibility": {
+          "hidden": false,
+          "visibility": "visible",
+          "hasFocus": true,
+          "url": "https://app.notion.com/ai"
+        },
+        "waitedMs": 0
+      },
+      "clipboardProbe": {
+        "helpersVersion": 59,
+        "tabState": {
+          "hidden": false,
+          "visibility": "visible",
+          "captureReliable": true
+        },
+        "hasCopyBtn": true,
+        "copySource": "copy-dialog",
+        "domSourceAfterDomProbe": "dom",
+        "copyTextLen": 13,
+        "domTextLen": 49,
+        "textsMatch": false,
+        "copyPreview": "Copy response",
+        "domPreview": "{\"status\":\"ok\",\"code\":\"PING-1\",\"ts\":\"2026-06-13\"}",
+        "clipboardAvailable": true,
+        "clipboardError": null,
+        "hasCompletedReplyActions": true
+      },
+      "contentPass": true,
+      "captureSourceMismatch": true,
+      "clipboardPathPass": false
+    },
+    {
+      "id": "prose-token",
+      "promptFile": "prompt-04-prose-token.txt",
+      "kind": "prose",
+      "expectJson": false,
+      "elapsedMs": 3947,
+      "timedOut": false,
+      "error": null,
+      "captureWarning": null,
+      "answerFormat": "text",
+      "captureSource": "dom",
+      "jsonRecovered": false,
+      "answerLen": 14,
+      "answerHash": "bb2b3b7c2de7",
+      "answerPreview": "OK-NOTION-FLOW",
+      "answerJson": null,
+      "visibilityBefore": {
+        "hidden": false,
+        "visibility": "visible",
+        "hasFocus": true,
+        "url": "https://app.notion.com/chat?t=37e773dd10fd80e8840c00a96a9dfd6b&wfv=chat"
+      },
+      "visibilityAfter": {
+        "hidden": false,
+        "visibility": "visible",
+        "hasFocus": true,
+        "url": "https://app.notion.com/chat?t=37e773dd10fd80a8a8b600a93365b93a&wfv=chat"
+      },
+      "visibilityGate": {
+        "ok": true,
+        "visibility": {
+          "hidden": false,
+          "visibility": "visible",
+          "hasFocus": true,
+          "url": "https://app.notion.com/chat?t=37e773dd10fd80e8840c00a96a9dfd6b&wfv=chat"
+        },
+        "waitedMs": 0
+      },
+      "clipboardProbe": {
+        "helpersVersion": 59,
+        "tabState": {
+          "hidden": false,
+          "visibility": "visible",
+          "captureReliable": true
+        },
+        "hasCopyBtn": true,
+        "copySource": "copy-dialog",
+        "domSourceAfterDomProbe": "dom",
+        "copyTextLen": 13,
+        "domTextLen": 14,
+        "textsMatch": false,
+        "copyPreview": "Copy response",
+        "domPreview": "OK-NOTION-FLOW",
+        "clipboardAvailable": true,
+        "clipboardError": null,
+        "hasCompletedReplyActions": true
+      },
+      "contentPass": true,
+      "captureSourceMismatch": true,
+      "clipboardPathPass": false
+    },
+    {
+      "id": "markdown-link",
+      "promptFile": null,
+      "kind": "markdown",
+      "expectJson": false,
+      "elapsedMs": 4334,
+      "timedOut": false,
+      "error": null,
+      "captureWarning": null,
+      "answerFormat": "text",
+      "captureSource": "dom",
+      "jsonRecovered": false,
+      "answerLen": 7,
+      "answerHash": "d029f87e3d80",
+      "answerPreview": "Example",
+      "answerJson": null,
+      "visibilityBefore": {
+        "hidden": false,
+        "visibility": "visible",
+        "hasFocus": true,
+        "url": "https://app.notion.com/chat?t=37e773dd10fd80a8a8b600a93365b93a&wfv=chat"
+      },
+      "visibilityAfter": {
+        "hidden": false,
+        "visibility": "visible",
+        "hasFocus": true,
+        "url": "https://app.notion.com/chat?t=37e773dd10fd80f58d9400a95beb4cfb&wfv=chat"
+      },
+      "visibilityGate": {
+        "ok": true,
+        "visibility": {
+          "hidden": false,
+          "visibility": "visible",
+          "hasFocus": true,
+          "url": "https://app.notion.com/chat?t=37e773dd10fd80a8a8b600a93365b93a&wfv=chat"
+        },
+        "waitedMs": 0
+      },
+      "clipboardProbe": {
+        "helpersVersion": 59,
+        "tabState": {
+          "hidden": false,
+          "visibility": "visible",
+          "captureReliable": true
+        },
+        "hasCopyBtn": true,
+        "copySource": "copy-dialog",
+        "domSourceAfterDomProbe": "dom",
+        "copyTextLen": 13,
+        "domTextLen": 7,
+        "textsMatch": false,
+        "copyPreview": "Copy response",
+        "domPreview": "Example",
+        "clipboardAvailable": true,
+        "clipboardError": null,
+        "hasCompletedReplyActions": true
+      },
+      "contentPass": false,
+      "captureSourceMismatch": true,
+      "clipboardPathPass": false
+    }
+  ]
+}
